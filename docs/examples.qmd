@@ -1,0 +1,341 @@
+---
+title: "Examples"
+subtitle: "Rendered plots with a link to the source for each."
+toc: true
+toc-depth: 2
+engine: markdown
+---
+
+Every example below lives in the [`examples/`](https://github.com/mcanouil/gribouille/tree/main/examples) directory of the repository.
+Open the source link under any plot to see the full Typst snippet, data and all.
+
+## Basics
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/minimal.svg"
+#include "/examples/minimal.typ"
+```
+
+### Minimal scatter
+Inline iris sample plotted with a single [`geom-point`](reference/geoms/geom-point.qmd) layer and continuous x/y scales.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/minimal.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/multilayer.svg"
+#include "/examples/multilayer.typ"
+```
+
+### Multilayer trend
+Lines and points share a discrete colour mapping.
+[`geom-line`](reference/geoms/geom-line.qmd) + [`geom-point`](reference/geoms/geom-point.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/multilayer.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/labs-title.svg"
+#include "/examples/labs-title.typ"
+```
+
+### Titles and labels
+Title, subtitle, caption, and axis labels set in a single [`labs`](reference/labs/labs.qmd) call.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/labs-title.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/factor-inline.svg"
+#include "/examples/factor-inline.typ"
+```
+
+### Inline factor coercion
+[`as-factor`](reference/core/as-factor.qmd) forces a numeric column to be treated as discrete for the colour aesthetic.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/factor-inline.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/penguins.svg"
+#include "/examples/penguins.typ"
+```
+
+### Penguins
+CSV-loaded dataset: flipper length versus body mass, coloured by species.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/penguins.typ)
+:::
+
+:::
+
+## Bars and counts
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/bar-simple.svg"
+#include "/examples/bar-simple.typ"
+```
+
+### Simple bars
+Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-simple.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/bar-count.svg"
+#include "/examples/bar-count.typ"
+```
+
+### Category counts
+[`geom-bar`](reference/geoms/geom-bar.qmd) backed by [`stat-count`](reference/stats/stat-count.qmd) to tally observations per category.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-count.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/bar-stacked.svg"
+#include "/examples/bar-stacked.typ"
+```
+
+### Stacked bars
+[`geom-col`](reference/geoms/geom-col.qmd) with [`position-stack`](reference/positions/position-stack.qmd) for cumulative totals per group.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-stacked.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/bar-dodged.svg"
+#include "/examples/bar-dodged.typ"
+```
+
+### Dodged bars
+Side-by-side bars per group via [`position-dodge`](reference/positions/position-dodge.qmd) on [`geom-col`](reference/geoms/geom-col.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-dodged.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/bar-filled.svg"
+#include "/examples/bar-filled.typ"
+```
+
+### Filled bars
+Each column normalised to 1 with [`position-fill`](reference/positions/position-fill.qmd) to compare shares.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-filled.typ)
+:::
+
+:::
+
+## Statistics and smoothers
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/histogram.svg"
+#include "/examples/histogram.typ"
+```
+
+### Histogram
+Continuous x binned with [`stat-bin`](reference/stats/stat-bin.qmd) via [`geom-histogram`](reference/geoms/geom-histogram.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/histogram.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/smooth.svg"
+#include "/examples/smooth.typ"
+```
+
+### Smoother
+Scatter plus a linear fit with a 95% confidence ribbon from [`geom-smooth`](reference/geoms/geom-smooth.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/smooth.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/ribbon-bounds.svg"
+#include "/examples/ribbon-bounds.typ"
+```
+
+### Ribbon bounds
+Explicit `ymin` / `ymax` aesthetics drive [`geom-ribbon`](reference/geoms/geom-ribbon.qmd) around a fitted line.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/ribbon-bounds.typ)
+:::
+
+:::
+
+## Annotations
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/reference-lines.svg"
+#include "/examples/reference-lines.typ"
+```
+
+### Reference lines
+[`geom-abline`](reference/geoms/geom-abline.qmd), [`geom-hline`](reference/geoms/geom-hline.qmd), and [`geom-vline`](reference/geoms/geom-vline.qmd) overlaid on a trend.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/reference-lines.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/text-labels.svg"
+#include "/examples/text-labels.typ"
+```
+
+### Text and label annotations
+Points annotated with [`geom-text`](reference/geoms/geom-text.qmd) and boxed [`geom-label`](reference/geoms/geom-label.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/text-labels.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/shape-linetype.svg"
+#include "/examples/shape-linetype.typ"
+```
+
+### Shape and linetype per group
+A single grouping maps to [`scale-shape`](reference/scales/scale-shape.qmd), [`scale-linetype`](reference/scales/scale-linetype.qmd), and a discrete colour.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/shape-linetype.typ)
+:::
+
+:::
+
+## Scales and colour
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/colour-bar.svg"
+#include "/examples/colour-bar.typ"
+```
+
+### Continuous colour guide
+A colourbar appears automatically when colour is trained on a continuous variable via [`scale-colour-continuous`](reference/scales/scale-colour-continuous.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/colour-bar.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/viridis-colour.svg"
+#include "/examples/viridis-colour.typ"
+```
+
+### Viridis continuous
+[`scale-colour-viridis-c`](reference/scales/scale-colour-viridis-c.qmd) maps a continuous variable through the Viridis palette.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/viridis-colour.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/manual-palette.svg"
+#include "/examples/manual-palette.typ"
+```
+
+### Manual palette
+User-supplied colours passed to [`scale-colour-manual`](reference/scales/scale-colour-manual.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/manual-palette.typ)
+:::
+
+:::
+
+## Facets and coordinates
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/facets.svg"
+#include "/examples/facets.typ"
+```
+
+### Facet wrap
+One panel per level of a discrete variable via [`facet-wrap`](reference/facets/facet-wrap.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/facets.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/facet-grid.svg"
+#include "/examples/facet-grid.typ"
+```
+
+### Facet grid
+Panels laid out on a row × column grid with [`facet-grid`](reference/facets/facet-grid.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/facet-grid.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/coord-clip.svg"
+#include "/examples/coord-clip.typ"
+```
+
+### Cartesian zoom
+[`coord-cartesian`](reference/coord/coord-cartesian.qmd) clips the view via `xlim` and `ylim` without dropping data.
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/coord-clip.typ)
+:::
+
+:::
+
+## Themes
+
+::: {.gallery}
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/themed.svg"
+#include "/examples/themed.typ"
+```
+
+### Minimal theme
+Per-element overrides with [`theme`](reference/themes/theme.qmd) on top of [`theme-minimal`](reference/themes/theme-minimal.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/themed.typ)
+:::
+
+::: {.gallery-item}
+```{typst}
+//| output-filename: "/assets/examples/theme-override.svg"
+#include "/examples/theme-override.typ"
+```
+
+### Theme overrides
+Custom text sizes, panel fill, and grid colour passed through [`theme`](reference/themes/theme.qmd).
+
+[Source](https://github.com/mcanouil/gribouille/blob/main/examples/theme-override.typ)
+:::
+
+:::

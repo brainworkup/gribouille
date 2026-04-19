@@ -1,0 +1,697 @@
+--- @module gitlink
+--- @license MIT
+--- @copyright 2026 Mickaël Canouil
+--- @author Mickaël Canouil
+
+--- Extension name constant
+local EXTENSION_NAME = 'gitlink'
+
+--- Load modules
+local str = require(quarto.utils.resolve_path('_modules/string.lua'):gsub('%.lua$', ''))
+local log = require(quarto.utils.resolve_path('_modules/logging.lua'):gsub('%.lua$', ''))
+local meta_mod = require(quarto.utils.resolve_path('_modules/metadata.lua'):gsub('%.lua$', ''))
+local html_mod = require(quarto.utils.resolve_path('_modules/html.lua'):gsub('%.lua$', ''))
+local paths = require(quarto.utils.resolve_path('_modules/paths.lua'):gsub('%.lua$', ''))
+local git = require(quarto.utils.resolve_path('_modules/git.lua'):gsub('%.lua$', ''))
+local bitbucket = require(quarto.utils.resolve_path('_modules/bitbucket.lua'):gsub('%.lua$', ''))
+local platforms = require(quarto.utils.resolve_path('_modules/platforms.lua'):gsub('%.lua$', ''))
+
+--- @type string The platform type (github, gitlab, codeberg, gitea, bitbucket)
+local platform = 'github'
+
+--- @type string|nil The repository name (e.g., "owner/repo")
+local repository_name = nil
+
+--- @type string The base URL for the Git hosting platform
+local base_url = 'https://github.com'
+
+--- @type table<string, boolean> Set of reference IDs from the document
+local references_ids_set = {}
+
+--- @type boolean Whether to show visible platform badges
+local show_platform_badge = true
+
+--- @type string Badge position: "after" or "before"
+local badge_position = 'after'
+
+--- @type string Badge background colour (hex or colour name)
+local badge_background_colour = '#c3c3c3'
+
+--- @type string Badge text colour (hex or colour name)
+local badge_text_colour = nil
+
+--- @type integer Full length of a git commit SHA
+local COMMIT_SHA_FULL_LENGTH = 40
+
+--- @type integer Short length for displaying commit SHA
+local COMMIT_SHA_SHORT_LENGTH = 7
+
+--- @type integer Minimum length for a valid git commit SHA
+local COMMIT_SHA_MIN_LENGTH = 7
+
+--- Get platform configuration
+--- @param platform_name string The platform name
+--- @return table|nil The platform configuration or nil if not found
+local function get_platform_config(platform_name)
+  return platforms.get_platform_config(platform_name:lower())
+end
+
+--- Parse a full repository URL to extract platform, base-url, and owner/repo.
+--- Matches the URL against all known platform base URLs.
+--- @param url string The full repository URL (e.g., "https://github.com/owner/repo")
+--- @return string|nil platform_name The matched platform name
+--- @return string|nil matched_base_url The base URL portion
+--- @return string|nil repo_path The owner/repo portion
+local function parse_repo_url(url)
+  local all_names = platforms.get_all_platform_names()
+  for _, name in ipairs(all_names) do
+    local config = platforms.get_platform_config(name)
+    if config and config.base_url then
+      local escaped = str.escape_pattern(config.base_url)
+      local repo_path = url:match('^' .. escaped .. '/(.+)$')
+      if repo_path then
+        repo_path = repo_path:match('^([^%?#]+)') or repo_path
+        repo_path = repo_path:gsub('%.git$', ''):gsub('/$', '')
+        if not str.is_empty(repo_path) then
+          return name, config.base_url, repo_path
+        end
+      end
+    end
+  end
+  return nil, nil, nil
+end
+
+--- Create a link with platform label
+--- @param text string|nil The link text
+--- @param uri string|nil The URI
+--- @param platform_name string|nil The platform name
+--- @return pandoc.Link|pandoc.Span|nil A Pandoc Link element with platform label or Span containing link and badge
+local function create_platform_link(text, uri, platform_name)
+  if str.is_empty(uri) or str.is_empty(text) or str.is_empty(platform_name) then
+    return nil
+  end
+
+  local platform_label = platforms.get_platform_display_name(platform_name --[[@as string]])
+
+  local link_content = { pandoc.Str(text --[[@as string]]) }
+  local link_attr = pandoc.Attr('', {}, {})
+
+  if quarto.doc.is_format("html:js") or quarto.doc.is_format("html") then
+    link_attr = pandoc.Attr('', {}, { title = platform_label })
+    local link = pandoc.Link(link_content, uri --[[@as string]], '', link_attr)
+
+    if show_platform_badge then
+      local css_path = quarto.utils.resolve_path("gitlink.css")
+      html_mod.ensure_html_dependency({
+        name = 'quarto-gitlink',
+        version = '1.0.0',
+        stylesheets = { css_path }
+      })
+
+      local badge_classes = { 'gitlink-badge', 'badge', 'text-bg-secondary' }
+      local badge_style = {}
+      if not str.is_empty(badge_background_colour) then
+        table.insert(badge_style, 'background-color: ' .. badge_background_colour .. ';')
+      end
+      if not str.is_empty(badge_text_colour) then
+        table.insert(badge_style, 'color: ' .. badge_text_colour .. ';')
+      end
+
+      local badge_attr = pandoc.Attr(
+        '',
+        badge_classes,
+        {
+          title = platform_label,
+          ['aria-label'] = platform_label .. ' platform',
+          style = table.concat(badge_style, ' ')
+        }
+      )
+      local badge = pandoc.Span({ pandoc.Str(platform_label) }, badge_attr)
+
+      local inlines = {}
+      if badge_position == "before" then
+        inlines = { badge, pandoc.Space(), link }
+      else
+        inlines = { link, badge }
+      end
+
+      return pandoc.Span(inlines)
+    else
+      return link
+    end
+  elseif quarto.doc.is_format("typst") then
+    local link = pandoc.Link(link_content, uri --[[@as string]], '', link_attr)
+
+    if show_platform_badge then
+      local bg_colour = badge_background_colour
+      local text_colour_opt = ''
+      if not str.is_empty(badge_text_colour) then
+        text_colour_opt = ', fill: rgb("' .. badge_text_colour .. '")'
+      end
+      local badge_raw = '#box(fill: rgb("' ..
+          bg_colour ..
+          '"), inset: 2pt, outset: 0pt, radius: 3pt, baseline: -0.3em, text(size: 0.45em' ..
+          text_colour_opt .. ', [' .. platform_label .. ']))'
+      local badge = pandoc.RawInline('typst', ' ' .. badge_raw)
+
+      local inlines = {}
+      if badge_position == "before" then
+        inlines = { badge, pandoc.Space(), link }
+      else
+        inlines = { link, badge }
+      end
+
+      return pandoc.Span(inlines)
+    else
+      return link
+    end
+  else
+    table.insert(link_content, pandoc.Space())
+    table.insert(link_content, pandoc.Str("(" .. platform_label .. ")"))
+    return pandoc.Link(link_content, uri --[[@as string]], '', link_attr)
+  end
+end
+
+--- Get repository name from metadata or git remote.
+--- This function extracts the repository name either from document metadata
+--- or by querying the git remote origin URL.
+--- @param meta table The document metadata table.
+--- @return table The metadata table (unchanged).
+local function get_repository(meta)
+  local meta_platform = meta_mod.get_metadata_value(meta, 'gitlink', 'platform')
+  local meta_base_url = meta_mod.get_metadata_value(meta, 'gitlink', 'base-url')
+  local meta_repository = meta_mod.get_metadata_value(meta, 'gitlink', 'repository-name')
+  local meta_custom_platforms = meta_mod.get_metadata_value(meta, 'gitlink', 'custom-platforms-file')
+
+  if not str.is_empty(meta_custom_platforms) then
+    local original_path = meta_custom_platforms --[[@as string]]
+    local custom_file_path = paths.resolve_project_path(original_path)
+    local ok, err = platforms.initialise(custom_file_path)
+    if not ok then
+      log.log_error(
+        EXTENSION_NAME,
+        "Failed to load custom platforms from '" .. original_path .. "':\n" .. (err or 'unknown error')
+      )
+      return meta
+    end
+  else
+    local ok, err = platforms.initialise()
+    if not ok then
+      log.log_error(EXTENSION_NAME, "Failed to load built-in platforms:\n" .. (err or 'unknown error'))
+      return meta
+    end
+  end
+
+  -- Parse repo-url from project metadata (website/book)
+  local project_repo_url = meta_mod.get_project_repo_url()
+  local parsed_platform, parsed_base_url, parsed_repo_name = nil, nil, nil
+  if project_repo_url then
+    parsed_platform, parsed_base_url, parsed_repo_name = parse_repo_url(project_repo_url)
+    if not parsed_platform then
+      log.log_warning(
+        EXTENSION_NAME,
+        "Could not match project repo-url '" .. project_repo_url ..
+        "' to any known platform. Falling back to default resolution."
+      )
+    end
+  end
+
+  -- Resolve platform: explicit metadata > repo-url detection > default 'github'
+  if not str.is_empty(meta_platform) then
+    platform = (meta_platform --[[@as string]]):lower()
+  elseif parsed_platform then
+    platform = parsed_platform
+  else
+    platform = 'github'
+  end
+
+  local config = get_platform_config(platform)
+  if not config then
+    local available_platforms = table.concat(platforms.get_all_platform_names(), ', ')
+    log.log_error(
+      EXTENSION_NAME,
+      "Unsupported platform: '" .. platform ..
+      "'. Supported platforms are: " .. available_platforms .. '.'
+    )
+    return meta
+  end
+
+  -- Resolve base-url: explicit metadata > repo-url detection > platform default
+  if not str.is_empty(meta_base_url) then
+    base_url = meta_base_url --[[@as string]]
+  elseif parsed_base_url then
+    base_url = parsed_base_url
+  else
+    base_url = config.base_url
+  end
+
+  -- Resolve repository-name: explicit metadata > repo-url path > git remote
+  if not str.is_empty(meta_repository) then
+    repository_name = meta_repository
+  elseif parsed_repo_name then
+    repository_name = parsed_repo_name
+  else
+    repository_name = git.get_repository()
+  end
+
+  local show_badge_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'show-platform-badge')
+  if show_badge_meta ~= nil then
+    show_platform_badge = (show_badge_meta == "true" or show_badge_meta == true)
+  end
+
+  local badge_pos_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'badge-position')
+  if badge_pos_meta ~= nil then
+    badge_position = badge_pos_meta --[[@as string]]
+  end
+
+  local badge_bg_colour_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'badge-background-colour')
+  if not str.is_empty(badge_bg_colour_meta) then
+    badge_background_colour = badge_bg_colour_meta --[[@as string]]
+  end
+
+  local badge_text_colour_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'badge-text-colour')
+  if not str.is_empty(badge_text_colour_meta) then
+    badge_text_colour = badge_text_colour_meta --[[@as string]]
+  end
+
+  return meta
+end
+
+--- Extract and store reference IDs from the document
+--- This function collects all reference IDs from the document to distinguish
+--- between actual citations and Git hosting mentions
+--- @param doc pandoc.Pandoc The Pandoc document
+--- @return pandoc.Pandoc The document (unchanged)
+local function get_references(doc)
+  local references = pandoc.utils.references(doc)
+  for _, reference in ipairs(references) do
+    if reference.id then
+      references_ids_set[reference.id] = true
+    end
+  end
+  return doc
+end
+
+--- Process Git hosting mentions in citations
+--- Distinguishes between actual bibliography citations and Git hosting @mentions
+--- @param cite pandoc.Cite The citation element
+--- @return pandoc.Cite|pandoc.Link The original citation or a Git hosting mention link
+local function process_mentions(cite)
+  if references_ids_set[cite.citations[1].id] then
+    return cite
+  else
+    local mention_text = str.stringify(cite.content)
+    local config = get_platform_config(platform)
+    if config and config.patterns.user then
+      local username = mention_text:match(config.patterns.user)
+      if username then
+        local url_format = config.url_formats.user
+        local uri = base_url .. url_format:gsub("{username}", username)
+        local link = create_platform_link(mention_text, uri, platform)
+        return link or cite
+      end
+    end
+    return cite
+  end
+end
+
+
+--- Process issues and merge requests
+--- @param elem pandoc.Str The string element to process
+--- @param current_platform string The current platform name
+--- @param current_base_url string The current base URL
+--- @return pandoc.Link|nil A link or nil if no valid pattern found
+--- @return string|nil The platform name used for this match
+--- @return string|nil The base URL used for this match
+local function process_issues_and_mrs(elem, current_platform, current_base_url)
+  local config = get_platform_config(current_platform)
+  if not config then
+    return nil, nil, nil
+  end
+
+  local text = elem.text
+  local repo = nil
+  local number = nil
+  local ref_type = nil
+  local short_link = nil
+  local matched_platform = current_platform
+  local matched_base_url = current_base_url
+
+  for _, pattern in ipairs(config.patterns.issue) do
+    if pattern == "#(%d+)" and text:match("^#(%d+)$") then
+      number = text:match("^#(%d+)$")
+      repo = repository_name
+      ref_type = "issue"
+      short_link = "#" .. number
+      break
+    elseif pattern == "([^/]+/[^/#]+)#(%d+)" and text:match("^([^/]+/[^/#]+)#(%d+)$") then
+      repo, number = text:match("^([^/]+/[^/#]+)#(%d+)$")
+      ref_type = "issue"
+      short_link = repo .. "#" .. number
+      break
+    elseif pattern == "GH%-(%d+)" and text:match("^GH%-(%d+)$") then
+      number = text:match("^GH%-(%d+)$")
+      repo = repository_name
+      ref_type = "issue"
+      short_link = "#" .. number
+      break
+    end
+  end
+
+  if not number and config.patterns.merge_request then
+    for _, pattern in ipairs(config.patterns.merge_request) do
+      if pattern == "!(%d+)" and text:match("^!(%d+)$") then
+        number = text:match("^!(%d+)$")
+        repo = repository_name
+        ref_type = "merge_request"
+        short_link = "!" .. number
+        break
+      elseif pattern == "([^/]+/[^/#]+)!(%d+)" and text:match("^([^/]+/[^/#]+)!(%d+)$") then
+        repo, number = text:match("^([^/]+/[^/#]+)!(%d+)$")
+        ref_type = "merge_request"
+        short_link = repo .. "!" .. number
+        break
+      end
+    end
+  end
+
+  if not number then
+    local all_platform_names = platforms.get_all_platform_names()
+    for _, platform_name in ipairs(all_platform_names) do
+      local platform_config = platforms.get_platform_config(platform_name)
+      if platform_config then
+        local platform_base_url = platform_config.base_url
+        local escaped_platform_url = str.escape_pattern(platform_base_url)
+        local url_pattern_issue = '^' .. escaped_platform_url .. '/([^/]+/[^/]+)/%-?/?issues?/(%d+)'
+        local url_pattern_mr = '^' .. escaped_platform_url .. '/([^/]+/[^/]+)/%-?/?merge[_%-]requests/(%d+)'
+        local url_pattern_pull_requests = '^' .. escaped_platform_url .. '/([^/]+/[^/]+)/%-?/?pull%-requests/(%d+)'
+        local url_pattern_pull = '^' .. escaped_platform_url .. '/([^/]+/[^/]+)/%-?/?pulls?/(%d+)'
+
+        if text:match(url_pattern_issue) then
+          repo, number = text:match(url_pattern_issue)
+          ref_type = 'issue'
+          if repo == repository_name then
+            short_link = '#' .. number
+          else
+            short_link = repo .. '#' .. number
+          end
+          matched_platform = platform_name
+          matched_base_url = platform_base_url
+          config = platform_config
+          break
+        elseif text:match(url_pattern_mr) then
+          repo, number = text:match(url_pattern_mr)
+          ref_type = 'merge_request'
+          if repo == repository_name then
+            short_link = '!' .. number
+          else
+            short_link = repo .. '!' .. number
+          end
+          matched_platform = platform_name
+          matched_base_url = platform_base_url
+          config = platform_config
+          break
+        elseif text:match(url_pattern_pull_requests) then
+          repo, number = text:match(url_pattern_pull_requests)
+          ref_type = 'pull'
+          if repo == repository_name then
+            short_link = '#' .. number
+          else
+            short_link = repo .. '#' .. number
+          end
+          matched_platform = platform_name
+          matched_base_url = platform_base_url
+          config = platform_config
+          break
+        elseif text:match(url_pattern_pull) then
+          repo, number = text:match(url_pattern_pull)
+          ref_type = 'pull'
+          if repo == repository_name then
+            short_link = '#' .. number
+          else
+            short_link = repo .. '#' .. number
+          end
+          matched_platform = platform_name
+          matched_base_url = platform_base_url
+          config = platform_config
+          break
+        end
+      end
+    end
+  end
+
+  if number and repo and ref_type then
+    local url_format
+    if ref_type == "issue" then
+      url_format = config.url_formats.issue
+    elseif ref_type == "merge_request" then
+      url_format = config.url_formats.merge_request
+    elseif ref_type == "pull" then
+      url_format = config.url_formats.pull
+    end
+
+    if url_format then
+      local uri = matched_base_url .. url_format:gsub("{repo}", repo):gsub("{number}", number)
+      return create_platform_link(short_link, uri, matched_platform), matched_platform, matched_base_url
+    end
+  end
+
+  return nil, nil, nil
+end
+
+--- Process user/organisation references
+--- @param elem pandoc.Str The string element to process
+--- @param current_platform string The current platform name
+--- @return pandoc.Link|nil A user link or nil if no valid pattern found
+--- @return string|nil The platform name used for this match
+--- @return string|nil The base URL used for this match
+local function process_users(elem, current_platform)
+  local config = get_platform_config(current_platform)
+  if not config then
+    return nil, nil, nil
+  end
+
+  local text = elem.text
+  local username = nil
+
+  local all_platform_names = platforms.get_all_platform_names()
+  for _, platform_name in ipairs(all_platform_names) do
+    local platform_config = platforms.get_platform_config(platform_name)
+    if platform_config then
+      local platform_base_url = platform_config.base_url
+      local escaped_platform_url = str.escape_pattern(platform_base_url)
+      local url_pattern = '^' .. escaped_platform_url .. '/([%w%-%.]+)$'
+
+      if text:match(url_pattern) then
+        username = text:match(url_pattern)
+        if username then
+          local url_format = platform_config.url_formats.user
+          local uri = platform_base_url .. url_format:gsub('{username}', username)
+          return create_platform_link('@' .. username, uri, platform_name), platform_name, platform_base_url
+        end
+      end
+    end
+  end
+
+  return nil, nil, nil
+end
+
+--- Process commit references
+--- @param elem pandoc.Str The string element to process
+--- @param current_platform string The current platform name
+--- @param current_base_url string The current base URL
+--- @return pandoc.Link|nil A commit link or nil if no valid pattern found
+--- @return string|nil The platform name used for this match
+--- @return string|nil The base URL used for this match
+local function process_commits(elem, current_platform, current_base_url)
+  local config = get_platform_config(current_platform)
+  if not config then
+    return nil, nil, nil
+  end
+
+  local text = elem.text
+  local repo = nil
+  local commit_sha = nil
+  local short_link = nil
+  local matched_platform = current_platform
+  local matched_base_url = current_base_url
+
+  for _, pattern in ipairs(config.patterns.commit) do
+    if pattern == "^(%x+)$" and text:match("^(%x+)$") and text:len() >= COMMIT_SHA_MIN_LENGTH and text:len() <= COMMIT_SHA_FULL_LENGTH then
+      commit_sha = text:match("^(%x+)$")
+      repo = repository_name
+      short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+      break
+    elseif pattern == "([^/]+/[^/@]+)@(%x+)" and text:match("^([^/]+/[^/@]+)@(%x+)$") then
+      repo, commit_sha = text:match("^([^/]+/[^/@]+)@(%x+)$")
+      short_link = repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+      break
+    elseif pattern == "(%w+)@(%x+)" and text:match("^(%w+)@(%x+)$") then
+      local user, sha = text:match("^(%w+)@(%x+)$")
+      if repository_name and sha:len() >= COMMIT_SHA_MIN_LENGTH and sha:len() <= COMMIT_SHA_FULL_LENGTH then
+        local repo_part = repository_name:match("/(.+)")
+        if repo_part then
+          repo = user .. "/" .. repo_part
+          commit_sha = sha
+          short_link = user .. "@" .. sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+          break
+        end
+      end
+    end
+  end
+
+  if not commit_sha then
+    local all_platform_names = platforms.get_all_platform_names()
+    for _, platform_name in ipairs(all_platform_names) do
+      local platform_config = platforms.get_platform_config(platform_name)
+      if platform_config then
+        local platform_base_url = platform_config.base_url
+        local escaped_platform_url = str.escape_pattern(platform_base_url)
+        local url_pattern = '^' .. escaped_platform_url .. '/([^/]+/[^/]+)/%-?/?commits?/(%x+)'
+        if text:match(url_pattern) then
+          repo, commit_sha = text:match(url_pattern)
+          if commit_sha:len() >= COMMIT_SHA_MIN_LENGTH then
+            if repo == repository_name then
+              short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+            else
+              short_link = repo .. '@' .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+            end
+            matched_platform = platform_name
+            matched_base_url = platform_base_url
+            config = platform_config
+            break
+          end
+        end
+      end
+    end
+  end
+
+  if commit_sha and repo and commit_sha:len() >= COMMIT_SHA_MIN_LENGTH then
+    local url_format = config.url_formats.commit
+    local uri = matched_base_url .. url_format:gsub("{repo}", repo):gsub("{sha}", commit_sha)
+    return create_platform_link(short_link, uri, matched_platform), matched_platform, matched_base_url
+  end
+
+  return nil, nil, nil
+end
+
+--- Main Git hosting processing function
+--- Attempts to convert string elements into Git hosting links by trying different patterns
+--- @param elem pandoc.Str The string element to process
+--- @return pandoc.Str|pandoc.Link|pandoc.List The original element, a link, or a list of inlines
+local function process_gitlink(elem)
+  if not platform or not base_url or str.is_empty(platform) then
+    return elem
+  end
+
+  -- Fast path: try matching the raw text directly
+  local link = process_issues_and_mrs(elem, platform, base_url)
+    or process_commits(elem, platform, base_url)
+    or process_users(elem, platform)
+
+  if link then
+    return link
+  end
+
+  -- Slow path: strip one layer of surrounding punctuation and retry
+  local prefix, inner, suffix = str.strip_surrounding(elem.text)
+  if prefix ~= "" or suffix ~= "" then
+    if inner ~= "" then
+      local inner_elem = pandoc.Str(inner)
+      link = process_issues_and_mrs(inner_elem, platform, base_url)
+        or process_commits(inner_elem, platform, base_url)
+        or process_users(inner_elem, platform)
+
+      if link then
+        local result = pandoc.List({})
+        if prefix ~= "" then
+          result:insert(pandoc.Str(prefix))
+        end
+        result:insert(link)
+        if suffix ~= "" then
+          result:insert(pandoc.Str(suffix))
+        end
+        return result
+      end
+    end
+  end
+
+  -- Embedded path: scan for a bracket pair anywhere inside the token and
+  -- retry the matchers on the bracket content. Handles cases where the
+  -- bracket is surrounded by additional text or punctuation, e.g.
+  -- "something(#1)", "(#1).", ".(#1).", "(#1)something".
+  local search_pos = 1
+  while true do
+    local b_prefix, b_content, b_suffix, open_pos = str.find_bracketed_content(elem.text, search_pos)
+    if not b_content then
+      break
+    end
+
+    local content_elem = pandoc.Str(b_content)
+    local content_link = process_issues_and_mrs(content_elem, platform, base_url)
+      or process_commits(content_elem, platform, base_url)
+      or process_users(content_elem, platform)
+
+    if content_link then
+      local result = pandoc.List({})
+      if b_prefix ~= "" then
+        result:insert(pandoc.Str(b_prefix))
+      end
+      result:insert(content_link)
+      if b_suffix ~= "" then
+        result:insert(pandoc.Str(b_suffix))
+      end
+      return result
+    end
+
+    search_pos = open_pos + 1
+  end
+
+  return elem
+end
+
+--- Process inline elements for Bitbucket multi-word patterns
+--- @param elem table Block element containing inline content
+--- @return table The modified element
+local function process_inlines(elem)
+  if elem.content and platform == "bitbucket" then
+    elem.content = bitbucket.process_inlines(elem.content, base_url, repository_name, create_platform_link)
+  end
+  return elem
+end
+
+--- Process Link elements to shorten URLs that are used as link text
+--- @param elem pandoc.Link The link element to process
+--- @return pandoc.Link The original or modified link
+local function process_link(elem)
+  local link_text = str.stringify(elem.content)
+  local link_target = elem.target
+
+  if link_text == link_target then
+    local temp_str = pandoc.Str(link_text)
+    local result = process_gitlink(temp_str)
+
+    if pandoc.utils.type(result) == "Link" then
+      return result
+    end
+  end
+
+  return elem
+end
+
+--- Pandoc filter configuration
+--- Defines the order of filter execution:
+--- 1. Extract references from the document
+--- 2. Get repository information from metadata
+--- 3. Process inline containers for Bitbucket multi-word patterns
+--- 4. Process link elements to shorten URLs used as link text
+--- 5. Process string elements for Git hosting patterns
+--- 6. Process citations for Git hosting mentions
+return {
+  { Pandoc = get_references },
+  { Meta = get_repository },
+  { Plain = process_inlines, Para = process_inlines },
+  { Link = process_link },
+  { Str = process_gitlink },
+  { Cite = process_mentions }
+}
