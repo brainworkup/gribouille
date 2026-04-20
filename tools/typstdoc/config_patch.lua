@@ -17,9 +17,19 @@ local PREAMBLE_CONTENT = [[
 #let _theme_custom = theme
 
 #let _theme_with_document_colours(theme_fn, ink: auto, paper: auto, accent: rgb("#3366FF")) = context {
+  let resolved_ink = if _typst_render_foreground != none {
+    _typst_render_foreground
+  } else {
+    text.fill
+  }
+  let resolved_paper = if _typst_render_background != none {
+    _typst_render_background
+  } else {
+    page.fill
+  }
   theme_fn(
-    ink: if ink == auto { text.fill } else { ink },
-    paper: if paper == auto { page.fill } else { paper },
+    ink: if ink == auto { resolved_ink } else { ink },
+    paper: if paper == auto { resolved_paper } else { paper },
     accent: accent,
   )
 }

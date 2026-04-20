@@ -510,6 +510,12 @@ end
 --- @return string Complete Typst source
 local function build_typst_source(code, opts)
   local parts = {}
+  parts[#parts + 1] = '#let _typst_render_background = ' .. opts.background
+  if opts.foreground then
+    parts[#parts + 1] = '#let _typst_render_foreground = ' .. opts.foreground
+  else
+    parts[#parts + 1] = '#let _typst_render_foreground = none'
+  end
   parts[#parts + 1] = build_page_directive(opts)
   if opts.foreground then
     parts[#parts + 1] = '#set text(fill: ' .. opts.foreground .. ')'
@@ -1349,6 +1355,12 @@ local function process_codeblock(el)
         or opts
     local preamble = resolve_preamble(typst_opts.preamble)
     local parts = {}
+    parts[#parts + 1] = '#let _typst_render_background = ' .. typst_opts.background
+    if typst_opts.foreground then
+      parts[#parts + 1] = '#let _typst_render_foreground = ' .. typst_opts.foreground
+    else
+      parts[#parts + 1] = '#let _typst_render_foreground = none'
+    end
     if typst_opts.foreground then
       parts[#parts + 1] = '#set text(fill: ' .. typst_opts.foreground .. ')'
     end

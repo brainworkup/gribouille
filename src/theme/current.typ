@@ -13,6 +13,8 @@
 ///
 /// @param t Theme dictionary from @theme-grey, @theme-minimal, @theme-classic, @theme-void, or @theme.
 ///
+/// @returns None.
+///
 /// @example
 /// ```
 /// #theme-set(theme-minimal())

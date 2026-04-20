@@ -441,8 +441,9 @@ function M.parse_lib(lib_path)
   local categories = {}
   local current_category
 
-  for idx, line in ipairs(lines) do
-    local trimmed = util.trim(line)
+  local idx = 1
+  while idx <= #lines do
+    local trimmed = util.trim(lines[idx])
     local banner = trimmed:match("^//%s*([A-Z][%w%s%-]*)%s*%.?$")
     if banner then
       local cat = util.trim(banner)
@@ -456,18 +457,41 @@ function M.parse_lib(lib_path)
     else
       local import_path, names = trimmed:match('^#import%s+"([^"]+)"%s*:%s*(.+)$')
       if import_path and names and import_path:match("^src/") then
+        local start_line = idx
+        if names:sub(1, 1) == "(" then
+          local buf = { names:sub(2) }
+          local close_idx = buf[1]:find("%)")
+          if close_idx then
+            buf[1] = buf[1]:sub(1, close_idx - 1)
+          else
+            local j = idx + 1
+            while j <= #lines do
+              local ln = lines[j]
+              local rel = ln:find("%)")
+              if rel then
+                table.insert(buf, ln:sub(1, rel - 1))
+                idx = j
+                break
+              end
+              table.insert(buf, ln)
+              j = j + 1
+            end
+          end
+          names = table.concat(buf, " ")
+        end
         for name in names:gmatch("[%w_%-]+") do
           if not exports[name] then
             exports[name] = {
               name = name,
               source = import_path,
               category = current_category,
-              line = idx,
+              line = start_line,
             }
           end
         end
       end
     end
+    idx = idx + 1
   end
 
   return {
