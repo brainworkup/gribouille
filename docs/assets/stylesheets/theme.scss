@@ -974,9 +974,9 @@ main .showcase ~ h2,
 #quarto-announcement {
   &.alert-primary   { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$crayon-red};     --gb-announcement-border: #{$crayon-red}; }
   &.alert-secondary { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$crayon-teal};    --gb-announcement-border: #{$crayon-teal}; }
-  &.alert-success   { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: rgb(127 200 169 / 0.28); --gb-announcement-border: #{$crayon-mint}; }
-  &.alert-info      { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: rgb(31 122 140 / 0.18);  --gb-announcement-border: #{$crayon-teal}; }
-  &.alert-warning   { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: rgb(244 183 64 / 0.30);  --gb-announcement-border: #{$crayon-mustard}; }
+  &.alert-success   { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: #{mix($crayon-mint, $paper-light, 28%)};    --gb-announcement-border: #{$crayon-mint}; }
+  &.alert-info      { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: #{mix($crayon-teal, $paper-light, 18%)};    --gb-announcement-border: #{$crayon-teal}; }
+  &.alert-warning   { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: #{mix($crayon-mustard, $paper-light, 30%)}; --gb-announcement-border: #{$crayon-mustard}; }
   &.alert-danger    { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$danger-ink};      --gb-announcement-border: #{$danger-ink}; }
   &.alert-light     { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: #{$surface-light};   --gb-announcement-border: #{$muted-light}; }
   &.alert-dark      { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$ink-light};       --gb-announcement-border: #{$ink-light}; }
