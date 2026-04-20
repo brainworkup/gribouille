@@ -24,17 +24,33 @@ local PREAMBLE_CONTENT = [[
   )
 }
 
-#let theme-grey(ink: auto, paper: auto, accent: rgb("#3366FF")) =
-  _theme_with_document_colours(_theme_grey, ink: ink, paper: paper, accent: accent)
+#let theme-grey(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+  _theme_grey,
+  ink: ink,
+  paper: paper,
+  accent: accent,
+)
 
-#let theme-minimal(ink: auto, paper: auto, accent: rgb("#3366FF")) =
-  _theme_with_document_colours(_theme_minimal, ink: ink, paper: paper, accent: accent)
+#let theme-minimal(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+  _theme_minimal,
+  ink: ink,
+  paper: paper,
+  accent: accent,
+)
 
-#let theme-classic(ink: auto, paper: auto, accent: rgb("#3366FF")) =
-  _theme_with_document_colours(_theme_classic, ink: ink, paper: paper, accent: accent)
+#let theme-classic(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+  _theme_classic,
+  ink: ink,
+  paper: paper,
+  accent: accent,
+)
 
-#let theme-void(ink: auto, paper: auto, accent: rgb("#3366FF")) =
-  _theme_with_document_colours(_theme_void, ink: ink, paper: paper, accent: accent)
+#let theme-void(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+  _theme_void,
+  ink: ink,
+  paper: paper,
+  accent: accent,
+)
 
 #let theme(..fields) = context {
   let named = fields.named()
