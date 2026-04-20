@@ -80,11 +80,17 @@
   let position = layer.at("position", default: "identity")
   let ymin-col = mapping.at("ymin", default: none)
   let ymax-col = mapping.at("ymax", default: none)
-  let use-minmax = (position == "stack" or position == "fill") and ymin-col != none and ymax-col != none
+  let use-minmax = (
+    (position == "stack" or position == "fill")
+      and ymin-col != none
+      and ymax-col != none
+  )
 
   let fill-col = mapping.at("fill", default: none)
   let fill-trained = ctx.trained.at("fill", default: none)
-  let default-fill = if layer.params.fill != auto and layer.params.fill != none {
+  let default-fill = if (
+    layer.params.fill != auto and layer.params.fill != none
+  ) {
     layer.params.fill
   } else {
     rgb("#4c78a8")
@@ -97,17 +103,23 @@
   )
 
   let (px-lo, px-hi) = ctx.px-range
-  let category-width = if x-trained.type == "discrete" and x-trained.domain.len() > 0 {
+  let category-width = if (
+    x-trained.type == "discrete" and x-trained.domain.len() > 0
+  ) {
     (px-hi - px-lo) / x-trained.domain.len()
   } else {
     // Continuous x: infer from minimum gap between unique values.
-    let xs = data.map(r => parse-number(r.at(mapping.x, default: none))).filter(v => v != none)
+    let xs = data
+      .map(r => parse-number(r.at(mapping.x, default: none)))
+      .filter(v => v != none)
     let (d-lo, d-hi) = x-trained.domain
     if xs.len() < 2 or d-hi == d-lo {
       (px-hi - px-lo) / 10
     } else {
       let sorted = xs.dedup().sorted()
-      let gaps = range(sorted.len() - 1).map(i => sorted.at(i + 1) - sorted.at(i))
+      let gaps = range(sorted.len() - 1).map(i => (
+        sorted.at(i + 1) - sorted.at(i)
+      ))
       let min-gap = calc.min(..gaps)
       min-gap * (px-hi - px-lo) / (d-hi - d-lo)
     }
@@ -116,7 +128,11 @@
   let half = category-width * bar-width-fraction / 2
 
   for row in data {
-    let cx = map-position(x-trained, row.at(mapping.x, default: none), ctx.px-range)
+    let cx = map-position(
+      x-trained,
+      row.at(mapping.x, default: none),
+      ctx.px-range,
+    )
     if cx == none { continue }
 
     let (y-lo-cy, y-hi-cy) = if use-minmax {
@@ -144,16 +160,24 @@
     }
 
     let colour = if fill-col != none and fill-trained != none {
-      (ctx.resolve-colour)(fill-trained, row.at(fill-col, default: none), ctx.palette)
+      (ctx.resolve-colour)(
+        fill-trained,
+        row.at(fill-col, default: none),
+        ctx.palette,
+      )
     } else { default-fill }
     let alpha = layer.params.alpha
-    let final-fill = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
+    let final-fill = if alpha < 1 {
+      colour.transparentize((1 - alpha) * 100%)
+    } else { colour }
 
     cetz.draw.rect(
       (centre - bar-half, y-lo-cy),
       (centre + bar-half, y-hi-cy),
       fill: final-fill,
-      stroke: if layer.params.stroke == none { none } else { layer.params.stroke },
+      stroke: if layer.params.stroke == none { none } else {
+        layer.params.stroke
+      },
     )
   }
 }

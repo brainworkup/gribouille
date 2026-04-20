@@ -34,7 +34,13 @@
 /// ```
 ///
 /// @see @theme, @element-line, @element-rect, @element-blank
-#let element-text(size: none, weight: none, colour: none, angle: none, family: none) = (
+#let element-text(
+  size: none,
+  weight: none,
+  colour: none,
+  angle: none,
+  family: none,
+) = (
   kind: "element-text",
   size: size,
   weight: weight,

@@ -39,9 +39,13 @@
 )
 
 #let apply(data, mapping, params: (:)) = {
-  let x-col = if mapping != none { mapping.at("x", default: none) } else { none }
+  let x-col = if mapping != none { mapping.at("x", default: none) } else {
+    none
+  }
   if x-col == none { return (data: data, mapping: mapping) }
-  let xs = data.map(r => parse-number(r.at(x-col, default: none))).filter(v => v != none)
+  let xs = data
+    .map(r => parse-number(r.at(x-col, default: none)))
+    .filter(v => v != none)
   if xs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }
   let lo = calc.min(..xs)
   let hi = calc.max(..xs)

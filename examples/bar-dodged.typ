@@ -20,7 +20,11 @@
   data: sales,
   mapping: aes(x: "q", y: "revenue", fill: "product"),
   layers: (geom-col(position: "dodge"),),
-  labs: labs(title: "Revenue by quarter (dodged)", x: "Quarter", y: "Revenue (k$)"),
+  labs: labs(
+    title: "Revenue by quarter (dodged)",
+    x: "Quarter",
+    y: "Revenue (k$)",
+  ),
   width: 10cm,
   height: 7cm,
 )

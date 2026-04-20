@@ -34,7 +34,13 @@
 /// ```
 ///
 /// @see @scale-colour-viridis-c, @scale-colour-discrete, @scale-fill-continuous
-#let scale-colour-continuous(name: none, palette: auto, limits: none, breaks: auto, labels: auto) = (
+#let scale-colour-continuous(
+  name: none,
+  palette: auto,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "colour",
   type: "continuous",
@@ -76,7 +82,12 @@
 /// ```
 ///
 /// @see @scale-colour-manual, @scale-colour-viridis-d, @scale-fill-discrete
-#let scale-colour-discrete(name: none, palette: auto, limits: none, labels: auto) = (
+#let scale-colour-discrete(
+  name: none,
+  palette: auto,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "colour",
   type: "discrete",
@@ -118,7 +129,13 @@
 /// ```
 ///
 /// @see @scale-fill-viridis-c, @scale-fill-discrete, @scale-colour-continuous
-#let scale-fill-continuous(name: none, palette: auto, limits: none, breaks: auto, labels: auto) = (
+#let scale-fill-continuous(
+  name: none,
+  palette: auto,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "fill",
   type: "continuous",
@@ -160,7 +177,12 @@
 /// ```
 ///
 /// @see @scale-fill-manual, @scale-fill-viridis-d, @scale-colour-discrete
-#let scale-fill-discrete(name: none, palette: auto, limits: none, labels: auto) = (
+#let scale-fill-discrete(
+  name: none,
+  palette: auto,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "fill",
   type: "discrete",
@@ -297,7 +319,12 @@
 /// ```
 ///
 /// @see @scale-colour-viridis-c, @scale-colour-viridis-b, @scale-fill-viridis-d
-#let scale-colour-viridis-d(option: "viridis", name: none, limits: none, labels: auto) = (
+#let scale-colour-viridis-d(
+  option: "viridis",
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "colour",
   type: "discrete",
@@ -338,7 +365,13 @@
 /// ```
 ///
 /// @see @scale-colour-viridis-d, @scale-colour-viridis-b, @scale-fill-viridis-c
-#let scale-colour-viridis-c(option: "viridis", name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-colour-viridis-c(
+  option: "viridis",
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "colour",
   type: "continuous",
@@ -380,7 +413,13 @@
 /// ```
 ///
 /// @see @scale-colour-viridis-c, @scale-colour-viridis-d, @scale-fill-viridis-b
-#let scale-colour-viridis-b(option: "viridis", n-breaks: 5, name: none, limits: none, labels: auto) = (
+#let scale-colour-viridis-b(
+  option: "viridis",
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "colour",
   type: "continuous",
@@ -427,7 +466,12 @@
 /// ```
 ///
 /// @see @scale-fill-viridis-c, @scale-fill-viridis-b, @scale-colour-viridis-d
-#let scale-fill-viridis-d(option: "viridis", name: none, limits: none, labels: auto) = (
+#let scale-fill-viridis-d(
+  option: "viridis",
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "fill",
   type: "discrete",
@@ -468,7 +512,13 @@
 /// ```
 ///
 /// @see @scale-fill-viridis-d, @scale-fill-viridis-b, @scale-colour-viridis-c
-#let scale-fill-viridis-c(option: "viridis", name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-fill-viridis-c(
+  option: "viridis",
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "fill",
   type: "continuous",
@@ -510,7 +560,13 @@
 /// ```
 ///
 /// @see @scale-fill-viridis-c, @scale-fill-viridis-d, @scale-colour-viridis-b
-#let scale-fill-viridis-b(option: "viridis", n-breaks: 5, name: none, limits: none, labels: auto) = (
+#let scale-fill-viridis-b(
+  option: "viridis",
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "fill",
   type: "continuous",

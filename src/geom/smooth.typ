@@ -65,7 +65,15 @@
   geom: "smooth",
   mapping: mapping,
   data: data,
-  params: (method: method, se: se, level: level, stroke: stroke, colour: colour, fill: fill, alpha: alpha),
+  params: (
+    method: method,
+    se: se,
+    level: level,
+    stroke: stroke,
+    colour: colour,
+    fill: fill,
+    alpha: alpha,
+  ),
   stat: "smooth",
   position: "identity",
   inherit-aes: inherit-aes,
@@ -82,7 +90,11 @@
   }
   for aes-name in ("colour", "fill", "linetype") {
     let col = mapping.at(aes-name, default: none)
-    if col != none and col != mapping.at("x", default: none) and col != mapping.at("y", default: none) {
+    if (
+      col != none
+        and col != mapping.at("x", default: none)
+        and col != mapping.at("y", default: none)
+    ) {
       keys.push(str(row.at(col, default: "")))
     }
   }
@@ -105,7 +117,9 @@
   let colour-trained = ctx.trained.at("colour", default: none)
   let fill-trained = ctx.trained.at("fill", default: none)
 
-  let default-colour = if layer.params.colour != auto and layer.params.colour != none {
+  let default-colour = if (
+    layer.params.colour != auto and layer.params.colour != none
+  ) {
     layer.params.colour
   } else {
     rgb("#3b5998")
@@ -126,8 +140,14 @@
       .map(row => (
         x: parse-number(row.at(x-col, default: none)),
         y: parse-number(row.at(y-col, default: none)),
-        lo: parse-number(row.at(mapping.at("ymin", default: ""), default: none)),
-        hi: parse-number(row.at(mapping.at("ymax", default: ""), default: none)),
+        lo: parse-number(row.at(
+          mapping.at("ymin", default: ""),
+          default: none,
+        )),
+        hi: parse-number(row.at(
+          mapping.at("ymax", default: ""),
+          default: none,
+        )),
       ))
       .filter(p => p.x != none and p.y != none)
       .sorted(key: p => p.x)
@@ -147,7 +167,9 @@
     } else { line-colour }
 
     // Confidence ribbon first, so the line draws on top.
-    let has-band = layer.params.se and sorted.all(p => p.lo != none and p.hi != none)
+    let has-band = (
+      layer.params.se and sorted.all(p => p.lo != none and p.hi != none)
+    )
     if has-band {
       let upper = sorted.map(p => (
         map-position(x-trained, p.x, ctx.px-range),

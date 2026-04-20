@@ -114,12 +114,16 @@
     }
   }
   let alpha = layer.params.alpha
-  let final-fill = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
+  let final-fill = if alpha < 1 {
+    colour.transparentize((1 - alpha) * 100%)
+  } else { colour }
 
   cetz.draw.line(
     ..pts,
     close: true,
     fill: final-fill,
-    stroke: if layer.params.stroke == none { none } else { layer.params.stroke },
+    stroke: if layer.params.stroke == none { none } else {
+      layer.params.stroke
+    },
   )
 }

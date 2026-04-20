@@ -13,7 +13,13 @@
 
 #plot(
   data: obs,
-  mapping: aes(x: "t", y: "value", shape: "group", linetype: "group", colour: "group"),
+  mapping: aes(
+    x: "t",
+    y: "value",
+    shape: "group",
+    linetype: "group",
+    colour: "group",
+  ),
   layers: (
     geom-line(),
     geom-point(size: 5pt),

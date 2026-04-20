@@ -2,7 +2,7 @@
 // mapping-ref annotations; train() honours them to override inferred types.
 
 #import "../../src/data.typ": as-factor, as-numeric
-#import "../../src/scale/train.typ": train, mapping-ref-col, mapping-ref-type
+#import "../../src/scale/train.typ": mapping-ref-col, mapping-ref-type, train
 #import "../../src/geom/point.typ": geom-point
 #import "../../src/aes.typ": aes
 

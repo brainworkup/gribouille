@@ -2,7 +2,7 @@
 // Draws a single cartesian panel with axes and layer marks.
 
 #import "deps.typ": cetz
-#import "scale/train.typ": train, map-continuous, map-position, mapping-ref-col
+#import "scale/train.typ": map-continuous, map-position, mapping-ref-col, train
 #import "stat/apply.typ": apply-stat
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
@@ -132,7 +132,10 @@
   let subset = raw.filter(row => {
     let keep = true
     for (col, value) in filters {
-      if str(row.at(col, default: "")) != value { keep = false; break }
+      if str(row.at(col, default: "")) != value {
+        keep = false
+        break
+      }
     }
     keep
   })
@@ -245,10 +248,30 @@
   let py-range = (py-lo, py-hi)
 
   let _ink = resolve-colour(theme, "ink")
-  let _ax-text-colour = resolve-colour(theme, "axis-text-colour", "text-colour", "ink")
-  let _ax-text-weight = resolve-field(theme, "axis-text-weight", "text-weight", fallback: "regular")
-  let _ax-title-colour = resolve-colour(theme, "axis-title-colour", "text-colour", "ink")
-  let _ax-title-weight = resolve-field(theme, "axis-title-weight", "text-weight", fallback: "regular")
+  let _ax-text-colour = resolve-colour(
+    theme,
+    "axis-text-colour",
+    "text-colour",
+    "ink",
+  )
+  let _ax-text-weight = resolve-field(
+    theme,
+    "axis-text-weight",
+    "text-weight",
+    fallback: "regular",
+  )
+  let _ax-title-colour = resolve-colour(
+    theme,
+    "axis-title-colour",
+    "text-colour",
+    "ink",
+  )
+  let _ax-title-weight = resolve-field(
+    theme,
+    "axis-title-weight",
+    "text-weight",
+    fallback: "regular",
+  )
 
   let ctx = (
     trained: trained,
@@ -284,14 +307,20 @@
     let breaks = pretty(x-trained.domain.at(0), x-trained.domain.at(1), n: 5)
     for b in breaks {
       let cx = map-continuous(b, x-trained.domain, px-range)
-      if grid-stroke != none { line((cx, py-lo), (cx, py-hi), stroke: grid-stroke) }
+      if grid-stroke != none {
+        line((cx, py-lo), (cx, py-hi), stroke: grid-stroke)
+      }
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
       if show-x-labels and theme.tick-labels {
         content(
           (cx, py-lo - 0.25),
-          text(size: theme.axis-text-size, fill: _ax-text-colour, weight: _ax-text-weight)[#_format-break(b)],
+          text(
+            size: theme.axis-text-size,
+            fill: _ax-text-colour,
+            weight: _ax-text-weight,
+          )[#_format-break(b)],
           anchor: "north",
         )
       }
@@ -306,7 +335,11 @@
       if show-x-labels and theme.tick-labels {
         content(
           (cx, py-lo - 0.25),
-          text(size: theme.axis-text-size, fill: _ax-text-colour, weight: _ax-text-weight)[#level],
+          text(
+            size: theme.axis-text-size,
+            fill: _ax-text-colour,
+            weight: _ax-text-weight,
+          )[#level],
           anchor: "north",
         )
       }
@@ -317,14 +350,20 @@
     let breaks = pretty(y-trained.domain.at(0), y-trained.domain.at(1), n: 5)
     for b in breaks {
       let cy = map-continuous(b, y-trained.domain, py-range)
-      if grid-stroke != none { line((px-lo, cy), (px-hi, cy), stroke: grid-stroke) }
+      if grid-stroke != none {
+        line((px-lo, cy), (px-hi, cy), stroke: grid-stroke)
+      }
       if axis-stroke != none and tick-len > 0 {
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
         content(
           (px-lo - 0.2, cy),
-          text(size: theme.axis-text-size, fill: _ax-text-colour, weight: _ax-text-weight)[#_format-break(b)],
+          text(
+            size: theme.axis-text-size,
+            fill: _ax-text-colour,
+            weight: _ax-text-weight,
+          )[#_format-break(b)],
           anchor: "east",
         )
       }
@@ -361,28 +400,40 @@
   }
 
   let x-title = {
-    let from-scale = if x-trained != none and x-trained.spec != none { x-trained.spec.name } else { none }
-    if from-scale != none { from-scale }
-    else if spec.mapping != none { spec.mapping.at("x", default: none) }
-    else { none }
+    let from-scale = if x-trained != none and x-trained.spec != none {
+      x-trained.spec.name
+    } else { none }
+    if from-scale != none { from-scale } else if spec.mapping != none {
+      spec.mapping.at("x", default: none)
+    } else { none }
   }
   let y-title = {
-    let from-scale = if y-trained != none and y-trained.spec != none { y-trained.spec.name } else { none }
-    if from-scale != none { from-scale }
-    else if spec.mapping != none { spec.mapping.at("y", default: none) }
-    else { none }
+    let from-scale = if y-trained != none and y-trained.spec != none {
+      y-trained.spec.name
+    } else { none }
+    if from-scale != none { from-scale } else if spec.mapping != none {
+      spec.mapping.at("y", default: none)
+    } else { none }
   }
   if show-x-title and x-title != none and theme.axis-title-size > 0pt {
     content(
       ((px-lo + px-hi) / 2, oy - 0.8),
-      text(size: theme.axis-title-size, fill: _ax-title-colour, weight: _ax-title-weight)[#x-title],
+      text(
+        size: theme.axis-title-size,
+        fill: _ax-title-colour,
+        weight: _ax-title-weight,
+      )[#x-title],
       anchor: "south",
     )
   }
   if show-y-title and y-title != none and theme.axis-title-size > 0pt {
     content(
       (px-lo - 1.1, (py-lo + py-hi) / 2),
-      text(size: theme.axis-title-size, fill: _ax-title-colour, weight: _ax-title-weight)[#y-title],
+      text(
+        size: theme.axis-title-size,
+        fill: _ax-title-colour,
+        weight: _ax-title-weight,
+      )[#y-title],
       angle: 90deg,
     )
   }
@@ -420,10 +471,30 @@
   // Pre-resolve theme colours and fields used across the renderer.
   let _strip-fill = resolve-colour(theme, "strip-fill", "rect-fill", "paper")
   let _strip-text-size = theme.at("strip-text-size", default: 8pt)
-  let _strip-text-colour = resolve-colour(theme, "strip-text-colour", "text-colour", "ink")
-  let _strip-text-weight = resolve-field(theme, "strip-text-weight", "text-weight", fallback: "medium")
-  let _ax-title-colour = resolve-colour(theme, "axis-title-colour", "text-colour", "ink")
-  let _ax-title-weight = resolve-field(theme, "axis-title-weight", "text-weight", fallback: "regular")
+  let _strip-text-colour = resolve-colour(
+    theme,
+    "strip-text-colour",
+    "text-colour",
+    "ink",
+  )
+  let _strip-text-weight = resolve-field(
+    theme,
+    "strip-text-weight",
+    "text-weight",
+    fallback: "medium",
+  )
+  let _ax-title-colour = resolve-colour(
+    theme,
+    "axis-title-colour",
+    "text-colour",
+    "ink",
+  )
+  let _ax-title-weight = resolve-field(
+    theme,
+    "axis-title-weight",
+    "text-weight",
+    fallback: "regular",
+  )
 
   // Faceted plots prepare layers per panel so that stats (smooth, bin,
   // count) are computed on each panel's own subset of rows — the
@@ -448,11 +519,12 @@
   let panels = if facet-wrap-mode {
     wrap-levels.map(level => (
       level: level,
-      layers: spec.layers.map(l =>
-        _prepare-layer-filtered(
-          l, spec.mapping, spec.data,
-          ((spec.facet.var, level),),
-        )),
+      layers: spec.layers.map(l => _prepare-layer-filtered(
+        l,
+        spec.mapping,
+        spec.data,
+        ((spec.facet.var, level),),
+      )),
     ))
   } else if facet-grid-mode {
     let out = ()
@@ -464,8 +536,12 @@
         out.push((
           row-level: row-lv,
           col-level: col-lv,
-          layers: spec.layers.map(l =>
-            _prepare-layer-filtered(l, spec.mapping, spec.data, filters)),
+          layers: spec.layers.map(l => _prepare-layer-filtered(
+            l,
+            spec.mapping,
+            spec.data,
+            filters,
+          )),
         ))
       }
     }
@@ -510,7 +586,11 @@
 
   // Bar-like geoms need the y domain to include zero.
   let has-bar = prepared.any(l => l.geom == "col")
-  if has-bar and trained.at("y", default: none) != none and trained.y.type == "continuous" {
+  if (
+    has-bar
+      and trained.at("y", default: none) != none
+      and trained.y.type == "continuous"
+  ) {
     let (lo, hi) = trained.y.domain
     let y-lo = calc.min(lo, 0.0)
     let y-hi = calc.max(hi, 0.0)
@@ -528,12 +608,20 @@
   // "data is not dropped" distinction.
   let coord = spec.at("coord", default: none)
   if coord != none and coord.coord == "cartesian" {
-    if coord.at("xlim", default: none) != none and trained.at("x", default: none) != none and trained.x.type == "continuous" {
+    if (
+      coord.at("xlim", default: none) != none
+        and trained.at("x", default: none) != none
+        and trained.x.type == "continuous"
+    ) {
       let new-x = trained.x
       new-x.insert("domain", coord.xlim)
       trained.insert("x", new-x)
     }
-    if coord.at("ylim", default: none) != none and trained.at("y", default: none) != none and trained.y.type == "continuous" {
+    if (
+      coord.at("ylim", default: none) != none
+        and trained.at("y", default: none) != none
+        and trained.y.type == "continuous"
+    ) {
       let new-y = trained.y
       new-y.insert("domain", coord.ylim)
       trained.insert("y", new-y)
@@ -547,7 +635,12 @@
   let legend-width = legend-mod.estimate-width(guides)
   let legend-gap = if legend-width > 0 { 0.25 } else { 0.0 }
 
-  let margin = (left: 1.3, bottom: 0.9, top: 0.3, right: 0.3 + legend-gap + legend-width)
+  let margin = (
+    left: 1.3,
+    bottom: 0.9,
+    top: 0.3,
+    right: 0.3 + legend-gap + legend-width,
+  )
 
   let canvas = if facet-wrap-mode {
     let levels = wrap-levels
@@ -574,7 +667,9 @@
         let col = calc.rem(i, ncol)
         let row = int(i / ncol)
         let x0 = margin.left + col * (panel-w + gutter-x)
-        let y0 = margin.bottom + (nrow - 1 - row) * (panel-h + gutter-y + strip-h)
+        let y0 = (
+          margin.bottom + (nrow - 1 - row) * (panel-h + gutter-y + strip-h)
+        )
         rect(
           (x0, y0 + panel-h),
           (x0 + panel-w, y0 + panel-h + strip-h),
@@ -583,7 +678,11 @@
         )
         content(
           (x0 + panel-w / 2, y0 + panel-h + strip-h / 2),
-          text(size: _strip-text-size, fill: _strip-text-colour, weight: _strip-text-weight)[#level],
+          text(
+            size: _strip-text-size,
+            fill: _strip-text-colour,
+            weight: _strip-text-weight,
+          )[#level],
         )
         let panel-layers = panels.at(i).layers
         _draw-axis-and-layers(
@@ -604,28 +703,40 @@
       let x-trained = trained.at("x", default: none)
       let y-trained = trained.at("y", default: none)
       let x-title = {
-        let from-scale = if x-trained != none and x-trained.spec != none { x-trained.spec.name } else { none }
-        if from-scale != none { from-scale }
-        else if spec.mapping != none { spec.mapping.at("x", default: none) }
-        else { none }
+        let from-scale = if x-trained != none and x-trained.spec != none {
+          x-trained.spec.name
+        } else { none }
+        if from-scale != none { from-scale } else if spec.mapping != none {
+          spec.mapping.at("x", default: none)
+        } else { none }
       }
       let y-title = {
-        let from-scale = if y-trained != none and y-trained.spec != none { y-trained.spec.name } else { none }
-        if from-scale != none { from-scale }
-        else if spec.mapping != none { spec.mapping.at("y", default: none) }
-        else { none }
+        let from-scale = if y-trained != none and y-trained.spec != none {
+          y-trained.spec.name
+        } else { none }
+        if from-scale != none { from-scale } else if spec.mapping != none {
+          spec.mapping.at("y", default: none)
+        } else { none }
       }
       if x-title != none and theme.axis-title-size > 0pt {
         content(
           (margin.left + grid-w / 2, 0.1),
-          text(size: theme.axis-title-size, fill: _ax-title-colour, weight: _ax-title-weight)[#x-title],
+          text(
+            size: theme.axis-title-size,
+            fill: _ax-title-colour,
+            weight: _ax-title-weight,
+          )[#x-title],
           anchor: "south",
         )
       }
       if y-title != none and theme.axis-title-size > 0pt {
         content(
           (0.2, margin.bottom + grid-h / 2),
-          text(size: theme.axis-title-size, fill: _ax-title-colour, weight: _ax-title-weight)[#y-title],
+          text(
+            size: theme.axis-title-size,
+            fill: _ax-title-colour,
+            weight: _ax-title-weight,
+          )[#y-title],
           angle: 90deg,
         )
       }
@@ -699,7 +810,11 @@
           )
           content(
             (x0 + panel-w / 2, strip-y + top-strip / 2),
-            text(size: _strip-text-size, fill: _strip-text-colour, weight: _strip-text-weight)[#col-lv],
+            text(
+              size: _strip-text-size,
+              fill: _strip-text-colour,
+              weight: _strip-text-weight,
+            )[#col-lv],
           )
         }
       }
@@ -717,7 +832,11 @@
           )
           content(
             (strip-x + right-strip / 2, y0 + panel-h / 2),
-            text(size: _strip-text-size, fill: _strip-text-colour, weight: _strip-text-weight)[#row-lv],
+            text(
+              size: _strip-text-size,
+              fill: _strip-text-colour,
+              weight: _strip-text-weight,
+            )[#row-lv],
             angle: -90deg,
           )
         }
@@ -727,28 +846,40 @@
       let x-trained = trained.at("x", default: none)
       let y-trained = trained.at("y", default: none)
       let x-title = {
-        let from-scale = if x-trained != none and x-trained.spec != none { x-trained.spec.name } else { none }
-        if from-scale != none { from-scale }
-        else if spec.mapping != none { spec.mapping.at("x", default: none) }
-        else { none }
+        let from-scale = if x-trained != none and x-trained.spec != none {
+          x-trained.spec.name
+        } else { none }
+        if from-scale != none { from-scale } else if spec.mapping != none {
+          spec.mapping.at("x", default: none)
+        } else { none }
       }
       let y-title = {
-        let from-scale = if y-trained != none and y-trained.spec != none { y-trained.spec.name } else { none }
-        if from-scale != none { from-scale }
-        else if spec.mapping != none { spec.mapping.at("y", default: none) }
-        else { none }
+        let from-scale = if y-trained != none and y-trained.spec != none {
+          y-trained.spec.name
+        } else { none }
+        if from-scale != none { from-scale } else if spec.mapping != none {
+          spec.mapping.at("y", default: none)
+        } else { none }
       }
       if x-title != none and theme.axis-title-size > 0pt {
         content(
           (margin.left + grid-w / 2, 0.1),
-          text(size: theme.axis-title-size, fill: _ax-title-colour, weight: _ax-title-weight)[#x-title],
+          text(
+            size: theme.axis-title-size,
+            fill: _ax-title-colour,
+            weight: _ax-title-weight,
+          )[#x-title],
           anchor: "south",
         )
       }
       if y-title != none and theme.axis-title-size > 0pt {
         content(
           (0.2, margin.bottom + grid-h / 2),
-          text(size: theme.axis-title-size, fill: _ax-title-colour, weight: _ax-title-weight)[#y-title],
+          text(
+            size: theme.axis-title-size,
+            fill: _ax-title-colour,
+            weight: _ax-title-weight,
+          )[#y-title],
           angle: 90deg,
         )
       }
@@ -793,7 +924,12 @@
   let title-block = if labs.title != none {
     text(
       size: theme.at("plot-title-size", default: 12pt),
-      weight: resolve-field(theme, "plot-title-weight", "text-weight", fallback: "bold"),
+      weight: resolve-field(
+        theme,
+        "plot-title-weight",
+        "text-weight",
+        fallback: "bold",
+      ),
       fill: resolve-colour(theme, "plot-title-colour", "text-colour", "ink"),
     )[#labs.title]
   } else { none }

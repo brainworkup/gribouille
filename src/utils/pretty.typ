@@ -11,10 +11,9 @@
   let exponent = calc.floor(calc.log(raw-step, base: 10))
   let mag = calc.pow(10.0, exponent)
   let r = raw-step / mag
-  let nice = if r < 1.5 { 1.0 }
-    else if r < 3.5 { 2.0 }
-    else if r < 7.5 { 5.0 }
-    else { 10.0 }
+  let nice = if r < 1.5 { 1.0 } else if r < 3.5 { 2.0 } else if r < 7.5 {
+    5.0
+  } else { 10.0 }
   let step = nice * mag
   let start = calc.floor(lo / step) * step
   let tol = step * 1e-6

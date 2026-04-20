@@ -967,6 +967,37 @@ main .showcase ~ h2,
   background-size: 180px 0.5em;
 }
 
+// --- Announcement banner. -----------------------------------------------
+// Bootstrap 5.3 alert tokens flip on scheme change, which can leave text at
+// poor contrast on a bright tint. Pin each alert type to a mode-invariant
+// ink/background pair drawn from the brand palette so contrast is stable.
+#quarto-announcement {
+  &.alert-primary   { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$crayon-red};     --gb-announcement-border: #{$crayon-red}; }
+  &.alert-secondary { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$crayon-teal};    --gb-announcement-border: #{$crayon-teal}; }
+  &.alert-success   { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: rgb(127 200 169 / 0.28); --gb-announcement-border: #{$crayon-mint}; }
+  &.alert-info      { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: rgb(31 122 140 / 0.18);  --gb-announcement-border: #{$crayon-teal}; }
+  &.alert-warning   { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: rgb(244 183 64 / 0.30);  --gb-announcement-border: #{$crayon-mustard}; }
+  &.alert-danger    { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$danger-ink};      --gb-announcement-border: #{$danger-ink}; }
+  &.alert-light     { --gb-announcement-ink: #{$ink-light};   --gb-announcement-bg: #{$surface-light};   --gb-announcement-border: #{$muted-light}; }
+  &.alert-dark      { --gb-announcement-ink: #{$paper-light}; --gb-announcement-bg: #{$ink-light};       --gb-announcement-border: #{$ink-light}; }
+
+  background: var(--gb-announcement-bg) !important;
+  border-color: var(--gb-announcement-border) !important;
+
+  &,
+  .quarto-announcement-content,
+  .quarto-announcement-content p,
+  .quarto-announcement-content a,
+  .quarto-announcement-icon,
+  .quarto-announcement-action {
+    color: var(--gb-announcement-ink) !important;
+  }
+
+  .quarto-announcement-content a {
+    text-decoration-color: var(--gb-announcement-ink);
+  }
+}
+
 // --- Responsive. --------------------------------------------------------
 @media (max-width: 800px) {
   .hero {

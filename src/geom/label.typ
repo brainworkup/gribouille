@@ -96,8 +96,16 @@
   if x-trained == none or y-trained == none { return }
 
   for row in data {
-    let cx = map-position(x-trained, row.at(mapping.x, default: none), ctx.px-range)
-    let cy = map-position(y-trained, row.at(mapping.y, default: none), ctx.py-range)
+    let cx = map-position(
+      x-trained,
+      row.at(mapping.x, default: none),
+      ctx.px-range,
+    )
+    let cy = map-position(
+      y-trained,
+      row.at(mapping.y, default: none),
+      ctx.py-range,
+    )
     if cx == none or cy == none { continue }
     let label = row.at(label-col, default: none)
     if label == none { continue }

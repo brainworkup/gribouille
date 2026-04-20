@@ -2,7 +2,9 @@
 // merge-theme.
 
 #import "../../src/theme/theme.typ": theme
-#import "../../src/theme/elements.typ": element-text, element-line, element-rect, element-blank
+#import "../../src/theme/elements.typ": (
+  element-blank, element-line, element-rect, element-text,
+)
 #import "../../src/theme/defaults.typ": merge-theme
 
 #let t = theme(

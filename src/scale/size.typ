@@ -31,7 +31,13 @@
 /// ```
 ///
 /// @see @scale-shape, @scale-colour-continuous
-#let scale-size-continuous(name: none, range: (1pt, 6pt), limits: none, breaks: auto, labels: auto) = (
+#let scale-size-continuous(
+  name: none,
+  range: (1pt, 6pt),
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "size",
   type: "continuous",

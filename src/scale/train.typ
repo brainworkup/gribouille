@@ -7,7 +7,7 @@
 // Mapping turns a trained domain plus a target range into a scalar position.
 
 #import "../data.typ": column
-#import "../utils/types.typ": parse-number, infer-column-type
+#import "../utils/types.typ": infer-column-type, parse-number
 
 #let _resolve-mapping(layer, plot-mapping) = {
   if layer.at("inherit-aes", default: true) and plot-mapping != none {
@@ -33,7 +33,10 @@
 // annotation dict produced by `as-factor("col")` / `as-numeric("col")`.
 // Return the column name either way.
 #let mapping-ref-col(value) = {
-  if type(value) == dictionary and value.at("kind", default: none) == "mapping-ref" {
+  if (
+    type(value) == dictionary
+      and value.at("kind", default: none) == "mapping-ref"
+  ) {
     value.var
   } else {
     value
@@ -42,7 +45,10 @@
 
 // Return the forced type from a mapping-ref or `none` if not annotated.
 #let mapping-ref-type(value) = {
-  if type(value) == dictionary and value.at("kind", default: none) == "mapping-ref" {
+  if (
+    type(value) == dictionary
+      and value.at("kind", default: none) == "mapping-ref"
+  ) {
     value.type
   } else {
     none
@@ -56,7 +62,11 @@
   let raw = mapping.at(aesthetic, default: none)
   if raw == none { return none }
   let col-name = mapping-ref-col(raw)
-  (name: col-name, values: column(data, col-name), forced-type: mapping-ref-type(raw))
+  (
+    name: col-name,
+    values: column(data, col-name),
+    forced-type: mapping-ref-type(raw),
+  )
 }
 
 #let train-continuous(layers, aesthetic, plot-mapping, plot-data) = {
@@ -109,11 +119,20 @@
 #let train(scales: (), layers: (), mapping: none, data: none) = {
   let trained = (:)
   let aesthetics = (
-    "x", "y",
-    "colour", "fill", "size", "alpha",
-    "shape", "linetype",
-    "xmin", "xmax", "ymin", "ymax",
-    "xend", "yend",
+    "x",
+    "y",
+    "colour",
+    "fill",
+    "size",
+    "alpha",
+    "shape",
+    "linetype",
+    "xmin",
+    "xmax",
+    "ymin",
+    "ymax",
+    "xend",
+    "yend",
   )
   for a in aesthetics {
     let user-scale = _find-user-scale(scales, a)

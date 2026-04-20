@@ -2,7 +2,14 @@
 
 #import "../../src/labs.typ": labs
 
-#let l = labs(title: "T", subtitle: "S", caption: "C", x: "X-axis", y: "Y-axis", colour: "Colour")
+#let l = labs(
+  title: "T",
+  subtitle: "S",
+  caption: "C",
+  x: "X-axis",
+  y: "Y-axis",
+  colour: "Colour",
+)
 #assert.eq(l.kind, "labs")
 #assert.eq(l.title, "T")
 #assert.eq(l.subtitle, "S")

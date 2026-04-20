@@ -9,6 +9,43 @@ local PREAMBLE_FILENAME = "_typst-preamble.typ"
 local PREAMBLE_CONTENT = [[
 // Managed by typstdoc. Preamble prepended to every rendered @example block.
 #import "/lib.typ": *
+
+#let _theme_grey = theme-grey
+#let _theme_minimal = theme-minimal
+#let _theme_classic = theme-classic
+#let _theme_void = theme-void
+#let _theme_custom = theme
+
+#let _theme_with_document_colours(theme_fn, ink: auto, paper: auto, accent: rgb("#3366FF")) = context {
+  theme_fn(
+    ink: if ink == auto { text.fill } else { ink },
+    paper: if paper == auto { page.fill } else { paper },
+    accent: accent,
+  )
+}
+
+#let theme-grey(ink: auto, paper: auto, accent: rgb("#3366FF")) =
+  _theme_with_document_colours(_theme_grey, ink: ink, paper: paper, accent: accent)
+
+#let theme-minimal(ink: auto, paper: auto, accent: rgb("#3366FF")) =
+  _theme_with_document_colours(_theme_minimal, ink: ink, paper: paper, accent: accent)
+
+#let theme-classic(ink: auto, paper: auto, accent: rgb("#3366FF")) =
+  _theme_with_document_colours(_theme_classic, ink: ink, paper: paper, accent: accent)
+
+#let theme-void(ink: auto, paper: auto, accent: rgb("#3366FF")) =
+  _theme_with_document_colours(_theme_void, ink: ink, paper: paper, accent: accent)
+
+#let theme(..fields) = context {
+  let named = fields.named()
+  if named.at("ink", default: none) == none {
+    named.insert("ink", text.fill)
+  }
+  if named.at("paper", default: none) == none {
+    named.insert("paper", page.fill)
+  }
+  _theme_custom(..named)
+}
 ]]
 
 local EXTENSIONS_METADATA_FILENAME = "_extensions-metadata.yml"
@@ -68,7 +105,7 @@ end
 local function has_metadata_entry(content, filename)
   local esc = escape_pattern(filename)
   return content:find("\n%s*%-%s*" .. esc .. "%s*\n") ~= nil
-    or content:find("^%s*%-%s*" .. esc .. "%s*\n") ~= nil
+      or content:find("^%s*%-%s*" .. esc .. "%s*\n") ~= nil
 end
 
 local function insert_metadata_entry(content, filename)

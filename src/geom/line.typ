@@ -80,7 +80,11 @@
   }
   for aes-name in ("colour", "fill", "linetype") {
     let col = mapping.at(aes-name, default: none)
-    if col != none and col != mapping.at("x", default: none) and col != mapping.at("y", default: none) {
+    if (
+      col != none
+        and col != mapping.at("x", default: none)
+        and col != mapping.at("y", default: none)
+    ) {
       keys.push(str(row.at(col, default: "")))
     }
   }
@@ -97,7 +101,9 @@
 
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
-  let default-colour = if layer.params.colour != auto and layer.params.colour != none {
+  let default-colour = if (
+    layer.params.colour != auto and layer.params.colour != none
+  ) {
     layer.params.colour
   } else {
     rgb("#222222")
@@ -110,7 +116,9 @@
       linetype-trained.spec.at("palette", default: default-linetypes)
     } else { default-linetypes }
   } else { default-linetypes }
-  let default-linetype = if layer.params.linetype != auto and layer.params.linetype != none {
+  let default-linetype = if (
+    layer.params.linetype != auto and layer.params.linetype != none
+  ) {
     layer.params.linetype
   } else { "solid" }
 
@@ -140,8 +148,16 @@
 
     let pts = ()
     for p in with-x {
-      let cx = map-position(x-trained, p.row.at(mapping.x, default: none), ctx.px-range)
-      let cy = map-position(y-trained, p.row.at(mapping.y, default: none), ctx.py-range)
+      let cx = map-position(
+        x-trained,
+        p.row.at(mapping.x, default: none),
+        ctx.px-range,
+      )
+      let cy = map-position(
+        y-trained,
+        p.row.at(mapping.y, default: none),
+        ctx.py-range,
+      )
       if cx == none or cy == none { continue }
       pts.push((cx, cy))
     }
@@ -153,7 +169,9 @@
     } else { default-colour }
 
     let alpha = layer.params.alpha
-    let final-colour = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
+    let final-colour = if alpha < 1 {
+      colour.transparentize((1 - alpha) * 100%)
+    } else { colour }
 
     let dash = if linetype-col != none and linetype-trained != none {
       let sample = rows.first().at(linetype-col, default: none)

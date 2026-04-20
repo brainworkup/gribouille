@@ -122,15 +122,21 @@
       stroke: stroke-spec,
     )
   } else if kind == "cross" {
-    let s = if stroke-spec == none { (paint: paint, thickness: r / 2 * 1cm) } else { stroke-spec }
+    let s = if stroke-spec == none {
+      (paint: paint, thickness: r / 2 * 1cm)
+    } else { stroke-spec }
     cetz.draw.line((cx - r, cy), (cx + r, cy), stroke: s)
     cetz.draw.line((cx, cy - r), (cx, cy + r), stroke: s)
   } else if kind == "x" {
-    let s = if stroke-spec == none { (paint: paint, thickness: r / 2 * 1cm) } else { stroke-spec }
+    let s = if stroke-spec == none {
+      (paint: paint, thickness: r / 2 * 1cm)
+    } else { stroke-spec }
     cetz.draw.line((cx - r, cy - r), (cx + r, cy + r), stroke: s)
     cetz.draw.line((cx - r, cy + r), (cx + r, cy - r), stroke: s)
   } else if kind == "star" {
-    let s = if stroke-spec == none { (paint: paint, thickness: r / 2.5 * 1cm) } else { stroke-spec }
+    let s = if stroke-spec == none {
+      (paint: paint, thickness: r / 2.5 * 1cm)
+    } else { stroke-spec }
     cetz.draw.line((cx - r, cy), (cx + r, cy), stroke: s)
     cetz.draw.line((cx, cy - r), (cx, cy + r), stroke: s)
     cetz.draw.line((cx - r, cy - r), (cx + r, cy + r), stroke: s)
@@ -164,25 +170,45 @@
     } else { default-shapes }
     p
   } else { default-shapes }
-  let default-shape-kind = if layer.params.shape != auto and layer.params.shape != none {
+  let default-shape-kind = if (
+    layer.params.shape != auto and layer.params.shape != none
+  ) {
     layer.params.shape
   } else { "circle" }
 
   for row in data {
-    let cx = map-position(x-trained, row.at(mapping.x, default: none), ctx.px-range)
-    let cy = map-position(y-trained, row.at(mapping.y, default: none), ctx.py-range)
+    let cx = map-position(
+      x-trained,
+      row.at(mapping.x, default: none),
+      ctx.px-range,
+    )
+    let cy = map-position(
+      y-trained,
+      row.at(mapping.y, default: none),
+      ctx.py-range,
+    )
     if cx == none or cy == none { continue }
     let colour = if colour-col != none and colour-trained != none {
-      (ctx.resolve-colour)(colour-trained, row.at(colour-col, default: none), ctx.palette)
+      (ctx.resolve-colour)(
+        colour-trained,
+        row.at(colour-col, default: none),
+        ctx.palette,
+      )
     } else if fill-param != auto and fill-param != none {
       fill-param
     } else {
       rgb("#222222")
     }
-    let fill = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
+    let fill = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else {
+      colour
+    }
     let shape-kind = if shape-col != none and shape-trained != none {
-      let idx = shape-trained.domain.position(v => v == str(row.at(shape-col, default: none)))
-      if idx == none { default-shape-kind } else { _palette-at(shape-palette, idx) }
+      let idx = shape-trained.domain.position(v => (
+        v == str(row.at(shape-col, default: none))
+      ))
+      if idx == none { default-shape-kind } else {
+        _palette-at(shape-palette, idx)
+      }
     } else { default-shape-kind }
     _draw-shape((cx, cy), shape-kind, size, fill, layer.params.stroke)
   }

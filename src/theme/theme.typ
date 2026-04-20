@@ -19,7 +19,9 @@
 
 #let _apply-element(out, key, value) = {
   if value == none { return out }
-  let el-kind = if type(value) == dictionary { value.at("kind", default: none) } else { none }
+  let el-kind = if type(value) == dictionary {
+    value.at("kind", default: none)
+  } else { none }
 
   // ── Base element keys ──────────────────────────────────────────────────────
 

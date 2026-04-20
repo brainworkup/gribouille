@@ -35,7 +35,11 @@
 /// ```
 ///
 /// @see @position-stack, @position-fill, @position-identity
-#let position-dodge(width: 0.9) = (kind: "position", name: "dodge", width: width)
+#let position-dodge(width: 0.9) = (
+  kind: "position",
+  name: "dodge",
+  width: width,
+)
 
 #let _group-col(mapping) = {
   for aes-name in ("fill", "colour", "group", "linetype", "shape") {

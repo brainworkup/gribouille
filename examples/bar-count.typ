@@ -5,10 +5,20 @@
 #set page(width: auto, height: auto, margin: 0.5cm)
 
 #let items = (
-  (cat: "A",), (cat: "A",), (cat: "A",),
-  (cat: "B",), (cat: "B",),
-  (cat: "C",), (cat: "C",), (cat: "C",), (cat: "C",),
-  (cat: "D",), (cat: "D",), (cat: "D",), (cat: "D",), (cat: "D",),
+  (cat: "A"),
+  (cat: "A"),
+  (cat: "A"),
+  (cat: "B"),
+  (cat: "B"),
+  (cat: "C"),
+  (cat: "C"),
+  (cat: "C"),
+  (cat: "C"),
+  (cat: "D"),
+  (cat: "D"),
+  (cat: "D"),
+  (cat: "D"),
+  (cat: "D"),
 )
 
 #plot(

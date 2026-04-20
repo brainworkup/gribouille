@@ -7,7 +7,10 @@
 #import "theme/defaults.typ": resolve-colour, resolve-field
 
 #let _guide-title(t, spec, aes-name) = {
-  if t.at("spec", default: none) != none and t.spec.at("name", default: none) != none {
+  if (
+    t.at("spec", default: none) != none
+      and t.spec.at("name", default: none) != none
+  ) {
     t.spec.name
   } else if spec.mapping != none {
     spec.mapping.at(aes-name, default: aes-name)
@@ -114,14 +117,33 @@
   let glyph-size = 0.12
   let trained = ctx.trained.at(guide.aesthetic)
   let ink = resolve-colour(theme, "ink")
-  let title-colour = resolve-colour(theme, "legend-title-colour", "text-colour", "ink")
-  let text-colour = resolve-colour(theme, "legend-text-colour", "text-colour", "ink")
-  let title-weight = resolve-field(theme, "legend-title-weight", "text-weight", fallback: "medium")
+  let title-colour = resolve-colour(
+    theme,
+    "legend-title-colour",
+    "text-colour",
+    "ink",
+  )
+  let text-colour = resolve-colour(
+    theme,
+    "legend-text-colour",
+    "text-colour",
+    "ink",
+  )
+  let title-weight = resolve-field(
+    theme,
+    "legend-title-weight",
+    "text-weight",
+    fallback: "medium",
+  )
   let title-size = theme.at("legend-title-size", default: 8pt)
   let text-size = theme.at("legend-text-size", default: 8pt)
   cetz.draw.content(
     (ox, cursor),
-    text(size: title-size, fill: title-colour, weight: title-weight)[#guide.title],
+    text(
+      size: title-size,
+      fill: title-colour,
+      weight: title-weight,
+    )[#guide.title],
     anchor: "north-west",
   )
   let c = cursor - title-h
@@ -149,15 +171,34 @@
   let tick-gap = 0.08
   let trained = ctx.trained.at(guide.aesthetic)
   let ink = resolve-colour(theme, "ink")
-  let title-colour = resolve-colour(theme, "legend-title-colour", "text-colour", "ink")
-  let text-colour = resolve-colour(theme, "legend-text-colour", "text-colour", "ink")
-  let title-weight = resolve-field(theme, "legend-title-weight", "text-weight", fallback: "medium")
+  let title-colour = resolve-colour(
+    theme,
+    "legend-title-colour",
+    "text-colour",
+    "ink",
+  )
+  let text-colour = resolve-colour(
+    theme,
+    "legend-text-colour",
+    "text-colour",
+    "ink",
+  )
+  let title-weight = resolve-field(
+    theme,
+    "legend-title-weight",
+    "text-weight",
+    fallback: "medium",
+  )
   let title-size = theme.at("legend-title-size", default: 8pt)
   let text-size = theme.at("legend-text-size", default: 8pt)
   let (lo, hi) = guide.domain
   cetz.draw.content(
     (ox, cursor),
-    text(size: title-size, fill: title-colour, weight: title-weight)[#guide.title],
+    text(
+      size: title-size,
+      fill: title-colour,
+      weight: title-weight,
+    )[#guide.title],
     anchor: "north-west",
   )
   let bar-top = cursor - title-h

@@ -60,7 +60,9 @@
   if group-col != none { cols.push(group-col) }
   for aes-name in ("colour", "fill", "linetype") {
     let col = mapping.at(aes-name, default: none)
-    if col != none and col != x-col and col != y-col and not cols.contains(col) {
+    if (
+      col != none and col != x-col and col != y-col and not cols.contains(col)
+    ) {
       cols.push(col)
     }
   }
@@ -73,8 +75,12 @@
 }
 
 #let apply(data, mapping, params: (:)) = {
-  let x-col = if mapping != none { mapping.at("x", default: none) } else { none }
-  let y-col = if mapping != none { mapping.at("y", default: none) } else { none }
+  let x-col = if mapping != none { mapping.at("x", default: none) } else {
+    none
+  }
+  let y-col = if mapping != none { mapping.at("y", default: none) } else {
+    none
+  }
   let base-mapping = (x: "x", y: "y", ymin: "ymin", ymax: "ymax")
   if x-col == none or y-col == none { return (data: (), mapping: base-mapping) }
 

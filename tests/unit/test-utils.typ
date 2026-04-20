@@ -1,8 +1,10 @@
 // Unit tests for utility modules.
 
-#import "../../src/utils/types.typ": parse-number, infer-column-type, is-numeric-value
+#import "../../src/utils/types.typ": (
+  infer-column-type, is-numeric-value, parse-number,
+)
 #import "../../src/utils/pretty.typ": pretty
-#import "../../src/data.typ": column, as-numeric, as-factor
+#import "../../src/data.typ": as-factor, as-numeric, column
 
 // parse-number.
 #assert.eq(parse-number("42"), 42.0)

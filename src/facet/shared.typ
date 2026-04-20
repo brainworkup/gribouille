@@ -8,7 +8,10 @@
     new.data = layer.data.filter(row => {
       let keep = true
       for (col, value) in filters {
-        if str(row.at(col, default: "")) != value { keep = false; break }
+        if str(row.at(col, default: "")) != value {
+          keep = false
+          break
+        }
       }
       keep
     })

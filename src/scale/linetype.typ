@@ -87,7 +87,12 @@
 /// ```
 ///
 /// @see @scale-linetype, @geom-line
-#let scale-linetype-manual(values: (), name: none, limits: none, labels: auto) = (
+#let scale-linetype-manual(
+  values: (),
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "linetype",
   type: "discrete",

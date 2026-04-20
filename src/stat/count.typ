@@ -36,7 +36,9 @@
 #let stat-count() = (kind: "stat", name: "count")
 
 #let apply(data, mapping, params: (:)) = {
-  let x-col = if mapping != none { mapping.at("x", default: none) } else { none }
+  let x-col = if mapping != none { mapping.at("x", default: none) } else {
+    none
+  }
   if x-col == none { return (data: data, mapping: mapping) }
   let counts = (:)
   let order = ()

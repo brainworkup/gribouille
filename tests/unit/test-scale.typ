@@ -1,6 +1,8 @@
 // Scale training and mapping tests.
 
-#import "../../src/scale/train.typ": train, map-continuous, map-discrete, map-position
+#import "../../src/scale/train.typ": (
+  map-continuous, map-discrete, map-position, train,
+)
 #import "../../src/geom/point.typ": geom-point
 #import "../../src/aes.typ": aes
 
@@ -11,7 +13,11 @@
 )
 
 #let layers = (geom-point(),)
-#let trained = train(layers: layers, mapping: aes(x: "x", y: "y", colour: "g"), data: df)
+#let trained = train(
+  layers: layers,
+  mapping: aes(x: "x", y: "y", colour: "g"),
+  data: df,
+)
 
 #assert.eq(trained.x.type, "continuous")
 #assert.eq(trained.x.domain, (1.0, 3.0))
