@@ -197,7 +197,7 @@
     } else if fill-param != auto and fill-param != none {
       fill-param
     } else {
-      rgb("#222222")
+      ctx.theme.at("ink", default: black)
     }
     let fill = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else {
       colour

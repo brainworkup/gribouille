@@ -6,6 +6,7 @@
 ///! ggplot2 v4 exactly.
 
 #import "../utils/colour.typ": col-mix
+#import "defaults.typ": _tr-ink, _tr-paper
 
 /// Grey theme: light grey panel with white gridlines.
 ///
@@ -35,7 +36,7 @@
 /// ```
 ///
 /// @see @theme-minimal, @theme-classic, @theme-void, @theme
-#let theme-grey(ink: black, paper: white, accent: rgb("#3366FF")) = (
+#let theme-grey(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "grey",
   ink: ink,

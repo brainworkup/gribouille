@@ -16,59 +16,82 @@ local PREAMBLE_CONTENT = [[
 #let _theme_void = theme-void
 #let _theme_custom = theme
 
-#let _theme_with_document_colours(theme_fn, ink: auto, paper: auto, accent: rgb("#3366FF")) = context {
-  let resolved_ink = if _typst_render_foreground != none {
-    _typst_render_foreground
-  } else {
-    text.fill
+#let _theme_with_document_colours(
+  theme_fn,
+  ink: auto,
+  paper: auto,
+  accent: rgb("#3366FF"),
+) = {
+  let args = (accent: accent)
+  if ink != auto {
+    args.insert("ink", ink)
+  } else if _typst_render_foreground != none {
+    args.insert("ink", _typst_render_foreground)
   }
-  let resolved_paper = if _typst_render_background != none {
-    _typst_render_background
-  } else {
-    page.fill
+  if paper != auto {
+    args.insert("paper", paper)
+  } else if _typst_render_background != none {
+    args.insert("paper", _typst_render_background)
   }
-  theme_fn(
-    ink: if ink == auto { resolved_ink } else { ink },
-    paper: if paper == auto { resolved_paper } else { paper },
-    accent: accent,
-  )
+  theme_fn(..args)
 }
 
-#let theme-grey(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+#let theme-grey(
+  ink: auto,
+  paper: auto,
+  accent: rgb("#3366FF"),
+) = _theme_with_document_colours(
   _theme_grey,
   ink: ink,
   paper: paper,
   accent: accent,
 )
 
-#let theme-minimal(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+#let theme-minimal(
+  ink: auto,
+  paper: auto,
+  accent: rgb("#3366FF"),
+) = _theme_with_document_colours(
   _theme_minimal,
   ink: ink,
   paper: paper,
   accent: accent,
 )
 
-#let theme-classic(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+#let theme-classic(
+  ink: auto,
+  paper: auto,
+  accent: rgb("#3366FF"),
+) = _theme_with_document_colours(
   _theme_classic,
   ink: ink,
   paper: paper,
   accent: accent,
 )
 
-#let theme-void(ink: auto, paper: auto, accent: rgb("#3366FF")) = _theme_with_document_colours(
+#let theme-void(
+  ink: auto,
+  paper: auto,
+  accent: rgb("#3366FF"),
+) = _theme_with_document_colours(
   _theme_void,
   ink: ink,
   paper: paper,
   accent: accent,
 )
 
-#let theme(..fields) = context {
+#let theme(..fields) = {
   let named = fields.named()
-  if named.at("ink", default: none) == none {
-    named.insert("ink", text.fill)
+  if (
+    named.at("ink", default: none) == none and _typst_render_foreground != none
+  ) {
+    named.insert("ink", _typst_render_foreground)
   }
-  if named.at("paper", default: none) == none {
-    named.insert("paper", page.fill)
+  if (
+    named.at("paper", default: none) == none
+      and _typst_render_background != none
+  ) {
+    named.insert("paper", _typst_render_background)
   }
   _theme_custom(..named)
 }

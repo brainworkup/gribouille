@@ -3,6 +3,8 @@
 ///! White panel with thin light grey gridlines, no axis lines, no tick marks.
 ///! Matches ggplot2's / plotnine's `theme_minimal()`.
 
+#import "defaults.typ": _tr-ink, _tr-paper
+
 /// Minimal theme: white panel, light grey gridlines, no axis lines.
 ///
 /// Equivalent to ggplot2's / plotnine's `theme_minimal()`. For the gribouille default
@@ -32,7 +34,7 @@
 /// ```
 ///
 /// @see @theme-grey, @theme-classic, @theme-void, @theme
-#let theme-minimal(ink: black, paper: white, accent: rgb("#3366FF")) = (
+#let theme-minimal(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "minimal",
   ink: ink,

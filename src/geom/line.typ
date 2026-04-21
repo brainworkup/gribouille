@@ -106,7 +106,7 @@
   ) {
     layer.params.colour
   } else {
-    rgb("#222222")
+    ctx.theme.at("ink", default: black)
   }
 
   let linetype-col = mapping.at("linetype", default: none)

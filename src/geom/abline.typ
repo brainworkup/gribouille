@@ -17,7 +17,7 @@
 ///
 /// @param slope Line slope.
 /// @param intercept Line y intercept.
-/// @param colour Line colour.
+/// @param colour Line colour. `auto` inherits the theme `ink`.
 /// @param stroke Line thickness (a Typst length).
 /// @param alpha Line opacity in `[0, 1]`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
@@ -43,7 +43,7 @@
 #let geom-abline(
   slope: 1,
   intercept: 0,
-  colour: rgb("#888888"),
+  colour: auto,
   stroke: 0.6pt,
   alpha: 1,
   inherit-aes: false,
@@ -78,7 +78,9 @@
   let cx-hi = map-continuous(x-hi, x-trained.domain, ctx.px-range)
   let cy-lo = map-continuous(y-lo, y-trained.domain, ctx.py-range)
   let cy-hi = map-continuous(y-hi, y-trained.domain, ctx.py-range)
-  let colour = layer.params.colour
+  let colour = if layer.params.colour == auto {
+    ctx.theme.at("ink", default: black)
+  } else { layer.params.colour }
   let fill = if layer.params.alpha < 1 {
     colour.transparentize((1 - layer.params.alpha) * 100%)
   } else { colour }

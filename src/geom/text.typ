@@ -18,7 +18,7 @@
 /// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, and `label`.
 /// @param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// @param size Text size (a Typst length).
-/// @param colour Fixed text colour. Used when no colour mapping is active.
+/// @param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
 /// @param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
 /// @param dx Horizontal offset in canvas units.
 /// @param dy Vertical offset in canvas units.
@@ -50,7 +50,7 @@
   mapping: none,
   data: none,
   size: 8pt,
-  colour: rgb("#222222"),
+  colour: auto,
   anchor: "center",
   dx: 0,
   dy: 0,
@@ -106,6 +106,8 @@
         row.at(colour-col, default: none),
         ctx.palette,
       )
+    } else if layer.params.colour == auto {
+      ctx.theme.at("ink", default: black)
     } else { layer.params.colour }
     cetz.draw.content(
       (cx + layer.params.dx, cy + layer.params.dy),

@@ -1,21 +1,32 @@
 // Default theme values consumed by the renderer.
 // User themes override individual fields; missing fields fall back here.
 
+// Read document colours injected by the typst-render Quarto extension via
+// --input flags. Falls back to black/white when rendering standalone.
+#let _tr-ink = {
+  let v = sys.inputs.at("typst-render-foreground", default: "")
+  if v == "" { black } else { rgb(v) }
+}
+#let _tr-paper = {
+  let v = sys.inputs.at("typst-render-background", default: "")
+  if v == "" { white } else { rgb(v) }
+}
+
 #let default-theme = (
   kind: "theme",
   name: "grey",
 
   // Base colours (ggplot2 v4: ink / paper / accent)
-  ink: black,
-  paper: white,
+  ink: _tr-ink,
+  paper: _tr-paper,
   accent: rgb("#3366FF"),
 
   // Panel / grid / axis structural fields
   // none = element-blank (don't draw)
-  panel-fill: rgb("#f2f2f2"),
-  grid-colour: white,
+  panel-fill: auto,
+  grid-colour: auto,
   grid-thickness: 0.5pt,
-  axis-colour: black,
+  axis-colour: auto,
   axis-thickness: 0.5pt,
   tick-length: 0.1,
   tick-labels: true,

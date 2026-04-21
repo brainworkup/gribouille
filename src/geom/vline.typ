@@ -16,7 +16,7 @@
 /// @since 0.0.1
 ///
 /// @param xintercept Scalar or array of x values at which to draw vertical lines.
-/// @param colour Line colour.
+/// @param colour Line colour. `auto` inherits the theme `ink`.
 /// @param stroke Line thickness (a Typst length).
 /// @param alpha Line opacity in `[0, 1]`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
@@ -41,7 +41,7 @@
 /// @see @geom-hline, @geom-abline
 #let geom-vline(
   xintercept: none,
-  colour: rgb("#888888"),
+  colour: auto,
   stroke: 0.6pt,
   alpha: 1,
   inherit-aes: false,
@@ -68,7 +68,9 @@
   if xs == none { return }
   if type(xs) != array { xs = (xs,) }
   let (py-lo, py-hi) = ctx.py-range
-  let colour = layer.params.colour
+  let colour = if layer.params.colour == auto {
+    ctx.theme.at("ink", default: black)
+  } else { layer.params.colour }
   let fill = if layer.params.alpha < 1 {
     colour.transparentize((1 - layer.params.alpha) * 100%)
   } else { colour }

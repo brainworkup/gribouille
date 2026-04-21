@@ -284,22 +284,44 @@
     theme: theme,
   )
 
-  if theme.panel-fill != none {
+  let _line-base = theme.at("line-colour", default: auto)
+  let _rect-base = theme.at("rect-fill", default: auto)
+  let _resolve-line(value) = {
+    if value == none { return none }
+    if value == auto {
+      if _line-base != none and _line-base != auto { return _line-base }
+      return _ink
+    }
+    value
+  }
+  let _resolve-rect(value, fallback) = {
+    if value == none { return none }
+    if value == auto {
+      if _rect-base != none and _rect-base != auto { return _rect-base }
+      return fallback
+    }
+    value
+  }
+
+  let _panel-fill = _resolve-rect(theme.panel-fill, theme.paper)
+  if _panel-fill != none {
     rect(
       (px-lo, py-lo),
       (px-hi, py-hi),
-      fill: theme.panel-fill,
+      fill: _panel-fill,
       stroke: none,
     )
   }
 
   let x-trained = trained.at("x", default: none)
   let y-trained = trained.at("y", default: none)
-  let grid-stroke = if theme.grid-colour == none { none } else {
-    (paint: theme.grid-colour, thickness: theme.grid-thickness)
+  let _grid-paint = _resolve-line(theme.grid-colour)
+  let grid-stroke = if _grid-paint == none { none } else {
+    (paint: _grid-paint, thickness: theme.grid-thickness)
   }
-  let axis-stroke = if theme.axis-colour == none { none } else {
-    (paint: theme.axis-colour, thickness: theme.axis-thickness)
+  let _axis-paint = _resolve-line(theme.axis-colour)
+  let axis-stroke = if _axis-paint == none { none } else {
+    (paint: _axis-paint, thickness: theme.axis-thickness)
   }
   let tick-len = theme.tick-length
 

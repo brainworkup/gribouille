@@ -18,8 +18,8 @@
 /// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, and `label`.
 /// @param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// @param size Text size (a Typst length).
-/// @param colour Text colour.
-/// @param fill Box fill colour.
+/// @param colour Text colour. `auto` inherits the theme `ink`.
+/// @param fill Box fill colour. `auto` inherits the theme `paper`.
 /// @param stroke Box stroke (length + colour).
 /// @param inset Padding between text and box border (a Typst length).
 /// @param radius Corner radius of the box (a Typst length).
@@ -54,8 +54,8 @@
   mapping: none,
   data: none,
   size: 8pt,
-  colour: rgb("#222222"),
-  fill: rgb("#ffffff"),
+  colour: auto,
+  fill: auto,
   stroke: 0.4pt + rgb("#888888"),
   inset: 2pt,
   radius: 1pt,
@@ -109,12 +109,18 @@
     if cx == none or cy == none { continue }
     let label = row.at(label-col, default: none)
     if label == none { continue }
+    let _colour = if layer.params.colour == auto {
+      ctx.theme.at("ink", default: black)
+    } else { layer.params.colour }
+    let _fill = if layer.params.fill == auto {
+      ctx.theme.at("paper", default: white)
+    } else { layer.params.fill }
     let body = box(
-      fill: layer.params.fill,
+      fill: _fill,
       stroke: layer.params.stroke,
       inset: layer.params.inset,
       radius: layer.params.radius,
-      text(size: layer.params.size, fill: layer.params.colour)[#label],
+      text(size: layer.params.size, fill: _colour)[#label],
     )
     cetz.draw.content(
       (cx + layer.params.dx, cy + layer.params.dy),

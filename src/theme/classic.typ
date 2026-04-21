@@ -3,6 +3,8 @@
 ///! White panel background with visible axis borders and no gridlines.
 ///! Close to the ggplot2 / plotnine `theme_classic()` look.
 
+#import "defaults.typ": _tr-ink, _tr-paper
+
 /// Classic theme: white panel, axis borders, no gridlines.
 ///
 /// @category Themes
@@ -29,7 +31,7 @@
 /// ```
 ///
 /// @see @theme-grey, @theme-minimal, @theme-void, @theme
-#let theme-classic(ink: black, paper: white, accent: rgb("#3366FF")) = (
+#let theme-classic(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "classic",
   ink: ink,

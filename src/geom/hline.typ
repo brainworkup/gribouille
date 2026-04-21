@@ -16,7 +16,7 @@
 /// @since 0.0.1
 ///
 /// @param yintercept Scalar or array of y values at which to draw horizontal lines.
-/// @param colour Line colour.
+/// @param colour Line colour. `auto` inherits the theme `ink`.
 /// @param stroke Line thickness (a Typst length).
 /// @param alpha Line opacity in `[0, 1]`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
@@ -41,7 +41,7 @@
 /// @see @geom-vline, @geom-abline
 #let geom-hline(
   yintercept: none,
-  colour: rgb("#888888"),
+  colour: auto,
   stroke: 0.6pt,
   alpha: 1,
   inherit-aes: false,
@@ -68,7 +68,9 @@
   if ys == none { return }
   if type(ys) != array { ys = (ys,) }
   let (px-lo, px-hi) = ctx.px-range
-  let colour = layer.params.colour
+  let colour = if layer.params.colour == auto {
+    ctx.theme.at("ink", default: black)
+  } else { layer.params.colour }
   let fill = if layer.params.alpha < 1 {
     colour.transparentize((1 - layer.params.alpha) * 100%)
   } else { colour }

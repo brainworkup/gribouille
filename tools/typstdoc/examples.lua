@@ -8,6 +8,16 @@ local util = require("util")
 
 local M = {}
 
+-- Examples are standalone-compilable and import lib.typ themselves. The docs
+-- mirror drops that import so the typst-render preamble's document-colour-aware
+-- theme wrappers aren't shadowed when files are included.
+local function strip_lib_import(bytes, name)
+  if not name:match("%.typ$") then return bytes end
+  local pattern = '#import%s+"[^"]*lib%.typ"%s*:[^\n]*\n?'
+  local stripped = bytes:gsub(pattern, "", 1)
+  return stripped
+end
+
 local function mirror(root, subdir, dst_dir, check_only)
   local src_dir = root .. "/" .. subdir
   local src_names = util.git_tracked_in(root, subdir)
@@ -22,6 +32,7 @@ local function mirror(root, subdir, dst_dir, check_only)
     local src_path = src_dir .. "/" .. name
     local dst_path = dst_dir .. "/" .. name
     local src_bytes = util.read_file(src_path) or util.die("cannot read " .. src_path)
+    src_bytes = strip_lib_import(src_bytes, name)
     local dst_bytes = util.read_file(dst_path)
     if dst_bytes == src_bytes then
       skipped = skipped + 1

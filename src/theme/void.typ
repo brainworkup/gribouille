@@ -3,6 +3,8 @@
 ///! No axes, grid, or panel background. Useful when the plot stands on its
 ///! own without an axis frame (e.g. maps, annotated figures).
 
+#import "defaults.typ": _tr-ink
+
 /// Void theme: no axes, no grid, no panel background.
 ///
 /// @category Themes
@@ -29,7 +31,11 @@
 /// ```
 ///
 /// @see @theme-grey, @theme-minimal, @theme-classic, @theme
-#let theme-void(ink: black, paper: rgb(0, 0, 0, 0), accent: rgb("#3366FF")) = (
+#let theme-void(
+  ink: _tr-ink,
+  paper: rgb(0, 0, 0, 0),
+  accent: rgb("#3366FF"),
+) = (
   kind: "theme",
   name: "void",
   ink: ink,
