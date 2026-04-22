@@ -1,13 +1,13 @@
 ---
 title: "Examples"
-subtitle: "Rendered plots with a link to the source for each."
+subtitle: "Rendered plots with the source code available for each."
 toc: true
 toc-depth: 2
 engine: markdown
 ---
 
 Every example below lives in the [`examples/`](https://github.com/mcanouil/gribouille/tree/main/examples) directory of the repository.
-Open the source link under any plot to see the full Typst snippet, data and all.
+Click the Source button under any plot to see the full Typst snippet, data and all.
 
 ## Basics
 
@@ -22,7 +22,7 @@ Open the source link under any plot to see the full Typst snippet, data and all.
 ### Minimal scatter
 Inline iris sample plotted with a single [`geom-point`](reference/geoms/geom-point.qmd) layer and continuous x/y scales.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/minimal.typ)
+{{< modal toggle target=modal-minimal label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -35,7 +35,7 @@ Inline iris sample plotted with a single [`geom-point`](reference/geoms/geom-poi
 Lines and points share a discrete colour mapping.
 [`geom-line`](reference/geoms/geom-line.qmd) + [`geom-point`](reference/geoms/geom-point.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/multilayer.typ)
+{{< modal toggle target=modal-multilayer label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -47,7 +47,7 @@ Lines and points share a discrete colour mapping.
 ### Titles and labels
 Title, subtitle, caption, and axis labels set in a single [`labs`](reference/labs/labs.qmd) call.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/labs-title.typ)
+{{< modal toggle target=modal-labs-title label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -59,7 +59,7 @@ Title, subtitle, caption, and axis labels set in a single [`labs`](reference/lab
 ### Inline factor coercion
 [`as-factor`](reference/core/as-factor.qmd) forces a numeric column to be treated as discrete for the colour aesthetic.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/factor-inline.typ)
+{{< modal toggle target=modal-factor-inline label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -71,7 +71,7 @@ Title, subtitle, caption, and axis labels set in a single [`labs`](reference/lab
 ### Penguins
 CSV-loaded dataset: flipper length versus body mass, coloured by species.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/penguins.typ)
+{{< modal toggle target=modal-penguins label="Source" >}}
 :::
 
 :::
@@ -89,7 +89,7 @@ CSV-loaded dataset: flipper length versus body mass, coloured by species.
 ### Simple bars
 Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-simple.typ)
+{{< modal toggle target=modal-bar-simple label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -101,7 +101,7 @@ Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 ### Category counts
 [`geom-bar`](reference/geoms/geom-bar.qmd) backed by [`stat-count`](reference/stats/stat-count.qmd) to tally observations per category.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-count.typ)
+{{< modal toggle target=modal-bar-count label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -113,7 +113,7 @@ Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 ### Stacked bars
 [`geom-col`](reference/geoms/geom-col.qmd) with [`position-stack`](reference/positions/position-stack.qmd) for cumulative totals per group.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-stacked.typ)
+{{< modal toggle target=modal-bar-stacked label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -125,7 +125,7 @@ Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 ### Dodged bars
 Side-by-side bars per group via [`position-dodge`](reference/positions/position-dodge.qmd) on [`geom-col`](reference/geoms/geom-col.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-dodged.typ)
+{{< modal toggle target=modal-bar-dodged label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -137,7 +137,7 @@ Side-by-side bars per group via [`position-dodge`](reference/positions/position-
 ### Filled bars
 Each column normalised to 1 with [`position-fill`](reference/positions/position-fill.qmd) to compare shares.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/bar-filled.typ)
+{{< modal toggle target=modal-bar-filled label="Source" >}}
 :::
 
 :::
@@ -155,7 +155,7 @@ Each column normalised to 1 with [`position-fill`](reference/positions/position-
 ### Histogram
 Continuous x binned with [`stat-bin`](reference/stats/stat-bin.qmd) via [`geom-histogram`](reference/geoms/geom-histogram.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/histogram.typ)
+{{< modal toggle target=modal-histogram label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -167,7 +167,7 @@ Continuous x binned with [`stat-bin`](reference/stats/stat-bin.qmd) via [`geom-h
 ### Smoother
 Scatter plus a linear fit with a 95% confidence ribbon from [`geom-smooth`](reference/geoms/geom-smooth.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/smooth.typ)
+{{< modal toggle target=modal-smooth label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -179,7 +179,7 @@ Scatter plus a linear fit with a 95% confidence ribbon from [`geom-smooth`](refe
 ### Ribbon bounds
 Explicit `ymin` / `ymax` aesthetics drive [`geom-ribbon`](reference/geoms/geom-ribbon.qmd) around a fitted line.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/ribbon-bounds.typ)
+{{< modal toggle target=modal-ribbon-bounds label="Source" >}}
 :::
 
 :::
@@ -197,7 +197,7 @@ Explicit `ymin` / `ymax` aesthetics drive [`geom-ribbon`](reference/geoms/geom-r
 ### Reference lines
 [`geom-abline`](reference/geoms/geom-abline.qmd), [`geom-hline`](reference/geoms/geom-hline.qmd), and [`geom-vline`](reference/geoms/geom-vline.qmd) overlaid on a trend.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/reference-lines.typ)
+{{< modal toggle target=modal-reference-lines label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -209,7 +209,7 @@ Explicit `ymin` / `ymax` aesthetics drive [`geom-ribbon`](reference/geoms/geom-r
 ### Text and label annotations
 Points annotated with [`geom-text`](reference/geoms/geom-text.qmd) and boxed [`geom-label`](reference/geoms/geom-label.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/text-labels.typ)
+{{< modal toggle target=modal-text-labels label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -221,7 +221,7 @@ Points annotated with [`geom-text`](reference/geoms/geom-text.qmd) and boxed [`g
 ### Shape and linetype per group
 A single grouping maps to [`scale-shape`](reference/scales/scale-shape.qmd), [`scale-linetype`](reference/scales/scale-linetype.qmd), and a discrete colour.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/shape-linetype.typ)
+{{< modal toggle target=modal-shape-linetype label="Source" >}}
 :::
 
 :::
@@ -239,7 +239,7 @@ A single grouping maps to [`scale-shape`](reference/scales/scale-shape.qmd), [`s
 ### Continuous colour guide
 A colourbar appears automatically when colour is trained on a continuous variable via [`scale-colour-continuous`](reference/scales/scale-colour-continuous.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/colour-bar.typ)
+{{< modal toggle target=modal-colour-bar label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -251,7 +251,7 @@ A colourbar appears automatically when colour is trained on a continuous variabl
 ### Viridis continuous
 [`scale-colour-viridis-c`](reference/scales/scale-colour-viridis-c.qmd) maps a continuous variable through the Viridis palette.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/viridis-colour.typ)
+{{< modal toggle target=modal-viridis-colour label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -263,7 +263,7 @@ A colourbar appears automatically when colour is trained on a continuous variabl
 ### Manual palette
 User-supplied colours passed to [`scale-colour-manual`](reference/scales/scale-colour-manual.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/manual-palette.typ)
+{{< modal toggle target=modal-manual-palette label="Source" >}}
 :::
 
 :::
@@ -281,7 +281,7 @@ User-supplied colours passed to [`scale-colour-manual`](reference/scales/scale-c
 ### Facet wrap
 One panel per level of a discrete variable via [`facet-wrap`](reference/facets/facet-wrap.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/facets.typ)
+{{< modal toggle target=modal-facets label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -293,7 +293,7 @@ One panel per level of a discrete variable via [`facet-wrap`](reference/facets/f
 ### Facet grid
 Panels laid out on a row × column grid with [`facet-grid`](reference/facets/facet-grid.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/facet-grid.typ)
+{{< modal toggle target=modal-facet-grid label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -305,7 +305,7 @@ Panels laid out on a row × column grid with [`facet-grid`](reference/facets/fac
 ### Cartesian zoom
 [`coord-cartesian`](reference/coord/coord-cartesian.qmd) clips the view via `xlim` and `ylim` without dropping data.
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/coord-clip.typ)
+{{< modal toggle target=modal-coord-clip label="Source" >}}
 :::
 
 :::
@@ -323,7 +323,7 @@ Panels laid out on a row × column grid with [`facet-grid`](reference/facets/fac
 ### Minimal theme
 Per-element overrides with [`theme`](reference/themes/theme.qmd) on top of [`theme-minimal`](reference/themes/theme-minimal.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/themed.typ)
+{{< modal toggle target=modal-themed label="Source" >}}
 :::
 
 ::: {.gallery-item}
@@ -335,7 +335,199 @@ Per-element overrides with [`theme`](reference/themes/theme.qmd) on top of [`the
 ### Theme overrides
 Custom text sizes, panel fill, and grid colour passed through [`theme`](reference/themes/theme.qmd).
 
-[Source](https://github.com/mcanouil/gribouille/blob/main/examples/theme-override.typ)
+{{< modal toggle target=modal-theme-override label="Source" >}}
 :::
 
+:::
+
+::: {#modal-minimal description="Source for minimal.typ"}
+### `minimal.typ`
+
+```{.typst}
+{{< include examples/minimal.typ >}}
+```
+:::
+
+::: {#modal-multilayer description="Source for multilayer.typ"}
+### `multilayer.typ`
+
+```{.typst}
+{{< include examples/multilayer.typ >}}
+```
+:::
+
+::: {#modal-labs-title description="Source for labs-title.typ"}
+### `labs-title.typ`
+
+```{.typst}
+{{< include examples/labs-title.typ >}}
+```
+:::
+
+::: {#modal-factor-inline description="Source for factor-inline.typ"}
+### `factor-inline.typ`
+
+```{.typst}
+{{< include examples/factor-inline.typ >}}
+```
+:::
+
+::: {#modal-penguins description="Source for penguins.typ"}
+### `penguins.typ`
+
+```{.typst}
+{{< include examples/penguins.typ >}}
+```
+:::
+
+::: {#modal-bar-simple description="Source for bar-simple.typ"}
+### `bar-simple.typ`
+
+```{.typst}
+{{< include examples/bar-simple.typ >}}
+```
+:::
+
+::: {#modal-bar-count description="Source for bar-count.typ"}
+### `bar-count.typ`
+
+```{.typst}
+{{< include examples/bar-count.typ >}}
+```
+:::
+
+::: {#modal-bar-stacked description="Source for bar-stacked.typ"}
+### `bar-stacked.typ`
+
+```{.typst}
+{{< include examples/bar-stacked.typ >}}
+```
+:::
+
+::: {#modal-bar-dodged description="Source for bar-dodged.typ"}
+### `bar-dodged.typ`
+
+```{.typst}
+{{< include examples/bar-dodged.typ >}}
+```
+:::
+
+::: {#modal-bar-filled description="Source for bar-filled.typ"}
+### `bar-filled.typ`
+
+```{.typst}
+{{< include examples/bar-filled.typ >}}
+```
+:::
+
+::: {#modal-histogram description="Source for histogram.typ"}
+### `histogram.typ`
+
+```{.typst}
+{{< include examples/histogram.typ >}}
+```
+:::
+
+::: {#modal-smooth description="Source for smooth.typ"}
+### `smooth.typ`
+
+```{.typst}
+{{< include examples/smooth.typ >}}
+```
+:::
+
+::: {#modal-ribbon-bounds description="Source for ribbon-bounds.typ"}
+### `ribbon-bounds.typ`
+
+```{.typst}
+{{< include examples/ribbon-bounds.typ >}}
+```
+:::
+
+::: {#modal-reference-lines description="Source for reference-lines.typ"}
+### `reference-lines.typ`
+
+```{.typst}
+{{< include examples/reference-lines.typ >}}
+```
+:::
+
+::: {#modal-text-labels description="Source for text-labels.typ"}
+### `text-labels.typ`
+
+```{.typst}
+{{< include examples/text-labels.typ >}}
+```
+:::
+
+::: {#modal-shape-linetype description="Source for shape-linetype.typ"}
+### `shape-linetype.typ`
+
+```{.typst}
+{{< include examples/shape-linetype.typ >}}
+```
+:::
+
+::: {#modal-colour-bar description="Source for colour-bar.typ"}
+### `colour-bar.typ`
+
+```{.typst}
+{{< include examples/colour-bar.typ >}}
+```
+:::
+
+::: {#modal-viridis-colour description="Source for viridis-colour.typ"}
+### `viridis-colour.typ`
+
+```{.typst}
+{{< include examples/viridis-colour.typ >}}
+```
+:::
+
+::: {#modal-manual-palette description="Source for manual-palette.typ"}
+### `manual-palette.typ`
+
+```{.typst}
+{{< include examples/manual-palette.typ >}}
+```
+:::
+
+::: {#modal-facets description="Source for facets.typ"}
+### `facets.typ`
+
+```{.typst}
+{{< include examples/facets.typ >}}
+```
+:::
+
+::: {#modal-facet-grid description="Source for facet-grid.typ"}
+### `facet-grid.typ`
+
+```{.typst}
+{{< include examples/facet-grid.typ >}}
+```
+:::
+
+::: {#modal-coord-clip description="Source for coord-clip.typ"}
+### `coord-clip.typ`
+
+```{.typst}
+{{< include examples/coord-clip.typ >}}
+```
+:::
+
+::: {#modal-themed description="Source for themed.typ"}
+### `themed.typ`
+
+```{.typst}
+{{< include examples/themed.typ >}}
+```
+:::
+
+::: {#modal-theme-override description="Source for theme-override.typ"}
+### `theme-override.typ`
+
+```{.typst}
+{{< include examples/theme-override.typ >}}
+```
 :::

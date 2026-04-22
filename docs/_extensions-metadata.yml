@@ -1,6 +1,7 @@
 # Extension config for the typst-render filter.
 filters:
   - typst-render
+  - modal
 
 extensions:
   typst-render:
@@ -12,3 +13,6 @@ extensions:
     width: auto
     height: auto
     margin: 0pt
+  modal:
+    size: lg
+    scrollable: true

@@ -998,6 +998,54 @@ main .showcase ~ h2,
   }
 }
 
+// --- Modal (quarto-modal extension). ------------------------------------
+.modal-header .modal-title {
+  margin: 0;
+  font-family: $font-family-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--gb-ink);
+}
+
+.modal-content {
+  background: var(--gb-paper);
+  color: var(--gb-ink);
+  border: 1px solid var(--gb-hairline);
+  border-radius: var(--gb-radius-lg);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--gb-hairline);
+}
+
+// Bootstrap's .btn-close uses a baked-in black SVG. Repaint it via an SVG
+// mask so the glyph follows currentColor and theming works in both schemes.
+.modal .btn-close {
+  --bs-btn-close-opacity: 1;
+  background-image: none;
+  background-color: var(--gb-muted);
+  opacity: 1;
+  border-radius: var(--gb-radius-sm);
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="black"><path d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"/></svg>');
+          mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="black"><path d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"/></svg>');
+  -webkit-mask-size: 0.75em;
+          mask-size: 0.75em;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  transition: background-color 150ms var(--gb-ease),
+              box-shadow 150ms var(--gb-ease);
+}
+
+.modal .btn-close:hover,
+.modal .btn-close:focus-visible {
+  background-color: var(--gb-primary);
+  box-shadow: 0 0 0 0.2rem var(--gb-tint-primary);
+  outline: none;
+}
+
 // --- Responsive. --------------------------------------------------------
 @media (max-width: 800px) {
   .hero {
