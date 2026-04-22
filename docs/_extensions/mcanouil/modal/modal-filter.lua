@@ -1,0 +1,192 @@
+--- @module modal-filter
+--- @license MIT
+--- @copyright 2026 Mickaël Canouil
+--- @author Mickaël Canouil
+
+--- Extension name constant
+local EXTENSION_NAME = "modal"
+
+--- Load modules
+local str = require(quarto.utils.resolve_path('_modules/string.lua'):gsub('%.lua$', ''))
+local log = require(quarto.utils.resolve_path('_modules/logging.lua'):gsub('%.lua$', ''))
+local meta_mod = require(quarto.utils.resolve_path('_modules/metadata.lua'):gsub('%.lua$', ''))
+local pdoc = require(quarto.utils.resolve_path('_modules/pandoc-helpers.lua'):gsub('%.lua$', ''))
+local html_mod = require(quarto.utils.resolve_path('_modules/html.lua'):gsub('%.lua$', ''))
+
+--- Load content-extraction module
+local content = require(quarto.utils.resolve_path('_modules/content-extraction.lua'):gsub('%.lua$', ''))
+
+--- Generate unique modal ID
+local modal_count = 0
+local function unique_modal_id()
+  modal_count = modal_count + 1
+  return 'quarto-modal-' .. tostring(modal_count)
+end
+
+--- Modal settings default values.
+--- @type table<string, string>
+local modal_settings_meta = {
+  ["size"] = "",
+  ["backdrop-static"] = "false",
+  ["scrollable"] = "false",
+  ["keyboard"] = "true",
+  ["centred"] = "false",
+  ["fade"] = "false",
+  ["fullscreen"] = "false"
+}
+
+--- Get modal option from metadata.
+--- @param key string The option name to retrieve.
+--- @param meta table<string, any> Document metadata table.
+--- @return string The option value as a string.
+local function get_modal_option(key, meta)
+  local meta_value = meta_mod.get_metadata_value(meta, 'modal', key)
+  if not str.is_empty(meta_value) then
+    return meta_value
+  end
+
+  return modal_settings_meta[key] or ''
+end
+
+
+--- Extract and configure modal settings from document metadata.
+---
+--- @param meta table<string, any> Document metadata table.
+--- @return table<string, any> Updated metadata table with modal configuration.
+local function get_modal_meta(meta)
+  local modal_options = {}
+  for key, _ in pairs(modal_settings_meta) do
+    modal_options[key] = get_modal_option(key, meta)
+  end
+  meta['extensions'] = meta['extensions'] or {}
+  meta['extensions']['modal'] = {}
+  for key, value in pairs(modal_options) do
+    if modal_settings_meta[key] ~= nil then
+      meta['extensions']['modal'][key] = value
+    end
+  end
+  modal_settings_meta = meta['extensions']['modal']
+  return meta
+end
+
+--- Filter for Divs with id starting with 'modal-'.
+---
+--- @param el table Pandoc Div element.
+--- @return table|nil Pandoc Div structure for modal, or nil if not applicable.
+local function modal(el)
+  if not quarto.doc.is_format("html:js") or not quarto.doc.has_bootstrap() or not (el.identifier:match("^modal%-")) then
+    return nil
+  end
+
+  quarto.doc.add_html_dependency({
+    name = "modal-clipboard",
+    version = '1.0.0',
+    scripts = {
+      { path = "modal-clipboard.min.js", afterBody = true }
+    }
+  })
+
+  local modal_id = el.identifier ~= '' and el.identifier or unique_modal_id()
+  local modal_size = el.attributes.size or modal_settings_meta["size"]
+  local modal_backdrop_static = el.attributes["backdrop-static"] or modal_settings_meta["backdrop-static"]
+  local modal_scrollable = el.attributes.scrollable or modal_settings_meta["scrollable"]
+  local modal_keyboard = el.attributes.keyboard or modal_settings_meta["keyboard"]
+  local modal_centred = el.attributes.centred or modal_settings_meta["centred"]
+  local modal_centered = el.attributes.centered or modal_settings_meta["centered"]
+  if el.attributes.centred and el.attributes.centered then
+    log.log_warning(EXTENSION_NAME, "Both 'centred' and 'centered' are set; using 'centred'.")
+  end
+  if not modal_centred and modal_centered then
+    modal_centred = modal_centered
+  end
+  local modal_fade = el.attributes.fade or modal_settings_meta["fade"]
+  local modal_fullscreen = el.attributes.fullscreen or modal_settings_meta["fullscreen"]
+
+  local size_class = ''
+  if modal_size == 'lg' then
+    size_class = 'modal-lg'
+  elseif modal_size == 'sm' then
+    size_class = 'modal-sm'
+  elseif modal_size == 'xl' then
+    size_class = 'modal-xl'
+  end
+  local dialog_classes = { 'modal-dialog' }
+  if size_class ~= '' then table.insert(dialog_classes, size_class) end
+  if modal_scrollable == 'true' then table.insert(dialog_classes, 'modal-dialog-scrollable') end
+  if modal_centred == 'true' then table.insert(dialog_classes, 'modal-dialog-centered') end
+  if modal_fullscreen == 'true' then
+    table.insert(dialog_classes, 'modal-fullscreen')
+  elseif modal_fullscreen and modal_fullscreen:match('^(sm|md|lg|xl|xxl)$') then
+    table.insert(dialog_classes, 'modal-fullscreen-' .. modal_fullscreen .. '-down')
+  end
+
+  --- Parse modal sections
+  local parsed = content.parse_sections(el.content)
+  local header_text = parsed.header_text
+  local header_level = parsed.header_level
+  local body_blocks = parsed.body_blocks
+  local footer_blocks = parsed.footer_blocks
+
+  local modal_header_id = header_text and str.ascii_id(header_text) or "modal-title"
+
+  local modal_header_html = pandoc.RawBlock('html',
+    html_mod.raw_header(header_level, header_text, modal_header_id, { 'modal-title' }, nil) ..
+    '\n' ..
+    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+  )
+  local modal_header = pandoc.Div({ modal_header_html }, pdoc.attr('', { 'modal-header' }))
+
+  local modal_content = { modal_header }
+  if #body_blocks > 0 then
+    table.insert(modal_content, pandoc.Div(content.protect_headers(body_blocks, modal_id .. '-', 'html'), pdoc.attr('', { 'modal-body' })))
+  end
+  if #footer_blocks > 0 then
+    table.insert(modal_content, pandoc.Div(content.protect_headers(footer_blocks, '', 'html'), pdoc.attr('', { 'modal-footer' })))
+  end
+
+
+  local modal_description = el.attributes.description
+  local modal_attrs = {
+    ['tabindex'] = '-1',
+    ['aria-hidden'] = 'true',
+    ['aria-labelledby'] = modal_header_id
+  }
+  if modal_description then
+    modal_attrs['aria-describedby'] = modal_description
+  end
+  if modal_backdrop_static == 'true' then
+    modal_attrs['data-bs-backdrop'] = 'static'
+  end
+  if modal_keyboard == 'false' then
+    modal_attrs['data-bs-keyboard'] = 'false'
+  end
+
+  local modal_classes = { 'modal' }
+  if modal_fade == 'true' then table.insert(modal_classes, 'fade') end
+
+  local modal_structure = pandoc.Div({
+    pandoc.Div({
+      pandoc.Div(modal_content, pdoc.attr('', { 'modal-content' }))
+    }, pdoc.attr('', dialog_classes))
+  }, pdoc.attr(modal_id, modal_classes, modal_attrs))
+
+  return modal_structure
+end
+
+return {
+  { Meta = get_modal_meta },
+  { Div = modal },
+  {
+    Link = function(el)
+      if el.target and not el.target:match('^#modal%-') then
+        return el
+      end
+      if el.attributes['data-bs-toggle'] == 'modal' then
+        return el
+      end
+      el.attributes['data-bs-target'] = el.target
+      el.attributes['data-bs-toggle'] = 'modal'
+      return el
+    end
+  }
+}
