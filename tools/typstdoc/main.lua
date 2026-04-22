@@ -13,7 +13,6 @@ local util = require("util")
 local parser = require("parser")
 local render = require("render")
 local resolve = require("resolve")
-local config_patch = require("config_patch")
 local deps = require("deps")
 local examples = require("examples")
 local changelog = require("changelog")
@@ -175,13 +174,6 @@ local function main(argv)
 
   util.write_file(opts.variables, deps.render(deps_info))
   local written = write_reference(opts, all_functions, modules, lib_info)
-
-  local sidebar_basename = opts.sidebar:match("([^/]+)$") or opts.sidebar
-  config_patch.patch_metadata_yml(opts.docs .. "/_metadata.yml")
-  config_patch.patch_quarto_yml(opts.docs .. "/_quarto.yml", sidebar_basename)
-
-  local stub_ref = opts.docs .. "/reference.qmd"
-  if util.file_exists(stub_ref) then util.remove_file(stub_ref) end
 
   util.log_info(string.format("wrote %d function page(s) under %s", written, opts.out))
   return 0

@@ -1,0 +1,14 @@
+# Extension config for the typst-render filter.
+filters:
+  - typst-render
+
+extensions:
+  typst-render:
+    root: ".."
+    preamble: "_typst-preamble.typ"
+    output-directory: "assets/typst-render"
+    background: auto
+    foreground: auto
+    width: auto
+    height: auto
+    margin: 0pt
