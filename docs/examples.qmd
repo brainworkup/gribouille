@@ -16,6 +16,7 @@ Click the Source button under any plot to see the full Typst snippet, data and a
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/minimal.svg"
+//| alt: "Scatter plot of iris sepal width against sepal length with points coloured by species across setosa, versicolor, and virginica."
 #include "/examples/minimal.typ"
 ```
 
@@ -28,6 +29,7 @@ Inline iris sample plotted with a single [`geom-point`](reference/geoms/geom-poi
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/multilayer.svg"
+//| alt: "Line and point chart of monthly sales from month 1 to 6 for three regions (north, south, and east), all trending upwards."
 #include "/examples/multilayer.typ"
 ```
 
@@ -41,6 +43,7 @@ Lines and points share a discrete colour mapping.
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/labs-title.svg"
+//| alt: "Scatter and line chart of count against month showing a rising trend, framed by a title, subtitle, caption, and axis labels."
 #include "/examples/labs-title.typ"
 ```
 
@@ -53,6 +56,7 @@ Title, subtitle, caption, and axis labels set in a single [`labs`](reference/lab
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/factor-inline.svg"
+//| alt: "Scatter plot of a noisy sinusoidal pattern with points coloured by a three-level cluster factor coerced from a numeric column."
 #include "/examples/factor-inline.typ"
 ```
 
@@ -65,6 +69,7 @@ Title, subtitle, caption, and axis labels set in a single [`labs`](reference/lab
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/penguins.svg"
+//| alt: "Scatter plot of penguin body mass against flipper length, with points coloured by species revealing three separated clusters."
 #include "/examples/penguins.typ"
 ```
 
@@ -83,6 +88,7 @@ CSV-loaded dataset: flipper length versus body mass, coloured by species.
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/bar-simple.svg"
+//| alt: "Bar chart of counts per fruit for four categories (apple, banana, cherry, and date), with banana tallest and cherry shortest."
 #include "/examples/bar-simple.typ"
 ```
 
@@ -95,6 +101,7 @@ Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/bar-count.svg"
+//| alt: "Bar chart counting observations per category from A to D, with D the tallest and B the shortest."
 #include "/examples/bar-count.typ"
 ```
 
@@ -107,6 +114,7 @@ Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/bar-stacked.svg"
+//| alt: "Stacked bar chart of revenue per quarter (Q1 to Q3), with each bar split into contributions from products A, B, and C."
 #include "/examples/bar-stacked.typ"
 ```
 
@@ -119,6 +127,7 @@ Discrete x counted with [`geom-bar`](reference/geoms/geom-bar.qmd).
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/bar-dodged.svg"
+//| alt: "Grouped bar chart of revenue per quarter (Q1 to Q3) with products A, B, and C shown as side-by-side bars within each quarter."
 #include "/examples/bar-dodged.typ"
 ```
 
@@ -131,6 +140,7 @@ Side-by-side bars per group via [`position-dodge`](reference/positions/position-
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/bar-filled.svg"
+//| alt: "Proportional bar chart where each quarter's total is normalised to 1, showing the share of revenue from products A, B, and C."
 #include "/examples/bar-filled.typ"
 ```
 
@@ -149,6 +159,7 @@ Each column normalised to 1 with [`position-fill`](reference/positions/position-
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/histogram.svg"
+//| alt: "Histogram of a continuous value across 12 bins from 0 to 10, with most observations concentrated between roughly 6 and 7."
 #include "/examples/histogram.typ"
 ```
 
@@ -161,6 +172,7 @@ Continuous x binned with [`stat-bin`](reference/stats/stat-bin.qmd) via [`geom-h
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/smooth.svg"
+//| alt: "Scatter plot of y against x overlaid with a linear smoother and its 95% confidence ribbon, showing a strong positive trend."
 #include "/examples/smooth.typ"
 ```
 
@@ -173,6 +185,7 @@ Scatter plus a linear fit with a 95% confidence ribbon from [`geom-smooth`](refe
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/ribbon-bounds.svg"
+//| alt: "Line chart of an upward trend over 20 steps with a shaded blue ribbon showing explicit lower and upper bounds around the line."
 #include "/examples/ribbon-bounds.typ"
 ```
 
@@ -191,6 +204,7 @@ Explicit `ymin` / `ymax` aesthetics drive [`geom-ribbon`](reference/geoms/geom-r
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/reference-lines.svg"
+//| alt: "Scatter plot of a noisy upward trend over 20 steps crossed by a red diagonal, a green horizontal, and a blue vertical reference line."
 #include "/examples/reference-lines.typ"
 ```
 
@@ -203,6 +217,7 @@ Explicit `ymin` / `ymax` aesthetics drive [`geom-ribbon`](reference/geoms/geom-r
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/text-labels.svg"
+//| alt: "Two scatter plots of four points labelled Alpha, Beta, Gamma, and Delta, one with plain text annotations and one with boxed labels."
 #include "/examples/text-labels.typ"
 ```
 
@@ -215,6 +230,7 @@ Points annotated with [`geom-text`](reference/geoms/geom-text.qmd) and boxed [`g
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/shape-linetype.svg"
+//| alt: "Line and point chart of three groups (A, B, and C) drawn with distinct point shapes, line dash styles, and colours per group."
 #include "/examples/shape-linetype.typ"
 ```
 
@@ -233,6 +249,7 @@ A single grouping maps to [`scale-shape`](reference/scales/scale-shape.qmd), [`s
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/colour-bar.svg"
+//| alt: "Scatter plot of a cosine wave where point colour encodes a continuous temperature variable shown by a vertical colourbar legend."
 #include "/examples/colour-bar.typ"
 ```
 
@@ -245,6 +262,7 @@ A colourbar appears automatically when colour is trained on a continuous variabl
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/viridis-colour.svg"
+//| alt: "Scatter plot of a sinusoidal pattern with points coloured along the Viridis continuous palette encoding values from low to high."
 #include "/examples/viridis-colour.typ"
 ```
 
@@ -257,6 +275,7 @@ A colourbar appears automatically when colour is trained on a continuous variabl
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/manual-palette.svg"
+//| alt: "Point and line chart of three groups (apple, berry, and cherry) drawn in a manual palette of red, orange, and teal."
 #include "/examples/manual-palette.typ"
 ```
 
@@ -275,6 +294,7 @@ User-supplied colours passed to [`scale-colour-manual`](reference/scales/scale-c
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/facets.svg"
+//| alt: "Scatter plot of car weight against miles per gallon, split into three facet-wrap panels by cylinder count (4, 6, and 8)."
 #include "/examples/facets.typ"
 ```
 
@@ -287,6 +307,7 @@ One panel per level of a discrete variable via [`facet-wrap`](reference/facets/f
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/facet-grid.svg"
+//| alt: "Scatter plot arranged on a facet grid of two rows (female and male) and three columns (species A, B, and C)."
 #include "/examples/facet-grid.typ"
 ```
 
@@ -299,6 +320,7 @@ Panels laid out on a row × column grid with [`facet-grid`](reference/facets/fac
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/coord-clip.svg"
+//| alt: "Line and point chart of a quadratic curve from 0 to 25, clipped via Cartesian limits to show only x between 5 and 15."
 #include "/examples/coord-clip.typ"
 ```
 
@@ -317,6 +339,7 @@ Panels laid out on a row × column grid with [`facet-grid`](reference/facets/fac
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/themed.svg"
+//| alt: "Three scatter plots of two groups drawn side by side, each using a different built-in theme: minimal, classic, and void."
 #include "/examples/themed.typ"
 ```
 
@@ -329,6 +352,7 @@ Per-element overrides with [`theme`](reference/themes/theme.qmd) on top of [`the
 ::: {.gallery-item}
 ```{typst}
 //| output-filename: "/assets/examples/theme-override.svg"
+//| alt: "Line and point chart of the curve y equals 0.1 times x squared over 12 steps, rendered with enlarged axis titles and a cream panel background."
 #include "/examples/theme-override.typ"
 ```
 
