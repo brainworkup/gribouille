@@ -23,6 +23,8 @@ Options:
   --root <dir>        Repository root (default: two levels above this script). Prefixes all path defaults.
   --src <dir>         Source directory to scan (default: <root>/src)
   --lib <file>        Library entry point (default: <root>/lib.typ)
+  --examples <dir>    Example .typ sources (default: <root>/examples)
+  --examples-out <dir> Where examples are copied for Quarto (default: <root>/docs/assets/examples)
   --out <dir>         Output directory for reference pages (default: <root>/docs/reference)
   --sidebar <file>    Sidebar YAML output (default: <root>/docs/_sidebar-reference.yml)
   --docs <dir>        Quarto project directory to patch (default: <root>/docs)
@@ -38,6 +40,8 @@ local VALUE_FLAGS = {
   ["--root"] = "root",
   ["--src"] = "src",
   ["--lib"] = "lib",
+  ["--examples"] = "examples",
+  ["--examples-out"] = "examples_out",
   ["--out"] = "out",
   ["--sidebar"] = "sidebar",
   ["--docs"] = "docs",
@@ -70,6 +74,8 @@ local function parse_args(argv)
   end
   opts.src = opts.src or (opts.root .. "/src")
   opts.lib = opts.lib or (opts.root .. "/lib.typ")
+  opts.examples = opts.examples or (opts.root .. "/examples")
+  opts.examples_out = opts.examples_out or (opts.root .. "/docs/assets/examples")
   opts.out = opts.out or (opts.root .. "/docs/reference")
   opts.sidebar = opts.sidebar or (opts.root .. "/docs/_sidebar-reference.yml")
   opts.docs = opts.docs or (opts.root .. "/docs")
@@ -110,10 +116,40 @@ local function report_check(files, all_functions, deps_info, changelog_result)
     changelog_status))
 end
 
+local EXAMPLE_SKIP_EXT = { pdf = true, png = true, jpg = true, jpeg = true, gif = true, svg = true }
+
+local function copy_examples(opts)
+  if not util.dir_exists(opts.examples) then return 0 end
+
+  util.make_dir(opts.examples_out)
+  os.execute(string.format(
+    "find %q -maxdepth 1 -type f ! -name '*.svg' -delete 2>/dev/null",
+    opts.examples_out))
+
+  local copied = 0
+  for _, name in ipairs(util.list_dir_files(opts.examples)) do
+    local ext = name:match("%.([^.]+)$")
+    if not (ext and EXAMPLE_SKIP_EXT[ext:lower()]) then
+      local src = opts.examples .. "/" .. name
+      local dst = opts.examples_out .. "/" .. name
+      if ext == "typ" then
+        local content, err = util.read_file(src)
+        if not content then util.die("could not read " .. src .. ": " .. tostring(err)) end
+        util.write_file(dst, content:gsub('#import "%.%./lib%.typ":[^\n]*\n\n?', ''))
+      else
+        os.execute(string.format("cp %q %q", src, dst))
+      end
+      copied = copied + 1
+    end
+  end
+
+  return copied
+end
+
 local function write_reference(opts, all_functions, modules, lib_info)
   local index = resolve.build_index(all_functions, lib_info)
 
-  util.remove_dir(opts.out)
+  util.remove_generated_files(opts.out, "*.qmd")
   util.make_dir(opts.out)
 
   local written = 0
@@ -163,8 +199,10 @@ local function main(argv)
 
   util.write_file(opts.variables, deps.render(deps_info))
   local written = write_reference(opts, all_functions, modules, lib_info)
+  local copied = copy_examples(opts)
 
   util.log_info(string.format("wrote %d function page(s) under %s", written, opts.out))
+  util.log_info(string.format("copied %d example(s) under %s", copied, opts.examples_out))
   return 0
 end
 

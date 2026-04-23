@@ -79,8 +79,7 @@
     named.insert("ink", _typst_render_foreground)
   }
   if (
-    named.at("paper", default: none) == none
-      and _typst_render_background != none
+    named.at("paper", default: none) == none and _typst_render_background != none
   ) {
     named.insert("paper", _typst_render_background)
   }

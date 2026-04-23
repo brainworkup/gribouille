@@ -63,6 +63,7 @@ Drop the following into a `.typ` file alongside a CSV and render with `typst com
 ```
 
 ```{typst}
+//| output-filename: "scatterplot.svg"
 //| alt: "A scatterplot of miles per gallon vs weight, with a linear regression line."
 #import "./lib.typ": *
 
@@ -110,5 +111,5 @@ Plot-level settings
 ## Next steps
 
 - Read the [Reference](../reference/index.qmd) to see every function the library exposes.
-- Browse the [Examples](../examples.qmd) gallery for idiomatic usage.
+- Browse the [Examples](../examples/index.qmd) gallery for idiomatic usage.
 - Keep an eye on the [Changelog](../changelog.qmd) for API changes during the development phase.

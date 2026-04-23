@@ -4,7 +4,7 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let penguins = csv("penguins.csv", row-type: dictionary)
+#let penguins = csv("/examples/penguins.csv", row-type: dictionary)
 
 #plot(
   data: penguins,

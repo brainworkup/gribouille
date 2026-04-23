@@ -54,6 +54,11 @@ function M.remove_dir(path)
   os.execute(string.format("rm -rf %q", path))
 end
 
+function M.remove_generated_files(path, pattern)
+  os.execute(string.format("find %q -type f -name %q -delete 2>/dev/null", path, pattern))
+  os.execute(string.format("find %q -mindepth 1 -type d -empty -delete 2>/dev/null", path))
+end
+
 function M.make_dir(path)
   os.execute(string.format("mkdir -p %q", path))
 end

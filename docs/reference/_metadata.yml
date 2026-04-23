@@ -1,0 +1,3 @@
+extensions:
+  typst-render:
+    output-directory: "/assets/typst-render/references"

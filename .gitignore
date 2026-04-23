@@ -5,6 +5,7 @@
 # Typst build artefacts
 /examples/*.pdf
 /examples/*.png
+/examples/*.svg
 
 # Test outputs
 /tests/**/output/

@@ -2,7 +2,7 @@
 title: "Gribouille {{< env VERSION >}}"
 toc: false
 sidebar: false
-image: assets/examples/penguins-light.svg
+image: /assets/typst-render/examples/penguins-light.svg
 engine: markdown
 include-in-header:
   - text: |
@@ -31,11 +31,11 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 ::: {.hero-art}
 
 ::: {.light-content}
-![A faceted scatter plot of Palmer penguins.](assets/examples/penguins-light.svg){fig-alt="A faceted scatter plot of Palmer penguins, flipper length versus body mass, coloured by species."}
+![A faceted scatter plot of Palmer penguins.](/assets/typst-render/examples/penguins-light.svg){fig-alt="A faceted scatter plot of Palmer penguins, flipper length versus body mass, coloured by species."}
 :::
 
 ::: {.dark-content}
-![A faceted scatter plot of Palmer penguins.](assets/examples/penguins-dark.svg){fig-alt="A faceted scatter plot of Palmer penguins, flipper length versus body mass, coloured by species."}
+![A faceted scatter plot of Palmer penguins.](/assets/typst-render/examples/penguins-dark.svg){fig-alt="A faceted scatter plot of Palmer penguins, flipper length versus body mass, coloured by species."}
 :::
 
 :::
@@ -94,7 +94,7 @@ Stack geoms, scales, facets, and a theme until the plot is right.
 ::: {.showcase-output}
 
 ```{typst}
-//| output-filename: "/assets/examples/showcase.svg"
+//| output-filename: "/assets/typst-render/index/showcase.svg"
 #include "/examples/showcase.typ"
 ```
 
@@ -138,7 +138,7 @@ Bin, count, identity, and smooth stats.
 :::
 
 ::: {.feature}
-#### [Composable.](examples.qmd)
+#### [Composable.](examples/index.qmd)
 
 Everything is data you can `let`, extend, and reuse across a Typst document.
 :::
@@ -150,10 +150,10 @@ Everything is data you can `let`, extend, and reuse across a Typst document.
 ::: {.light-content}
 
 ::: {.gallery-preview}
-[![Minimal scatter](assets/examples/minimal-light.svg)](examples.qmd)
-[![Multilayer trend](assets/examples/multilayer-light.svg)](examples.qmd)
-[![Smoother with ribbon](assets/examples/smooth-light.svg)](examples.qmd)
-[![Facets](assets/examples/facets-light.svg)](examples.qmd)
+[![Minimal scatter](/assets/typst-render/examples/minimal-light.svg)](examples/index.qmd)
+[![Multilayer trend](/assets/typst-render/examples/multilayer-light.svg)](examples/index.qmd)
+[![Smoother with ribbon](/assets/typst-render/examples/smooth-light.svg)](examples/index.qmd)
+[![Facets](/assets/typst-render/examples/facets-light.svg)](examples/index.qmd)
 :::
 
 :::
@@ -161,15 +161,15 @@ Everything is data you can `let`, extend, and reuse across a Typst document.
 ::: {.dark-content}
 
 ::: {.gallery-preview}
-[![Minimal scatter](assets/examples/minimal-dark.svg)](examples.qmd)
-[![Multilayer trend](assets/examples/multilayer-dark.svg)](examples.qmd)
-[![Smoother with ribbon](assets/examples/smooth-dark.svg)](examples.qmd)
-[![Facets](assets/examples/facets-dark.svg)](examples.qmd)
+[![Minimal scatter](/assets/typst-render/examples/minimal-dark.svg)](examples/index.qmd)
+[![Multilayer trend](/assets/typst-render/examples/multilayer-dark.svg)](examples/index.qmd)
+[![Smoother with ribbon](/assets/typst-render/examples/smooth-dark.svg)](examples/index.qmd)
+[![Facets](/assets/typst-render/examples/facets-dark.svg)](examples/index.qmd)
 :::
 
 :::
 
-[See all examples](examples.qmd){.btn .btn-outline}
+[See all examples](examples/index.qmd){.btn .btn-outline}
 
 ::: {.install-band}
 ## Install.

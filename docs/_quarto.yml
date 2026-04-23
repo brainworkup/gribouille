@@ -13,11 +13,6 @@ project:
     - assets/images/favicon.svg
     - assets/images/favicon-dark.svg
 
-engine: markdown
-
-shortcodes:
-  - assets/lua/typst.lua
-
 lang: en-GB
 date-format: "dddd[, the] Do [of] MMMM, YYYY"
 
@@ -58,13 +53,15 @@ website:
       - text: "Reference"
         href: reference/index.qmd
       - text: "Examples"
-        href: examples.qmd
+        href: examples/index.qmd
       - text: "Changelog"
         href: changelog.qmd
     right:
       - icon: github
         href: https://github.com/mcanouil/gribouille
         aria-label: "GitHub"
+
+brand: _brand.yml
 
 format:
   html:
@@ -99,7 +96,12 @@ format:
 execute:
   freeze: auto
 
+lightbox: auto
+
 metadata-files:
   - _extensions-metadata.yml
   - _sidebar-reference.yml
   - _sidebar-get-started.yml
+
+shortcodes:
+  - assets/lua/typst.lua

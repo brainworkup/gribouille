@@ -5,9 +5,8 @@ filters:
 
 extensions:
   typst-render:
-    root: ".."
+    root: "../"
     preamble: "_typst-preamble.typ"
-    output-directory: "assets/typst-render"
     background: auto
     foreground: auto
     width: auto
