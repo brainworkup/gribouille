@@ -367,191 +367,143 @@ Custom text sizes, panel fill, and grid colour passed through [`theme`](referenc
 ::: {#modal-minimal description="Source for minimal.typ"}
 ### `minimal.typ`
 
-```{.typst}
-{{< include examples/minimal.typ >}}
-```
+{{< typst examples/minimal.typ >}}
 :::
 
 ::: {#modal-multilayer description="Source for multilayer.typ"}
 ### `multilayer.typ`
 
-```{.typst}
-{{< include examples/multilayer.typ >}}
-```
+{{< typst examples/multilayer.typ >}}
 :::
 
 ::: {#modal-labs-title description="Source for labs-title.typ"}
 ### `labs-title.typ`
 
-```{.typst}
-{{< include examples/labs-title.typ >}}
-```
+{{< typst examples/labs-title.typ >}}
 :::
 
 ::: {#modal-factor-inline description="Source for factor-inline.typ"}
 ### `factor-inline.typ`
 
-```{.typst}
-{{< include examples/factor-inline.typ >}}
-```
+{{< typst examples/factor-inline.typ >}}
 :::
 
 ::: {#modal-penguins description="Source for penguins.typ"}
 ### `penguins.typ`
 
-```{.typst}
-{{< include examples/penguins.typ >}}
-```
+{{< typst examples/penguins.typ >}}
 :::
 
 ::: {#modal-bar-simple description="Source for bar-simple.typ"}
 ### `bar-simple.typ`
 
-```{.typst}
-{{< include examples/bar-simple.typ >}}
-```
+{{< typst examples/bar-simple.typ >}}
 :::
 
 ::: {#modal-bar-count description="Source for bar-count.typ"}
 ### `bar-count.typ`
 
-```{.typst}
-{{< include examples/bar-count.typ >}}
-```
+{{< typst examples/bar-count.typ >}}
 :::
 
 ::: {#modal-bar-stacked description="Source for bar-stacked.typ"}
 ### `bar-stacked.typ`
 
-```{.typst}
-{{< include examples/bar-stacked.typ >}}
-```
+{{< typst examples/bar-stacked.typ >}}
 :::
 
 ::: {#modal-bar-dodged description="Source for bar-dodged.typ"}
 ### `bar-dodged.typ`
 
-```{.typst}
-{{< include examples/bar-dodged.typ >}}
-```
+{{< typst examples/bar-dodged.typ >}}
 :::
 
 ::: {#modal-bar-filled description="Source for bar-filled.typ"}
 ### `bar-filled.typ`
 
-```{.typst}
-{{< include examples/bar-filled.typ >}}
-```
+{{< typst examples/bar-filled.typ >}}
 :::
 
 ::: {#modal-histogram description="Source for histogram.typ"}
 ### `histogram.typ`
 
-```{.typst}
-{{< include examples/histogram.typ >}}
-```
+{{< typst examples/histogram.typ >}}
 :::
 
 ::: {#modal-smooth description="Source for smooth.typ"}
 ### `smooth.typ`
 
-```{.typst}
-{{< include examples/smooth.typ >}}
-```
+{{< typst examples/smooth.typ >}}
 :::
 
 ::: {#modal-ribbon-bounds description="Source for ribbon-bounds.typ"}
 ### `ribbon-bounds.typ`
 
-```{.typst}
-{{< include examples/ribbon-bounds.typ >}}
-```
+{{< typst examples/ribbon-bounds.typ >}}
 :::
 
 ::: {#modal-reference-lines description="Source for reference-lines.typ"}
 ### `reference-lines.typ`
 
-```{.typst}
-{{< include examples/reference-lines.typ >}}
-```
+{{< typst examples/reference-lines.typ >}}
 :::
 
 ::: {#modal-text-labels description="Source for text-labels.typ"}
 ### `text-labels.typ`
 
-```{.typst}
-{{< include examples/text-labels.typ >}}
-```
+{{< typst examples/text-labels.typ >}}
 :::
 
 ::: {#modal-shape-linetype description="Source for shape-linetype.typ"}
 ### `shape-linetype.typ`
 
-```{.typst}
-{{< include examples/shape-linetype.typ >}}
-```
+{{< typst examples/shape-linetype.typ >}}
 :::
 
 ::: {#modal-colour-bar description="Source for colour-bar.typ"}
 ### `colour-bar.typ`
 
-```{.typst}
-{{< include examples/colour-bar.typ >}}
-```
+{{< typst examples/colour-bar.typ >}}
 :::
 
 ::: {#modal-viridis-colour description="Source for viridis-colour.typ"}
 ### `viridis-colour.typ`
 
-```{.typst}
-{{< include examples/viridis-colour.typ >}}
-```
+{{< typst examples/viridis-colour.typ >}}
 :::
 
 ::: {#modal-manual-palette description="Source for manual-palette.typ"}
 ### `manual-palette.typ`
 
-```{.typst}
-{{< include examples/manual-palette.typ >}}
-```
+{{< typst examples/manual-palette.typ >}}
 :::
 
 ::: {#modal-facets description="Source for facets.typ"}
 ### `facets.typ`
 
-```{.typst}
-{{< include examples/facets.typ >}}
-```
+{{< typst examples/facets.typ >}}
 :::
 
 ::: {#modal-facet-grid description="Source for facet-grid.typ"}
 ### `facet-grid.typ`
 
-```{.typst}
-{{< include examples/facet-grid.typ >}}
-```
+{{< typst examples/facet-grid.typ >}}
 :::
 
 ::: {#modal-coord-clip description="Source for coord-clip.typ"}
 ### `coord-clip.typ`
 
-```{.typst}
-{{< include examples/coord-clip.typ >}}
-```
+{{< typst examples/coord-clip.typ >}}
 :::
 
 ::: {#modal-themed description="Source for themed.typ"}
 ### `themed.typ`
 
-```{.typst}
-{{< include examples/themed.typ >}}
-```
+{{< typst examples/themed.typ >}}
 :::
 
 ::: {#modal-theme-override description="Source for theme-override.typ"}
 ### `theme-override.typ`
 
-```{.typst}
-{{< include examples/theme-override.typ >}}
-```
+{{< typst examples/theme-override.typ >}}
 :::

@@ -14,7 +14,6 @@ local parser = require("parser")
 local render = require("render")
 local resolve = require("resolve")
 local deps = require("deps")
-local examples = require("examples")
 local changelog = require("changelog")
 
 local USAGE = [[
@@ -101,17 +100,14 @@ local function parse_sources(src_dir, lib_info)
   return files, all_functions, modules
 end
 
-local function report_check(files, all_functions, deps_info, examples_result, changelog_result)
-  local examples_status = examples_result.skipped_entirely
-    and "examples skipped"
-    or string.format("examples %d in sync", examples_result.skipped)
+local function report_check(files, all_functions, deps_info, changelog_result)
   local changelog_status = changelog_result.skipped_entirely
     and "changelog skipped"
     or "changelog OK"
   util.log_info(string.format(
-    "parsed %d function(s) across %d file(s); deps OK (%s); %s; %s; check OK",
+    "parsed %d function(s) across %d file(s); deps OK (%s); %s; check OK",
     #all_functions, #files, deps.summary(deps_info),
-    examples_status, changelog_status))
+    changelog_status))
 end
 
 local function write_reference(opts, all_functions, modules, lib_info)
@@ -151,13 +147,6 @@ local function main(argv)
     src = opts.src,
   })
 
-  local examples_result = examples.run({
-    root = opts.root,
-    subdir = "examples",
-    dst_dir = opts.docs .. "/examples",
-    check = opts.check,
-  })
-
   local changelog_result = changelog.run({
     input = opts.root .. "/CHANGELOG.md",
     output = opts.docs .. "/changelog.qmd",
@@ -168,7 +157,7 @@ local function main(argv)
   local files, all_functions, modules = parse_sources(opts.src, lib_info)
 
   if opts.check then
-    report_check(files, all_functions, deps_info, examples_result, changelog_result)
+    report_check(files, all_functions, deps_info, changelog_result)
     return 0
   end
 

@@ -2,9 +2,6 @@
 /_sidebar-reference.yml
 /reference/
 
-# Mirror of /examples/ written by tools/typstdoc/main.lua on pre-render.
-/examples/
-
 # Rendered by the typst-render Quarto filter during `quarto render`.
 /assets/examples/*.svg
 /assets/typst-render/

@@ -15,6 +15,9 @@ project:
 
 engine: markdown
 
+shortcodes:
+  - assets/lua/typst.lua
+
 lang: en-GB
 date-format: "dddd[, the] Do [of] MMMM, YYYY"
 
