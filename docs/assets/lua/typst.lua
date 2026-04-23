@@ -29,15 +29,35 @@ local function read_file(path)
   return body
 end
 
---- Rewrite the first `#import "...lib.typ": *` directive to the public
---- registry import so users see the same line they would write themselves.
+--- Ensure the source carries a `#import "@preview/gribouille:VERSION": *`
+--- directive so users see the same line they would write themselves. If an
+--- existing `lib.typ` import is present it is rewritten in place; otherwise
+--- the package import is inserted after the leading comment block.
 --- `VERSION` is read from the environment; missing values fall back to `?.?.?`.
 --- @param source string Raw Typst source
---- @return string Source with the first matching import rewritten
+--- @return string Source with the package import present
 local function rewrite_lib_import(source)
   local version = os.getenv('VERSION') or '?.?.?'
   local replacement = '#import "@preview/gribouille:' .. version .. '": *'
-  return (source:gsub('#import%s+"[^"]*lib%.typ"%s*:[^\n]*', replacement, 1))
+  local rewritten, n = source:gsub('#import%s+"[^"]*lib%.typ"%s*:[^\n]*', replacement, 1)
+  if n > 0 then
+    return rewritten
+  end
+  local header_lines = {}
+  local rest_start = 1
+  for line, next_pos in source:gmatch('([^\n]*)\n()') do
+    if line:match('^%s*//') or line:match('^%s*$') then
+      header_lines[#header_lines + 1] = line
+      rest_start = next_pos
+    else
+      break
+    end
+  end
+  local rest = source:sub(rest_start):gsub('^\n+', '')
+  if #header_lines > 0 then
+    return table.concat(header_lines, '\n') .. '\n' .. replacement .. '\n\n' .. rest
+  end
+  return replacement .. '\n\n' .. rest
 end
 
 -- ============================================================================
