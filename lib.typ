@@ -85,6 +85,11 @@
 #import "src/theme/minimal.typ": theme-minimal
 #import "src/theme/classic.typ": theme-classic
 #import "src/theme/void.typ": theme-void
+#import "src/theme/bw.typ": theme-bw
+#import "src/theme/linedraw.typ": theme-linedraw
+#import "src/theme/light.typ": theme-light
+#import "src/theme/dark.typ": theme-dark
+#import "src/theme/test.typ": theme-test
 #import "src/theme/theme.typ": theme
 #import "src/theme/elements.typ": (
   element-blank, element-line, element-rect, element-text,
