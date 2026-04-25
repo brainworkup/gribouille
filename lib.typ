@@ -63,6 +63,7 @@
 
 // Coord.
 #import "src/coord/cartesian.typ": coord-cartesian
+#import "src/coord/fixed.typ": coord-fixed
 
 // Positions.
 #import "src/position/stack.typ": position-stack
