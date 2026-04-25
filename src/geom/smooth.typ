@@ -7,6 +7,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/group.typ": partition-by-group
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -79,28 +80,6 @@
   inherit-aes: inherit-aes,
 )
 
-// Mirror geom-line's grouping contract so mapped `colour`, `fill` and
-// `linetype` aesthetics pull rows into distinct smoothers, each drawn with
-// its own resolved colour and fill.
-#let _group-key(row, mapping) = {
-  let keys = ()
-  let group-col = mapping.at("group", default: none)
-  if group-col != none {
-    keys.push(str(row.at(group-col, default: "")))
-  }
-  for aes-name in ("colour", "fill", "linetype") {
-    let col = mapping.at(aes-name, default: none)
-    if (
-      col != none
-        and col != mapping.at("x", default: none)
-        and col != mapping.at("y", default: none)
-    ) {
-      keys.push(str(row.at(col, default: "")))
-    }
-  }
-  if keys.len() == 0 { "_all" } else { keys.join("\u{1}") }
-}
-
 #let draw(layer, ctx) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
@@ -125,17 +104,9 @@
     rgb("#3b5998")
   }
 
-  // Partition rows by group key so each subgroup is drawn as its own line
-  // and ribbon, with colour/fill resolved from the scale on a sample row.
-  let groups = (:)
-  for row in data {
-    let key = _group-key(row, mapping)
-    let bucket = groups.at(key, default: ())
-    bucket.push(row)
-    groups.insert(key, bucket)
-  }
-
-  for (key, rows) in groups.pairs() {
+  // Partition by group key (scale-aware: only discrete aesthetics group).
+  for g in partition-by-group(data, mapping, trained: ctx.trained) {
+    let rows = g.data
     let sorted = rows
       .map(row => (
         x: parse-number(row.at(x-col, default: none)),

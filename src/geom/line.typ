@@ -8,6 +8,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/palette.typ": default-linetypes
+#import "../utils/group.typ": partition-by-group
 
 /// Line layer connecting observations in x order, one path per group.
 ///
@@ -72,25 +73,6 @@
   inherit-aes: inherit-aes,
 )
 
-#let _group-key(row, mapping) = {
-  let keys = ()
-  let group-col = mapping.at("group", default: none)
-  if group-col != none {
-    keys.push(str(row.at(group-col, default: "")))
-  }
-  for aes-name in ("colour", "fill", "linetype") {
-    let col = mapping.at(aes-name, default: none)
-    if (
-      col != none
-        and col != mapping.at("x", default: none)
-        and col != mapping.at("y", default: none)
-    ) {
-      keys.push(str(row.at(col, default: "")))
-    }
-  }
-  if keys.len() == 0 { "_all" } else { keys.join("\u{1}") }
-}
-
 #let draw(layer, ctx) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
@@ -122,16 +104,9 @@
     layer.params.linetype
   } else { "solid" }
 
-  // Partition rows by group key.
-  let groups = (:)
-  for row in data {
-    let key = _group-key(row, mapping)
-    let bucket = groups.at(key, default: ())
-    bucket.push(row)
-    groups.insert(key, bucket)
-  }
-
-  for (key, rows) in groups.pairs() {
+  // Partition by group key (scale-aware: only discrete aesthetics group).
+  for g in partition-by-group(data, mapping, trained: ctx.trained) {
+    let rows = g.data
     // Sort by x value numerically if continuous, else by discrete index.
     let with-x = rows
       .map(row => {

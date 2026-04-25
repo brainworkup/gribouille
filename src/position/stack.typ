@@ -8,6 +8,8 @@
 #import "../utils/types.typ": parse-number
 
 /// Stack position adjustment: cumulate y per x bucket.
+/// Stacking is per x bucket across all groups — different groups at the same
+/// x are stacked on top of each other in row order.
 ///
 /// Typically set on a layer as `position: "stack"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.
@@ -39,18 +41,6 @@
 ///
 /// @see @position-dodge, @position-fill, @position-identity
 #let position-stack() = (kind: "position", name: "stack")
-
-#let _group-id(row, mapping) = {
-  let keys = ()
-  for aes-name in ("group", "fill", "colour", "linetype", "shape") {
-    let col = mapping.at(aes-name, default: none)
-    if col == none { continue }
-    if col == mapping.at("x", default: none) { continue }
-    if col == mapping.at("y", default: none) { continue }
-    keys.push(str(row.at(col, default: "")))
-  }
-  if keys.len() == 0 { "_all" } else { keys.join("\u{1}") }
-}
 
 #let apply(data, mapping, params: (:)) = {
   let x-col = mapping.at("x", default: none)

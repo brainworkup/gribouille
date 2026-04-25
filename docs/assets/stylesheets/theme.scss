@@ -667,6 +667,7 @@ blockquote {
 }
 
 .gallery-item {
+  position: relative;
   background: var(--gb-surface);
   border-radius: var(--gb-radius-lg);
   box-shadow: var(--gb-shadow-soft);
@@ -677,6 +678,13 @@ blockquote {
   &:hover {
     transform: translateY(-2px);
     box-shadow: var(--gb-shadow-lift);
+  }
+
+  // Lift inline anchors above Bootstrap's `.stretched-link::after` overlay
+  // so links inside descriptions remain clickable.
+  p a {
+    position: relative;
+    z-index: 2;
   }
 
   img {
@@ -702,6 +710,16 @@ blockquote {
   a {
     text-decoration: none;
   }
+}
+
+.gallery-section + .gallery-section {
+  margin-top: 2.5rem;
+}
+
+.gallery-trigger {
+  display: block;
+  color: inherit;
+  cursor: pointer;
 }
 
 // ========================================================================

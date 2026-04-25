@@ -50,6 +50,16 @@
     if not order.contains(key) { order.push(key) }
     counts.insert(key, counts.at(key, default: 0) + 1)
   }
-  let rows = order.map(k => (x: k, y: counts.at(k)))
-  (data: rows, mapping: (x: "x", y: "y"))
+  // Use the original x column name so the per-group framework can re-inject
+  // group column values without column-name mismatches. y maps to "_count"
+  // rather than clobbering any existing y column.
+  let rows = order.map(k => {
+    let r = (:)
+    r.insert(x-col, k)
+    r.insert("_count", counts.at(k))
+    r
+  })
+  let new-mapping = mapping
+  new-mapping.insert("y", "_count")
+  (data: rows, mapping: new-mapping)
 }

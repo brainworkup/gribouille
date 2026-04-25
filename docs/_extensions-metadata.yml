@@ -1,5 +1,7 @@
-# Extension config for the typst-render filter.
+# Project-wide filter chain. Order matters: examples-data must run first so
+# `typst-render` and `modal` see the blocks it injects on the examples page.
 filters:
+  - assets/lua/examples-data.lua
   - typst-render
   - modal
 

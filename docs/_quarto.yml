@@ -94,7 +94,7 @@ format:
       - file: assets/scripts/ordinal-dates.html
 
 execute:
-  freeze: auto
+  freeze: false
 
 lightbox: auto
 

@@ -1,0 +1,34 @@
+<%
+const sectionOrder = [
+  { key: "basics",      heading: "Basics" },
+  { key: "bars",        heading: "Bars and counts" },
+  { key: "stats",       heading: "Statistics and smoothers" },
+  { key: "annotations", heading: "Annotations" },
+  { key: "scales",      heading: "Scales and colour" },
+  { key: "facets",      heading: "Facets and coordinates" },
+  { key: "themes",      heading: "Themes" }
+];
+const grouped = {};
+for (const item of items) {
+  const sec = item.section || "other";
+  (grouped[sec] = grouped[sec] || []).push(item);
+}
+%>
+<% for (const { key, heading } of sectionOrder) { %>
+<% if (grouped[key]) { %>
+<section class="gallery-section">
+<h2 id="<%= key %>"><%= heading %></h2>
+<div class="gallery">
+<% for (const item of grouped[key]) { %>
+<article class="gallery-item">
+<div class="light-content"><img src="../assets/typst-render/examples/<%= item.slug %>-light.svg" alt="<%= item.alt %>" loading="lazy"></div>
+<div class="dark-content"><img src="../assets/typst-render/examples/<%= item.slug %>-dark.svg" alt="<%= item.alt %>" loading="lazy"></div>
+<h3><%= item.title %></h3>
+<p><%= item.description %></p>
+<a class="gallery-trigger stretched-link" href="#modal-<%= item.slug %>" data-bs-toggle="modal" data-bs-target="#modal-<%= item.slug %>" role="button" aria-label="View source for <%= item.title %>"></a>
+</article>
+<% } %>
+</div>
+</section>
+<% } %>
+<% } %>

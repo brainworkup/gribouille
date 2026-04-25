@@ -9,6 +9,7 @@
 #import "utils/pretty.typ": pretty
 #import "utils/types.typ": parse-number
 #import "utils/palette.typ": default-discrete
+#import "utils/group.typ": group-cols, partition-by-group
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
 #import "geom/col.typ" as col-geom
@@ -90,9 +91,31 @@
   let stat-data = data
   let stat-mapping = if stat-identity { mapping } else { stripped }
   if not stat-identity {
-    let r = apply-stat(stat-name, data, stripped, params)
-    stat-data = r.data
-    stat-mapping = r.mapping
+    // ggplot2 v4 compute_group() pattern: split by discrete-aesthetic groups,
+    // apply the stat to each group independently, then recombine.
+    let gcols = group-cols(mapping)
+    let group-list = partition-by-group(data, mapping)
+    let combined = ()
+    let last-mapping = stripped
+    for g in group-list {
+      let r = apply-stat(stat-name, g.data, stripped, params)
+      last-mapping = r.mapping
+      // Re-inject group column values from the first row of this group so
+      // scale training and position adjustments can still see them.
+      let proto = g.data.at(0, default: (:))
+      let enriched = r.data.map(row => {
+        let new-row = row
+        for gc in gcols {
+          if new-row.at(gc, default: none) == none {
+            new-row.insert(gc, proto.at(gc, default: none))
+          }
+        }
+        new-row
+      })
+      combined += enriched
+    }
+    stat-data = combined
+    stat-mapping = last-mapping
   }
 
   let position-name = layer.at("position", default: "identity")
