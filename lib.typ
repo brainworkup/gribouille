@@ -41,6 +41,9 @@
 
 // Scales.
 #import "src/scale/continuous.typ": scale-x-continuous, scale-y-continuous
+#import "src/scale/continuous.typ": scale-x-log10, scale-y-log10
+#import "src/scale/continuous.typ": scale-x-sqrt, scale-y-sqrt
+#import "src/scale/continuous.typ": scale-x-reverse, scale-y-reverse
 #import "src/scale/discrete.typ": scale-x-discrete, scale-y-discrete
 #import "src/scale/colour.typ": scale-colour-continuous, scale-colour-discrete
 #import "src/scale/colour.typ": scale-fill-continuous, scale-fill-discrete

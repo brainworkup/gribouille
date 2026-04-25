@@ -2,7 +2,9 @@
 // Draws a single cartesian panel with axes and layer marks.
 
 #import "deps.typ": cetz
-#import "scale/train.typ": map-continuous, map-position, mapping-ref-col, train
+#import "scale/train.typ": (
+  map-axis, map-continuous, map-position, mapping-ref-col, train,
+)
 #import "stat/apply.typ": apply-stat
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
@@ -376,7 +378,7 @@
   if x-trained != none and x-trained.type == "continuous" {
     let breaks = pretty(x-trained.domain.at(0), x-trained.domain.at(1), n: 5)
     for b in breaks {
-      let cx = map-continuous(b, x-trained.domain, px-range)
+      let cx = map-axis(x-trained, b, px-range)
       if grid-stroke != none {
         line((cx, py-lo), (cx, py-hi), stroke: grid-stroke)
       }
@@ -419,7 +421,7 @@
   if y-trained != none and y-trained.type == "continuous" {
     let breaks = pretty(y-trained.domain.at(0), y-trained.domain.at(1), n: 5)
     for b in breaks {
-      let cy = map-continuous(b, y-trained.domain, py-range)
+      let cy = map-axis(y-trained, b, py-range)
       if grid-stroke != none {
         line((px-lo, cy), (px-hi, cy), stroke: grid-stroke)
       }

@@ -1,0 +1,89 @@
+// Log/sqrt/reverse continuous scale wrappers.
+//
+// Each wrapper produces a scale spec dict with the same shape as
+// `scale-x-continuous` / `scale-y-continuous` and the appropriate `trans`
+// keyword. Mapping then applies the trans through `map-position`, so a
+// mid-domain value lands closer to one endpoint than the linear midpoint.
+
+#import "../../src/scale/continuous.typ": (
+  scale-x-log10, scale-x-reverse, scale-x-sqrt, scale-y-log10, scale-y-reverse,
+  scale-y-sqrt,
+)
+#import "../../src/scale/train.typ": map-axis, map-position
+
+// --- spec dicts carry the right aesthetic and trans ---
+
+#let xs-log = scale-x-log10()
+#assert.eq(xs-log.kind, "scale")
+#assert.eq(xs-log.aesthetic, "x")
+#assert.eq(xs-log.type, "continuous")
+#assert.eq(xs-log.trans, "log10")
+
+#let ys-log = scale-y-log10()
+#assert.eq(ys-log.aesthetic, "y")
+#assert.eq(ys-log.trans, "log10")
+
+#let xs-sqrt = scale-x-sqrt()
+#assert.eq(xs-sqrt.aesthetic, "x")
+#assert.eq(xs-sqrt.trans, "sqrt")
+
+#let ys-sqrt = scale-y-sqrt()
+#assert.eq(ys-sqrt.aesthetic, "y")
+#assert.eq(ys-sqrt.trans, "sqrt")
+
+#let xs-rev = scale-x-reverse()
+#assert.eq(xs-rev.aesthetic, "x")
+#assert.eq(xs-rev.trans, "reverse")
+
+#let ys-rev = scale-y-reverse()
+#assert.eq(ys-rev.aesthetic, "y")
+#assert.eq(ys-rev.trans, "reverse")
+
+// --- map-position honours each trans keyword ---
+
+#let log-trained = (
+  type: "continuous",
+  domain: (1.0, 100.0),
+  spec: xs-log,
+  trans: "log10",
+)
+// log10 of 10 is the midpoint between log10(1) and log10(100), so the value
+// 10 sits at the centre of the range.
+#assert.eq(map-position(log-trained, 10, (0.0, 10.0)), 5.0)
+#assert.eq(map-position(log-trained, 1, (0.0, 10.0)), 0.0)
+#assert.eq(map-position(log-trained, 100, (0.0, 10.0)), 10.0)
+
+#let sqrt-trained = (
+  type: "continuous",
+  domain: (0.0, 100.0),
+  spec: xs-sqrt,
+  trans: "sqrt",
+)
+// sqrt(25) is half of sqrt(100), so 25 lands at the midpoint.
+#assert.eq(map-position(sqrt-trained, 25, (0.0, 10.0)), 5.0)
+#assert.eq(map-position(sqrt-trained, 0, (0.0, 10.0)), 0.0)
+#assert.eq(map-position(sqrt-trained, 100, (0.0, 10.0)), 10.0)
+
+#let rev-trained = (
+  type: "continuous",
+  domain: (0.0, 10.0),
+  spec: xs-rev,
+  trans: "reverse",
+)
+// Reversed: domain low maps to range high.
+#assert.eq(map-position(rev-trained, 0, (0.0, 10.0)), 10.0)
+#assert.eq(map-position(rev-trained, 10, (0.0, 10.0)), 0.0)
+#assert.eq(map-position(rev-trained, 5, (0.0, 10.0)), 5.0)
+
+// --- map-axis (numeric fast path used by the renderer) matches map-position ---
+
+#assert.eq(
+  map-axis(log-trained, 10, (0.0, 10.0)),
+  map-position(log-trained, 10, (0.0, 10.0)),
+)
+#assert.eq(
+  map-axis(rev-trained, 3, (0.0, 10.0)),
+  map-position(rev-trained, 3, (0.0, 10.0)),
+)
+
+Scale trans tests passed.

@@ -160,7 +160,13 @@
     ) {
       domain = user-scale.limits
     }
-    trained.insert(a, (type: scale-type, domain: domain, spec: user-scale))
+    let trans = if user-scale != none {
+      user-scale.at("trans", default: "identity")
+    } else { "identity" }
+    trained.insert(
+      a,
+      (type: scale-type, domain: domain, spec: user-scale, trans: trans),
+    )
   }
 
   // Fold the directional aesthetics into the positional axes so the x and y
@@ -189,7 +195,15 @@
     }
     let spec = if target != none { target.spec } else { none }
     if spec != none and spec.at("limits", default: none) != none { continue }
-    trained.insert(axis, (type: "continuous", domain: (lo, hi), spec: spec))
+    let trans = if target != none {
+      target.at("trans", default: "identity")
+    } else if spec != none {
+      spec.at("trans", default: "identity")
+    } else { "identity" }
+    trained.insert(
+      axis,
+      (type: "continuous", domain: (lo, hi), spec: spec, trans: trans),
+    )
   }
 
   trained
@@ -213,12 +227,42 @@
   r-lo + (idx + 0.5) * (r-hi - r-lo) / n
 }
 
+// Forward axis transformation for `log10` and `sqrt`: warps coordinates so
+// equal visual distances correspond to equal multiplicative or square-root
+// steps. `reverse` is handled separately by swapping the range endpoints.
+#let trans-fwd(name, x) = {
+  if name == none or name == "identity" or name == "reverse" { return x }
+  if name == "log10" { return calc.log(x, base: 10) }
+  if name == "sqrt" { return calc.sqrt(x) }
+  x
+}
+
+#let _map-trans(trained, value, range) = {
+  let trans = trained.at("trans", default: "identity")
+  let (d-lo, d-hi) = trained.domain
+  let (r-lo, r-hi) = range
+  let target = if trans == "reverse" { (r-hi, r-lo) } else { (r-lo, r-hi) }
+  map-continuous(
+    trans-fwd(trans, value),
+    (trans-fwd(trans, d-lo), trans-fwd(trans, d-hi)),
+    target,
+  )
+}
+
 #let map-position(trained, value, range) = {
   if trained.type == "continuous" {
     let v = parse-number(value)
     if v == none { return none }
-    map-continuous(v, trained.domain, range)
+    _map-trans(trained, v, range)
   } else {
     map-discrete(value, trained.domain, range)
   }
+}
+
+// Trans-aware wrapper for callers that already hold a numeric axis value
+// (renderer break placement, reference-line geoms). Equivalent to
+// `map-position` but skips the `parse-number` round-trip.
+#let map-axis(trained, value, range) = {
+  if trained.type != "continuous" { return none }
+  _map-trans(trained, value, range)
 }
