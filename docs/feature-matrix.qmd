@@ -179,7 +179,7 @@ Legend for **Priority** (used to order future work):
 | `scale_colour_grey()` / `scale_fill_grey()` | — | ⬜ | P3 | Grey ramp. |
 | `scale_colour_hue()` / `scale_fill_hue()` | — | ⬜ | P3 | HCL-spaced hues. |
 | `scale_colour_distiller()` / `fermenter()` | — | ⬜ | P3 | Continuous Brewer. |
-| `scale_colour_identity()` / `scale_fill_identity()` | — | ⬜ | P2 | Use raw values. |
+| `scale_colour_identity()` / `scale_fill_identity()` | `scale-colour-identity`, `scale-fill-identity`. | ✅ | — | Column values are passed through (hex strings or `color` values). No legend is drawn. |
 
 ### Other aesthetic scales
 
@@ -192,7 +192,8 @@ Legend for **Priority** (used to order future work):
 | `scale_shape()` / `scale_shape_manual()` / `scale_shape_binned()` | `scale-shape`, `scale-shape-manual`. | 🟡 | P3 | `_binned` variant deferred. |
 | `scale_linetype()` / `scale_linetype_manual()` / `scale_linetype_binned()` / `scale_linetype_continuous()` / `scale_linetype_discrete()` | `scale-linetype`, `scale-linetype-manual`. | 🟡 | P3 | `_binned`, `_continuous`, `_discrete` variants deferred. |
 | `scale_linewidth()` / `scale_linewidth_manual()` / `scale_linewidth_binned()` | — | ⬜ | P2 | After `linewidth` aesthetic. |
-| `scale_*_identity()` (shape, size, alpha, linetype, linewidth, discrete, continuous) | — | ⬜ | P2 | Unscaled values. |
+| `scale_shape_identity()` / `scale_linetype_identity()` | `scale-shape-identity`, `scale-linetype-identity`. | ✅ | — | Column values used as the shape / dash keyword directly. |
+| `scale_size_identity()` / `scale_alpha_identity()` / `scale_linewidth_identity()` | — | ⬜ | P2 | Land alongside the matching aesthetic promotion. |
 
 ### Labels and limits
 
