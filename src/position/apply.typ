@@ -5,6 +5,8 @@
 #import "stack.typ"
 #import "dodge.typ"
 #import "fill.typ" as fill-mod
+#import "jitter.typ" as jitter-mod
+#import "nudge.typ" as nudge-mod
 
 #let apply-position(name, data, mapping, params: (:)) = {
   if name == none or name == "identity" {
@@ -13,5 +15,7 @@
   if name == "stack" { return stack.apply(data, mapping, params: params) }
   if name == "dodge" { return dodge.apply(data, mapping, params: params) }
   if name == "fill" { return fill-mod.apply(data, mapping, params: params) }
+  if name == "jitter" { return jitter-mod.apply(data, mapping, params: params) }
+  if name == "nudge" { return nudge-mod.apply(data, mapping, params: params) }
   panic("Unknown position adjustment: " + name)
 }

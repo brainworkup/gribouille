@@ -125,14 +125,27 @@
     stat-mapping = last-mapping
   }
 
-  let position-name = layer.at("position", default: "identity")
+  // `position:` accepts either a string name (default params) or a dict
+  // returned by a `position-*()` constructor carrying its own params.
+  let position-spec = layer.at("position", default: "identity")
+  let position-name = if type(position-spec) == str {
+    position-spec
+  } else { position-spec.at("name", default: "identity") }
+  let position-params = if type(position-spec) == str { params } else {
+    position-spec
+  }
   let pos-data = stat-data
   let pos-mapping = stat-mapping
   if position-name != none and position-name != "identity" {
     // Position needs plain column names; strip again in case stat-identity
     // left annotations in place.
     let pos-in = _strip-mapping-refs(stat-mapping)
-    let r = apply-position(position-name, stat-data, pos-in, params: params)
+    let r = apply-position(
+      position-name,
+      stat-data,
+      pos-in,
+      params: position-params,
+    )
     pos-data = r.data
     // Merge position's additions (e.g. ymin/ymax) into the annotated mapping
     // while preserving existing annotations on x/y/...

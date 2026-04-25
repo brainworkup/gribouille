@@ -31,6 +31,7 @@
 #import "src/geom/abline.typ": geom-abline
 #import "src/geom/text.typ": geom-text
 #import "src/geom/label.typ": geom-label
+#import "src/geom/jitter.typ": geom-jitter
 
 // Stats.
 #import "src/stat/identity.typ": stat-identity
@@ -68,6 +69,8 @@
 #import "src/position/dodge.typ": position-dodge
 #import "src/position/fill.typ": position-fill
 #import "src/position/identity.typ": position-identity
+#import "src/position/jitter.typ": position-jitter
+#import "src/position/nudge.typ": position-nudge
 
 // Facets.
 #import "src/facet/wrap.typ": facet-wrap
