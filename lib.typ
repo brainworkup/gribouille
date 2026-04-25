@@ -12,9 +12,13 @@
 // Geoms.
 #import "src/geom/point.typ": geom-point
 #import "src/geom/line.typ": geom-line
+#import "src/geom/path.typ": geom-path
+#import "src/geom/step.typ": geom-step
+#import "src/geom/area.typ": geom-area
 #import "src/geom/col.typ": geom-col
 #import "src/geom/bar.typ": geom-bar
 #import "src/geom/histogram.typ": geom-histogram
+#import "src/geom/freqpoly.typ": geom-freqpoly
 #import "src/geom/smooth.typ": geom-smooth
 #import "src/geom/ribbon.typ": geom-ribbon
 #import "src/geom/boxplot.typ": geom-boxplot

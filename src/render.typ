@@ -12,6 +12,9 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
+#import "geom/path.typ" as path-geom
+#import "geom/step.typ" as step-geom
+#import "geom/area.typ" as area-geom
 #import "geom/col.typ" as col-geom
 #import "geom/ribbon.typ" as ribbon-geom
 #import "geom/smooth.typ" as smooth-geom
@@ -430,6 +433,12 @@
       point-geom.draw(layer, ctx)
     } else if layer.geom == "line" {
       line-geom.draw(layer, ctx)
+    } else if layer.geom == "path" {
+      path-geom.draw(layer, ctx)
+    } else if layer.geom == "step" {
+      step-geom.draw(layer, ctx)
+    } else if layer.geom == "area" {
+      area-geom.draw(layer, ctx)
     } else if layer.geom == "col" {
       col-geom.draw(layer, ctx)
     } else if layer.geom == "ribbon" {
@@ -545,9 +554,9 @@
 // ribbon ymin/ymax padding). Called once globally and once per panel under
 // free scales so each panel's domain reflects its own subset.
 #let _post-train(trained, layers) = {
-  let has-bar = layers.any(l => l.geom == "col")
+  let needs-y-zero = layers.any(l => l.geom == "col" or l.geom == "area")
   if (
-    has-bar
+    needs-y-zero
       and trained.at("y", default: none) != none
       and trained.y.type == "continuous"
   ) {
