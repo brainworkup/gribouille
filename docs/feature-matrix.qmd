@@ -73,9 +73,10 @@ Legend for **Priority** (used to order future work):
 | `geom_rug()` | — | ⬜ | P3 | Axis tick marks at observations. |
 | `geom_text()` | `geom-text`. | ✅ | — | Reads the `label` aesthetic. |
 | `geom_label()` | `geom-label`. | ✅ | — | Boxed text with fill, stroke, radius. |
-| `geom_rect()` / `geom_tile()` / `geom_raster()` | — | ⬜ | P2 | Tile and raster are the same with implicit sizing. |
-| `geom_polygon()` | — | ⬜ | P3 | Closed paths with fill. |
-| `geom_segment()` / `geom_curve()` | — | ⬜ | P2 | Uses `xend`, `yend`. |
+| `geom_rect()` / `geom_tile()` / `geom_raster()` | `geom-rect`, `geom-tile`, `geom-raster`. | ✅ | — | `geom-raster` is an alias of `geom-tile`. |
+| `geom_polygon()` | `geom-polygon`. | ✅ | — | One closed polygon per group; fill via `fill` or scale. |
+| `geom_segment()` | `geom-segment`. | ✅ | — | Maps `x`/`y`/`xend`/`yend`. |
+| `geom_curve()` | — | ⬜ | P3 | Curved variant of segment; deferred until a real use case appears. |
 | `geom_errorbar()` / `geom_errorbarh()` | — | ⬜ | P2 | Ship with boxplot work. |
 | `geom_linerange()` / `geom_crossbar()` / `geom_pointrange()` | — | ⬜ | P2 | Same family as errorbar. |
 | `geom_abline()` / `geom_hline()` / `geom_vline()` | `geom-abline`, `geom-hline`, `geom-vline`. | ✅ | — | Scalar or array intercepts. |
@@ -140,7 +141,7 @@ Legend for **Priority** (used to order future work):
 |---|---|---|---|---|
 | `x`, `y` | `x`, `y`. | ✅ | — | — |
 | `xmin`, `xmax`, `ymin`, `ymax` | `xmin`, `xmax`, `ymin`, `ymax`. | ✅ | — | Exposed via `aes()` and trained like other positional aesthetics. |
-| `xend`, `yend` | — | ⬜ | P2 | Segments and curves. |
+| `xend`, `yend` | `xend`, `yend`. | ✅ | — | Folded into the x and y axis domains during scale training; consumed by @geom-segment. |
 | `colour`, `fill` | `colour`, `fill`. | ✅ | — | — |
 | `alpha` | passed as a constant param. | 🟡 | P2 | Promote to a mapped aesthetic. |
 | `size` | via `scale-size-continuous`. | 🟡 | P2 | Not mapped via `aes()` in every geom. |
