@@ -509,6 +509,53 @@
   trained
 }
 
+// coord-cartesian xlim/ylim overrides take precedence over scale training,
+// so re-apply them after any per-panel retraining.
+#let _apply-coord(trained, coord) = {
+  if coord == none or coord.coord != "cartesian" { return trained }
+  let xlim = coord.at("xlim", default: none)
+  if (
+    xlim != none
+      and trained.at("x", default: none) != none
+      and trained.x.type == "continuous"
+  ) {
+    let new-x = trained.x
+    new-x.insert("domain", xlim)
+    trained.insert("x", new-x)
+  }
+  let ylim = coord.at("ylim", default: none)
+  if (
+    ylim != none
+      and trained.at("y", default: none) != none
+      and trained.y.type == "continuous"
+  ) {
+    let new-y = trained.y
+    new-y.insert("domain", ylim)
+    trained.insert("y", new-y)
+  }
+  trained
+}
+
+// Apply post-training domain fix-ups (bar-zero floor, bin width padding,
+// ribbon ymin/ymax padding). Called once globally and once per panel under
+// free scales so each panel's domain reflects its own subset.
+#let _post-train(trained, layers) = {
+  let has-bar = layers.any(l => l.geom == "col")
+  if (
+    has-bar
+      and trained.at("y", default: none) != none
+      and trained.y.type == "continuous"
+  ) {
+    let (lo, hi) = trained.y.domain
+    let new-y = trained.y
+    new-y.insert("domain", (calc.min(lo, 0.0), calc.max(hi, 0.0)))
+    trained.insert("y", new-y)
+  }
+  trained = _extend-x-for-bins(trained, layers)
+  trained = _extend-y-for-ribbon(trained, layers)
+  trained
+}
+
 #let render-plot(spec) = {
   let theme = merge-theme(spec.theme)
   let labs = spec.at("labs", default: none)
@@ -629,49 +676,43 @@
     new
   })
 
-  // Bar-like geoms need the y domain to include zero.
-  let has-bar = prepared.any(l => l.geom == "col")
-  if (
-    has-bar
-      and trained.at("y", default: none) != none
-      and trained.y.type == "continuous"
-  ) {
-    let (lo, hi) = trained.y.domain
-    let y-lo = calc.min(lo, 0.0)
-    let y-hi = calc.max(hi, 0.0)
-    let new-y = trained.y
-    new-y.insert("domain", (y-lo, y-hi))
-    trained.insert("y", new-y)
-  }
-
-  trained = _extend-x-for-bins(trained, prepared)
-  trained = _extend-y-for-ribbon(trained, prepared)
+  trained = _post-train(trained, prepared)
 
   // coord-cartesian zooms the view: override trained domains with the user's
   // clip limits so axis ticks and marks follow them. Data outside still exists
-  // for stats and training but may render outside the panel — ggplot's
-  // "data is not dropped" distinction.
+  // for stats and training but may render outside the panel. This preserves
+  // ggplot's "data is not dropped" distinction.
   let coord = spec.at("coord", default: none)
-  if coord != none and coord.coord == "cartesian" {
-    if (
-      coord.at("xlim", default: none) != none
-        and trained.at("x", default: none) != none
-        and trained.x.type == "continuous"
-    ) {
-      let new-x = trained.x
-      new-x.insert("domain", coord.xlim)
-      trained.insert("x", new-x)
-    }
-    if (
-      coord.at("ylim", default: none) != none
-        and trained.at("y", default: none) != none
-        and trained.y.type == "continuous"
-    ) {
-      let new-y = trained.y
-      new-y.insert("domain", coord.ylim)
-      trained.insert("y", new-y)
-    }
-  }
+  trained = _apply-coord(trained, coord)
+
+  // For facet-wrap with non-fixed scales, train each panel's positional axes
+  // on its own subset so x and/or y differ across panels. Non-positional
+  // scales (colour, fill, size, shape, linetype) stay shared so legends do
+  // not fragment.
+  let wrap-scales = if facet-wrap-mode { spec.facet.scales } else { "fixed" }
+  let free-x = wrap-scales == "free" or wrap-scales == "free_x"
+  let free-y = wrap-scales == "free" or wrap-scales == "free_y"
+  let panel-trained-list = if facet-wrap-mode and (free-x or free-y) {
+    panels.map(p => {
+      let pt = train(
+        scales: spec.scales,
+        layers: p.layers,
+        mapping: spec.mapping,
+        data: spec.data,
+      )
+      pt = _apply-labs(pt, labs)
+      pt = _post-train(pt, p.layers)
+      pt = _apply-coord(pt, coord)
+      let merged = trained
+      if free-x and pt.at("x", default: none) != none {
+        merged.insert("x", pt.x)
+      }
+      if free-y and pt.at("y", default: none) != none {
+        merged.insert("y", pt.y)
+      }
+      merged
+    })
+  } else { () }
 
   let width-units = spec.width / 1cm
   let height-units = spec.height / 1cm
@@ -730,15 +771,18 @@
           )[#level],
         )
         let panel-layers = panels.at(i).layers
+        let panel-trained = if panel-trained-list.len() == 0 {
+          trained
+        } else { panel-trained-list.at(i) }
         _draw-axis-and-layers(
           panel-layers,
-          trained,
+          panel-trained,
           theme,
           spec,
           (x0, y0),
           (panel-w, panel-h),
-          show-x-labels: row == nrow - 1,
-          show-y-labels: col == 0,
+          show-x-labels: free-x or row == nrow - 1,
+          show-y-labels: free-y or col == 0,
           show-x-title: false,
           show-y-title: false,
         )
