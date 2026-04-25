@@ -15,6 +15,10 @@
 #import "geom/path.typ" as path-geom
 #import "geom/step.typ" as step-geom
 #import "geom/area.typ" as area-geom
+#import "geom/rect.typ" as rect-geom
+#import "geom/tile.typ" as tile-geom
+#import "geom/segment.typ" as segment-geom
+#import "geom/polygon.typ" as polygon-geom
 #import "geom/col.typ" as col-geom
 #import "geom/ribbon.typ" as ribbon-geom
 #import "geom/smooth.typ" as smooth-geom
@@ -439,6 +443,14 @@
       step-geom.draw(layer, ctx)
     } else if layer.geom == "area" {
       area-geom.draw(layer, ctx)
+    } else if layer.geom == "rect" {
+      rect-geom.draw(layer, ctx)
+    } else if layer.geom == "tile" {
+      tile-geom.draw(layer, ctx)
+    } else if layer.geom == "segment" {
+      segment-geom.draw(layer, ctx)
+    } else if layer.geom == "polygon" {
+      polygon-geom.draw(layer, ctx)
     } else if layer.geom == "col" {
       col-geom.draw(layer, ctx)
     } else if layer.geom == "ribbon" {

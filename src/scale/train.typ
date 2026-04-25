@@ -162,6 +162,36 @@
     }
     trained.insert(a, (type: scale-type, domain: domain, spec: user-scale))
   }
+
+  // Fold the directional aesthetics into the positional axes so the x and y
+  // domains span every column that contributes a position: `x` plus
+  // `xmin/xmax/xend`, and `y` plus `ymin/ymax/yend`. Without this,
+  // `geom-segment(x: 0, xend: 4, ...)` would clip the panel at x = 0.
+  for (axis, sources) in (
+    (axis: "x", sources: ("xmin", "xmax", "xend")),
+    (axis: "y", sources: ("ymin", "ymax", "yend")),
+  ) {
+    let target = trained.at(axis, default: none)
+    if target != none and target.type != "continuous" { continue }
+    let lo = if target != none { target.domain.at(0) } else { none }
+    let hi = if target != none { target.domain.at(1) } else { none }
+    for s in sources {
+      let t = trained.at(s, default: none)
+      if t == none or t.type != "continuous" { continue }
+      let (slo, shi) = t.domain
+      lo = if lo == none { slo } else { calc.min(lo, slo) }
+      hi = if hi == none { shi } else { calc.max(hi, shi) }
+    }
+    if lo == none or hi == none { continue }
+    if lo == hi {
+      lo -= 0.5
+      hi += 0.5
+    }
+    let spec = if target != none { target.spec } else { none }
+    if spec != none and spec.at("limits", default: none) != none { continue }
+    trained.insert(axis, (type: "continuous", domain: (lo, hi), spec: spec))
+  }
+
   trained
 }
 

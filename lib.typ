@@ -15,6 +15,10 @@
 #import "src/geom/path.typ": geom-path
 #import "src/geom/step.typ": geom-step
 #import "src/geom/area.typ": geom-area
+#import "src/geom/rect.typ": geom-rect
+#import "src/geom/tile.typ": geom-raster, geom-tile
+#import "src/geom/segment.typ": geom-segment
+#import "src/geom/polygon.typ": geom-polygon
 #import "src/geom/col.typ": geom-col
 #import "src/geom/bar.typ": geom-bar
 #import "src/geom/histogram.typ": geom-histogram
