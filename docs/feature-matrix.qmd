@@ -69,7 +69,7 @@ Legend for **Priority** (used to order future work):
 | `geom_violin()` | — | ⬜ | P4 | Needs kernel density; deferred, wasm is last resort. |
 | `geom_density()` / `geom_density_2d()` / `geom_density_2d_filled()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
 | `geom_dotplot()` | — | ⬜ | P4 | Niche. |
-| `geom_jitter()` | — | ⬜ | P2 | Point wrapper over `position-jitter`. |
+| `geom_jitter()` | `geom-jitter`. | ✅ | — | Point wrapper that defaults `position` to `"jitter"`. |
 | `geom_rug()` | — | ⬜ | P3 | Axis tick marks at observations. |
 | `geom_text()` | `geom-text`. | ✅ | — | Reads the `label` aesthetic. |
 | `geom_label()` | `geom-label`. | ✅ | — | Boxed text with fill, stroke, radius. |
@@ -122,9 +122,9 @@ Legend for **Priority** (used to order future work):
 | `position_dodge()` | `position-dodge`. | 🟡 | P2 | Uniform-width case implemented; widening to handle variable-width and overlapping marks (the ggplot2 `dodge2` use case) is in Slice 2D. |
 | `position_dodge2()` | merged into `position-dodge`. | ❌ | ∅ | Dropped from the surface; `position-dodge` covers both cases. |
 | `position_fill()` | `position-fill`. | ✅ | — | Stack normalised to 1 per x bucket. |
-| `position_jitter()` | — | ⬜ | P2 | — |
-| `position_nudge()` | — | ⬜ | P3 | — |
-| `position_jitterdodge()` | — | ⬜ | P3 | — |
+| `position_jitter()` | `position-jitter`. | ✅ | — | Deterministic seed-based offsets; only continuous columns are jittered. |
+| `position_nudge()` | `position-nudge`. | ✅ | — | Fixed `(x, y)` shift on every row. |
+| `position_jitterdodge()` | — | ⬜ | P3 | Dodge then jitter; defer until a real bar+jitter use case appears. |
 
 ### Annotations
 
