@@ -56,14 +56,14 @@ Legend for **Priority** (used to order future work):
 |---|---|---|---|---|
 | `geom_point()` | `geom-point`. | ✅ | — | — |
 | `geom_line()` | `geom-line`. | ✅ | — | X-sorted connection of observations. |
-| `geom_path()` | — | ⬜ | P2 | Like `geom-line` but preserves row order. |
-| `geom_step()` | — | ⬜ | P2 | Step interpolation. |
+| `geom_path()` | `geom-path`. | ✅ | — | Connects rows in input order. |
+| `geom_step()` | `geom-step`. | ✅ | — | Stair-step interpolation; `direction` is `"hv"` (default) or `"vh"`. |
 | `geom_col()` | `geom-col`. | ✅ | — | Honours `position = "stack"`/`"dodge"`/`"fill"`. |
 | `geom_bar()` | `geom-bar`. | ✅ | — | Wraps `geom-col` with `stat = "count"` and `position = "stack"`. |
 | `geom_histogram()` | `geom-histogram`. | ✅ | — | Uses `stat-bin`. |
-| `geom_freqpoly()` | — | ⬜ | P2 | Line of bin counts. |
+| `geom_freqpoly()` | `geom-freqpoly`. | ✅ | — | Line through `stat-bin` midpoints; `bins` and `binwidth` mirror `geom-histogram`. |
 | `geom_ribbon()` | `geom-ribbon`. | ✅ | — | — |
-| `geom_area()` | — | ⬜ | P2 | Ribbon with `ymin = 0`. |
+| `geom_area()` | `geom-area`. | ✅ | — | Filled polygon between `y = 0` and `y` along x; pulls the y-domain to include zero. |
 | `geom_smooth()` | `geom-smooth`. | 🟡 | P3 | `method = "lm"` only; `"loess"` deferred, wasm is last resort. |
 | `geom_boxplot()` | `geom-boxplot` (stub). | 🟡 | P2 | Needs quantile computation; currently accepts pre-summarised rows. |
 | `geom_violin()` | — | ⬜ | P4 | Needs kernel density; deferred, wasm is last resort. |
