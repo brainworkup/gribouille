@@ -553,7 +553,8 @@
 // coord-cartesian xlim/ylim overrides take precedence over scale training,
 // so re-apply them after any per-panel retraining.
 #let _apply-coord(trained, coord) = {
-  if coord == none or coord.coord != "cartesian" { return trained }
+  if coord == none { return trained }
+  if coord.coord != "cartesian" { return trained }
   let xlim = coord.at("xlim", default: none)
   if (
     xlim != none
@@ -575,6 +576,34 @@
     trained.insert("y", new-y)
   }
   trained
+}
+
+// Shrink the inner panel along the longer axis so that one x data unit
+// projects to `ratio` y data units. Returns the adjusted (width, height).
+// Falls back to the input box if either trained scale is missing or has a
+// zero-length domain.
+#let _fixed-inner-size(coord, trained, box-w, box-h) = {
+  if coord == none or coord.coord != "fixed" { return (box-w, box-h) }
+  let x-trained = trained.at("x", default: none)
+  let y-trained = trained.at("y", default: none)
+  if x-trained == none or y-trained == none { return (box-w, box-h) }
+  if x-trained.type != "continuous" or y-trained.type != "continuous" {
+    return (box-w, box-h)
+  }
+  let (x-lo, x-hi) = x-trained.domain
+  let (y-lo, y-hi) = y-trained.domain
+  let dx = x-hi - x-lo
+  let dy = y-hi - y-lo
+  if dx <= 0 or dy <= 0 { return (box-w, box-h) }
+  let ratio = coord.at("ratio", default: 1)
+  // Pixels-per-x-unit must equal ratio * pixels-per-y-unit.
+  let want = (dy * ratio) / dx
+  let have = box-h / box-w
+  if want >= have {
+    (box-h / want, box-h)
+  } else {
+    (box-w, box-w * want)
+  }
 }
 
 // Apply post-training domain fix-ups (bar-zero floor, bin width padding,
@@ -1035,6 +1064,10 @@
     let py-lo = margin.bottom
     let py-hi = height-units - margin.top
 
+    let box-w = px-hi - px-lo
+    let box-h = py-hi - py-lo
+    let (inner-w, inner-h) = _fixed-inner-size(coord, trained, box-w, box-h)
+
     cetz.canvas(length: 1cm, {
       _draw-axis-and-layers(
         prepared,
@@ -1042,10 +1075,10 @@
         theme,
         spec,
         (px-lo, py-lo),
-        (px-hi - px-lo, py-hi - py-lo),
+        (inner-w, inner-h),
         guides: guides,
-        legend-origin: (px-hi + legend-gap, py-lo),
-        legend-height: py-hi - py-lo,
+        legend-origin: (px-lo + inner-w + legend-gap, py-lo),
+        legend-height: inner-h,
       )
     })
   }
