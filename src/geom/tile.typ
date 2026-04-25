@@ -9,8 +9,8 @@
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
-/// `width` and `height` default to 1 in data units; both may be mapped via
-/// @aes or fixed via the layer parameters.
+/// `width` and `height` default to 1 in data units; both may be mapped
+/// via @aes or fixed via the layer parameters.
 ///
 /// @category Geoms
 /// @stability stable
@@ -79,6 +79,14 @@
 ///
 /// In gribouille both functions render the same way; `geom-raster` is
 /// kept as a familiar synonym for users coming from ggplot2.
+///
+/// @category Geoms
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param args Forwarded verbatim to @geom-tile.
+///
+/// @returns Layer dictionary consumed by @plot.
 ///
 /// @see @geom-tile
 #let geom-raster(..args) = geom-tile(..args)
