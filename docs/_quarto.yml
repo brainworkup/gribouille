@@ -54,6 +54,8 @@ website:
         href: reference/index.qmd
       - text: "Examples"
         href: examples/index.qmd
+      - text: "Coverage"
+        href: feature-matrix.qmd
       - text: "Changelog"
         href: changelog.qmd
     right:

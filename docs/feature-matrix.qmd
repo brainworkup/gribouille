@@ -1,0 +1,297 @@
+---
+title: "Feature matrix"
+subtitle: "Coverage of the ggplot2 and plotnine surface in Gribouille."
+toc: true
+toc-depth: 2
+engine: markdown
+---
+
+## Context
+
+Gribouille is a Typst package that implements a grammar of graphics on top of CeTZ.
+This page is the canonical coverage table: one row per public ggplot2 symbol, using the [ggplot2 reference index](https://ggplot2.tidyverse.org/reference/index.html) as the axis.
+Status reflects what is currently in the package; Priority orders the remaining work.
+The execution order, agent topology, and slice protocol live in the development roadmap (kept under `.claude/dev-plans/` in the repository).
+
+Legend for **Status**:
+
+- ✅ implemented.
+- 🟡 partial or stubbed.
+- ⬜ missing.
+- ❌ out of scope for a static Typst backend (reason in Notes).
+
+Legend for **Priority** (used to order future work):
+
+- P1 unlocks common plots and blocks other work.
+- P2 broadens expressiveness once P1 lands.
+- P3 nice-to-have or niche.
+- P4 deferred to the very end of the roadmap: requires a wasm helper or heavy numerical code that Typst cannot express natively. **Wasm is a last resort**, added only if a P4 feature is really needed and no native workaround exists. Until then every P4 row sits behind everything in P1 to P3.
+- ∅ not planned.
+
+## How gribouille currently maps to ggplot2
+
+| Concept | ggplot2 form | gribouille form |
+|---|---|---|
+| Plot constructor | `ggplot(data, aes(...)) + layer + scale + theme`. | `plot(data:, mapping:, layers:, scales:, coord:, facet:, theme:, width:, height:)`. |
+| Layer addition | `+ geom_point()`. | `layers: (geom-point(), ...)`. |
+| Aesthetic mapping | `aes(x = a, y = b, colour = c)`. | `aes(x: "a", y: "b", colour: "c")`. |
+| Stat override | `stat = "bin"` on a geom. | `stat:` key on the layer dict, dispatched via `src/stat/apply.typ`. |
+| Theme composition | `theme_minimal() + theme(...)`. | `theme: theme-minimal()` (dict merged by `merge-theme`). |
+
+## Feature matrix
+
+### Plot basics
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `ggplot()` | `plot(...)`. | ✅ | — | — |
+| `aes()` | `aes(...)`. | ✅ | — | Covers `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`. |
+| `%+%` / `add_gg()` | — | ❌ | ∅ | Typst has no lazy plot object; composition is via function args. |
+| `ggsave()` | — | ❌ | ∅ | Typst owns the output pipeline. |
+| `qplot()` / `quickplot()` | — | ❌ | ∅ | Deprecated upstream. |
+
+### Geoms
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `geom_point()` | `geom-point`. | ✅ | — | — |
+| `geom_line()` | `geom-line`. | ✅ | — | X-sorted connection of observations. |
+| `geom_path()` | — | ⬜ | P2 | Like `geom-line` but preserves row order. |
+| `geom_step()` | — | ⬜ | P2 | Step interpolation. |
+| `geom_col()` | `geom-col`. | ✅ | — | Honours `position = "stack"`/`"dodge"`/`"fill"`. |
+| `geom_bar()` | `geom-bar`. | ✅ | — | Wraps `geom-col` with `stat = "count"` and `position = "stack"`. |
+| `geom_histogram()` | `geom-histogram`. | ✅ | — | Uses `stat-bin`. |
+| `geom_freqpoly()` | — | ⬜ | P2 | Line of bin counts. |
+| `geom_ribbon()` | `geom-ribbon`. | ✅ | — | — |
+| `geom_area()` | — | ⬜ | P2 | Ribbon with `ymin = 0`. |
+| `geom_smooth()` | `geom-smooth`. | 🟡 | P3 | `method = "lm"` only; `"loess"` deferred, wasm is last resort. |
+| `geom_boxplot()` | `geom-boxplot` (stub). | 🟡 | P2 | Needs quantile computation; currently accepts pre-summarised rows. |
+| `geom_violin()` | — | ⬜ | P4 | Needs kernel density; deferred, wasm is last resort. |
+| `geom_density()` / `geom_density_2d()` / `geom_density_2d_filled()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
+| `geom_dotplot()` | — | ⬜ | P4 | Niche. |
+| `geom_jitter()` | — | ⬜ | P2 | Point wrapper over `position-jitter`. |
+| `geom_rug()` | — | ⬜ | P3 | Axis tick marks at observations. |
+| `geom_text()` | `geom-text`. | ✅ | — | Reads the `label` aesthetic. |
+| `geom_label()` | `geom-label`. | ✅ | — | Boxed text with fill, stroke, radius. |
+| `geom_rect()` / `geom_tile()` / `geom_raster()` | — | ⬜ | P2 | Tile and raster are the same with implicit sizing. |
+| `geom_polygon()` | — | ⬜ | P3 | Closed paths with fill. |
+| `geom_segment()` / `geom_curve()` | — | ⬜ | P2 | Uses `xend`, `yend`. |
+| `geom_errorbar()` / `geom_errorbarh()` | — | ⬜ | P2 | Ship with boxplot work. |
+| `geom_linerange()` / `geom_crossbar()` / `geom_pointrange()` | — | ⬜ | P2 | Same family as errorbar. |
+| `geom_abline()` / `geom_hline()` / `geom_vline()` | `geom-abline`, `geom-hline`, `geom-vline`. | ✅ | — | Scalar or array intercepts. |
+| `geom_blank()` | — | ⬜ | P3 | Useful for forcing scale training. |
+| `geom_function()` | — | ⬜ | P3 | Evaluate a Typst callable over the x-range. |
+| `geom_qq()` / `geom_qq_line()` | — | ⬜ | P3 | Quantile-quantile plots. |
+| `geom_quantile()` | — | ⬜ | P4 | Quantile regression; deferred, wasm is last resort. |
+| `geom_count()` | — | ⬜ | P3 | Wrapper over `stat-sum`. |
+| `geom_bin_2d()` / `geom_hex()` | — | ⬜ | P4 | 2D binning. |
+| `geom_contour()` / `geom_contour_filled()` | — | ⬜ | P4 | Marching squares. |
+| `geom_spoke()` | — | ⬜ | P4 | Niche. |
+| `geom_map()` / `geom_sf()` / `geom_sf_label()` / `geom_sf_text()` | — | ❌ | ∅ | Maps and sf are out of scope. |
+
+### Stats
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `stat_identity()` | `stat-identity` (implicit). | ✅ | — | — |
+| `stat_count()` | `stat-count`. | ✅ | — | — |
+| `stat_bin()` | `stat-bin`. | ✅ | — | — |
+| `stat_smooth()` | `stat-smooth`. | 🟡 | P3 | OLS only; `"loess"` deferred, wasm is last resort. |
+| `stat_boxplot()` | — | ⬜ | P2 | Per-group five-number summary. |
+| `stat_summary()` / `stat_summary_bin()` | — | ⬜ | P2 | Aggregated mean/median/sd. |
+| `stat_ecdf()` | — | ⬜ | P3 | Sort + cumulative fraction. |
+| `stat_ellipse()` | — | ⬜ | P4 | Normal data ellipses. |
+| `stat_density()` / `stat_density_2d()` / `stat_density_2d_filled()` / `stat_ydensity()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
+| `stat_contour()` / `stat_contour_filled()` | — | ⬜ | P4 | — |
+| `stat_bin_2d()` / `stat_bin_hex()` / `stat_summary_2d()` / `stat_summary_hex()` | — | ⬜ | P4 | 2D aggregation. |
+| `stat_qq()` / `stat_qq_line()` | — | ⬜ | P3 | — |
+| `stat_quantile()` | — | ⬜ | P4 | Deferred, wasm is last resort. |
+| `stat_function()` | — | ⬜ | P3 | — |
+| `stat_unique()` | — | ⬜ | P3 | Deduplicate rows. |
+| `stat_manual()` / `stat_align()` / `stat_connect()` | — | ⬜ | P4 | Advanced. |
+| `stat_sf()` / `stat_sf_coordinates()` | — | ❌ | ∅ | Out of scope. |
+| `after_stat()` / `after_scale()` / `stage()` / `from_theme()` | — | ⬜ | P4 | Late-binding aesthetics. |
+
+### Position adjustments
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `position_identity()` | implicit default. | ✅ | — | — |
+| `position_stack()` | `position-stack`. | ✅ | — | Consumed by `geom-col`. |
+| `position_dodge()` | `position-dodge`. | 🟡 | P2 | Uniform-width case implemented; widening to handle variable-width and overlapping marks (the ggplot2 `dodge2` use case) is in Slice 2D. |
+| `position_dodge2()` | merged into `position-dodge`. | ❌ | ∅ | Dropped from the surface; `position-dodge` covers both cases. |
+| `position_fill()` | `position-fill`. | ✅ | — | Stack normalised to 1 per x bucket. |
+| `position_jitter()` | — | ⬜ | P2 | — |
+| `position_nudge()` | — | ⬜ | P3 | — |
+| `position_jitterdodge()` | — | ⬜ | P3 | — |
+
+### Annotations
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `annotate()` | — | ⬜ | P2 | Inline single-row layer. |
+| `annotation_custom()` / `annotation_raster()` | — | ⬜ | P3 | Map to CeTZ primitives. |
+| `annotation_logticks()` | — | ⬜ | P3 | Needs log trans first. |
+| `annotation_map()` / `borders()` | — | ❌ | ∅ | Maps out of scope. |
+
+### Aesthetics (names consumed by `aes()`)
+
+| ggplot2 | gribouille | Status | Priority | Notes |
+|---|---|---|---|---|
+| `x`, `y` | `x`, `y`. | ✅ | — | — |
+| `xmin`, `xmax`, `ymin`, `ymax` | `xmin`, `xmax`, `ymin`, `ymax`. | ✅ | — | Exposed via `aes()` and trained like other positional aesthetics. |
+| `xend`, `yend` | — | ⬜ | P2 | Segments and curves. |
+| `colour`, `fill` | `colour`, `fill`. | ✅ | — | — |
+| `alpha` | passed as a constant param. | 🟡 | P2 | Promote to a mapped aesthetic. |
+| `size` | via `scale-size-continuous`. | 🟡 | P2 | Not mapped via `aes()` in every geom. |
+| `shape` | `shape` via `scale-shape`. | ✅ | — | Circle, square, triangle, diamond, cross, x, star, triangle-down palette. |
+| `linetype` | `linetype` via `scale-linetype`. | ✅ | — | Solid, dashed, dotted, dash-dotted, densely-dashed, loosely-dashed palette. |
+| `linewidth` | — | ⬜ | P2 | Mapped line width. |
+| `stroke` | — | ⬜ | P3 | Point outline width. |
+| `group` | `group`. | ✅ | — | — |
+| `weight` | — | ⬜ | P3 | Weighted stats. |
+| `xlower`, `xmiddle`, `xupper`, `lower`, `middle`, `upper` | — | ⬜ | P2 | Boxplot internals. |
+| Inline type coercion (`aes(colour = factor(x))`, `aes(x = as.numeric(g))`) | `as-factor("col")` / `as-numeric("col")` inside `aes()`. | ✅ | — | ggplot2 lets you force a mapping discrete or continuous at the `aes()` call site with `factor()` / `as.numeric()`. Today gribouille only supports data-level (`as-factor(data, ...)` mutates the column across the plot) or scale-level (`scale-colour-discrete()`) coercion; neither scopes to a single aesthetic, so the same numeric column cannot be continuous on `x` and discrete on `colour` at the same time. Solution: extend the existing `as-factor` and `as-numeric` into dual-arity functions. Called with `(data, col)` they keep their current behaviour; called with `("col")` from inside `aes()` they return a small annotation dict (`(kind: "mapping-ref", var: col, type: "discrete" \| "continuous")`). Update `_column-for-aesthetic` and `_layer-aesthetic-type` in `src/scale/train.typ` to accept either a plain string or the annotation dict. No new public names. |
+
+### Positional scales
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `scale_x_continuous()` / `scale_y_continuous()` | `scale-x-continuous`, `scale-y-continuous`. | ✅ | — | — |
+| `scale_x_discrete()` / `scale_y_discrete()` | `scale-x-discrete`, `scale-y-discrete`. | ✅ | — | — |
+| `scale_x_log10()` / `scale_y_log10()` | via `trans: "log10"` on continuous. | 🟡 | P2 | Add convenience wrappers. |
+| `scale_x_sqrt()` / `scale_y_sqrt()` | via `trans: "sqrt"`. | 🟡 | P2 | Add convenience wrappers. |
+| `scale_x_reverse()` / `scale_y_reverse()` | — | ⬜ | P2 | New trans. |
+| `scale_x_binned()` / `scale_y_binned()` | — | ⬜ | P3 | Continuous-to-binned axis. |
+| `scale_x_date()` / `scale_y_date()` / `scale_x_datetime()` / `scale_y_datetime()` / `scale_x_time()` / `scale_y_time()` | — | ⬜ | P2 | Needs Typst `datetime` handling. |
+
+### Colour and fill scales
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `scale_colour_continuous()` / `scale_fill_continuous()` | `scale-colour-continuous`, `scale-fill-continuous`. | ✅ | — | — |
+| `scale_colour_discrete()` / `scale_fill_discrete()` | `scale-colour-discrete`, `scale-fill-discrete`. | ✅ | — | — |
+| `scale_colour_manual()` / `scale_fill_manual()` | `scale-colour-manual`, `scale-fill-manual`. | ✅ | — | User-supplied palette array. |
+| `scale_colour_viridis_c/d/b()` / `scale_fill_viridis_c/d/b()` | `scale-colour-viridis-c/d/b`, `scale-fill-viridis-c/d/b`. | ✅ | — | viridis, magma, plasma, inferno, cividis. |
+| `scale_colour_brewer()` / `scale_fill_brewer()` | — | ⬜ | P2 | ColorBrewer palettes. |
+| `scale_colour_gradient()` / `gradient2()` / `gradientn()` | — | ⬜ | P2 | Low-mid-high and n-stop gradients. |
+| `scale_colour_steps()` / `steps2()` / `stepsn()` | — | ⬜ | P3 | Binned gradient. |
+| `scale_colour_grey()` / `scale_fill_grey()` | — | ⬜ | P3 | Grey ramp. |
+| `scale_colour_hue()` / `scale_fill_hue()` | — | ⬜ | P3 | HCL-spaced hues. |
+| `scale_colour_distiller()` / `fermenter()` | — | ⬜ | P3 | Continuous Brewer. |
+| `scale_colour_identity()` / `scale_fill_identity()` | — | ⬜ | P2 | Use raw values. |
+
+### Other aesthetic scales
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `scale_alpha()` / `*_continuous()` / `*_discrete()` | — | ⬜ | P2 | After `alpha` aesthetic lands. |
+| `scale_size()` / `scale_radius()` | `scale-size-continuous`. | 🟡 | P2 | Add radius variant. |
+| `scale_size_area()` / `scale_size_binned_area()` | — | ⬜ | P2 | Area-proportional sizing. |
+| `scale_size_binned()` | — | ⬜ | P3 | — |
+| `scale_shape()` / `scale_shape_manual()` / `scale_shape_binned()` | `scale-shape`, `scale-shape-manual`. | 🟡 | P3 | `_binned` variant deferred. |
+| `scale_linetype()` / `scale_linetype_manual()` / `scale_linetype_binned()` / `scale_linetype_continuous()` / `scale_linetype_discrete()` | `scale-linetype`, `scale-linetype-manual`. | 🟡 | P3 | `_binned`, `_continuous`, `_discrete` variants deferred. |
+| `scale_linewidth()` / `scale_linewidth_manual()` / `scale_linewidth_binned()` | — | ⬜ | P2 | After `linewidth` aesthetic. |
+| `scale_*_identity()` (shape, size, alpha, linetype, linewidth, discrete, continuous) | — | ⬜ | P2 | Unscaled values. |
+
+### Labels and limits
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `labs()` | `labs(title:, subtitle:, caption:, x:, y:, colour:, fill:, ...)`. | ✅ | — | Axis names are injected into trained scale specs. |
+| `xlab()` / `ylab()` / `ggtitle()` | `xlab`, `ylab`, `ggtitle`. | ✅ | — | Thin wrappers over `labs()`. |
+| `get_labs()` | — | ⬜ | P3 | — |
+| `lims()` / `xlim()` / `ylim()` | via scale `limits:`. | 🟡 | P2 | Top-level shortcut. |
+| `expansion()` / `expand_scale()` | via scale `expand:`. | 🟡 | P3 | Expose helper. |
+| `expand_limits()` | — | ⬜ | P3 | — |
+
+### Guides
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| Discrete `guide_legend()` for colour/fill | automatic legend. | ✅ | — | — |
+| `guide_colourbar()` / `guide_colorbar()` | automatic colourbar. | ✅ | — | Emitted when trained colour/fill is continuous. |
+| `guide_legend()` customisation (nrow, ncol, reverse, ...) | — | ⬜ | P2 | — |
+| `guide_bins()` / `guide_coloursteps()` | — | ⬜ | P3 | After binned scales. |
+| `guide_axis()` | — | ⬜ | P2 | Tick rotation, dodging. |
+| `guide_axis_logticks()` | — | ⬜ | P3 | After log trans. |
+| `guide_none()` | — | ⬜ | P2 | Suppress a specific legend. |
+| `guide_axis_stack()` / `guide_axis_theta()` / `guide_custom()` | — | ⬜ | P4 | Advanced. |
+| `guides()` top-level | — | ⬜ | P2 | Plot-level guide control. |
+| `sec_axis()` / `dup_axis()` / `derive()` | — | ⬜ | P3 | Secondary axes. |
+| `draw_key_*()` glyph family | — | ⬜ | P3 | Per-geom legend glyphs. |
+
+### Facetting
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `facet_wrap()` | `facet-wrap`. | 🟡 | P1 | Needs `scales = "free"/"free_x"/"free_y"` and per-facet stats. |
+| `facet_grid()` | `facet-grid(rows:, cols:)`. | ✅ | — | Strips on top (columns) and right (rows); shared scales only. |
+| `vars()` | — | ⬜ | P2 | Helper to quote faceting variables. |
+| `labeller()` / `label_value()` / `label_both()` / `label_context()` / `label_parsed()` / `label_wrap_gen()` / `label_bquote()` | — | ⬜ | P3 | Strip label customisation. |
+
+### Coordinates
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `coord_cartesian()` | `coord-cartesian`. | ✅ | — | `xlim`/`ylim` override trained x/y domains (data is not dropped; out-of-range marks still render). |
+| `coord_fixed()` | — | ⬜ | P2 | Aspect ratio lock. |
+| `coord_flip()` | — | ⬜ | P2 | Swap x and y. |
+| `coord_polar()` / `coord_radial()` | — | ⬜ | P4 | Significant rewrite. |
+| `coord_trans()` / `coord_transform()` | — | ⬜ | P4 | Visual transformation without scale retraining. |
+| `coord_map()` / `coord_quickmap()` / `coord_sf()` | — | ❌ | ∅ | Maps out of scope. |
+
+### Themes
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `theme_minimal()` | `theme-minimal`. | ✅ | — | — |
+| `theme_classic()` | `theme-classic`. | ✅ | — | — |
+| `theme_void()` | `theme-void`. | ✅ | — | — |
+| `theme_grey()` / `theme_gray()` / `theme_bw()` / `theme_linedraw()` / `theme_light()` / `theme_dark()` / `theme_test()` | — | ⬜ | P2 | Additional complete themes. |
+| `theme()` | `theme(..fields)`. | ✅ | — | Translates `element_*` dicts into flat keys consumed by `merge-theme`. |
+| `element_blank()` / `element_rect()` / `element_line()` / `element_text()` / `element_polygon()` / `element_point()` / `element_geom()` | `element-blank`, `element-rect`, `element-line`, `element-text`. | 🟡 | P2 | `element-polygon`/`element-point`/`element-geom` deferred. |
+| `margin()` / `margin_part()` / `margin_auto()` / `rel()` | — | ⬜ | P3 | Sizing helpers. |
+| `theme_get()` / `theme_set()` / `theme_update()` / `theme_replace()` / `%+replace%` | — | ⬜ | P3 | Global theme state; may stay plot-arg only. |
+| `theme_sub_axis*()` / `theme_sub_legend()` / `theme_sub_panel()` / `theme_sub_plot()` / `theme_sub_strip()` | — | ⬜ | P4 | Shortcut groups. |
+
+### Vector helpers
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `cut_interval()` / `cut_number()` / `cut_width()` | — | ⬜ | P2 | Discretise numeric vectors. |
+| `resolution()` | — | ⬜ | P2 | Used by dodge. |
+| `mean_se()` / `mean_cl_boot()` / `mean_cl_normal()` / `mean_sdl()` / `median_hilow()` | — | ⬜ | P3 | Summary helpers for `stat_summary`. |
+
+### Programming and extension
+
+| ggplot2 | gribouille symbol | Status | Priority | Notes |
+|---|---|---|---|---|
+| `ggproto()` / `ggproto_parent()` | — | ❌ | ∅ | S3/R6 pattern; Typst uses dict-of-functions instead. |
+| `aes_()` / `aes_string()` / `aes_q()` | — | ❌ | ∅ | Deprecated upstream. |
+| `print.ggplot` / `plot.ggplot` | — | ❌ | ∅ | Typst handles rendering. |
+| `autoplot()` / `autolayer()` / `fortify()` / `map_data()` / `automatic_plotting` | — | ❌ | ∅ | R S3 dispatch. |
+| `get_alt_text()` | — | ⬜ | P3 | Could expose via a plot `alt:` argument. |
+
+### Bundled datasets
+
+| ggplot2 | gribouille | Status | Priority | Notes |
+|---|---|---|---|---|
+| `diamonds`, `mpg`, `economics`, `economics_long`, `faithfuld`, `midwest`, `msleep`, `presidential`, `seals`, `txhousing`, `luv_colours`. | — | ⬜ | P3 | Ship a small `data/` module with one or two sample datasets for examples. |
+
+## Coverage at a glance
+
+- **Geoms**: 11 of ~35 implemented (`point`, `line`, `col`, `bar`, `histogram`, `ribbon`, `smooth`, `hline`, `vline`, `abline`, `text`, `label`), 1 stubbed (`boxplot`); rest missing or out of scope.
+- **Stats**: 4 of ~18 implemented.
+- **Positions**: 3 of 7 (identity, stack, dodge, fill).
+- **Scales**: position, discrete/continuous/manual/viridis colour and fill, size, shape, linetype — ~15 symbols; binned variants deferred.
+- **Coords**: `coord-cartesian` with xlim/ylim; others missing.
+- **Facets**: `facet-wrap` and `facet-grid`, shared scales only.
+- **Themes**: 3 complete themes plus `theme()` + four `element-*` constructors.
+- **Guides**: discrete swatch legend plus colourbar for continuous colour/fill.
+
+## How this page is updated
+
+Every implementation slice flips the Status column for every row it touches in the same commit as the code.
+The orchestrator owns these edits.
+See the development roadmap under `.claude/dev-plans/` for the slice ordering and protocol.
