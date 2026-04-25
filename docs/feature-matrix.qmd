@@ -225,7 +225,7 @@ Legend for **Priority** (used to order future work):
 
 | ggplot2 | gribouille symbol | Status | Priority | Notes |
 |---|---|---|---|---|
-| `facet_wrap()` | `facet-wrap`. | 🟡 | P1 | Needs `scales = "free"/"free_x"/"free_y"` and per-facet stats. |
+| `facet_wrap()` | `facet-wrap`. | ✅ | — | `scales = "fixed"` (default), `"free"`, `"free_x"`, `"free_y"`; per-facet stats via `partition-by-group`. |
 | `facet_grid()` | `facet-grid(rows:, cols:)`. | ✅ | — | Strips on top (columns) and right (rows); shared scales only. |
 | `vars()` | — | ⬜ | P2 | Helper to quote faceting variables. |
 | `labeller()` / `label_value()` / `label_both()` / `label_context()` / `label_parsed()` / `label_wrap_gen()` / `label_bquote()` | — | ⬜ | P3 | Strip label customisation. |
@@ -286,7 +286,7 @@ Legend for **Priority** (used to order future work):
 - **Positions**: 3 of 7 (identity, stack, dodge, fill).
 - **Scales**: position, discrete/continuous/manual/viridis colour and fill, size, shape, linetype — ~15 symbols; binned variants deferred.
 - **Coords**: `coord-cartesian` with xlim/ylim; others missing.
-- **Facets**: `facet-wrap` and `facet-grid`, shared scales only.
+- **Facets**: `facet-wrap` (with `fixed`/`free`/`free_x`/`free_y` scales) and `facet-grid` (shared scales only).
 - **Themes**: 3 complete themes plus `theme()` + four `element-*` constructors.
 - **Guides**: discrete swatch legend plus colourbar for continuous colour/fill.
 
