@@ -36,6 +36,7 @@
 #import "src/scale/colour.typ": scale-colour-continuous, scale-colour-discrete
 #import "src/scale/colour.typ": scale-fill-continuous, scale-fill-discrete
 #import "src/scale/colour.typ": scale-colour-manual, scale-fill-manual
+#import "src/scale/colour.typ": scale-colour-identity, scale-fill-identity
 #import "src/scale/colour.typ": (
   scale-colour-viridis-b, scale-colour-viridis-c, scale-colour-viridis-d,
 )
@@ -43,8 +44,12 @@
   scale-fill-viridis-b, scale-fill-viridis-c, scale-fill-viridis-d,
 )
 #import "src/scale/size.typ": scale-size-continuous
-#import "src/scale/shape.typ": scale-shape, scale-shape-manual
-#import "src/scale/linetype.typ": scale-linetype, scale-linetype-manual
+#import "src/scale/shape.typ": (
+  scale-shape, scale-shape-identity, scale-shape-manual,
+)
+#import "src/scale/linetype.typ": (
+  scale-linetype, scale-linetype-identity, scale-linetype-manual,
+)
 #import "src/utils/colour.typ": col-mix
 
 // Coord.

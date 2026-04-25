@@ -176,6 +176,11 @@
 
 #let _make-resolve-colour(ink) = (trained, value, palette) => {
   if trained == none or value == none or value == "" { return ink }
+  if trained.type == "identity" {
+    if type(value) == color { return value }
+    if type(value) == str { return rgb(value) }
+    return ink
+  }
   let pal = _scale-palette(trained, palette)
   if trained.type == "discrete" {
     let s = str(value)

@@ -203,11 +203,16 @@
       colour
     }
     let shape-kind = if shape-col != none and shape-trained != none {
-      let idx = shape-trained.domain.position(v => (
-        v == str(row.at(shape-col, default: none))
-      ))
-      if idx == none { default-shape-kind } else {
-        _palette-at(shape-palette, idx)
+      if shape-trained.type == "identity" {
+        let v = row.at(shape-col, default: none)
+        if v == none or v == "" { default-shape-kind } else { str(v) }
+      } else {
+        let idx = shape-trained.domain.position(v => (
+          v == str(row.at(shape-col, default: none))
+        ))
+        if idx == none { default-shape-kind } else {
+          _palette-at(shape-palette, idx)
+        }
       }
     } else { default-shape-kind }
     _draw-shape((cx, cy), shape-kind, size, fill, layer.params.stroke)

@@ -150,9 +150,15 @@
 
     let dash = if linetype-col != none and linetype-trained != none {
       let sample = rows.first().at(linetype-col, default: none)
-      let idx = linetype-trained.domain.position(v => v == str(sample))
-      if idx == none { default-linetype } else {
-        linetype-palette.at(calc.rem(idx, linetype-palette.len()))
+      if linetype-trained.type == "identity" {
+        if sample == none or sample == "" { default-linetype } else {
+          str(sample)
+        }
+      } else {
+        let idx = linetype-trained.domain.position(v => v == str(sample))
+        if idx == none { default-linetype } else {
+          linetype-palette.at(calc.rem(idx, linetype-palette.len()))
+        }
       }
     } else { default-linetype }
 

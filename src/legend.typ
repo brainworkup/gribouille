@@ -24,6 +24,7 @@
   for aes-name in ("colour", "fill") {
     let t = trained.at(aes-name, default: none)
     if t == none { continue }
+    if t.type == "identity" { continue }
     let title = _guide-title(t, spec, aes-name)
     if t.type == "discrete" {
       guides.push((

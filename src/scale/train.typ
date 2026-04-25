@@ -146,12 +146,18 @@
     } else {
       _layer-aesthetic-type(layers, a, mapping, data)
     }
-    let domain = if scale-type == "continuous" {
+    let domain = if scale-type == "identity" {
+      ()
+    } else if scale-type == "continuous" {
       train-continuous(layers, a, mapping, data)
     } else {
       train-discrete(layers, a, mapping, data)
     }
-    if user-scale != none and user-scale.at("limits", default: none) != none {
+    if (
+      scale-type != "identity"
+        and user-scale != none
+        and user-scale.at("limits", default: none) != none
+    ) {
       domain = user-scale.limits
     }
     trained.insert(a, (type: scale-type, domain: domain, spec: user-scale))

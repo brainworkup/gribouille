@@ -95,3 +95,25 @@
   limits: limits,
   labels: labels,
 )
+
+/// Shape scale that uses each row's value as the marker keyword directly.
+///
+/// The mapped column must contain shape keywords accepted by @geom-point
+/// (`"circle"`, `"square"`, `"triangle"`, `"diamond"`, `"cross"`, `"x"`,
+/// `"star"`, `"triangle-down"`).
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param name Legend title. Identity scales draw no legend.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-shape, @scale-shape-manual, @geom-point
+#let scale-shape-identity(name: none) = (
+  kind: "scale",
+  aesthetic: "shape",
+  type: "identity",
+  name: name,
+)

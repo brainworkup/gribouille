@@ -101,3 +101,25 @@
   limits: limits,
   labels: labels,
 )
+
+/// Linetype scale that uses each row's value as the dash keyword directly.
+///
+/// The mapped column must contain dash keywords accepted by @geom-line
+/// (`"solid"`, `"dashed"`, `"dotted"`, `"dash-dotted"`,
+/// `"densely-dashed"`, `"loosely-dashed"`).
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param name Legend title. Identity scales draw no legend.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-linetype, @scale-linetype-manual, @geom-line
+#let scale-linetype-identity(name: none) = (
+  kind: "scale",
+  aesthetic: "linetype",
+  type: "identity",
+  name: name,
+)

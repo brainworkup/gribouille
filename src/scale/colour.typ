@@ -529,6 +529,66 @@
   labels: labels,
 )
 
+/// Colour scale that uses each row's value as the stroke colour directly.
+///
+/// The mapped column must hold values acceptable to Typst's `rgb()`
+/// (e.g. `"#ff0000"`) or already be `color` values. No legend is drawn
+/// because the column carries the visual outcome verbatim.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param name Legend title. Identity scales draw no legend, but the title is
+///   carried for downstream consumers that may surface it.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (
+///   (x: 1, y: 2, c: "#1b9e77"),
+///   (x: 2, y: 4, c: "#d95f02"),
+///   (x: 3, y: 3, c: "#7570b3"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "c"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-identity(),),
+/// )
+/// ```
+///
+/// @see @scale-colour-manual, @scale-fill-identity
+#let scale-colour-identity(name: none) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "identity",
+  name: name,
+)
+
+/// Fill scale that uses each row's value as the fill colour directly.
+///
+/// Values must be hex strings or `color` values; see @scale-colour-identity.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param name Legend title. Identity scales draw no legend.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-fill-manual, @scale-colour-identity
+#let scale-fill-identity(name: none) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "identity",
+  name: name,
+)
+
 /// Binned viridis fill scale.
 ///
 /// Partitions the continuous domain into `n-breaks` equal segments, each
