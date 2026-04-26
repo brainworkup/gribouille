@@ -27,6 +27,10 @@
 #import "src/geom/smooth.typ": geom-smooth
 #import "src/geom/ribbon.typ": geom-ribbon
 #import "src/geom/boxplot.typ": geom-boxplot
+#import "src/geom/errorbar.typ": geom-errorbar
+#import "src/geom/linerange.typ": geom-linerange
+#import "src/geom/crossbar.typ": geom-crossbar
+#import "src/geom/pointrange.typ": geom-pointrange
 #import "src/geom/hline.typ": geom-hline
 #import "src/geom/vline.typ": geom-vline
 #import "src/geom/abline.typ": geom-abline
