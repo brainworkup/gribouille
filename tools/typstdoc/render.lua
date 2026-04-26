@@ -34,19 +34,9 @@ end
 
 local function emit_stability_callout(stability)
   if stability == "deprecated" then
-    return [[
-::: {.callout-warning}
-## Deprecated
-This function is deprecated and may be removed in a future release.
-:::
-]]
+    return "::: {.callout-warning}\n\n## Deprecated\n\nThis function is deprecated and may be removed in a future release.\n\n:::\n"
   elseif stability == "experimental" then
-    return [[
-::: {.callout-note}
-## Experimental
-This function is experimental; its interface may change without notice.
-:::
-]]
+    return "::: {.callout-note}\n\n## Experimental\n\nThis function is experimental; its interface may change without notice.\n\n:::\n"
   end
   return ""
 end
@@ -207,7 +197,11 @@ function M.render_function(fn, index, opts)
     emit_examples(fn),
     emit_see_also(fn, from_qmd, index, strict),
   }
-  local body = table.concat(pieces, "\n")
+  local parts = {}
+  for _, p in ipairs(pieces) do
+    if p ~= "" then table.insert(parts, p) end
+  end
+  local body = table.concat(parts, "\n"):gsub("\n\n\n+", "\n\n"):gsub("\n+$", "\n")
   return body, from_qmd
 end
 
@@ -258,16 +252,18 @@ function M.render_category_index(category, functions, modules)
 
   if #advanced > 0 then
     table.insert(lines, "::: {.callout-note collapse=\"true\"}")
+    table.insert(lines, "")
     table.insert(lines, "## Advanced")
     table.insert(lines, "")
     for _, fn in ipairs(advanced) do
       table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, fn.doc.summary))
     end
+    table.insert(lines, "")
     table.insert(lines, ":::")
     table.insert(lines, "")
   end
 
-  return table.concat(lines, "\n"), string.format("%s/index.qmd", cat_slug)
+  return table.concat(lines, "\n"):gsub("\n\n\n+", "\n\n"):gsub("\n+$", "\n"), string.format("%s/index.qmd", cat_slug)
 end
 
 function M.render_top_index(category_order, functions)
@@ -301,7 +297,7 @@ function M.render_top_index(category_order, functions)
       table.insert(lines, "")
     end
   end
-  return table.concat(lines, "\n"), "index.qmd"
+  return table.concat(lines, "\n"):gsub("\n\n\n+", "\n\n"):gsub("\n+$", "\n"), "index.qmd"
 end
 
 function M.render_sidebar(category_order, functions)

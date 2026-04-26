@@ -65,13 +65,16 @@
 #import "src/stat/unique.typ": stat-unique
 #import "src/stat/qq.typ": stat-qq
 #import "src/stat/qq-line.typ": stat-qq-line
-#import "src/utils/normal.typ": qnorm
 #import "src/utils/summaries.typ": (
   mean-cl-normal, mean-sdl, mean-se, median-hilow,
 )
-#import "src/utils/normal.typ": qnorm
+
+// Vector helpers.
 #import "src/utils/cut.typ": cut-interval, cut-number, cut-width
 #import "src/utils/resolution.typ": resolution
+
+// Utilities.
+#import "src/utils/normal.typ": qnorm
 
 // Scales.
 #import "src/scale/continuous.typ": scale-x-continuous, scale-y-continuous

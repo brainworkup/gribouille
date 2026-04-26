@@ -6,6 +6,8 @@ local M = {}
 local VALID_CATEGORIES = {
   Core = true, Labs = true, Geoms = true, Stats = true, Scales = true,
   Coord = true, Positions = true, Facets = true, Themes = true,
+  Datasets = true, Guides = true, Utilities = true,
+  ["Vector helpers"] = true,
 }
 
 local VALID_STABILITY = { stable = true, experimental = true, deprecated = true }
