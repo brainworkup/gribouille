@@ -1,7 +1,8 @@
 ///! Hollow box from `ymin` to `ymax` with a thicker bar at `y` (the median).
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous, map-position
+#import "../scale/train.typ": map-position
+#import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
 
 /// Crossbar layer: a box from `ymin` to `ymax` with a horizontal bar at `y`.
@@ -105,12 +106,6 @@
   ) { layer.params.colour } else { ink }
 
   let half-width = layer.params.width / 2
-  let (px-lo, px-hi) = ctx.px-range
-  let discrete-slot = if (
-    x-trained.type == "discrete" and x-trained.domain.len() > 0
-  ) {
-    (px-hi - px-lo) / x-trained.domain.len()
-  } else { 0 }
 
   for row in data {
     let raw-x = row.at(x-col, default: none)
@@ -124,18 +119,8 @@
     let cy-hi = map-position(y-trained, hi, ctx.py-range)
     if cy-mid == none or cy-lo == none or cy-hi == none { continue }
 
-    let (cx-lo, cx-hi) = if x-trained.type == "discrete" {
-      let half-px = discrete-slot * half-width
-      (cx - half-px, cx + half-px)
-    } else {
-      let raw-num = parse-number(raw-x)
-      if raw-num == none { (cx, cx) } else {
-        (
-          map-continuous(raw-num - half-width, x-trained.domain, ctx.px-range),
-          map-continuous(raw-num + half-width, x-trained.domain, ctx.px-range),
-        )
-      }
-    }
+    let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
+    let (cx-lo, cx-hi) = if band == none { (cx, cx) } else { band }
 
     let resolved-fill = if (
       fill-col != none and fill-trained != none and layer.params.fill == auto

@@ -7,6 +7,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-continuous, map-position
+#import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
 
 /// Boxplot layer: draws a Tukey box, whiskers, and outlier points per group.
@@ -131,16 +132,6 @@
   let half-width = layer.params.width / 2
   let cap-half = half-width * layer.params.whisker-cap
 
-  // x is mapped through `map-position` so the half-width shift only makes
-  // sense for continuous x. For discrete x we offset in pixel units derived
-  // from the per-category slot width.
-  let (px-lo, px-hi) = ctx.px-range
-  let discrete-slot = if (
-    x-trained.type == "discrete" and x-trained.domain.len() > 0
-  ) {
-    (px-hi - px-lo) / x-trained.domain.len()
-  } else { 0 }
-
   for row in data {
     let raw-x = row.at(x-col, default: none)
     let cx = map-position(x-trained, raw-x, ctx.px-range)
@@ -181,36 +172,11 @@
       ctx.py-range,
     )
 
-    let (cx-lo, cx-hi, cap-lo, cap-hi) = if x-trained.type == "discrete" {
-      let half-px = discrete-slot * half-width
-      let cap-px = discrete-slot * cap-half
-      (cx - half-px, cx + half-px, cx - cap-px, cx + cap-px)
-    } else {
-      let raw-num = parse-number(raw-x)
-      if raw-num == none { continue }
-      (
-        map-continuous(
-          raw-num - half-width,
-          x-trained.domain,
-          ctx.px-range,
-        ),
-        map-continuous(
-          raw-num + half-width,
-          x-trained.domain,
-          ctx.px-range,
-        ),
-        map-continuous(
-          raw-num - cap-half,
-          x-trained.domain,
-          ctx.px-range,
-        ),
-        map-continuous(
-          raw-num + cap-half,
-          x-trained.domain,
-          ctx.px-range,
-        ),
-      )
-    }
+    let box-band = x-band(x-trained, raw-x, half-width, ctx.px-range)
+    let cap-band = x-band(x-trained, raw-x, cap-half, ctx.px-range)
+    if box-band == none or cap-band == none { continue }
+    let (cx-lo, cx-hi) = box-band
+    let (cap-lo, cap-hi) = cap-band
 
     let resolved-fill = if (
       fill-col != none and fill-trained != none and layer.params.fill == auto
