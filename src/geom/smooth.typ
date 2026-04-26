@@ -8,7 +8,9 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
-#import "../utils/colour-resolve.typ": apply-alpha
+#import "../utils/colour-resolve.typ": (
+  apply-alpha, resolve-alpha, resolve-linewidth,
+)
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -155,7 +157,8 @@
         ))
       let pts = upper + lower
       if pts.all(p => p.at(0) != none and p.at(1) != none) {
-        let band = apply-alpha(ribbon-colour, layer.params.alpha)
+        let alpha = resolve-alpha(layer, mapping, ctx, rows.first())
+        let band = apply-alpha(ribbon-colour, alpha)
         cetz.draw.line(..pts, close: true, fill: band, stroke: none)
       }
     }
@@ -167,9 +170,16 @@
       ))
       .filter(p => p.at(0) != none and p.at(1) != none)
     if line-pts.len() >= 2 {
+      let thickness = resolve-linewidth(
+        layer,
+        mapping,
+        ctx,
+        rows.first(),
+        layer.params.stroke,
+      )
       cetz.draw.line(
         ..line-pts,
-        stroke: (paint: line-colour, thickness: layer.params.stroke),
+        stroke: (paint: line-colour, thickness: thickness),
       )
     }
   }

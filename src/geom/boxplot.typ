@@ -9,7 +9,7 @@
 #import "../scale/train.typ": map-continuous, map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha
+#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
 /// Boxplot layer: draws a Tukey box, whiskers, and outlier points per group.
 ///
@@ -128,7 +128,6 @@
     layer.params.colour != auto and layer.params.colour != none
   ) { layer.params.colour } else { ink }
   let outlier-colour-param = layer.params.outlier-colour
-  let alpha = layer.params.alpha
   let stroke-thickness = layer.params.stroke
   let half-width = layer.params.width / 2
   let cap-half = half-width * layer.params.whisker-cap
@@ -200,6 +199,7 @@
       )
     } else { default-stroke-colour }
 
+    let alpha = resolve-alpha(layer, mapping, ctx, row)
     let final-fill = apply-alpha(resolved-fill, alpha)
     let stroke-spec = (paint: resolved-stroke, thickness: stroke-thickness)
 

@@ -3,7 +3,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
 ///
@@ -111,12 +111,19 @@
       default-colour,
     )
 
+    let thickness = resolve-linewidth(
+      layer,
+      mapping,
+      ctx,
+      row,
+      layer.params.stroke,
+    )
     cetz.draw.line(
       (cx, cy-lo),
       (cx, cy-hi),
       stroke: (
         paint: final-colour,
-        thickness: layer.params.stroke,
+        thickness: thickness,
         dash: layer.params.linetype,
       ),
     )

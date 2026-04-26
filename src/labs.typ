@@ -24,6 +24,7 @@
 /// @param fill Legend title for the fill aesthetic.
 /// @param size Legend title for the size aesthetic.
 /// @param alpha Legend title for the alpha aesthetic.
+/// @param linewidth Legend title for the linewidth aesthetic.
 /// @param shape Legend title for the shape aesthetic.
 /// @param linetype Legend title for the linetype aesthetic.
 ///
@@ -65,6 +66,7 @@
   fill: none,
   size: none,
   alpha: none,
+  linewidth: none,
   shape: none,
   linetype: none,
 ) = (
@@ -81,6 +83,7 @@
     fill: fill,
     size: size,
     alpha: alpha,
+    linewidth: linewidth,
     shape: shape,
     linetype: linetype,
   ),

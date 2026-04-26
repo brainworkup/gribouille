@@ -4,7 +4,9 @@
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha
+#import "../utils/colour-resolve.typ": (
+  apply-alpha, resolve-alpha, resolve-linewidth,
+)
 
 /// Errorbar layer: vertical range with a horizontal cap at each end.
 ///
@@ -114,11 +116,19 @@
         ctx.palette,
       )
     } else { default-colour }
-    let final-colour = apply-alpha(colour, layer.params.alpha)
+    let alpha = resolve-alpha(layer, mapping, ctx, row)
+    let final-colour = apply-alpha(colour, alpha)
+    let thickness = resolve-linewidth(
+      layer,
+      mapping,
+      ctx,
+      row,
+      layer.params.stroke,
+    )
 
     let stroke-spec = (
       paint: final-colour,
-      thickness: layer.params.stroke,
+      thickness: thickness,
       dash: layer.params.linetype,
     )
 

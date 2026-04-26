@@ -4,7 +4,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha
+#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
 /// Crossbar layer: a box from `ymin` to `ymax` with a horizontal bar at `y`.
 ///
@@ -144,7 +144,8 @@
       )
     } else { default-stroke-colour }
 
-    let final-fill = apply-alpha(resolved-fill, layer.params.alpha)
+    let alpha = resolve-alpha(layer, mapping, ctx, row)
+    let final-fill = apply-alpha(resolved-fill, alpha)
     let stroke-spec = (paint: resolved-stroke, thickness: layer.params.stroke)
     let middle-stroke-spec = (
       paint: resolved-stroke,

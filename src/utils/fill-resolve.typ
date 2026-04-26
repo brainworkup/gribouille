@@ -1,4 +1,4 @@
-#import "colour-resolve.typ": apply-alpha
+#import "colour-resolve.typ": apply-alpha, resolve-alpha
 
 /// Resolve a fill colour for a row sample.
 ///
@@ -8,7 +8,7 @@
 /// 3. The colour scale, when `colour-fallback` is `true`, a colour mapping is set, and the colour scale is trained.
 /// 4. `default-fill` otherwise.
 ///
-/// Applies `layer.params.alpha` via @apply-alpha as the final step.
+/// Applies the per-row alpha (mapped or fixed) via @apply-alpha as the final step.
 ///
 /// @param layer The layer dictionary providing `params.fill` and `params.alpha`.
 /// @param mapping The resolved aesthetic mapping.
@@ -55,6 +55,6 @@
       } else { default-fill }
     } else { default-fill }
   }
-  let alpha = layer.params.at("alpha", default: 1)
+  let alpha = resolve-alpha(layer, mapping, ctx, sample-row)
   apply-alpha(resolved, alpha)
 }

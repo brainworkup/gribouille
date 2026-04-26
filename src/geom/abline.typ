@@ -7,7 +7,9 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-axis
-#import "../utils/colour-resolve.typ": apply-alpha
+#import "../utils/colour-resolve.typ": (
+  apply-alpha, resolve-alpha, resolve-linewidth,
+)
 
 /// Straight reference line described by slope and intercept.
 ///
@@ -78,8 +80,17 @@
   let colour = if layer.params.colour == auto {
     ctx.theme.at("ink", default: black)
   } else { layer.params.colour }
-  let fill = apply-alpha(colour, layer.params.alpha)
-  let stroke-spec = (paint: fill, thickness: layer.params.stroke)
+  let mapping = (ctx.resolve-mapping)(layer)
+  let alpha = resolve-alpha(layer, mapping, ctx, (:))
+  let fill = apply-alpha(colour, alpha)
+  let thickness = resolve-linewidth(
+    layer,
+    mapping,
+    ctx,
+    (:),
+    layer.params.stroke,
+  )
+  let stroke-spec = (paint: fill, thickness: thickness)
   let x-trans = x-trained.at("trans", default: "identity")
   let y-trans = y-trained.at("trans", default: "identity")
   if x-trans != "identity" or y-trans != "identity" {

@@ -125,6 +125,7 @@
     "fill",
     "size",
     "alpha",
+    "linewidth",
     "shape",
     "linetype",
     "xmin",

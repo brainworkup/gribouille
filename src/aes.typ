@@ -14,6 +14,7 @@
 /// @param fill Column name driving the fill colour.
 /// @param size Column name driving marker or line size.
 /// @param alpha Column name driving opacity.
+/// @param linewidth Column name driving line stroke thickness.
 /// @param group Column name used to partition layers that connect observations.
 /// @param shape Column name driving marker shape.
 /// @param linetype Column name driving line dash pattern.
@@ -56,6 +57,7 @@
   fill: none,
   size: none,
   alpha: none,
+  linewidth: none,
   group: none,
   shape: none,
   linetype: none,
@@ -79,6 +81,7 @@
   fill: fill,
   size: size,
   alpha: alpha,
+  linewidth: linewidth,
   group: group,
   shape: shape,
   linetype: linetype,
