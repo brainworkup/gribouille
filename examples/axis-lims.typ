@@ -1,4 +1,4 @@
-// guide-axis(), xlim(), ylim(), and lims() customise axis tick labels
+// guide-axis() and scale-*-continuous(limits:) customise axis tick labels
 // and explicit axis limits.
 
 #import "../lib.typ": *
@@ -55,12 +55,15 @@
     ),
   ),
   make-plot(
-    "lims(x: (0, 20), y: (-5, 5))",
+    "scale-x-continuous(limits: (0, 20))",
     plot(
       data: pts,
       mapping: aes(x: "x", y: "y"),
       layers: (geom-point(size: 2.5pt),),
-      scales: lims(x: (0, 20), y: (-5, 5)),
+      scales: (
+        scale-x-continuous(limits: (0, 20)),
+        scale-y-continuous(limits: (-5, 5)),
+      ),
       width: 6cm,
       height: 5cm,
     ),

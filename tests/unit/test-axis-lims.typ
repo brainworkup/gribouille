@@ -1,9 +1,8 @@
-// guide-axis(), xlim(), ylim(), lims(), and expand-limits() build the
-// expected dictionaries and arrays.
+// guide-axis() and expand-limits() build the expected dictionaries and arrays.
 
 #import "../../src/guide/axis.typ": guide-axis
 #import "../../src/guides.typ": guides
-#import "../../src/limits.typ": expand-limits, lims, xlim, ylim
+#import "../../src/limits.typ": expand-limits
 #import "../../src/scale/train.typ": train
 
 #let g = guide-axis(angle: 45)
@@ -19,28 +18,6 @@
 #let bound = guides(x: guide-axis(angle: 45))
 #assert.eq(type(bound), dictionary)
 #assert.eq(bound.x.angle, 45)
-
-#let xs = xlim(0, 10)
-#assert.eq(xs.kind, "scale")
-#assert.eq(xs.aesthetic, "x")
-#assert.eq(xs.type, "continuous")
-#assert.eq(xs.limits, (0, 10))
-
-#let ys = ylim(-5, 5)
-#assert.eq(ys.aesthetic, "y")
-#assert.eq(ys.limits, (-5, 5))
-
-#let pair = lims(x: (0, 10), y: (0, 5))
-#assert.eq(type(pair), array)
-#assert.eq(pair.len(), 2)
-#assert.eq(pair.at(0).aesthetic, "x")
-#assert.eq(pair.at(0).limits, (0, 10))
-#assert.eq(pair.at(1).aesthetic, "y")
-#assert.eq(pair.at(1).limits, (0, 5))
-
-#let only-x = lims(x: (0, 10))
-#assert.eq(only-x.len(), 1)
-#assert.eq(only-x.at(0).aesthetic, "x")
 
 #let ext = expand-limits(y: 0)
 #assert.eq(ext.len(), 1)

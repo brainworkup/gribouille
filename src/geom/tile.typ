@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-rect, @geom-raster
+/// @see @geom-rect
 #let geom-tile(
   mapping: none,
   data: none,
@@ -74,22 +74,6 @@
   position: position,
   inherit-aes: inherit-aes,
 )
-
-/// Raster: shorthand for @geom-tile assuming a regular grid.
-///
-/// In gribouille both functions render the same way; `geom-raster` is
-/// kept as a familiar synonym.
-///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
-///
-/// @param args Forwarded verbatim to @geom-tile.
-///
-/// @returns Layer dictionary consumed by @plot.
-///
-/// @see @geom-tile
-#let geom-raster(..args) = geom-tile(..args)
 
 #let draw(layer, ctx) = {
   let mapping = (ctx.resolve-mapping)(layer)

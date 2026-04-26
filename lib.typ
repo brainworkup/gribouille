@@ -27,7 +27,7 @@
 #import "src/geom/step.typ": geom-step
 #import "src/geom/area.typ": geom-area
 #import "src/geom/rect.typ": geom-rect
-#import "src/geom/tile.typ": geom-raster, geom-tile
+#import "src/geom/tile.typ": geom-tile
 #import "src/geom/segment.typ": geom-segment
 #import "src/geom/polygon.typ": geom-polygon
 #import "src/geom/col.typ": geom-col
@@ -122,7 +122,7 @@
   scale-linetype, scale-linetype-identity, scale-linetype-manual,
 )
 #import "src/utils/colour.typ": col-mix
-#import "src/limits.typ": expand-limits, lims, xlim, ylim
+#import "src/limits.typ": expand-limits
 
 // Coord.
 #import "src/coord/cartesian.typ": coord-cartesian

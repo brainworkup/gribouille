@@ -1,114 +1,18 @@
-///! Top-level shortcuts for axis limits.
+///! Top-level shortcut for extending axis domains.
 ///!
-///! Sugar over @scale-x-continuous and @scale-y-continuous so users can clip
-///! or extend axis domains without spelling out a full scale spec. `xlim` and
-///! `ylim` clip the trained domain; `expand-limits` only extends it so the
-///! data range is preserved when wider.
+///! `expand-limits` folds extra values into the trained min/max so the final
+///! domain spans both the data and the supplied points, without clipping.
+///! For clipping use @scale-x-continuous and @scale-y-continuous with their
+///! `limits:` argument directly.
 
 #import "scale/continuous.typ": scale-x-continuous, scale-y-continuous
 
-/// Clip the x-axis to the interval `(lo, hi)`.
-///
-/// Sugar over `scale-x-continuous(limits: (lo, hi))`. Pass directly through
-/// `scales:` on @plot.
-///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
-///
-/// @param lo Lower bound of the x-axis domain.
-/// @param hi Upper bound of the x-axis domain.
-///
-/// @returns Continuous x scale spec consumed by @plot.
-///
-/// @example
-/// ```
-/// #let d = range(1, 6).map(i => (x: i, y: i))
-/// #plot(
-///   data: d,
-///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-point(size: 3pt),),
-///   scales: (xlim(0, 10),),
-///   width: 10cm,
-///   height: 6cm,
-/// )
-/// ```
-///
-/// @see @ylim, @lims, @expand-limits, @scale-x-continuous
-#let xlim(lo, hi) = scale-x-continuous(limits: (lo, hi))
-
-/// Clip the y-axis to the interval `(lo, hi)`.
-///
-/// Sugar over `scale-y-continuous(limits: (lo, hi))`. Pass directly through
-/// `scales:` on @plot.
-///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
-///
-/// @param lo Lower bound of the y-axis domain.
-/// @param hi Upper bound of the y-axis domain.
-///
-/// @returns Continuous y scale spec consumed by @plot.
-///
-/// @example
-/// ```
-/// #let d = range(1, 6).map(i => (x: i, y: i))
-/// #plot(
-///   data: d,
-///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-point(size: 3pt),),
-///   scales: (ylim(0, 10),),
-///   width: 10cm,
-///   height: 6cm,
-/// )
-/// ```
-///
-/// @see @xlim, @lims, @expand-limits, @scale-y-continuous
-#let ylim(lo, hi) = scale-y-continuous(limits: (lo, hi))
-
-/// Bundle x- and y-axis limits into a single `scales:` argument.
-///
-/// Returns an array of scale specs from @xlim and @ylim when the
-/// corresponding argument is non-`none`. Convenient when both axes need
-/// clipping at once.
-///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
-///
-/// @param x Pair `(lo, hi)` for the x-axis, or `none` to leave x untouched.
-/// @param y Pair `(lo, hi)` for the y-axis, or `none` to leave y untouched.
-///
-/// @returns Array of scale specs ready to splat into `scales:` on @plot.
-///
-/// @example
-/// ```
-/// #let d = range(1, 6).map(i => (x: i, y: i))
-/// #plot(
-///   data: d,
-///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-point(size: 3pt),),
-///   scales: lims(x: (0, 10), y: (0, 10)),
-///   width: 10cm,
-///   height: 6cm,
-/// )
-/// ```
-///
-/// @see @xlim, @ylim, @expand-limits
-#let lims(x: none, y: none) = {
-  let out = ()
-  if x != none { out.push(xlim(..x)) }
-  if y != none { out.push(ylim(..y)) }
-  out
-}
-
 /// Ensure the trained domain includes the supplied values without replacing it.
 ///
-/// Unlike @lims, `expand-limits` does not clip the data; it folds `extend`
-/// values into the trained min/max so the final domain spans both the data
-/// and the supplied points. Useful for forcing a baseline at zero or showing
-/// a target value alongside observed data.
+/// `expand-limits` does not clip the data; it folds `extend` values into the
+/// trained min/max so the final domain spans both the data and the supplied
+/// points. Useful for forcing a baseline at zero or showing a target value
+/// alongside observed data.
 ///
 /// @category Scales
 /// @stability stable
@@ -132,7 +36,7 @@
 /// )
 /// ```
 ///
-/// @see @lims, @xlim, @ylim
+/// @see @scale-x-continuous, @scale-y-continuous
 #let expand-limits(x: none, y: none) = {
   let _values(v) = if type(v) == array { v } else { (v,) }
   let out = ()

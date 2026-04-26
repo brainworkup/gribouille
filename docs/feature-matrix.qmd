@@ -11,7 +11,6 @@ engine: markdown
 Gribouille is a Typst package that implements a grammar of graphics on top of CeTZ.
 This page is the canonical coverage table: one row per public ggplot2 symbol, using the [ggplot2 reference index](https://ggplot2.tidyverse.org/reference/index.html) as the axis.
 Status reflects what is currently in the package; Priority orders the remaining work.
-The execution order, agent topology, and slice protocol live in the development roadmap (kept under `.claude/dev-plans/` in the repository).
 
 Legend for **Status**:
 
@@ -45,7 +44,7 @@ Legend for **Priority** (used to order future work):
 | ggplot2                   | gribouille symbol | Status | Priority | Notes                                                            |
 | ------------------------- | ----------------- | ------ | -------- | ---------------------------------------------------------------- |
 | `ggplot()`                | `plot(...)`.      | ✅     | —        | —                                                                |
-| `aes()`                   | `aes(...)`.       | ✅     | —        | Covers `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`.     |
+| `aes()`                   | `aes(...)`.       | ✅     | —        | Accepts `x`, `y`, `colour`, `fill`, `size`, `alpha`, `linewidth`, `shape`, `linetype`, `group`, `label`, `xmin`/`xmax`/`ymin`/`ymax`, `xend`/`yend`, `xintercept`/`yintercept`/`slope`. |
 | `%+%` / `add_gg()`        | —                 | ❌     | ∅        | Typst has no lazy plot object; composition is via function args. |
 | `ggsave()`                | —                 | ❌     | ∅        | Typst owns the output pipeline.                                  |
 | `qplot()` / `quickplot()` | —                 | ❌     | ∅        | Deprecated upstream.                                             |
@@ -73,7 +72,7 @@ Legend for **Priority** (used to order future work):
 | `geom_rug()`                                                        | `geom-rug`.                                           | ✅     | —        | Tick marks at observations on selected sides (`b`/`t`/`l`/`r`).                                                         |
 | `geom_text()`                                                       | `geom-text`.                                          | ✅     | —        | Reads the `label` aesthetic.                                                                                            |
 | `geom_label()`                                                      | `geom-label`.                                         | ✅     | —        | Boxed text with fill, stroke, radius.                                                                                   |
-| `geom_rect()` / `geom_tile()` / `geom_raster()`                     | `geom-rect`, `geom-tile`, `geom-raster`.              | ✅     | —        | `geom-raster` is an alias of `geom-tile`.                                                                               |
+| `geom_rect()` / `geom_tile()`                                       | `geom-rect`, `geom-tile`.                             | ✅     | —        | `geom_raster()` (a ggplot2 fast path for regular grids) is not exposed; use `geom-tile`.                                |
 | `geom_polygon()`                                                    | `geom-polygon`.                                       | ✅     | —        | One closed polygon per group; fill via `fill` or scale.                                                                 |
 | `geom_segment()`                                                    | `geom-segment`.                                       | ✅     | —        | Maps `x`/`y`/`xend`/`yend`.                                                                                             |
 | `geom_curve()`                                                      | —                                                     | ⬜     | P3       | Curved variant of segment; deferred until a real use case appears.                                                      |
@@ -82,7 +81,7 @@ Legend for **Priority** (used to order future work):
 | `geom_abline()` / `geom_hline()` / `geom_vline()`                   | `geom-abline`, `geom-hline`, `geom-vline`.            | ✅     | —        | Scalar or array intercepts. Trans-aware: under log10/sqrt, abline samples 64 points so the line follows the warp.       |
 | `geom_blank()`                                                      | `geom-blank`.                                         | ✅     | —        | No-op draw; trains scales from its data.                                                                                |
 | `geom_function()`                                                   | `geom-function`.                                      | ✅     | —        | Samples a Typst callable across the x-domain into a polyline.                                                           |
-| `geom_qq()` / `geom_qq_line()`                                      | `geom-qq`, `geom-qq-line`.                            | ✅     | —        | Standard normal reference distribution; reference line through 25th and 75th sample quantiles.                          |
+| `geom_qq()` / `geom_qq_line()`                                      | `geom-qq`, `geom-qq-line`.                            | ✅     | —        | Reference distribution selectable via `distribution`: `"normal"` (default), `"uniform"`, `"exponential"`. Reference line through 25th and 75th sample quantiles. |
 | `geom_quantile()`                                                   | —                                                     | ⬜     | P4       | Quantile regression; deferred, wasm is last resort.                                                                     |
 | `geom_count()`                                                      | —                                                     | ⬜     | P3       | Wrapper over `stat-sum`.                                                                                                |
 | `geom_bin_2d()` / `geom_hex()`                                      | —                                                     | ⬜     | P4       | 2D binning.                                                                                                             |
@@ -152,7 +151,7 @@ Legend for **Priority** (used to order future work):
 | `group`                                                                    | `group`.                                                 | ✅     | —        | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `weight`                                                                   | —                                                        | ⬜     | P3       | Weighted stats.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `lower`, `middle`, `upper`, `ymin`, `ymax`, `outliers`                     | computed by `stat-boxplot`, consumed by `geom-boxplot`.  | ✅     | —        | Internal aesthetics carried between stat and geom.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| Inline type coercion (`aes(colour = factor(x))`, `aes(x = as.numeric(g))`) | `as-factor("col")` / `as-numeric("col")` inside `aes()`. | ✅     | —        | ggplot2 lets you force a mapping discrete or continuous at the `aes()` call site with `factor()` / `as.numeric()`. Today gribouille only supports data-level (`as-factor(data, ...)` mutates the column across the plot) or scale-level (`scale-colour-discrete()`) coercion; neither scopes to a single aesthetic, so the same numeric column cannot be continuous on `x` and discrete on `colour` at the same time. Solution: extend the existing `as-factor` and `as-numeric` into dual-arity functions. Called with `(data, col)` they keep their current behaviour; called with `("col")` from inside `aes()` they return a small annotation dict (`(kind: "mapping-ref", var: col, type: "discrete" \| "continuous")`). Update `_column-for-aesthetic` and `_layer-aesthetic-type` in `src/scale/train.typ` to accept either a plain string or the annotation dict. No new public names. |
+| Inline type coercion (`aes(colour = factor(x))`, `aes(x = as.numeric(g))`) | `as-factor("col")` / `as-numeric("col")` inside `aes()`. | ✅     | —        | ggplot2 forces a mapping discrete or continuous at the `aes()` call site with `factor()` / `as.numeric()`. In gribouille, `as-factor` and `as-numeric` are dual-arity: called with `(data, col)` they rewrite the column across the whole plot, called with `(col)` from inside `aes()` they return a `(kind: "mapping-ref", var: col, type: "discrete" \| "continuous")` annotation that scopes the coercion to a single aesthetic. Scale training in `src/scale/train.typ` accepts either a plain string or the annotation dict via the `mapping-ref-col` / `mapping-ref-type` helpers, so the same numeric column can be continuous on `x` and discrete on `colour` in one plot. |
 
 ### Positional scales
 
@@ -200,10 +199,9 @@ Legend for **Priority** (used to order future work):
 
 | ggplot2                           | gribouille symbol                                                 | Status | Priority | Notes                                                                               |
 | --------------------------------- | ----------------------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------------------- |
-| `labs()`                          | `labs(title:, subtitle:, caption:, x:, y:, colour:, fill:, ...)`. | ✅     | —        | Axis names are injected into trained scale specs.                                   |
-| `xlab()` / `ylab()` / `ggtitle()` | `xlab`, `ylab`, `ggtitle`.                                        | ✅     | —        | Thin wrappers over `labs()`.                                                        |
+| `labs()`                          | `labs(title:, subtitle:, caption:, x:, y:, colour:, fill:, ...)`. | ✅     | —        | Axis names are injected into trained scale specs. Covers the role of `xlab` / `ylab` / `ggtitle`. |
 | `get_labs()`                      | —                                                                 | ⬜     | P3       | —                                                                                   |
-| `lims()` / `xlim()` / `ylim()`    | `lims`, `xlim`, `ylim`.                                           | ✅     | —        | Sugar over `scale-x-continuous(limits:)` / `scale-y-continuous(limits:)`.           |
+| `lims()` / `xlim()` / `ylim()`    | —                                                                 | ❌     | ∅        | Use `scale-x-continuous(limits:)` / `scale-y-continuous(limits:)` directly.         |
 | `expansion()` / `expand_scale()`  | via scale `expand:`.                                              | 🟡     | P3       | Expose helper.                                                                      |
 | `expand_limits()`                 | `expand-limits`.                                                  | ✅     | —        | Folds extension values into the trained continuous domain rather than replacing it. |
 
@@ -212,7 +210,7 @@ Legend for **Priority** (used to order future work):
 | ggplot2                                                        | gribouille symbol                               | Status | Priority | Notes                                                                 |
 | -------------------------------------------------------------- | ----------------------------------------------- | ------ | -------- | --------------------------------------------------------------------- |
 | Discrete `guide_legend()` for colour/fill                      | automatic legend.                               | ✅     | —        | —                                                                     |
-| `guide_colourbar()` / `guide_colorbar()`                       | automatic colourbar.                            | ✅     | —        | Emitted when trained colour/fill is continuous.                       |
+| `guide_colourbar()`                                            | automatic colourbar.                            | ✅     | —        | Emitted when trained colour/fill is continuous.                       |
 | `guide_legend()` customisation (nrow, ncol, reverse, ...)      | `guide-legend(title:, nrow:, ncol:, reverse:)`. | ✅     | —        | Plot-level binding via `guides(colour: guide-legend(...))`.           |
 | `guide_bins()` / `guide_coloursteps()`                         | —                                               | ⬜     | P3       | After binned scales.                                                  |
 | `guide_axis()`                                                 | `guide-axis(angle:, n-dodge:)`.                 | ✅     | —        | x-axis only for v1; y-axis rotation/dodge deferred.                   |
@@ -284,17 +282,21 @@ Legend for **Priority** (used to order future work):
 
 ## Coverage at a glance
 
-- **Geoms**: 11 of ~35 implemented (`point`, `line`, `col`, `bar`, `histogram`, `ribbon`, `smooth`, `hline`, `vline`, `abline`, `text`, `label`), 1 stubbed (`boxplot`); rest missing or out of scope.
-- **Stats**: 4 of ~18 implemented.
-- **Positions**: 3 of 7 (identity, stack, dodge, fill).
-- **Scales**: position, discrete/continuous/manual/viridis colour and fill, size, shape, linetype — ~15 symbols; binned variants deferred.
-- **Coords**: `coord-cartesian` with xlim/ylim; others missing.
-- **Facets**: `facet-wrap` (with `fixed`/`free`/`free_x`/`free_y` scales) and `facet-grid` (shared scales only).
-- **Themes**: 3 complete themes plus `theme()` + four `element-*` constructors.
-- **Guides**: discrete swatch legend plus colourbar for continuous colour/fill.
+- **Plot basics**: `plot()` and `aes()` covering `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`.
+- **Geoms**: `point`, `line`, `path`, `step`, `col`, `bar`, `histogram`, `freqpoly`, `ribbon`, `area`, `boxplot`, `jitter`, `rug`, `text`, `label`, `rect`, `tile`, `polygon`, `segment`, `errorbar`, `linerange`, `crossbar`, `pointrange`, `abline`, `hline`, `vline`, `blank`, `function`, `qq`, `qq-line`; `geom-smooth` covers `method = "lm"` only.
+- **Stats**: `stat-identity`, `stat-count`, `stat-bin`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-ecdf`, `stat-qq`, `stat-qq-line`, `stat-unique`; `stat-smooth` covers `method = "lm"` only.
+- **Positions**: `identity`, `stack`, `fill`, `jitter`, `nudge`; `position-dodge` covers the uniform-width case.
+- **Annotations**: `annotate()` with `text`, `point`, `label`, `segment`, `rect`, `vline`, `hline`, `abline`.
+- **Positional scales**: continuous, discrete, log10, sqrt, reverse, date, datetime, time, on x and y.
+- **Colour and fill scales**: continuous, discrete, manual, viridis (c/d/b), brewer, gradient, gradient2, gradientn, grey, hue, distiller, identity.
+- **Other aesthetic scales**: shape and linetype (with manual and identity variants); `scale-size-continuous` partial; alpha, linewidth, and binned variants deferred.
+- **Coords**: `coord-cartesian` (with xlim/ylim) and `coord-fixed`; flip, polar, and trans deferred.
+- **Facets**: `facet-wrap` (`fixed`/`free`/`free_x`/`free_y` scales) and `facet-grid` (shared scales only).
+- **Themes**: `theme-minimal`, `theme-classic`, `theme-void`, `theme-grey`, `theme-bw`, `theme-linedraw`, `theme-light`, `theme-dark`, `theme-test`, plus `theme()` with `element-blank`, `element-rect`, `element-line`, `element-text`.
+- **Guides**: `guide-legend` with `title`/`nrow`/`ncol`/`reverse`, automatic `guide-colourbar` for continuous colour and fill, `guide-axis` (x-axis only), `guide-none`, and a top-level `guides()` binder.
+- **Vector helpers**: `cut-interval`, `cut-number`, `cut-width`, `resolution`, `mean-se`, `mean-cl-normal`, `mean-sdl`, `median-hilow`.
+- **Datasets**: `mpg` (30 rows) and `economics` (24 rows).
 
 ## How this page is updated
 
 Every implementation slice flips the Status column for every row it touches in the same commit as the code.
-The orchestrator owns these edits.
-See the development roadmap under `.claude/dev-plans/` for the slice ordering and protocol.
