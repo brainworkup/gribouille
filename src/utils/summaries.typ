@@ -143,6 +143,62 @@
   )
 }
 
+// Deterministic pseudo-random in [0, 1) seeded by an integer index. Uses the
+// same sin-fract noise trick as `position-jitter` so bootstrap resamples are
+// reproducible across renders without any RNG state.
+#let _rand01(seed) = {
+  let v = calc.sin(seed * 12.9898 + 78.233) * 43758.5453
+  v - calc.floor(v)
+}
+
+/// Mean with a bootstrap percentile confidence interval.
+///
+/// Resamples `values` with replacement `n-boot` times, computes the bootstrap
+/// mean for each resample, and returns the requested central percentiles of
+/// the bootstrap distribution. The resampling indices are drawn from a
+/// deterministic noise sequence seeded by `seed`, so identical inputs always
+/// produce identical bounds.
+///
+/// @category Stats
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param values Array of numbers; non-numeric entries are dropped.
+/// @param conf Confidence level in the open interval `(0, 1)`.
+/// @param n-boot Number of bootstrap resamples.
+/// @param seed Integer seed for the deterministic resampling sequence.
+///
+/// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+#let mean-cl-boot(values, conf: 0.95, n-boot: 1000, seed: 0) = {
+  if conf <= 0 or conf >= 1 {
+    panic("mean-cl-boot: conf must be in (0, 1); got " + repr(conf))
+  }
+  let xs = _to-numeric(values)
+  let n = xs.len()
+  if n == 0 { return _empty-summary }
+  let m = _mean(xs)
+  if n < 2 { return (y: m, ymin: m, ymax: m) }
+  let nb = calc.max(1, int(n-boot))
+  let means = ()
+  for b in range(0, nb) {
+    let acc = 0.0
+    for j in range(0, n) {
+      let r = _rand01(seed + b * 100003 + j * 1009)
+      let raw = int(calc.floor(r * n))
+      let idx = if raw >= n { n - 1 } else if raw < 0 { 0 } else { raw }
+      acc = acc + xs.at(idx)
+    }
+    means.push(acc / n)
+  }
+  let sorted = means.sorted()
+  let tail = (1 - conf) / 2
+  (
+    y: m,
+    ymin: _quantile(sorted, tail),
+    ymax: _quantile(sorted, 1 - tail),
+  )
+}
+
 /// Look up a summary helper by ggplot2-style name.
 ///
 /// Accepts both the ggplot2 underscore form (`"mean_se"`) and the kebab form
@@ -165,6 +221,11 @@
   } else if key == "mean-cl-normal" {
     let conf = fun-args.at("conf", default: 0.95)
     return mean-cl-normal(values, conf: conf)
+  } else if key == "mean-cl-boot" {
+    let conf = fun-args.at("conf", default: 0.95)
+    let n-boot = fun-args.at("n-boot", default: 1000)
+    let seed = fun-args.at("seed", default: 0)
+    return mean-cl-boot(values, conf: conf, n-boot: n-boot, seed: seed)
   } else if key == "mean-sdl" {
     let mult = fun-args.at("mult", default: 2)
     return mean-sdl(values, mult: mult)
@@ -175,6 +236,7 @@
   panic(
     "summarise: unknown summary function "
       + repr(name)
-      + "; expected one of mean_se, mean_cl_normal, mean_sdl, median_hilow.",
+      + "; expected one of mean_se, mean_cl_normal, mean_cl_boot, "
+      + "mean_sdl, median_hilow.",
   )
 }

@@ -38,6 +38,8 @@
 #import "src/geom/ribbon.typ": geom-ribbon
 #import "src/geom/boxplot.typ": geom-boxplot
 #import "src/geom/errorbar.typ": geom-errorbar
+#import "src/geom/errorbarh.typ": geom-errorbarh
+#import "src/geom/count.typ": geom-count
 #import "src/geom/linerange.typ": geom-linerange
 #import "src/geom/crossbar.typ": geom-crossbar
 #import "src/geom/pointrange.typ": geom-pointrange
@@ -56,6 +58,8 @@
 // Stats.
 #import "src/stat/identity.typ": stat-identity
 #import "src/stat/count.typ": stat-count
+#import "src/stat/sum.typ": stat-sum
+#import "src/stat/function.typ": stat-function
 #import "src/stat/bin.typ": stat-bin
 #import "src/stat/smooth.typ": stat-smooth
 #import "src/stat/boxplot.typ": stat-boxplot
@@ -66,7 +70,7 @@
 #import "src/stat/qq.typ": stat-qq
 #import "src/stat/qq-line.typ": stat-qq-line
 #import "src/utils/summaries.typ": (
-  mean-cl-normal, mean-sdl, mean-se, median-hilow,
+  mean-cl-boot, mean-cl-normal, mean-sdl, mean-se, median-hilow,
 )
 
 // Vector helpers.
