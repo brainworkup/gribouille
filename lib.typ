@@ -55,6 +55,8 @@
 #import "src/utils/summaries.typ": (
   mean-cl-normal, mean-sdl, mean-se, median-hilow,
 )
+#import "src/utils/cut.typ": cut-interval, cut-number, cut-width
+#import "src/utils/resolution.typ": resolution
 
 // Scales.
 #import "src/scale/continuous.typ": scale-x-continuous, scale-y-continuous
