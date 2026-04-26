@@ -6,6 +6,7 @@
 
 #import "../utils/viridis.typ" as viridis-mod
 #import "../utils/palette.typ": brewer-palette
+#import "../utils/colour.typ": grey-palette, hue-palette
 
 /// Continuous colour scale mapping a numeric column to stroke colours.
 ///
@@ -987,3 +988,280 @@
   breaks: breaks,
   labels: labels,
 )
+
+/// Discrete grey colour scale.
+///
+/// Generates `n` evenly-spaced `luma` colours from `start` (darker) to `end`
+/// (lighter), each in `[0, 1]` where 0 is black and 1 is white. Mirrors
+/// ggplot2's `scale_colour_grey()`.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param start Luminance for the first level, in `[0, 1]`.
+/// @param end Luminance for the last level, in `[0, 1]`.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Array of level names controlling order and inclusion, or `none`.
+/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-grey(),),
+/// )
+/// ```
+///
+/// @see @scale-fill-grey, @scale-colour-discrete
+#let scale-colour-grey(
+  start: 0.2,
+  end: 0.8,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "discrete",
+  name: name,
+  palette: grey-palette(10, start: start, end: end),
+  limits: limits,
+  labels: labels,
+)
+
+/// Discrete grey fill scale.
+///
+/// Fill counterpart of @scale-colour-grey.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param start Luminance for the first level, in `[0, 1]`.
+/// @param end Luminance for the last level, in `[0, 1]`.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Array of level names controlling order and inclusion, or `none`.
+/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-grey, @scale-fill-discrete
+#let scale-fill-grey(
+  start: 0.2,
+  end: 0.8,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "discrete",
+  name: name,
+  palette: grey-palette(10, start: start, end: end),
+  limits: limits,
+  labels: labels,
+)
+
+/// Discrete equally-spaced hue colour scale.
+///
+/// Steps `n` hues across the angular range `h` in OKLCh space, picking
+/// chroma and luminance from `c` and `l`. Defaults match ggplot2's
+/// `scale_colour_hue()` with `h = (15deg, 375deg)`, `c = 100`, `l = 65`.
+///
+/// OKLCh is used as a perceptually uniform near-equivalent of HCL, which
+/// Typst does not expose directly. The first colour sits at `h.at(0)` and
+/// successive colours step by `(end - start) / n`, so the endpoint is
+/// excluded and the wheel never duplicates a hue when `start` and `end`
+/// differ by a full turn.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param h Pair `(start, end)` of hue angles.
+/// @param c Chroma in `[0, 100]`.
+/// @param l Luminance in `[0, 100]`.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Array of level names controlling order and inclusion, or `none`.
+/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+///   (x: 4, y: 5, sp: "d"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-hue(),),
+/// )
+/// ```
+///
+/// @see @scale-fill-hue, @scale-colour-discrete
+#let scale-colour-hue(
+  h: (15deg, 375deg),
+  c: 100,
+  l: 65,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "discrete",
+  name: name,
+  palette: hue-palette(12, h: h, c: c, l: l),
+  limits: limits,
+  labels: labels,
+)
+
+/// Discrete equally-spaced hue fill scale.
+///
+/// Fill counterpart of @scale-colour-hue.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param h Pair `(start, end)` of hue angles.
+/// @param c Chroma in `[0, 100]`.
+/// @param l Luminance in `[0, 100]`.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Array of level names controlling order and inclusion, or `none`.
+/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-hue, @scale-fill-discrete
+#let scale-fill-hue(
+  h: (15deg, 375deg),
+  c: 100,
+  l: 65,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "discrete",
+  name: name,
+  palette: hue-palette(12, h: h, c: c, l: l),
+  limits: limits,
+  labels: labels,
+)
+
+/// Continuous ColorBrewer colour scale.
+///
+/// Looks up a Brewer palette by name and interpolates linearly across its
+/// stops as a continuous ramp. `direction` flips the palette: `1` keeps the
+/// canonical order, `-1` reverses it. Mirrors ggplot2's
+/// `scale_colour_distiller()`.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param palette ColorBrewer palette name (sequential or diverging works best).
+/// @param direction `1` for canonical order, `-1` for reversed.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-distiller(palette: "Spectral"),),
+/// )
+/// ```
+///
+/// @see @scale-fill-distiller, @scale-colour-gradientn, @scale-colour-brewer
+#let scale-colour-distiller(
+  palette: "Spectral",
+  direction: 1,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = {
+  let stops = brewer-palette(palette)
+  if direction < 0 { stops = stops.rev() }
+  (
+    kind: "scale",
+    aesthetic: "colour",
+    type: "continuous",
+    name: name,
+    palette: stops,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
+}
+
+/// Continuous ColorBrewer fill scale.
+///
+/// Fill counterpart of @scale-colour-distiller.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param palette ColorBrewer palette name (sequential or diverging works best).
+/// @param direction `1` for canonical order, `-1` for reversed.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-distiller, @scale-fill-gradientn, @scale-fill-brewer
+#let scale-fill-distiller(
+  palette: "Spectral",
+  direction: 1,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = {
+  let stops = brewer-palette(palette)
+  if direction < 0 { stops = stops.rev() }
+  (
+    kind: "scale",
+    aesthetic: "fill",
+    type: "continuous",
+    name: name,
+    palette: stops,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
+}

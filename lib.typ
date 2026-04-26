@@ -93,6 +93,9 @@
 #import "src/scale/colour.typ": (
   scale-fill-gradient, scale-fill-gradient2, scale-fill-gradientn,
 )
+#import "src/scale/colour.typ": scale-colour-grey, scale-fill-grey
+#import "src/scale/colour.typ": scale-colour-hue, scale-fill-hue
+#import "src/scale/colour.typ": scale-colour-distiller, scale-fill-distiller
 #import "src/utils/palette.typ": brewer-palette
 #import "src/scale/size.typ": scale-size-continuous
 #import "src/scale/shape.typ": (

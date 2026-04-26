@@ -18,6 +18,34 @@
   space: rgb,
 )
 
+// Build an n-stop grey ramp from `start` (darker) to `end` (lighter), each
+// expressed as a fraction in 0..1 where 0 is black and 1 is white. Returns
+// `n` `luma` colours evenly spaced in luminance.
+#let grey-palette(n, start: 0.2, end: 0.8) = {
+  let count = calc.max(1, int(n))
+  if count == 1 { return (luma(start * 100%),) }
+  range(count).map(i => {
+    let t = i / (count - 1)
+    let v = start + t * (end - start)
+    luma(v * 100%)
+  })
+}
+
+// Build an n-stop equally-spaced hue ramp in OKLCh space. `h` is a pair
+// `(start, end)` of angles. The first colour sits at `h.at(0)` and
+// successive colours step by `(end - start) / n` so the endpoint is
+// excluded, matching ggplot2's `scale_colour_hue()` default.
+#let hue-palette(n, h: (15deg, 375deg), c: 100, l: 65) = {
+  let count = calc.max(1, int(n))
+  let (h-lo, h-hi) = h
+  let span = h-hi - h-lo
+  let step = span / count
+  let lightness = calc.max(0, calc.min(100, l)) * 1%
+  let chroma-frac = calc.max(0, calc.min(100, c)) / 100
+  let chroma = chroma-frac * 0.18 + 0.02
+  range(count).map(i => oklch(lightness, chroma, h-lo + step * i))
+}
+
 // Walk an n-stop palette: linearly interpolate between consecutive stops to
 // turn a normalised position `t` (in 0..1) into a colour. Used by gradientn
 // resolvers in the renderer and the legend.
