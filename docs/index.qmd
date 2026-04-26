@@ -44,18 +44,21 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 
 ::: {.steps}
 ::: {.step}
+
 ### 1. Data.
 
 Bring a CSV, a list of dictionaries, or an inline table.
 :::
 
 ::: {.step}
+
 ### 2. Mapping.
 
 Declare which column drives `x`, `y`, `colour`, `fill`, or `size`.
 :::
 
 ::: {.step}
+
 ### 3. Layers.
 
 Stack geoms, scales, facets, and a theme until the plot is right.
@@ -107,18 +110,21 @@ Stack geoms, scales, facets, and a theme until the plot is right.
 ::: {.feature-grid}
 
 ::: {.feature}
+
 #### [Geoms.](reference/geoms/index.qmd)
 
 Points, lines, bars, histograms, smoothers, ribbons, boxplots, text, labels, and reference lines.
 :::
 
 ::: {.feature}
+
 #### [Scales.](reference/scales/index.qmd)
 
 Continuous and discrete x, y, colour, fill, size, shape, linetype, with Viridis and manual palettes.
 :::
 
 ::: {.feature}
+
 #### [Positions and stats.](reference/index.qmd)
 
 Identity, stack, dodge, and fill positions.
@@ -126,18 +132,21 @@ Bin, count, identity, and smooth stats.
 :::
 
 ::: {.feature}
+
 #### [Facets.](reference/facets/index.qmd)
 
 `facet-wrap` and `facet-grid` with shared or free scales.
 :::
 
 ::: {.feature}
+
 #### [Themes.](reference/themes/index.qmd)
 
 `theme-minimal`, `theme-classic`, `theme-void`, plus `theme()` element overrides.
 :::
 
 ::: {.feature}
+
 #### [Composable.](examples/index.qmd)
 
 Everything is data you can `let`, extend, and reuse across a Typst document.
@@ -172,6 +181,7 @@ Everything is data you can `let`, extend, and reuse across a Typst document.
 [See all examples](examples/index.qmd){.btn .btn-outline}
 
 ::: {.install-band}
+
 ## Install.
 
 ```typst
@@ -183,7 +193,7 @@ Everything is data you can `let`, extend, and reuse across a Typst document.
 
 ::: {.fine-print}
 
-*Gribouille* requires [Typst](https://typst.app) {{< var typst.series >}} or later and [CeTZ](https://typst.app/universe/package/cetz) {{< var dependencies.cetz.series >}} as the drawing backend.
+_Gribouille_ requires [Typst](https://typst.app) {{< var typst.series >}} or later and [CeTZ](https://typst.app/universe/package/cetz) {{< var dependencies.cetz.series >}} as the drawing backend.
 Released under the [MIT Licence](https://github.com/mcanouil/gribouille?tab=MIT-1-ov-file#readme).
 
 :::

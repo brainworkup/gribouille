@@ -10,13 +10,13 @@ engine: markdown
 
 - [Typst](https://typst.app) {{< var typst.series >}} or later.
 - Familiarity with Typst `#import` syntax.
-No prior experience with the grammar of graphics is assumed, but if you have used [`ggplot2`](https://ggplot2.tidyverse.org) in R or [`plotnine`](https://plotnine.org) in Python the mental model will feel familiar.
+  No prior experience with the grammar of graphics is assumed, but if you have used [`ggplot2`](https://ggplot2.tidyverse.org) in R or [`plotnine`](https://plotnine.org) in Python the mental model will feel familiar.
 
 ## Installation
 
-Until *Gribouille* is published on Typst Universe, import it directly from a local checkout or a Git tag.
+Until _Gribouille_ is published on Typst Universe, import it directly from a local checkout or a Git tag.
 
-### From Typst Universe *(once published)*
+### From Typst Universe _(once published)_
 
 ```typst
 #import "@preview/gribouille:{{< env VERSION >}}": *
@@ -33,7 +33,6 @@ This imports every public symbol so you can call `plot`, `aes`, `geom-point`, an
 ## Your first plot
 
 Drop the following into a `.typ` file alongside a CSV and render with `typst compile`:
-
 
 ::: {layout-ncol="2" layout-valign="center"}
 
