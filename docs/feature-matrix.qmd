@@ -65,7 +65,7 @@ Legend for **Priority** (used to order future work):
 | `geom_ribbon()` | `geom-ribbon`. | ✅ | — | — |
 | `geom_area()` | `geom-area`. | ✅ | — | Filled polygon between `y = 0` and `y` along x; pulls the y-domain to include zero. |
 | `geom_smooth()` | `geom-smooth`. | 🟡 | P3 | `method = "lm"` only; `"loess"` deferred, wasm is last resort. |
-| `geom_boxplot()` | `geom-boxplot` (stub). | 🟡 | P2 | Needs quantile computation; currently accepts pre-summarised rows. |
+| `geom_boxplot()` | `geom-boxplot`. | ✅ | — | Default `stat = "boxplot"` runs the per-group five-number summary; raw observations in, full box+whiskers+outliers out. |
 | `geom_violin()` | — | ⬜ | P4 | Needs kernel density; deferred, wasm is last resort. |
 | `geom_density()` / `geom_density_2d()` / `geom_density_2d_filled()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
 | `geom_dotplot()` | — | ⬜ | P4 | Niche. |
@@ -98,7 +98,7 @@ Legend for **Priority** (used to order future work):
 | `stat_count()` | `stat-count`. | ✅ | — | — |
 | `stat_bin()` | `stat-bin`. | ✅ | — | — |
 | `stat_smooth()` | `stat-smooth`. | 🟡 | P3 | OLS only; `"loess"` deferred, wasm is last resort. |
-| `stat_boxplot()` | — | ⬜ | P2 | Per-group five-number summary. |
+| `stat_boxplot()` | `stat-boxplot`. | ✅ | — | Per-x bucketing with R type-7 quantiles; outliers retained for the geom. |
 | `stat_summary()` / `stat_summary_bin()` | — | ⬜ | P2 | Aggregated mean/median/sd. |
 | `stat_ecdf()` | — | ⬜ | P3 | Sort + cumulative fraction. |
 | `stat_ellipse()` | — | ⬜ | P4 | Normal data ellipses. |
@@ -130,7 +130,7 @@ Legend for **Priority** (used to order future work):
 
 | ggplot2 | gribouille symbol | Status | Priority | Notes |
 |---|---|---|---|---|
-| `annotate()` | — | ⬜ | P2 | Inline single-row layer. |
+| `annotate()` | `annotate`. | ✅ | — | Sugar over a one-row layer; supports `text`, `point`, `label`, `segment`, `rect`, `vline`, `hline`, `abline`. |
 | `annotation_custom()` / `annotation_raster()` | — | ⬜ | P3 | Map to CeTZ primitives. |
 | `annotation_logticks()` | — | ⬜ | P3 | Needs log trans first. |
 | `annotation_map()` / `borders()` | — | ❌ | ∅ | Maps out of scope. |
@@ -151,7 +151,7 @@ Legend for **Priority** (used to order future work):
 | `stroke` | — | ⬜ | P3 | Point outline width. |
 | `group` | `group`. | ✅ | — | — |
 | `weight` | — | ⬜ | P3 | Weighted stats. |
-| `xlower`, `xmiddle`, `xupper`, `lower`, `middle`, `upper` | — | ⬜ | P2 | Boxplot internals. |
+| `lower`, `middle`, `upper`, `ymin`, `ymax`, `outliers` | computed by `stat-boxplot`, consumed by `geom-boxplot`. | ✅ | — | Internal aesthetics carried between stat and geom. |
 | Inline type coercion (`aes(colour = factor(x))`, `aes(x = as.numeric(g))`) | `as-factor("col")` / `as-numeric("col")` inside `aes()`. | ✅ | — | ggplot2 lets you force a mapping discrete or continuous at the `aes()` call site with `factor()` / `as.numeric()`. Today gribouille only supports data-level (`as-factor(data, ...)` mutates the column across the plot) or scale-level (`scale-colour-discrete()`) coercion; neither scopes to a single aesthetic, so the same numeric column cannot be continuous on `x` and discrete on `colour` at the same time. Solution: extend the existing `as-factor` and `as-numeric` into dual-arity functions. Called with `(data, col)` they keep their current behaviour; called with `("col")` from inside `aes()` they return a small annotation dict (`(kind: "mapping-ref", var: col, type: "discrete" \| "continuous")`). Update `_column-for-aesthetic` and `_layer-aesthetic-type` in `src/scale/train.typ` to accept either a plain string or the annotation dict. No new public names. |
 
 ### Positional scales
@@ -174,8 +174,8 @@ Legend for **Priority** (used to order future work):
 | `scale_colour_discrete()` / `scale_fill_discrete()` | `scale-colour-discrete`, `scale-fill-discrete`. | ✅ | — | — |
 | `scale_colour_manual()` / `scale_fill_manual()` | `scale-colour-manual`, `scale-fill-manual`. | ✅ | — | User-supplied palette array. |
 | `scale_colour_viridis_c/d/b()` / `scale_fill_viridis_c/d/b()` | `scale-colour-viridis-c/d/b`, `scale-fill-viridis-c/d/b`. | ✅ | — | viridis, magma, plasma, inferno, cividis. |
-| `scale_colour_brewer()` / `scale_fill_brewer()` | — | ⬜ | P2 | ColorBrewer palettes. |
-| `scale_colour_gradient()` / `gradient2()` / `gradientn()` | — | ⬜ | P2 | Low-mid-high and n-stop gradients. |
+| `scale_colour_brewer()` / `scale_fill_brewer()` | `scale-colour-brewer`, `scale-fill-brewer`. | ✅ | — | 24 ColorBrewer palettes (qualitative, sequential, diverging) via `brewer-palette(name)`. |
+| `scale_colour_gradient()` / `gradient2()` / `gradientn()` | `scale-colour-gradient`, `scale-colour-gradient2`, `scale-colour-gradientn` (and fill counterparts). | ✅ | — | Two-stop, diverging-around-midpoint, and n-stop gradients; legend colourbars match. |
 | `scale_colour_steps()` / `steps2()` / `stepsn()` | — | ⬜ | P3 | Binned gradient. |
 | `scale_colour_grey()` / `scale_fill_grey()` | — | ⬜ | P3 | Grey ramp. |
 | `scale_colour_hue()` / `scale_fill_hue()` | — | ⬜ | P3 | HCL-spaced hues. |
