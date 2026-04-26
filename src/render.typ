@@ -35,6 +35,9 @@
 #import "geom/linerange.typ" as linerange-geom
 #import "geom/crossbar.typ" as crossbar-geom
 #import "geom/pointrange.typ" as pointrange-geom
+#import "geom/blank.typ" as blank-geom
+#import "geom/rug.typ" as rug-geom
+#import "geom/function.typ" as function-geom
 #import "legend.typ" as legend-mod
 
 // Flatten a merged aesthetic mapping so geoms receive plain column-name
@@ -536,6 +539,12 @@
       crossbar-geom.draw(layer, ctx)
     } else if layer.geom == "pointrange" {
       pointrange-geom.draw(layer, ctx)
+    } else if layer.geom == "blank" {
+      blank-geom.draw(layer, ctx)
+    } else if layer.geom == "rug" {
+      rug-geom.draw(layer, ctx)
+    } else if layer.geom == "function" {
+      function-geom.draw(layer, ctx)
     }
   }
 

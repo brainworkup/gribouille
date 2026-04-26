@@ -1,0 +1,144 @@
+///! Marginal tick marks at observed x and / or y positions.
+///!
+///! Adds short ticks just outside the panel edges to expose the raw
+///! distribution of one or both positional aesthetics, mirroring the
+///! behaviour of ggplot2's `geom_rug()` and plotnine's `geom_rug`.
+
+#import "../deps.typ": cetz
+#import "../scale/train.typ": map-position
+#import "../utils/types.typ": parse-number
+
+/// Marginal rug ticks at each row's x and / or y position.
+///
+/// `sides` selects which panel edges receive ticks: any combination of `b`
+/// (bottom), `t` (top), `l` (left), `r` (right). Bottom and top sides need
+/// an `x` mapping; left and right sides need a `y` mapping. Ticks honour a
+/// mapped colour aesthetic when present.
+///
+/// @category Geoms
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
+/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// @param sides String of edge codes among `b`, `t`, `l`, `r` indicating which axes receive ticks.
+/// @param length Tick length in CeTZ canvas units (1 unit equals 1 cm).
+/// @param stroke Tick thickness (a Typst length).
+/// @param colour Fixed tick colour. `auto` resolves via the colour scale or theme `ink`.
+/// @param alpha Tick opacity in `[0, 1]`.
+/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+///
+/// @returns Layer dictionary consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.5)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-rug(sides: "bl"),
+///   ),
+/// )
+/// ```
+///
+/// @see @geom-blank, @geom-function, @geom-point
+#let geom-rug(
+  mapping: none,
+  data: none,
+  sides: "bl",
+  length: 0.15,
+  stroke: 0.4pt,
+  colour: auto,
+  alpha: 1,
+  inherit-aes: true,
+) = (
+  kind: "layer",
+  geom: "rug",
+  mapping: mapping,
+  data: data,
+  params: (
+    sides: sides,
+    length: length,
+    stroke: stroke,
+    colour: colour,
+    alpha: alpha,
+  ),
+  stat: "identity",
+  position: "identity",
+  inherit-aes: inherit-aes,
+)
+
+#let draw(layer, ctx) = {
+  let mapping = (ctx.resolve-mapping)(layer)
+  let data = (ctx.resolve-data)(layer)
+  if mapping == none or data == none { return }
+  let sides = layer.params.sides
+  if sides == none or sides == "" { return }
+
+  let x-col = mapping.at("x", default: none)
+  let y-col = mapping.at("y", default: none)
+  let x-trained = ctx.trained.at("x", default: none)
+  let y-trained = ctx.trained.at("y", default: none)
+
+  let colour-col = mapping.at("colour", default: none)
+  let colour-trained = ctx.trained.at("colour", default: none)
+  let default-colour = if (
+    layer.params.colour != auto and layer.params.colour != none
+  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+
+  let (px-lo, px-hi) = ctx.px-range
+  let (py-lo, py-hi) = ctx.py-range
+  let len = layer.params.length
+  let alpha = layer.params.alpha
+
+  let want-bottom = sides.contains("b")
+  let want-top = sides.contains("t")
+  let want-left = sides.contains("l")
+  let want-right = sides.contains("r")
+
+  for row in data {
+    let colour = if colour-col != none and colour-trained != none {
+      let sample = row.at(colour-col, default: none)
+      (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
+    } else { default-colour }
+    let final-colour = if alpha < 1 {
+      colour.transparentize((1 - alpha) * 100%)
+    } else { colour }
+    let stroke-spec = (paint: final-colour, thickness: layer.params.stroke)
+
+    if (want-bottom or want-top) and x-col != none and x-trained != none {
+      let cx = map-position(
+        x-trained,
+        row.at(x-col, default: none),
+        ctx.px-range,
+      )
+      if cx != none {
+        if want-bottom {
+          cetz.draw.line((cx, py-lo), (cx, py-lo + len), stroke: stroke-spec)
+        }
+        if want-top {
+          cetz.draw.line((cx, py-hi - len), (cx, py-hi), stroke: stroke-spec)
+        }
+      }
+    }
+    if (want-left or want-right) and y-col != none and y-trained != none {
+      let cy = map-position(
+        y-trained,
+        row.at(y-col, default: none),
+        ctx.py-range,
+      )
+      if cy != none {
+        if want-left {
+          cetz.draw.line((px-lo, cy), (px-lo + len, cy), stroke: stroke-spec)
+        }
+        if want-right {
+          cetz.draw.line((px-hi - len, cy), (px-hi, cy), stroke: stroke-spec)
+        }
+      }
+    }
+  }
+}

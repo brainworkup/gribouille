@@ -43,6 +43,9 @@
 #import "src/geom/text.typ": geom-text
 #import "src/geom/label.typ": geom-label
 #import "src/geom/jitter.typ": geom-jitter
+#import "src/geom/blank.typ": geom-blank
+#import "src/geom/rug.typ": geom-rug
+#import "src/geom/function.typ": geom-function
 
 // Stats.
 #import "src/stat/identity.typ": stat-identity
