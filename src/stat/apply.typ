@@ -8,6 +8,8 @@
 #import "boxplot.typ" as boxplot-stat
 #import "summary.typ" as summary-stat
 #import "summary-bin.typ" as summary-bin-stat
+#import "ecdf.typ" as ecdf-stat
+#import "unique.typ" as unique-stat
 
 #let apply-stat(name, data, mapping, params) = {
   if name == none or name == "identity" {
@@ -24,6 +26,10 @@
     summary-stat.apply(data, mapping, params: params)
   } else if name == "summary_bin" {
     summary-bin-stat.apply(data, mapping, params: params)
+  } else if name == "ecdf" {
+    ecdf-stat.apply(data, mapping, params: params)
+  } else if name == "unique" {
+    unique-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }
