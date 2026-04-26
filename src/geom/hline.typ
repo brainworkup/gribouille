@@ -4,7 +4,7 @@
 ///! or an array for drawing multiple reference lines at once.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous
+#import "../scale/train.typ": map-axis
 
 /// Horizontal reference line at one or more y intercepts.
 ///
@@ -76,7 +76,7 @@
   } else { colour }
   let stroke-spec = (paint: fill, thickness: layer.params.stroke)
   for y in ys {
-    let cy = map-continuous(float(y), y-trained.domain, ctx.py-range)
+    let cy = map-axis(y-trained, float(y), ctx.py-range)
     cetz.draw.line((px-lo, cy), (px-hi, cy), stroke: stroke-spec)
   }
 }

@@ -1,10 +1,12 @@
 ///! Oblique reference line from slope and intercept.
 ///!
 ///! Requires continuous x and y scales. The line is drawn across the full
-///! trained x domain using `y = slope * x + intercept`.
+///! trained x domain using `y = slope * x + intercept`. Under non-identity
+///! axis transformations the line is sampled as a 64-point polyline so it
+///! follows the warped axis correctly.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous
+#import "../scale/train.typ": map-axis
 
 /// Straight reference line described by slope and intercept.
 ///
@@ -72,21 +74,38 @@
   let (x-lo, x-hi) = x-trained.domain
   let slope = float(layer.params.slope)
   let intercept = float(layer.params.intercept)
-  let y-lo = slope * x-lo + intercept
-  let y-hi = slope * x-hi + intercept
-  let cx-lo = map-continuous(x-lo, x-trained.domain, ctx.px-range)
-  let cx-hi = map-continuous(x-hi, x-trained.domain, ctx.px-range)
-  let cy-lo = map-continuous(y-lo, y-trained.domain, ctx.py-range)
-  let cy-hi = map-continuous(y-hi, y-trained.domain, ctx.py-range)
   let colour = if layer.params.colour == auto {
     ctx.theme.at("ink", default: black)
   } else { layer.params.colour }
   let fill = if layer.params.alpha < 1 {
     colour.transparentize((1 - layer.params.alpha) * 100%)
   } else { colour }
-  cetz.draw.line(
-    (cx-lo, cy-lo),
-    (cx-hi, cy-hi),
-    stroke: (paint: fill, thickness: layer.params.stroke),
-  )
+  let stroke-spec = (paint: fill, thickness: layer.params.stroke)
+  let x-trans = x-trained.at("trans", default: "identity")
+  let y-trans = y-trained.at("trans", default: "identity")
+  if x-trans != "identity" or y-trans != "identity" {
+    let n = 64
+    let pts = range(0, n).map(i => {
+      let t = i / (n - 1)
+      let x = x-lo + t * (x-hi - x-lo)
+      let y = slope * x + intercept
+      (
+        map-axis(x-trained, x, ctx.px-range),
+        map-axis(y-trained, y, ctx.py-range),
+      )
+    })
+    cetz.draw.line(..pts, stroke: stroke-spec)
+  } else {
+    let y-lo = slope * x-lo + intercept
+    let y-hi = slope * x-hi + intercept
+    let cx-lo = map-axis(x-trained, x-lo, ctx.px-range)
+    let cx-hi = map-axis(x-trained, x-hi, ctx.px-range)
+    let cy-lo = map-axis(y-trained, y-lo, ctx.py-range)
+    let cy-hi = map-axis(y-trained, y-hi, ctx.py-range)
+    cetz.draw.line(
+      (cx-lo, cy-lo),
+      (cx-hi, cy-hi),
+      stroke: stroke-spec,
+    )
+  }
 }
