@@ -2,6 +2,13 @@
 
 #import "../../src/position/apply.typ": apply-position
 
+#let assert-close(a, b, tol: 1e-9) = {
+  assert(
+    calc.abs(a - b) < tol,
+    message: "expected " + repr(a) + " ~= " + repr(b),
+  )
+}
+
 #let df = (
   (q: "Q1", g: "A", y: 10),
   (q: "Q1", g: "B", y: 20),
@@ -26,11 +33,64 @@
 #assert.eq(filled.data.at(1).ymax, 1.0)
 #assert.eq(filled.data.at(2).ymax, 30.0 / 40.0)
 
-// dodge: offsets + n per row.
+// dodge: uniform widths match the legacy slot layout exactly.
 #let dodged = apply-position("dodge", df, mapping)
 #assert.eq(dodged.data.at(0)._dodge-n, 2)
 #assert.eq(dodged.data.at(0)._dodge-offset, -0.25)
 #assert.eq(dodged.data.at(1)._dodge-offset, 0.25)
+
+// dodge: mixed per-row widths pack side-by-side without exceeding the bucket.
+#let mixed-df = (
+  (q: "Q1", g: "A", y: 10, width: 0.6),
+  (q: "Q1", g: "B", y: 20, width: 0.4),
+)
+#let mixed = apply-position(
+  "dodge",
+  mixed-df,
+  mapping,
+  params: (width: 0.9, padding: 0.1),
+)
+// Bucket layout: widths (0.6, 0.4) with 0.1 padding sums to 1.1 so all
+// values shrink by 1/1.1 = ~0.909. Slot 1 centre = -0.5 + 0.6/2.2 = -0.2727...
+#let mixed-bar = 0.9
+#let mixed-scale = 1.0 / 1.1
+#let centre-a = -0.5 + 0.6 * mixed-scale / 2
+#let centre-b = -0.5 + (0.6 + 0.1) * mixed-scale + 0.4 * mixed-scale / 2
+#assert-close(mixed.data.at(0)._dodge-offset, centre-a / mixed-bar)
+#assert-close(mixed.data.at(1)._dodge-offset, centre-b / mixed-bar)
+// Corresponding bar half-widths fit inside [-0.5, 0.5] of the bucket.
+#let half-a = (0.6 * mixed-scale) / 2
+#let half-b = (0.4 * mixed-scale) / 2
+#assert(centre-a + half-a <= centre-b - half-b)
+#assert(centre-a - half-a >= -0.5)
+#assert(centre-b + half-b <= 0.5)
+
+// jitterdodge: groups dodge then jitter within their slot on a numeric x.
+#let jd-df = ()
+#for x in (1, 2) {
+  for grp in ("A", "B") {
+    for _ in range(0, 4) {
+      jd-df.push((x: x, y: 1, grp: grp))
+    }
+  }
+}
+#let jd-mapping = (x: "x", y: "y", colour: "grp")
+#let jd = apply-position(
+  "jitterdodge",
+  jd-df,
+  jd-mapping,
+  params: (
+    width: 0.0,
+    height: 0,
+    "dodge-width": 0.75,
+    seed: 0,
+  ),
+)
+// With width: 0 the jitter step is zero, so points sit on their dodge centre.
+// Groups A/B at category-step 1 with dodge-width 0.75 land at x +/- 0.1875.
+#assert.eq(jd.data.at(0).x, 1 - 0.1875)
+#assert.eq(jd.data.at(4).x, 1 + 0.1875)
+#assert.eq(jd.data.at(8).x, 2 - 0.1875)
 
 // identity: pass-through.
 #let id = apply-position("identity", df, mapping)

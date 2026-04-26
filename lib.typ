@@ -130,6 +130,7 @@
 #import "src/position/fill.typ": position-fill
 #import "src/position/identity.typ": position-identity
 #import "src/position/jitter.typ": position-jitter
+#import "src/position/jitterdodge.typ": position-jitterdodge
 #import "src/position/nudge.typ": position-nudge
 
 // Facets.
