@@ -13,7 +13,7 @@ extensions:
     foreground: auto
     width: auto
     height: auto
-    margin: 0pt
+    margin: 0.5cm
   modal:
     size: lg
     scrollable: true
