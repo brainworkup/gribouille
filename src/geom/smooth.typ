@@ -8,6 +8,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -154,7 +155,7 @@
         ))
       let pts = upper + lower
       if pts.all(p => p.at(0) != none and p.at(1) != none) {
-        let band = ribbon-colour.transparentize((1 - layer.params.alpha) * 100%)
+        let band = apply-alpha(ribbon-colour, layer.params.alpha)
         cetz.draw.line(..pts, close: true, fill: band, stroke: none)
       }
     }

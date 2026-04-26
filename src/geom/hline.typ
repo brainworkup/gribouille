@@ -5,6 +5,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-axis
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Horizontal reference line at one or more y intercepts.
 ///
@@ -71,9 +72,7 @@
   let colour = if layer.params.colour == auto {
     ctx.theme.at("ink", default: black)
   } else { layer.params.colour }
-  let fill = if layer.params.alpha < 1 {
-    colour.transparentize((1 - layer.params.alpha) * 100%)
-  } else { colour }
+  let fill = apply-alpha(colour, layer.params.alpha)
   let stroke-spec = (paint: fill, thickness: layer.params.stroke)
   for y in ys {
     let cy = map-axis(y-trained, float(y), ctx.py-range)

@@ -7,6 +7,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-discrete, map-position
 #import "../utils/palette.typ": default-shapes
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
 ///
@@ -199,9 +200,7 @@
     } else {
       ctx.theme.at("ink", default: black)
     }
-    let fill = if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else {
-      colour
-    }
+    let fill = apply-alpha(colour, alpha)
     let shape-kind = if shape-col != none and shape-trained != none {
       if shape-trained.type == "identity" {
         let v = row.at(shape-col, default: none)

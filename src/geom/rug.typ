@@ -7,6 +7,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Marginal rug ticks at each row's x and / or y position.
 ///
@@ -105,9 +106,7 @@
       let sample = row.at(colour-col, default: none)
       (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
     } else { default-colour }
-    let final-colour = if alpha < 1 {
-      colour.transparentize((1 - alpha) * 100%)
-    } else { colour }
+    let final-colour = apply-alpha(colour, alpha)
     let stroke-spec = (paint: final-colour, thickness: layer.params.stroke)
 
     if (want-bottom or want-top) and x-col != none and x-trained != none {

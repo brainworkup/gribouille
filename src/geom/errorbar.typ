@@ -4,6 +4,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Errorbar layer: vertical range with a horizontal cap at each end.
 ///
@@ -113,10 +114,7 @@
         ctx.palette,
       )
     } else { default-colour }
-    let alpha = layer.params.alpha
-    let final-colour = if alpha < 1 {
-      colour.transparentize((1 - alpha) * 100%)
-    } else { colour }
+    let final-colour = apply-alpha(colour, layer.params.alpha)
 
     let stroke-spec = (
       paint: final-colour,

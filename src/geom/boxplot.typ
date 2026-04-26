@@ -9,6 +9,7 @@
 #import "../scale/train.typ": map-continuous, map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Boxplot layer: draws a Tukey box, whiskers, and outlier points per group.
 ///
@@ -199,9 +200,7 @@
       )
     } else { default-stroke-colour }
 
-    let final-fill = if alpha < 1 {
-      resolved-fill.transparentize((1 - alpha) * 100%)
-    } else { resolved-fill }
+    let final-fill = apply-alpha(resolved-fill, alpha)
     let stroke-spec = (paint: resolved-stroke, thickness: stroke-thickness)
 
     cetz.draw.rect(

@@ -4,6 +4,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
+#import "../utils/fill-resolve.typ": resolve-fill-colour
 
 /// Polygon layer: one closed filled polygon per group.
 ///
@@ -74,8 +75,6 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let fill-col = mapping.at("fill", default: none)
-  let fill-trained = ctx.trained.at("fill", default: none)
   let neutral-fill = rgb("#4c78a8")
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
@@ -97,16 +96,14 @@
     }
     if pts.len() < 3 { continue }
 
-    let resolved = if layer.params.fill != auto and layer.params.fill != none {
-      layer.params.fill
-    } else if fill-col != none and fill-trained != none {
-      let sample = rows.first().at(fill-col, default: none)
-      (ctx.resolve-colour)(fill-trained, sample, ctx.palette)
-    } else { neutral-fill }
-    let alpha = layer.params.alpha
-    let final-fill = if alpha < 1 {
-      resolved.transparentize((1 - alpha) * 100%)
-    } else { resolved }
+    let final-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      rows.first(),
+      neutral-fill,
+      colour-fallback: false,
+    )
 
     cetz.draw.line(
       ..pts,
