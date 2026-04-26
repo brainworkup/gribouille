@@ -40,6 +40,8 @@
 #import "geom/rug.typ" as rug-geom
 #import "geom/function.typ" as function-geom
 #import "legend.typ" as legend-mod
+#import "facet/labellers.typ" as labellers
+#import "scale/secondary.typ" as secondary-mod
 
 // Flatten a merged aesthetic mapping so geoms receive plain column-name
 // strings. Mapping-ref annotations produced by `as-factor("col")` have
@@ -347,6 +349,8 @@
   show-y-labels: true,
   show-x-title: true,
   show-y-title: true,
+  show-x-sec: true,
+  show-y-sec: true,
 ) = {
   import cetz.draw: *
   let (ox, oy) = origin
@@ -511,6 +515,97 @@
           anchor: "east",
         )
       }
+    }
+  }
+
+  // Secondary x-axis: draw on top edge if the trained x scale carries a
+  // secondary spec. Breaks reuse the primary axis grid; their labels go
+  // through the user's transformation function.
+  let _x-sec = if (
+    x-trained != none
+      and x-trained.type == "continuous"
+      and x-trained.at("spec", default: none) != none
+  ) {
+    x-trained.spec.at("secondary", default: none)
+  } else { none }
+  if _x-sec != none and show-x-sec {
+    let breaks = _axis-breaks(x-trained)
+    for b in breaks {
+      let cx = map-axis(x-trained, b, px-range)
+      if axis-stroke != none and tick-len > 0 {
+        line((cx, py-hi), (cx, py-hi + tick-len), stroke: axis-stroke)
+      }
+      if theme.tick-labels {
+        let mapped = secondary-mod.apply-trans(_x-sec, b)
+        content(
+          (cx, py-hi + tick-len + 0.05),
+          text(
+            size: theme.axis-text-size,
+            fill: _ax-text-colour,
+            weight: _ax-text-weight,
+          )[#_format-break(mapped)],
+          anchor: "south",
+        )
+      }
+    }
+    if axis-stroke != none {
+      line((px-lo, py-hi), (px-hi, py-hi), stroke: axis-stroke)
+    }
+    if _x-sec.name != none and theme.axis-title-size > 0pt {
+      content(
+        ((px-lo + px-hi) / 2, py-hi + tick-len + 0.55),
+        text(
+          size: theme.axis-title-size,
+          fill: _ax-title-colour,
+          weight: _ax-title-weight,
+        )[#_x-sec.name],
+        anchor: "south",
+      )
+    }
+  }
+
+  // Secondary y-axis: draw on right edge if the trained y scale carries a
+  // secondary spec.
+  let _y-sec = if (
+    y-trained != none
+      and y-trained.type == "continuous"
+      and y-trained.at("spec", default: none) != none
+  ) {
+    y-trained.spec.at("secondary", default: none)
+  } else { none }
+  if _y-sec != none and show-y-sec {
+    let breaks = _axis-breaks(y-trained)
+    for b in breaks {
+      let cy = map-axis(y-trained, b, py-range)
+      if axis-stroke != none and tick-len > 0 {
+        line((px-hi, cy), (px-hi + tick-len, cy), stroke: axis-stroke)
+      }
+      if theme.tick-labels {
+        let mapped = secondary-mod.apply-trans(_y-sec, b)
+        content(
+          (px-hi + tick-len + 0.05, cy),
+          text(
+            size: theme.axis-text-size,
+            fill: _ax-text-colour,
+            weight: _ax-text-weight,
+          )[#_format-break(mapped)],
+          anchor: "west",
+        )
+      }
+    }
+    if axis-stroke != none {
+      line((px-hi, py-lo), (px-hi, py-hi), stroke: axis-stroke)
+    }
+    if _y-sec.name != none and theme.axis-title-size > 0pt {
+      content(
+        (px-hi + tick-len + 0.7, (py-lo + py-hi) / 2),
+        text(
+          size: theme.axis-title-size,
+          fill: _ax-title-colour,
+          weight: _ax-title-weight,
+        )[#_y-sec.name],
+        angle: 90deg,
+      )
     }
   }
 
@@ -887,6 +982,12 @@
     right: 0.3 + legend-gap + legend-width,
   )
 
+  let _panel-row-count(panel-layers) = {
+    let n = 0
+    for layer in panel-layers { n += layer.data.len() }
+    n
+  }
+
   let canvas = if facet-wrap-mode {
     let levels = wrap-levels
     let n = levels.len()
@@ -908,6 +1009,7 @@
 
     cetz.canvas(length: 1cm, {
       import cetz.draw: *
+      let _wrap-labeller = spec.facet.at("labeller", default: none)
       for (i, level) in levels.enumerate() {
         let col = calc.rem(i, ncol)
         let row = int(i / ncol)
@@ -921,15 +1023,22 @@
           fill: _strip-fill,
           stroke: none,
         )
+        let panel-layers = panels.at(i).layers
+        let panel-count = _panel-row-count(panel-layers)
+        let strip-text = labellers.format(
+          _wrap-labeller,
+          spec.facet.var,
+          level,
+          count: panel-count,
+        )
         content(
           (x0 + panel-w / 2, y0 + panel-h + strip-h / 2),
           text(
             size: _strip-text-size,
             fill: _strip-text-colour,
             weight: _strip-text-weight,
-          )[#level],
+          )[#strip-text],
         )
-        let panel-layers = panels.at(i).layers
         let panel-trained = if panel-trained-list.len() == 0 {
           trained
         } else { panel-trained-list.at(i) }
@@ -953,6 +1062,8 @@
           show-y-labels: free-y or col == 0,
           show-x-title: false,
           show-y-title: false,
+          show-x-sec: free-x or row == 0,
+          show-y-sec: free-y or col == ncol - 1,
         )
       }
 
@@ -1057,8 +1168,26 @@
             show-y-labels: c == 0,
             show-x-title: false,
             show-y-title: false,
+            show-x-sec: r == 0,
+            show-y-sec: c == n-cols - 1,
           )
         }
+      }
+
+      let _grid-labeller = spec.facet.at("labeller", default: none)
+      let _col-count(c) = {
+        let n = 0
+        for r in range(n-rows) {
+          n += _panel-row-count(panels.at(r * n-cols + c).layers)
+        }
+        n
+      }
+      let _row-count(r) = {
+        let n = 0
+        for c in range(n-cols) {
+          n += _panel-row-count(panels.at(r * n-cols + c).layers)
+        }
+        n
       }
 
       // Column strips on top.
@@ -1072,13 +1201,19 @@
             fill: _strip-fill,
             stroke: none,
           )
+          let strip-text = labellers.format(
+            _grid-labeller,
+            col-var,
+            col-lv,
+            count: _col-count(c),
+          )
           content(
             (x0 + panel-w / 2, strip-y + top-strip / 2),
             text(
               size: _strip-text-size,
               fill: _strip-text-colour,
               weight: _strip-text-weight,
-            )[#col-lv],
+            )[#strip-text],
           )
         }
       }
@@ -1094,13 +1229,19 @@
             fill: _strip-fill,
             stroke: none,
           )
+          let strip-text = labellers.format(
+            _grid-labeller,
+            row-var,
+            row-lv,
+            count: _row-count(r),
+          )
           content(
             (strip-x + right-strip / 2, y0 + panel-h / 2),
             text(
               size: _strip-text-size,
               fill: _strip-text-colour,
               weight: _strip-text-weight,
-            )[#row-lv],
+            )[#strip-text],
             angle: -90deg,
           )
         }

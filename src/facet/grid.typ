@@ -3,6 +3,8 @@
 ///! Panels arranged on a `row x col` grid, driven by two discrete variables.
 ///! v1 supports shared scales only.
 
+#import "labellers.typ": label-value
+
 /// Grid facets: panels on a row x col grid from two discrete variables.
 ///
 /// Either `rows` or `cols` may be `none`, but not both. Only shared scales
@@ -15,6 +17,8 @@
 /// @param rows Name of the discrete column driving panel rows, or `none`.
 /// @param cols Name of the discrete column driving panel columns, or `none`.
 /// @param scales Scale policy. Only `"fixed"` is supported in v1.
+/// @param labeller Labeller controlling strip text. Defaults to
+///   `label-value()` which shows the level as-is.
 ///
 /// @returns Facet dictionary consumed by @plot.
 ///
@@ -39,7 +43,12 @@
 /// ```
 ///
 /// @see @facet-wrap, @plot
-#let facet-grid(rows: none, cols: none, scales: "fixed") = {
+#let facet-grid(
+  rows: none,
+  cols: none,
+  scales: "fixed",
+  labeller: label-value(),
+) = {
   if scales != "fixed" {
     panic("facet-grid currently supports scales: \"fixed\" only")
   }
@@ -52,5 +61,6 @@
     rows: rows,
     cols: cols,
     scales: scales,
+    labeller: labeller,
   )
 }

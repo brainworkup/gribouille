@@ -19,6 +19,9 @@
 #import "src/guide/none.typ": guide-none
 #import "src/guide/axis.typ": guide-axis
 #import "src/guides.typ": guides
+#import "src/guide/draw-key.typ": (
+  draw-key-blank, draw-key-line, draw-key-path, draw-key-point, draw-key-rect,
+)
 
 // Geoms.
 #import "src/geom/point.typ": geom-point
@@ -81,6 +84,7 @@
 #import "src/utils/normal.typ": qnorm
 
 // Scales.
+#import "src/scale/secondary.typ": dup-axis, sec-axis
 #import "src/scale/continuous.typ": scale-x-continuous, scale-y-continuous
 #import "src/scale/continuous.typ": scale-x-log10, scale-y-log10
 #import "src/scale/continuous.typ": scale-x-sqrt, scale-y-sqrt
@@ -151,6 +155,9 @@
 // Facets.
 #import "src/facet/wrap.typ": facet-wrap
 #import "src/facet/grid.typ": facet-grid
+#import "src/facet/labellers.typ": (
+  label-both, label-context, label-value, label-wrap, labeller,
+)
 
 // Themes.
 #import "src/theme/grey.typ": theme-grey

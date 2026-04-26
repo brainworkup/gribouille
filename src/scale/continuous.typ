@@ -18,6 +18,7 @@
 /// @param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// @param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
 /// @param expand Expansion added to each side of the domain, or `auto`.
+/// @param secondary Secondary axis spec from @dup-axis or @sec-axis, or `none`.
 ///
 /// @returns Scale object consumed by @plot.
 ///
@@ -42,6 +43,7 @@
   labels: auto,
   trans: "identity",
   expand: auto,
+  secondary: none,
 ) = (
   kind: "scale",
   aesthetic: "x",
@@ -52,6 +54,7 @@
   labels: labels,
   trans: trans,
   expand: expand,
+  secondary: secondary,
 )
 
 /// Continuous y scale: axis title, limits, breaks, labels, and transformation.
@@ -68,6 +71,7 @@
 /// @param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// @param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
 /// @param expand Expansion added to each side of the domain, or `auto`.
+/// @param secondary Secondary axis spec from @dup-axis or @sec-axis, or `none`.
 ///
 /// @returns Scale object consumed by @plot.
 ///
@@ -92,6 +96,7 @@
   labels: auto,
   trans: "identity",
   expand: auto,
+  secondary: none,
 ) = (
   kind: "scale",
   aesthetic: "y",
@@ -102,6 +107,7 @@
   labels: labels,
   trans: trans,
   expand: expand,
+  secondary: secondary,
 )
 
 /// Continuous x scale on a base-10 log axis.
