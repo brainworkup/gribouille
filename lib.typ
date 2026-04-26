@@ -5,6 +5,7 @@
 #import "src/plot.typ": plot
 #import "src/aes.typ": aes
 #import "src/data.typ": as-factor, as-numeric
+#import "src/annotate.typ": annotate
 
 // Labs.
 #import "src/labs.typ": labs

@@ -1,0 +1,142 @@
+///! One-line annotations attached to a single inline observation.
+///!
+///! `annotate(geom, ..fields)` builds a layer whose data is a single row,
+///! whose mapping points each aesthetic kwarg name at the matching column,
+///! and whose `inherit-aes` is `false`. Use it for ad-hoc reference marks
+///! (a labelled point, a vertical guide line, a corner caption, ...) that
+///! should not be driven by the plot-level data or mapping.
+
+#import "aes.typ": aes
+#import "geom/text.typ": geom-text
+#import "geom/point.typ": geom-point
+#import "geom/label.typ": geom-label
+#import "geom/segment.typ": geom-segment
+#import "geom/rect.typ": geom-rect
+#import "geom/vline.typ": geom-vline
+#import "geom/hline.typ": geom-hline
+#import "geom/abline.typ": geom-abline
+
+// Kwarg names treated as aesthetic mappings (everything else is forwarded
+// to the geom constructor as a layer parameter, e.g. `stroke`, `fontsize`).
+#let _aes-keys = (
+  "x",
+  "y",
+  "xend",
+  "yend",
+  "xmin",
+  "xmax",
+  "ymin",
+  "ymax",
+  "colour",
+  "fill",
+  "size",
+  "alpha",
+  "shape",
+  "linetype",
+  "label",
+  "group",
+  "slope",
+  "intercept",
+)
+
+#let _geom-table = (
+  text: geom-text,
+  point: geom-point,
+  label: geom-label,
+  segment: geom-segment,
+  rect: geom-rect,
+  vline: geom-vline,
+  hline: geom-hline,
+  abline: geom-abline,
+)
+
+// Geoms that do not accept a `data` / `mapping` pair. Every kwarg must go
+// straight to the constructor as a layer parameter for these.
+#let _params-only = ("vline", "hline", "abline")
+
+/// Build a one-row annotation layer dispatching to a named geom.
+///
+/// Splits keyword arguments into two groups: those whose names match an
+/// aesthetic channel (see `_aes-keys`) become a single-row inline dataset
+/// plus an aesthetic mapping pointing each channel at the matching column,
+/// and the remainder are forwarded verbatim to the geom constructor as
+/// layer parameters. The resulting layer always has `inherit-aes: false`
+/// so it does not pick up the plot-level mapping.
+///
+/// @category Core
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param geom Geom name to dispatch to. One of `"text"`, `"point"`,
+///   `"label"`, `"segment"`, `"rect"`, `"vline"`, `"hline"`, `"abline"`.
+/// @param ..fields Named arguments split between aesthetics and layer
+///   parameters. Aesthetic names are `x`, `y`, `xend`, `yend`, `xmin`,
+///   `xmax`, `ymin`, `ymax`, `colour`, `fill`, `size`, `alpha`, `shape`,
+///   `linetype`, `label`, `group`, `slope`, `intercept`. Anything else
+///   (e.g. `stroke`, `fontsize`, `xintercept`, `yintercept`) is forwarded
+///   to the geom constructor as a layer parameter.
+///
+/// @returns Layer dictionary consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     annotate("text", x: 5, y: 4, label: "peak"),
+///     annotate("vline", xintercept: 5, colour: rgb("#cc0000")),
+///   ),
+/// )
+/// ```
+///
+/// @see @aes, @geom-text, @geom-point, @geom-label, @geom-segment, @geom-rect, @geom-vline, @geom-hline, @geom-abline
+#let annotate(geom, ..fields) = {
+  if geom not in _geom-table {
+    let names = _geom-table.keys().join(", ")
+    panic(
+      "annotate: unknown geom '"
+        + str(geom)
+        + "'. Expected one of: "
+        + names
+        + ".",
+    )
+  }
+  if fields.pos().len() != 0 {
+    panic(
+      "annotate: positional arguments are not supported; use named arguments.",
+    )
+  }
+
+  let constructor = _geom-table.at(geom)
+
+  if geom in _params-only {
+    return constructor(..fields.named(), inherit-aes: false)
+  }
+
+  let row = (:)
+  let mapping-args = (:)
+  let layer-args = (:)
+  for (k, v) in fields.named().pairs() {
+    if k in _aes-keys {
+      row.insert(k, v)
+      mapping-args.insert(k, k)
+    } else {
+      layer-args.insert(k, v)
+    }
+  }
+
+  let mapping = if mapping-args.len() > 0 { aes(..mapping-args) } else { none }
+  let data = if row.len() > 0 { (row,) } else { none }
+
+  constructor(
+    ..layer-args,
+    data: data,
+    mapping: mapping,
+    inherit-aes: false,
+  )
+}
