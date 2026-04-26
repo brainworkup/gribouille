@@ -6,6 +6,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/fill-resolve.typ": resolve-fill-colour
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
@@ -107,8 +108,6 @@
       or y-trained.type != "continuous"
   ) { return }
 
-  let fill-col = mapping.at("fill", default: none)
-  let fill-trained = ctx.trained.at("fill", default: none)
   let width-col = mapping.at("width", default: none)
   let height-col = mapping.at("height", default: none)
   let neutral-fill = rgb("#4c78a8")
@@ -130,16 +129,14 @@
     let cy1 = map-position(y-trained, y + h / 2, ctx.py-range)
     if cx0 == none or cx1 == none or cy0 == none or cy1 == none { continue }
 
-    let resolved = if layer.params.fill != auto and layer.params.fill != none {
-      layer.params.fill
-    } else if fill-col != none and fill-trained != none {
-      let sample = row.at(fill-col, default: none)
-      (ctx.resolve-colour)(fill-trained, sample, ctx.palette)
-    } else { neutral-fill }
-    let alpha = layer.params.alpha
-    let final-fill = if alpha < 1 {
-      resolved.transparentize((1 - alpha) * 100%)
-    } else { resolved }
+    let final-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      neutral-fill,
+      colour-fallback: false,
+    )
 
     cetz.draw.rect(
       (cx0, cy0),

@@ -6,6 +6,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Filled band between `ymin` and `ymax` along the x aesthetic.
 ///
@@ -113,10 +114,7 @@
       rgb("#4c78a8")
     }
   }
-  let alpha = layer.params.alpha
-  let final-fill = if alpha < 1 {
-    colour.transparentize((1 - alpha) * 100%)
-  } else { colour }
+  let final-fill = apply-alpha(colour, layer.params.alpha)
 
   cetz.draw.line(
     ..pts,

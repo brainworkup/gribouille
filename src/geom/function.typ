@@ -7,6 +7,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.
 ///
@@ -104,10 +105,7 @@
   let colour = if (
     layer.params.colour != auto and layer.params.colour != none
   ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
-  let alpha = layer.params.alpha
-  let final-colour = if alpha < 1 {
-    colour.transparentize((1 - alpha) * 100%)
-  } else { colour }
+  let final-colour = apply-alpha(colour, layer.params.alpha)
 
   cetz.draw.line(
     ..pts,

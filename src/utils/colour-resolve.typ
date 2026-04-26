@@ -1,3 +1,15 @@
+/// Apply an alpha transparentise to an already-resolved colour.
+///
+/// Returns `colour` unchanged when `alpha` is `>= 1`, otherwise returns
+/// `colour.transparentize((1 - alpha) * 100%)`.
+///
+/// @param colour A resolved colour value.
+/// @param alpha Opacity in `[0, 1]`.
+/// @returns The colour with alpha applied.
+#let apply-alpha(colour, alpha) = {
+  if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
+}
+
 /// Resolve a stroke colour for a row sample.
 ///
 /// Looks up the colour-mapped column on `sample-row` and resolves it through
@@ -19,5 +31,5 @@
     (ctx.resolve-colour)(colour-trained, v, ctx.palette)
   } else { default-colour }
   let alpha = layer.params.at("alpha", default: 1)
-  if alpha < 1 { resolved.transparentize((1 - alpha) * 100%) } else { resolved }
+  apply-alpha(resolved, alpha)
 }
