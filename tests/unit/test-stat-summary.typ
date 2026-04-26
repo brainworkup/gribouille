@@ -1,9 +1,18 @@
 // stat-summary helpers and per-x reduction tests.
 
 #import "../../src/stat/apply.typ": apply-stat
+#import "../../src/utils/normal.typ": qnorm
 #import "../../src/utils/summaries.typ": (
   mean-cl-normal, mean-sdl, mean-se, median-hilow, summarise,
 )
+
+// --- qnorm: Acklam's inverse-normal -----------------------------------------
+
+#assert(calc.abs(qnorm(0.975) - 1.959964) < 1e-6)
+#assert(calc.abs(qnorm(0.5)) < 1e-9)
+#assert(calc.abs(qnorm(0.025) - (-1.959964)) < 1e-6)
+// Tail symmetry: qnorm(1 - p) = -qnorm(p).
+#assert(calc.abs(qnorm(0.99) + qnorm(0.01)) < 1e-6)
 
 // --- mean-se on 1..5 -------------------------------------------------------
 // mean = 3, sd (n-1) = sqrt(10/4) = sqrt(2.5) ≈ 1.5811
@@ -36,6 +45,13 @@
 #assert.eq(r-cl.y, 3.0)
 #assert(calc.abs(r-cl.ymax - (3 + 1.959964 * 0.707107)) < 1e-4)
 #assert(calc.abs(r-cl.ymin - (3 - 1.959964 * 0.707107)) < 1e-4)
+
+// conf = 0.99 must produce a strictly wider band than conf = 0.95.
+#let r-cl-99 = mean-cl-normal((1, 2, 3, 4, 5), conf: 0.99)
+#assert.eq(r-cl-99.y, 3.0)
+#assert((r-cl-99.ymax - r-cl-99.ymin) > (r-cl.ymax - r-cl.ymin))
+// Half-width matches z_{0.995} * se with z ≈ 2.5758.
+#assert(calc.abs(r-cl-99.ymax - (3 + 2.5758293 * 0.707107)) < 1e-4)
 
 // --- median-hilow with default conf = 0.5 (IQR) ----------------------------
 // On 1..9 the type-7 quantiles are Q1=3, Q2=5, Q3=7.

@@ -64,6 +64,7 @@
 #import "src/utils/summaries.typ": (
   mean-cl-normal, mean-sdl, mean-se, median-hilow,
 )
+#import "src/utils/normal.typ": qnorm
 #import "src/utils/cut.typ": cut-interval, cut-number, cut-width
 #import "src/utils/resolution.typ": resolution
 
