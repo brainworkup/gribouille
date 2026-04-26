@@ -140,6 +140,12 @@ local function emit_examples(fn)
   for _, ex in ipairs(fn.doc.examples) do
     if ex.render then
       render_idx = render_idx + 1
+      table.insert(out, "```typst")
+      if ex.source ~= "" then
+        table.insert(out, ex.source)
+      end
+      table.insert(out, "```")
+      table.insert(out, "")
       table.insert(out, "```{typst}")
       table.insert(out, string.format('//| output-filename: "%s-%d.svg"',
         fn.name, render_idx))
