@@ -5,14 +5,14 @@
 ///! back to a Typst `datetime` against a fixed epoch and rendered through
 ///! `dt.display(date-format)`.
 ///!
-///! Numeric input contract: column values must already be encoded as numbers
-///! against the epoch documented on each scale. ISO-8601 string parsing is
-///! intentionally not handled here.
+///! Input contract: column values may be numeric (already encoded against
+///! the epoch documented on each scale) or ISO-8601 strings, which the
+///! scale parses on the fly during training.
 
 /// Continuous x scale that formats axis labels as dates.
 ///
-/// Column values must be numeric, expressed as days since 2000-01-01. Each
-/// break is converted via
+/// Column values may be numeric days since 2000-01-01 or ISO-8601 strings
+/// of the form `YYYY-MM-DD`. Each break is converted via
 /// `datetime(year: 2000, month: 1, day: 1) + duration(days: int(n))` and
 /// rendered with `dt.display(date-format)`.
 ///
@@ -62,7 +62,8 @@
 
 /// Continuous y scale that formats axis labels as dates.
 ///
-/// Column values must be numeric, expressed as days since 2000-01-01.
+/// Column values may be numeric days since 2000-01-01 or ISO-8601 strings
+/// of the form `YYYY-MM-DD`.
 ///
 /// @category Scales
 /// @stability experimental
@@ -97,8 +98,9 @@
 
 /// Continuous x scale that formats axis labels as datetimes.
 ///
-/// Column values must be numeric, expressed as seconds since
-/// 2000-01-01T00:00:00. Each break is converted via
+/// Column values may be numeric seconds since 2000-01-01T00:00:00 or
+/// ISO-8601 strings of the form `YYYY-MM-DDTHH:MM[:SS]` or
+/// `YYYY-MM-DD HH:MM[:SS]`. Each break is converted via
 /// `datetime(year: 2000, month: 1, day: 1, hour: 0, minute: 0, second: 0) + duration(seconds: int(n))`
 /// and rendered with `dt.display(date-format)`.
 ///
@@ -135,8 +137,9 @@
 
 /// Continuous y scale that formats axis labels as datetimes.
 ///
-/// Column values must be numeric, expressed as seconds since
-/// 2000-01-01T00:00:00.
+/// Column values may be numeric seconds since 2000-01-01T00:00:00 or
+/// ISO-8601 strings of the form `YYYY-MM-DDTHH:MM[:SS]` or
+/// `YYYY-MM-DD HH:MM[:SS]`.
 ///
 /// @category Scales
 /// @stability experimental
@@ -171,8 +174,9 @@
 
 /// Continuous x scale that formats axis labels as times of day.
 ///
-/// Column values must be numeric, expressed as seconds since midnight (an
-/// integer in `[0, 86400)`). Each break is converted via
+/// Column values may be numeric seconds since midnight (an integer in
+/// `[0, 86400)`) or ISO-8601 strings of the form `HH:MM[:SS]`. Each
+/// break is converted via
 /// `datetime(year: 2000, month: 1, day: 1, hour: 0, minute: 0, second: 0) + duration(seconds: int(n))`
 /// and rendered with `dt.display(date-format)`; only the time portion of the
 /// pattern should be used.
@@ -210,8 +214,8 @@
 
 /// Continuous y scale that formats axis labels as times of day.
 ///
-/// Column values must be numeric, expressed as seconds since midnight (an
-/// integer in `[0, 86400)`).
+/// Column values may be numeric seconds since midnight (an integer in
+/// `[0, 86400)`) or ISO-8601 strings of the form `HH:MM[:SS]`.
 ///
 /// @category Scales
 /// @stability experimental
