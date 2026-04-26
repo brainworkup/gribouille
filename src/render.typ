@@ -376,9 +376,40 @@
   }
   let tick-len = theme.tick-length
 
+  let x-guide = {
+    let g = spec.at("guides", default: (:)).at("x", default: none)
+    if g == none { (angle: 0, n-dodge: 1) } else {
+      (
+        angle: g.at("angle", default: 0),
+        n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
+      )
+    }
+  }
+  let _x-label-anchor(angle) = {
+    if angle == 0 { "north" } else if angle > 0 { "north-east" } else {
+      "north-west"
+    }
+  }
+  let _draw-x-label(cx, label-text, idx) = {
+    if not (show-x-labels and theme.tick-labels) { return }
+    let dodge-row = calc.rem(idx, x-guide.n-dodge)
+    let row-gap = 0.35
+    let cy = py-lo - 0.25 - dodge-row * row-gap
+    content(
+      (cx, cy),
+      text(
+        size: theme.axis-text-size,
+        fill: _ax-text-colour,
+        weight: _ax-text-weight,
+      )[#label-text],
+      anchor: _x-label-anchor(x-guide.angle),
+      angle: x-guide.angle * 1deg,
+    )
+  }
+
   if x-trained != none and x-trained.type == "continuous" {
     let breaks = pretty(x-trained.domain.at(0), x-trained.domain.at(1), n: 5)
-    for b in breaks {
+    for (idx, b) in breaks.enumerate() {
       let cx = map-axis(x-trained, b, px-range)
       if grid-stroke != none {
         line((cx, py-lo), (cx, py-hi), stroke: grid-stroke)
@@ -386,17 +417,7 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      if show-x-labels and theme.tick-labels {
-        content(
-          (cx, py-lo - 0.25),
-          text(
-            size: theme.axis-text-size,
-            fill: _ax-text-colour,
-            weight: _ax-text-weight,
-          )[#_format-break(b)],
-          anchor: "north",
-        )
-      }
+      _draw-x-label(cx, _format-break(b), idx)
     }
   } else if x-trained != none and x-trained.type == "discrete" {
     let n = x-trained.domain.len()
@@ -405,17 +426,7 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      if show-x-labels and theme.tick-labels {
-        content(
-          (cx, py-lo - 0.25),
-          text(
-            size: theme.axis-text-size,
-            fill: _ax-text-colour,
-            weight: _ax-text-weight,
-          )[#level],
-          anchor: "north",
-        )
-      }
+      _draw-x-label(cx, level, idx)
     }
   }
 

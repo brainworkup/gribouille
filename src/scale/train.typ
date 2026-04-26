@@ -160,6 +160,25 @@
     ) {
       domain = user-scale.limits
     }
+    if (
+      scale-type == "continuous"
+        and user-scale != none
+        and user-scale.at("extend", default: none) != none
+        and (user-scale.at("limits", default: none) == none)
+    ) {
+      let (lo, hi) = domain
+      for v in user-scale.extend {
+        let n = parse-number(v)
+        if n == none { continue }
+        lo = calc.min(lo, n)
+        hi = calc.max(hi, n)
+      }
+      if lo == hi {
+        lo -= 0.5
+        hi += 0.5
+      }
+      domain = (lo, hi)
+    }
     let trans = if user-scale != none {
       user-scale.at("trans", default: "identity")
     } else { "identity" }
