@@ -7,8 +7,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": summarise
 
-/// Summary statistic: per-x reduction to a central value and an uncertainty
-/// band.
+/// Per-x reduction to a central value and an uncertainty band.
 ///
 /// One output row per distinct x value with keys `(x, y, ymin, ymax)`. The
 /// reduction is chosen by `fun`; supported names mirror ggplot2's family:

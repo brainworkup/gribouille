@@ -8,8 +8,9 @@
 #import "../utils/types.typ": parse-number
 
 /// Stack position adjustment: cumulate y per x bucket.
-/// Stacking is per x bucket across all groups — different groups at the same
-/// x are stacked on top of each other in row order.
+///
+/// Stacking is per x bucket across all groups, so different groups at the
+/// same x are stacked on top of each other in row order.
 ///
 /// Typically set on a layer as `position: "stack"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.

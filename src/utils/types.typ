@@ -8,10 +8,9 @@
 )
 #let _time-re = regex("^(\\d{2}):(\\d{2})(?::(\\d{2}))?$")
 
-/// Parse an ISO-8601 temporal string into the numeric epoch used by
-/// the date, datetime, and time scales.
+/// Parse an ISO-8601 temporal string into a numeric epoch.
 ///
-/// The epoch is `2000-01-01T00:00:00`.
+/// The reference epoch is `2000-01-01T00:00:00`.
 /// `kind` selects the unit of the returned number: `"date"` returns days
 /// since the epoch, `"datetime"` returns seconds since the epoch, and
 /// `"time"` returns seconds since midnight.

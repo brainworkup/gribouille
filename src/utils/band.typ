@@ -3,16 +3,22 @@
 #import "../scale/train.typ": map-continuous, map-position
 #import "types.typ": parse-number
 
-/// Compute `(cx-lo, cx-hi)` for a horizontal band of half-width `half-width`
-/// centred on `raw-x`.
+/// Compute the panel x-coordinate range of a band centred on `raw-x`.
 ///
 /// For continuous x the band edges are mapped through `map-continuous` so the
 /// half-width is interpreted in x data units. For discrete x the band is sized
 /// as a fraction of the per-category slot width.
 ///
-/// Returns `none` when the centre cannot be mapped, or when continuous x fails
-/// to parse as a number. Callers decide whether to skip the row or fall back
-/// to `(cx, cx)` in the parse-failure case.
+/// @category Utilities
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param x-trained Trained x scale dictionary providing `type` and `domain`.
+/// @param raw-x Row x value (numeric for continuous, raw level for discrete).
+/// @param half-width Band half-width in x data units (continuous) or as a fraction of the slot (discrete).
+/// @param px-range Pair `(lo, hi)` giving the panel x extent in cetz units.
+///
+/// @returns Pair `(cx-lo, cx-hi)` of mapped band edges, or `none` when the centre cannot be mapped.
 #let x-band(x-trained, raw-x, half-width, px-range) = {
   if x-trained.type == "continuous" {
     let raw-num = parse-number(raw-x)
