@@ -4,6 +4,7 @@
 
 #import "deps.typ": cetz
 #import "utils/pretty.typ": pretty
+#import "utils/colour.typ": resolve-continuous-colour
 #import "theme/defaults.typ": resolve-colour, resolve-field
 
 #let _guide-title(t, spec, aes-name) = {
@@ -61,12 +62,7 @@
     if idx == none { return ink }
     pal.at(calc.rem(idx, pal.len()))
   } else {
-    let (lo, hi) = trained.domain
-    if hi == lo { return pal.first() }
-    let t = calc.max(0.0, calc.min(1.0, (value - lo) / (hi - lo)))
-    let a = pal.first()
-    let b = pal.last()
-    a.mix((b, t * 100%))
+    resolve-continuous-colour(trained, value, pal, ink)
   }
 }
 

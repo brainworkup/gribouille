@@ -11,6 +11,7 @@
 #import "utils/pretty.typ": pretty
 #import "utils/types.typ": parse-number
 #import "utils/palette.typ": default-discrete
+#import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
@@ -212,12 +213,7 @@
     pal.at(calc.rem(idx, pal.len()))
   } else {
     let v = if type(value) == str { float(value.trim()) } else { float(value) }
-    let (d-lo, d-hi) = trained.domain
-    if d-hi == d-lo { return pal.first() }
-    let t = calc.max(0.0, calc.min(1.0, (v - d-lo) / (d-hi - d-lo)))
-    let a = pal.first()
-    let b = pal.last()
-    a.mix((b, t * 100%))
+    resolve-continuous-colour(trained, v, pal, ink)
   }
 }
 

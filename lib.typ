@@ -56,6 +56,14 @@
 #import "src/scale/colour.typ": (
   scale-fill-viridis-b, scale-fill-viridis-c, scale-fill-viridis-d,
 )
+#import "src/scale/colour.typ": scale-colour-brewer, scale-fill-brewer
+#import "src/scale/colour.typ": (
+  scale-colour-gradient, scale-colour-gradient2, scale-colour-gradientn,
+)
+#import "src/scale/colour.typ": (
+  scale-fill-gradient, scale-fill-gradient2, scale-fill-gradientn,
+)
+#import "src/utils/palette.typ": brewer-palette
 #import "src/scale/size.typ": scale-size-continuous
 #import "src/scale/shape.typ": (
   scale-shape, scale-shape-identity, scale-shape-manual,
