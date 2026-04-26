@@ -70,11 +70,27 @@
 )
 
 #let draw(layer, ctx) = {
-  let x-trained = ctx.trained.at("x", default: none)
-  let y-trained = ctx.trained.at("y", default: none)
-  if x-trained == none or y-trained == none { return }
-  if x-trained.type != "continuous" or y-trained.type != "continuous" { return }
-  let (x-lo, x-hi) = x-trained.domain
+  let flipped = ctx.at("flipped", default: false)
+  // Under flip, the renderer has already swapped trained.x and trained.y so
+  // the user's original x scale lives on trained.y and vice versa. The
+  // slope/intercept are in user-space, so user_x is sampled along the
+  // user's original x domain (which is now `trained.y.domain`) and the
+  // resulting user_y is mapped through the user's y scale (now trained.x).
+  let user-x-trained = ctx.trained.at(
+    if flipped { "y" } else { "x" },
+    default: none,
+  )
+  let user-y-trained = ctx.trained.at(
+    if flipped { "x" } else { "y" },
+    default: none,
+  )
+  if user-x-trained == none or user-y-trained == none { return }
+  if (
+    user-x-trained.type != "continuous" or user-y-trained.type != "continuous"
+  ) {
+    return
+  }
+  let (x-lo, x-hi) = user-x-trained.domain
   let slope = float(layer.params.slope)
   let intercept = float(layer.params.intercept)
   let colour = if layer.params.colour == auto {
@@ -91,30 +107,37 @@
     layer.params.stroke,
   )
   let stroke-spec = (paint: fill, thickness: thickness)
-  let x-trans = x-trained.at("trans", default: "identity")
-  let y-trans = y-trained.at("trans", default: "identity")
+  // user_x maps to the horizontal axis when not flipped, and to the vertical
+  // axis when flipped; `_pos` returns the cetz `(cx, cy)` for a user-space
+  // point and routes each coordinate to the right pixel range.
+  let _pos(ux, uy) = if flipped {
+    (
+      map-axis(user-y-trained, uy, ctx.px-range),
+      map-axis(user-x-trained, ux, ctx.py-range),
+    )
+  } else {
+    (
+      map-axis(user-x-trained, ux, ctx.px-range),
+      map-axis(user-y-trained, uy, ctx.py-range),
+    )
+  }
+  let x-trans = user-x-trained.at("trans", default: "identity")
+  let y-trans = user-y-trained.at("trans", default: "identity")
   if x-trans != "identity" or y-trans != "identity" {
     let n = 64
     let pts = range(0, n).map(i => {
       let t = i / (n - 1)
       let x = x-lo + t * (x-hi - x-lo)
       let y = slope * x + intercept
-      (
-        map-axis(x-trained, x, ctx.px-range),
-        map-axis(y-trained, y, ctx.py-range),
-      )
+      _pos(x, y)
     })
     cetz.draw.line(..pts, stroke: stroke-spec)
   } else {
-    let y-lo = slope * x-lo + intercept
-    let y-hi = slope * x-hi + intercept
-    let cx-lo = map-axis(x-trained, x-lo, ctx.px-range)
-    let cx-hi = map-axis(x-trained, x-hi, ctx.px-range)
-    let cy-lo = map-axis(y-trained, y-lo, ctx.py-range)
-    let cy-hi = map-axis(y-trained, y-hi, ctx.py-range)
+    let y-at-lo = slope * x-lo + intercept
+    let y-at-hi = slope * x-hi + intercept
     cetz.draw.line(
-      (cx-lo, cy-lo),
-      (cx-hi, cy-hi),
+      _pos(x-lo, y-at-lo),
+      _pos(x-hi, y-at-hi),
       stroke: stroke-spec,
     )
   }

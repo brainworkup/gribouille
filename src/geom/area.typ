@@ -2,6 +2,8 @@
 ///!
 ///! Equivalent to a ribbon with `ymin = 0`. Rows are sorted by x within
 ///! each group and the polygon closes back along `y = 0`.
+///! Under @coord-flip the polygon still closes along the user's `y = 0`
+///! line; check the rendered output if both axes are continuous.
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position

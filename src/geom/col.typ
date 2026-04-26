@@ -76,15 +76,39 @@
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
-  if y-trained.type != "continuous" { return }
+
+  let flipped = ctx.at("flipped", default: false)
+  // Under flip, the value axis is x and the category axis is y; otherwise
+  // the value axis is y and the category axis is x. Bind local aliases so
+  // the rest of the routine reads the same regardless of orientation.
+  let value-trained = if flipped { x-trained } else { y-trained }
+  let cat-trained = if flipped { y-trained } else { x-trained }
+  let value-col = if flipped { mapping.x } else { mapping.y }
+  let cat-col = if flipped { mapping.y } else { mapping.x }
+  let value-range = if flipped { ctx.px-range } else { ctx.py-range }
+  let cat-range = if flipped { ctx.py-range } else { ctx.px-range }
+  if value-trained.type != "continuous" { return }
 
   let position = layer.at("position", default: "identity")
-  let ymin-col = mapping.at("ymin", default: none)
-  let ymax-col = mapping.at("ymax", default: none)
+  let vmin-col = mapping.at(
+    if flipped { "xmin" } else { "ymin" },
+    default: none,
+  )
+  let vmax-col = mapping.at(
+    if flipped { "xmax" } else { "ymax" },
+    default: none,
+  )
+  // Stacked/filled bars receive ymin/ymax from the position adjustment under
+  // either orientation; the position writes them under the y keys, and under
+  // flip the renderer's mapping swap routes them onto x.
+  if flipped and vmin-col == none and vmax-col == none {
+    vmin-col = mapping.at("ymin", default: none)
+    vmax-col = mapping.at("ymax", default: none)
+  }
   let use-minmax = (
     (position == "stack" or position == "fill")
-      and ymin-col != none
-      and ymax-col != none
+      and vmin-col != none
+      and vmax-col != none
   )
 
   let fill-col = mapping.at("fill", default: none)
@@ -97,67 +121,67 @@
     rgb("#4c78a8")
   }
 
-  let baseline-cy = map-continuous(
-    calc.max(0.0, y-trained.domain.at(0)),
-    y-trained.domain,
-    ctx.py-range,
+  let baseline-vc = map-continuous(
+    calc.max(0.0, value-trained.domain.at(0)),
+    value-trained.domain,
+    value-range,
   )
 
-  let (px-lo, px-hi) = ctx.px-range
-  let category-width = if (
-    x-trained.type == "discrete" and x-trained.domain.len() > 0
+  let (cat-lo, cat-hi) = cat-range
+  let category-span = if (
+    cat-trained.type == "discrete" and cat-trained.domain.len() > 0
   ) {
-    (px-hi - px-lo) / x-trained.domain.len()
+    (cat-hi - cat-lo) / cat-trained.domain.len()
   } else {
-    // Continuous x: infer from minimum gap between unique values.
+    // Continuous category axis: infer from minimum gap between unique values.
     let xs = data
-      .map(r => parse-number(r.at(mapping.x, default: none)))
+      .map(r => parse-number(r.at(cat-col, default: none)))
       .filter(v => v != none)
-    let (d-lo, d-hi) = x-trained.domain
+    let (d-lo, d-hi) = cat-trained.domain
     if xs.len() < 2 or d-hi == d-lo {
-      (px-hi - px-lo) / 10
+      (cat-hi - cat-lo) / 10
     } else {
       let sorted = xs.dedup().sorted()
       let gaps = range(sorted.len() - 1).map(i => (
         sorted.at(i + 1) - sorted.at(i)
       ))
       let min-gap = calc.min(..gaps)
-      min-gap * (px-hi - px-lo) / (d-hi - d-lo)
+      min-gap * (cat-hi - cat-lo) / (d-hi - d-lo)
     }
   }
   let bar-width-fraction = layer.params.width
-  let half = category-width * bar-width-fraction / 2
+  let half = category-span * bar-width-fraction / 2
 
   for row in data {
-    let cx = map-position(
-      x-trained,
-      row.at(mapping.x, default: none),
-      ctx.px-range,
+    let cat-c = map-position(
+      cat-trained,
+      row.at(cat-col, default: none),
+      cat-range,
     )
-    if cx == none { continue }
+    if cat-c == none { continue }
 
-    let (y-lo-cy, y-hi-cy) = if use-minmax {
-      let lo-v = parse-number(row.at(ymin-col, default: none))
-      let hi-v = parse-number(row.at(ymax-col, default: none))
+    let (v-lo-c, v-hi-c) = if use-minmax {
+      let lo-v = parse-number(row.at(vmin-col, default: none))
+      let hi-v = parse-number(row.at(vmax-col, default: none))
       if lo-v == none or hi-v == none { continue }
       (
-        map-continuous(lo-v, y-trained.domain, ctx.py-range),
-        map-continuous(hi-v, y-trained.domain, ctx.py-range),
+        map-continuous(lo-v, value-trained.domain, value-range),
+        map-continuous(hi-v, value-trained.domain, value-range),
       )
     } else {
-      let yv = parse-number(row.at(mapping.y, default: none))
-      if yv == none { continue }
-      let cy = map-continuous(yv, y-trained.domain, ctx.py-range)
-      if cy >= baseline-cy { (baseline-cy, cy) } else { (cy, baseline-cy) }
+      let raw = parse-number(row.at(value-col, default: none))
+      if raw == none { continue }
+      let vc = map-continuous(raw, value-trained.domain, value-range)
+      if vc >= baseline-vc { (baseline-vc, vc) } else { (vc, baseline-vc) }
     }
 
-    let centre = cx
+    let centre = cat-c
     let bar-half = half
     if position == "dodge" {
       let offset = row.at("_dodge-offset", default: 0)
       let n = row.at("_dodge-n", default: 1)
-      centre = cx + offset * category-width * bar-width-fraction
-      bar-half = (category-width * bar-width-fraction / n) / 2
+      centre = cat-c + offset * category-span * bar-width-fraction
+      bar-half = (category-span * bar-width-fraction / n) / 2
     }
 
     let colour = if fill-col != none and fill-trained != none {
@@ -170,9 +194,15 @@
     let alpha = resolve-alpha(layer, mapping, ctx, row)
     let final-fill = apply-alpha(colour, alpha)
 
+    let (a, b) = if flipped {
+      ((v-lo-c, centre - bar-half), (v-hi-c, centre + bar-half))
+    } else {
+      ((centre - bar-half, v-lo-c), (centre + bar-half, v-hi-c))
+    }
+
     cetz.draw.rect(
-      (centre - bar-half, y-lo-cy),
-      (centre + bar-half, y-hi-cy),
+      a,
+      b,
       fill: final-fill,
       stroke: if layer.params.stroke == none { none } else {
         layer.params.stroke

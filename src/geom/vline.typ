@@ -2,6 +2,8 @@
 ///!
 ///! Works only with a continuous x scale. `xintercept` accepts a single value
 ///! or an array for drawing multiple reference lines at once.
+///! Under @coord-flip the line is drawn as a horizontal reference at the
+///! same data value because the x axis becomes the rendered vertical axis.
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-axis
@@ -65,12 +67,16 @@
 )
 
 #let draw(layer, ctx) = {
-  let x-trained = ctx.trained.at("x", default: none)
-  if x-trained == none or x-trained.type != "continuous" { return }
+  let flipped = ctx.at("flipped", default: false)
+  // Under flip, the user's x axis is the rendered vertical axis, so a vline
+  // at `x = k` is drawn as a horizontal line at vertical position k. The
+  // trained scale carrying the user's original x values lives on
+  // `trained.y` after the renderer's flip swap.
+  let trained = ctx.trained.at(if flipped { "y" } else { "x" }, default: none)
+  if trained == none or trained.type != "continuous" { return }
   let xs = layer.params.xintercept
   if xs == none { return }
   if type(xs) != array { xs = (xs,) }
-  let (py-lo, py-hi) = ctx.py-range
   let colour = if layer.params.colour == auto {
     ctx.theme.at("ink", default: black)
   } else { layer.params.colour }
@@ -85,8 +91,17 @@
     layer.params.stroke,
   )
   let stroke-spec = (paint: fill, thickness: thickness)
-  for x in xs {
-    let cx = map-axis(x-trained, float(x), ctx.px-range)
-    cetz.draw.line((cx, py-lo), (cx, py-hi), stroke: stroke-spec)
+  if flipped {
+    let (px-lo, px-hi) = ctx.px-range
+    for x in xs {
+      let cy = map-axis(trained, float(x), ctx.py-range)
+      cetz.draw.line((px-lo, cy), (px-hi, cy), stroke: stroke-spec)
+    }
+  } else {
+    let (py-lo, py-hi) = ctx.py-range
+    for x in xs {
+      let cx = map-axis(trained, float(x), ctx.px-range)
+      cetz.draw.line((cx, py-lo), (cx, py-hi), stroke: stroke-spec)
+    }
   }
 }

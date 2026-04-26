@@ -333,6 +333,7 @@
   show-y-labels: true,
   show-x-title: true,
   show-y-title: true,
+  flipped: false,
 ) = {
   import cetz.draw: *
   let (ox, oy) = origin
@@ -370,15 +371,27 @@
     fallback: "regular",
   )
 
+  let _resolve-mapping-flipped(layer) = {
+    let m = _resolve-mapping(layer, spec.mapping)
+    if not flipped or m == none { return m }
+    let x = m.at("x", default: none)
+    let y = m.at("y", default: none)
+    let out = m
+    out.insert("x", y)
+    out.insert("y", x)
+    out
+  }
+
   let ctx = (
     trained: trained,
     px-range: px-range,
     py-range: py-range,
     palette: default-discrete,
-    resolve-mapping: layer => _resolve-mapping(layer, spec.mapping),
+    resolve-mapping: layer => _resolve-mapping-flipped(layer),
     resolve-data: layer => _resolve-data(layer, spec.data),
     resolve-colour: _make-resolve-colour(_ink),
     theme: theme,
+    flipped: flipped,
   )
 
   let _line-base = theme.at("line-colour", default: auto)
@@ -498,6 +511,25 @@
         )
       }
     }
+  } else if y-trained != none and y-trained.type == "discrete" {
+    let n = y-trained.domain.len()
+    for (idx, level) in y-trained.domain.enumerate() {
+      let cy = py-lo + (idx + 0.5) * (py-hi - py-lo) / n
+      if axis-stroke != none and tick-len > 0 {
+        line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
+      }
+      if show-y-labels and theme.tick-labels {
+        content(
+          (px-lo - 0.2, cy),
+          text(
+            size: theme.axis-text-size,
+            fill: _ax-text-colour,
+            weight: _ax-text-weight,
+          )[#level],
+          anchor: "east",
+        )
+      }
+    }
   }
 
   if axis-stroke != none {
@@ -561,21 +593,27 @@
     }
   }
 
+  // When flipped, the bottom axis shows the user's original y mapping and
+  // the left axis shows the user's original x mapping; trained.x and
+  // trained.y already carry the swapped scale specs (and labs labels), so
+  // only the mapping-name fallback needs an explicit swap here.
+  let _mapping-x-name = if spec.mapping == none { none } else if flipped {
+    spec.mapping.at("y", default: none)
+  } else { spec.mapping.at("x", default: none) }
+  let _mapping-y-name = if spec.mapping == none { none } else if flipped {
+    spec.mapping.at("x", default: none)
+  } else { spec.mapping.at("y", default: none) }
   let x-title = {
     let from-scale = if x-trained != none and x-trained.spec != none {
       x-trained.spec.name
     } else { none }
-    if from-scale != none { from-scale } else if spec.mapping != none {
-      spec.mapping.at("x", default: none)
-    } else { none }
+    if from-scale != none { from-scale } else { _mapping-x-name }
   }
   let y-title = {
     let from-scale = if y-trained != none and y-trained.spec != none {
       y-trained.spec.name
     } else { none }
-    if from-scale != none { from-scale } else if spec.mapping != none {
-      spec.mapping.at("y", default: none)
-    } else { none }
+    if from-scale != none { from-scale } else { _mapping-y-name }
   }
   if show-x-title and x-title != none and theme.axis-title-size > 0pt {
     content(
@@ -652,6 +690,41 @@
     trained.insert("y", new-y)
   }
   trained
+}
+
+// Detect whether the spec asks for axis-flipping at render time.
+#let _is-flipped(coord) = (
+  coord != none and coord.at("coord", default: none) == "flip"
+)
+
+// Swap the trained x and y scales so the renderer's bottom axis shows the
+// user's original y scale and the left axis shows the user's original x
+// scale. Called after `_apply-coord` so any cartesian xlim/ylim overrides
+// apply to the pre-flip axes as the user wrote them.
+#let _apply-flip(trained, coord) = {
+  if not _is-flipped(coord) { return trained }
+  let x = trained.at("x", default: none)
+  let y = trained.at("y", default: none)
+  trained.insert("x", y)
+  trained.insert("y", x)
+  trained
+}
+
+// Swap a layer's mapping x and y so direction-agnostic geoms read the user's
+// original y column where they expect x and vice versa. Direction-sensitive
+// geoms (col, hline, vline, abline) read `ctx.flipped` instead and rotate
+// their drawing without a mapping swap.
+#let _flip-layer-mapping(layer) = {
+  let mapping = layer.at("mapping", default: none)
+  if mapping == none { return layer }
+  let x = mapping.at("x", default: none)
+  let y = mapping.at("y", default: none)
+  let new-mapping = mapping
+  new-mapping.insert("x", y)
+  new-mapping.insert("y", x)
+  let new = layer
+  new.mapping = new-mapping
+  new
 }
 
 // Shrink the inner panel along the longer axis so that one x data unit
@@ -829,6 +902,9 @@
   // is preserved for stats and training but may render outside the panel.
   let coord = spec.at("coord", default: none)
   trained = _apply-coord(trained, coord)
+  // coord-flip swaps trained x and y so axis labels swap automatically;
+  // direction-sensitive geoms branch on `ctx.flipped` inside their draw.
+  trained = _apply-flip(trained, coord)
 
   // For facet-wrap with non-fixed scales, train each panel's positional axes
   // on its own subset so x and/or y differ across panels. Non-positional
@@ -848,6 +924,7 @@
       pt = _apply-labs(pt, labs)
       pt = _post-train(pt, p.layers)
       pt = _apply-coord(pt, coord)
+      pt = _apply-flip(pt, coord)
       let merged = trained
       if free-x and pt.at("x", default: none) != none {
         merged.insert("x", pt.x)
@@ -939,6 +1016,7 @@
           show-y-labels: free-y or col == 0,
           show-x-title: false,
           show-y-title: false,
+          flipped: _is-flipped(coord),
         )
       }
 
@@ -1043,6 +1121,7 @@
             show-y-labels: c == 0,
             show-x-title: false,
             show-y-title: false,
+            flipped: _is-flipped(coord),
           )
         }
       }
@@ -1170,6 +1249,7 @@
         guides: guides,
         legend-origin: (px-lo + inner-w + legend-gap, py-lo),
         legend-height: inner-h,
+        flipped: _is-flipped(coord),
       )
     })
   }
