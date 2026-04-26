@@ -3,6 +3,7 @@
 ///! White panel framed by a thin black border, with light grey grid lines.
 ///! Mirrors ggplot2's / plotnine's `theme_bw()`.
 
+#import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Black-and-white theme: white panel, black axes, light grey grid.
@@ -40,7 +41,7 @@
   paper: paper,
   accent: accent,
   panel-fill: paper,
-  grid-colour: rgb("#ebebeb"),
+  grid-colour: col-mix(ink, paper, 0.9216),
   grid-thickness: 0.4pt,
   axis-colour: ink,
   axis-thickness: 0.5pt,
