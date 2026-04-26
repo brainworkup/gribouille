@@ -70,7 +70,7 @@ Legend for **Priority** (used to order future work):
 | `geom_density()` / `geom_density_2d()` / `geom_density_2d_filled()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
 | `geom_dotplot()` | — | ⬜ | P4 | Niche. |
 | `geom_jitter()` | `geom-jitter`. | ✅ | — | Point wrapper that defaults `position` to `"jitter"`. |
-| `geom_rug()` | — | ⬜ | P3 | Axis tick marks at observations. |
+| `geom_rug()` | `geom-rug`. | ✅ | — | Tick marks at observations on selected sides (`b`/`t`/`l`/`r`). |
 | `geom_text()` | `geom-text`. | ✅ | — | Reads the `label` aesthetic. |
 | `geom_label()` | `geom-label`. | ✅ | — | Boxed text with fill, stroke, radius. |
 | `geom_rect()` / `geom_tile()` / `geom_raster()` | `geom-rect`, `geom-tile`, `geom-raster`. | ✅ | — | `geom-raster` is an alias of `geom-tile`. |
@@ -80,8 +80,8 @@ Legend for **Priority** (used to order future work):
 | `geom_errorbar()` | `geom-errorbar`. | ✅ | — | Vertical range with horizontal end caps. `geom_errorbarh` deferred. |
 | `geom_linerange()` / `geom_crossbar()` / `geom_pointrange()` | `geom-linerange`, `geom-crossbar`, `geom-pointrange`. | ✅ | — | linerange has no caps, crossbar is a filled box with a thick median bar, pointrange is a marker plus linerange. |
 | `geom_abline()` / `geom_hline()` / `geom_vline()` | `geom-abline`, `geom-hline`, `geom-vline`. | ✅ | — | Scalar or array intercepts. |
-| `geom_blank()` | — | ⬜ | P3 | Useful for forcing scale training. |
-| `geom_function()` | — | ⬜ | P3 | Evaluate a Typst callable over the x-range. |
+| `geom_blank()` | `geom-blank`. | ✅ | — | No-op draw; trains scales from its data. |
+| `geom_function()` | `geom-function`. | ✅ | — | Samples a Typst callable across the x-domain into a polyline. |
 | `geom_qq()` / `geom_qq_line()` | — | ⬜ | P3 | Quantile-quantile plots. |
 | `geom_quantile()` | — | ⬜ | P4 | Quantile regression; deferred, wasm is last resort. |
 | `geom_count()` | — | ⬜ | P3 | Wrapper over `stat-sum`. |
@@ -100,7 +100,7 @@ Legend for **Priority** (used to order future work):
 | `stat_smooth()` | `stat-smooth`. | 🟡 | P3 | OLS only; `"loess"` deferred, wasm is last resort. |
 | `stat_boxplot()` | `stat-boxplot`. | ✅ | — | Per-x bucketing with R type-7 quantiles; outliers retained for the geom. |
 | `stat_summary()` / `stat_summary_bin()` | `stat-summary`, `stat-summary-bin`. | ✅ | — | Per-x bucket or per-bin reduction via `mean-se` / `mean-cl-normal` / `mean-sdl` / `median-hilow`. |
-| `stat_ecdf()` | — | ⬜ | P3 | Sort + cumulative fraction. |
+| `stat_ecdf()` | `stat-ecdf`. | ✅ | — | Empirical cumulative distribution: one row per unique x with `y = count_le_x / n`. |
 | `stat_ellipse()` | — | ⬜ | P4 | Normal data ellipses. |
 | `stat_density()` / `stat_density_2d()` / `stat_density_2d_filled()` / `stat_ydensity()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
 | `stat_contour()` / `stat_contour_filled()` | — | ⬜ | P4 | — |
@@ -108,7 +108,7 @@ Legend for **Priority** (used to order future work):
 | `stat_qq()` / `stat_qq_line()` | — | ⬜ | P3 | — |
 | `stat_quantile()` | — | ⬜ | P4 | Deferred, wasm is last resort. |
 | `stat_function()` | — | ⬜ | P3 | — |
-| `stat_unique()` | — | ⬜ | P3 | Deduplicate rows. |
+| `stat_unique()` | `stat-unique`. | ✅ | — | Drops duplicate `(x, y)` rows; first occurrence wins. |
 | `stat_manual()` / `stat_align()` / `stat_connect()` | — | ⬜ | P4 | Advanced. |
 | `stat_sf()` / `stat_sf_coordinates()` | — | ❌ | ∅ | Out of scope. |
 | `after_stat()` / `after_scale()` / `stage()` / `from_theme()` | — | ⬜ | P4 | Late-binding aesthetics. |
@@ -273,13 +273,14 @@ Legend for **Priority** (used to order future work):
 | `aes_()` / `aes_string()` / `aes_q()` | — | ❌ | ∅ | Deprecated upstream. |
 | `print.ggplot` / `plot.ggplot` | — | ❌ | ∅ | Typst handles rendering. |
 | `autoplot()` / `autolayer()` / `fortify()` / `map_data()` / `automatic_plotting` | — | ❌ | ∅ | R S3 dispatch. |
-| `get_alt_text()` | — | ⬜ | P3 | Could expose via a plot `alt:` argument. |
+| `get_alt_text()` | `get-alt-text`. | ✅ | — | Reads `spec.alt` set via the new `plot(..., alt: ...)` parameter. |
 
 ### Bundled datasets
 
 | ggplot2 | gribouille | Status | Priority | Notes |
 |---|---|---|---|---|
-| `diamonds`, `mpg`, `economics`, `economics_long`, `faithfuld`, `midwest`, `msleep`, `presidential`, `seals`, `txhousing`, `luv_colours`. | — | ⬜ | P3 | Ship a small `data/` module with one or two sample datasets for examples. |
+| `mpg`, `economics` | `mpg` (30 rows), `economics` (24 rows). | ✅ | — | Small subsets bundled for examples; values plausible but not exact. |
+| Other datasets (`diamonds`, `economics_long`, `faithfuld`, `midwest`, `msleep`, `presidential`, `seals`, `txhousing`, `luv_colours`) | — | ⬜ | P4 | Ship if a real example asks for them. |
 
 ## Coverage at a glance
 
