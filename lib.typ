@@ -40,6 +40,11 @@
 #import "src/stat/bin.typ": stat-bin
 #import "src/stat/smooth.typ": stat-smooth
 #import "src/stat/boxplot.typ": stat-boxplot
+#import "src/stat/summary.typ": stat-summary
+#import "src/stat/summary-bin.typ": stat-summary-bin
+#import "src/utils/summaries.typ": (
+  mean-cl-normal, mean-sdl, mean-se, median-hilow,
+)
 
 // Scales.
 #import "src/scale/continuous.typ": scale-x-continuous, scale-y-continuous

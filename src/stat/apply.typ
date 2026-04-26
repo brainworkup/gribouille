@@ -6,6 +6,8 @@
 #import "count.typ" as count-stat
 #import "smooth.typ" as smooth-stat
 #import "boxplot.typ" as boxplot-stat
+#import "summary.typ" as summary-stat
+#import "summary-bin.typ" as summary-bin-stat
 
 #let apply-stat(name, data, mapping, params) = {
   if name == none or name == "identity" {
@@ -18,6 +20,10 @@
     smooth-stat.apply(data, mapping, params: params)
   } else if name == "boxplot" {
     boxplot-stat.apply(data, mapping, params: params)
+  } else if name == "summary" {
+    summary-stat.apply(data, mapping, params: params)
+  } else if name == "summary_bin" {
+    summary-bin-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }
