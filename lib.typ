@@ -10,6 +10,11 @@
 // Labs.
 #import "src/labs.typ": labs
 
+// Guides.
+#import "src/guide/legend.typ": guide-legend
+#import "src/guide/none.typ": guide-none
+#import "src/guides.typ": guides
+
 // Geoms.
 #import "src/geom/point.typ": geom-point
 #import "src/geom/line.typ": geom-line

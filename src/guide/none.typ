@@ -1,0 +1,34 @@
+///! Suppress the legend for an aesthetic.
+///!
+///! Bind to an aesthetic via @guides to skip drawing the corresponding
+///! legend without affecting the underlying scale.
+
+/// Suppress the legend for an aesthetic.
+///
+/// When bound to an aesthetic via @guides, the legend renderer skips that
+/// aesthetic's guide entirely while leaving the scale and mapping intact.
+///
+/// @category Guides
+/// @stability stable
+/// @since 0.0.1
+///
+/// @returns Marker dictionary tagged `kind: "guide"` with `suppress: true`.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (
+///   (x: 1, y: 1, g: "a"),
+///   (x: 2, y: 2, g: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   layers: (geom-point(size: 3pt),),
+///   guides: guides(colour: guide-none()),
+/// )
+/// ```
+///
+/// @see @guides, @guide-legend, @plot
+#let guide-none() = (kind: "guide", suppress: true)
