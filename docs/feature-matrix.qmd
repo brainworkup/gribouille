@@ -164,7 +164,7 @@ Legend for **Priority** (used to order future work):
 | `scale_x_sqrt()` / `scale_y_sqrt()` | `scale-x-sqrt`, `scale-y-sqrt`. | ✅ | — | — |
 | `scale_x_reverse()` / `scale_y_reverse()` | `scale-x-reverse`, `scale-y-reverse`. | ✅ | — | Implemented by swapping the range endpoints during mapping. |
 | `scale_x_binned()` / `scale_y_binned()` | — | ⬜ | P3 | Continuous-to-binned axis. |
-| `scale_x_date()` / `scale_y_date()` / `scale_x_datetime()` / `scale_y_datetime()` / `scale_x_time()` / `scale_y_time()` | — | ⬜ | P2 | Needs Typst `datetime` handling. |
+| `scale_x_date()` / `scale_y_date()` / `scale_x_datetime()` / `scale_y_datetime()` / `scale_x_time()` / `scale_y_time()` | `scale-x-date`, `scale-y-date`, `scale-x-datetime`, `scale-y-datetime`, `scale-x-time`, `scale-y-time`. | ✅ | — | Numeric input contract: days/seconds since 2000-01-01 epoch. Axis labels formatted via Typst `datetime.display(date-format)`. ISO-8601 parsing deferred. |
 
 ### Colour and fill scales
 
