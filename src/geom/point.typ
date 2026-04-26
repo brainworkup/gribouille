@@ -34,8 +34,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -46,6 +44,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

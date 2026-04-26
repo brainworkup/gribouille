@@ -29,8 +29,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 0, y: 0, k: "a"),
 ///   (x: 2, y: 0, k: "a"),
@@ -43,6 +41,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "k"),
 ///   layers: (geom-polygon(alpha: 0.5),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

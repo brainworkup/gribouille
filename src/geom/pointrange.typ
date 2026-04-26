@@ -29,8 +29,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
 ///   y: i,
@@ -41,6 +39,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi"),
 ///   layers: (geom-pointrange(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

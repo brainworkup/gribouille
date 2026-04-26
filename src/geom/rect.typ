@@ -27,8 +27,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (xmin: 0, xmax: 1, ymin: 0, ymax: 2, k: "a"),
 ///   (xmin: 1, xmax: 3, ymin: 1, ymax: 4, k: "b"),
@@ -38,6 +36,8 @@
 ///   data: d,
 ///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
 ///   layers: (geom-rect(alpha: 0.6),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

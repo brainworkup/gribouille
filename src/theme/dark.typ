@@ -1,14 +1,11 @@
 ///! Dark theme preset.
 ///!
 ///! Dark grey panel with white grid lines and dark axis text.
-///! Mirrors ggplot2's / plotnine's `theme_dark()`.
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Dark theme: dark grey panel, white grid, dark axis text.
-///
-/// Equivalent to ggplot2's / plotnine's `theme_dark()`.
 ///
 /// @category Themes
 /// @stability stable
@@ -22,14 +19,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-dark(),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

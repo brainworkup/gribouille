@@ -2,7 +2,7 @@
 ///!
 ///! Bins x with the same uniform-width rule as `src/stat/bin.typ`, then for
 ///! each bin reduces the y values inside to a `(y, ymin, ymax)` summary
-///! using one of the ggplot2-style helpers in `src/utils/summaries.typ`.
+///! using one of the helpers in `src/utils/summaries.typ`.
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": summarise
@@ -12,8 +12,7 @@
 /// Partitions x into uniform-width bins (same rule as `stat-bin`), then for
 /// every bin reduces the y values inside to a `(x, y, ymin, ymax)` row where
 /// `x` is the bin midpoint. The reduction is chosen by `fun`; supported names
-/// mirror ggplot2's family: `"mean_se"`, `"mean_cl_normal"`, `"mean_sdl"`,
-/// and `"median_hilow"`. Hyphenated spellings are also accepted.
+/// are `"mean-se"`, `"mean-cl-normal"`, `"mean-sdl"`, and `"median-hilow"`.
 ///
 /// Either `bins` or `binwidth` fixes the partition; if both are supplied,
 /// `binwidth` wins.
@@ -32,21 +31,21 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (
-///     geom-line(stat: stat-summary-bin(fun: "mean_se", bins: 8)),
+///     geom-line(stat: stat-summary-bin(fun: "mean-se", bins: 8)),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
 /// @see @stat-summary, @stat-bin
 #let stat-summary-bin(
-  fun: "mean_se",
+  fun: "mean-se",
   bins: 30,
   binwidth: none,
   fun-args: (:),
@@ -100,7 +99,7 @@
     buckets.at(idx) = buckets.at(idx) + (p.y,)
   }
 
-  let fun = params.at("fun", default: "mean_se")
+  let fun = params.at("fun", default: "mean-se")
   let fun-args = params.at("fun-args", default: (:))
 
   let out = ()

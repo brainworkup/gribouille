@@ -1,16 +1,15 @@
 ///! Grey theme preset.
 ///!
 ///! Light grey panel background with white gridlines and thin black axes.
-///! Matches ggplot2's / plotnine's `theme_gray()` and is the library default.
-///! Derives element colours from `ink` and `paper` via `col-mix`, mirroring
-///! ggplot2 v4 exactly.
+///! Library default. Derives element colours from `ink` and `paper` via
+///! `col-mix`.
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Grey theme: light grey panel with white gridlines.
 ///
-/// This is the gribouille default, equivalent to ggplot2's / plotnine's `theme_gray()`.
+/// This is the gribouille default theme.
 ///
 /// @category Themes
 /// @stability stable
@@ -24,14 +23,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-grey(),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

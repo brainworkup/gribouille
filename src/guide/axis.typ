@@ -22,8 +22,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: "January", y: 1),
 ///   (x: "February", y: 2),
@@ -35,6 +33,8 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 3pt),),
 ///   guides: guides(x: guide-axis(angle: 30)),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -1,4 +1,4 @@
-///! Discretisation helpers: ggplot2's `cut_interval`, `cut_number`, `cut_width`.
+///! Discretisation helpers.
 ///!
 ///! Each helper takes an array of numbers and returns an array of bin labels
 ///! of the same length. Right-open intervals `(lo, hi]` are used, except the

@@ -1,7 +1,6 @@
 ///! Polyline of a callable evaluated across the trained x-domain.
 ///!
-///! Equivalent to ggplot2's `geom_function()` and plotnine's `geom_function`:
-///! samples `n` points uniformly across the x-range and draws a line through
+///! Samples `n` points uniformly across the x-range and draws a line through
 ///! `(x, fun(x))`. The layer ignores any inherited data and mapping; it
 ///! generates its own samples from `fun`.
 
@@ -32,8 +31,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
 ///   data: frame,
@@ -42,6 +39,8 @@
 ///     geom-blank(),
 ///     geom-function(fun: x => calc.sin(x)),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

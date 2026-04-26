@@ -23,14 +23,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-continuous(name: "Index", limits: (0, 12)),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -73,14 +73,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-continuous(name: "Value", trans: "log10"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -122,14 +122,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-log10(name: "x"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -164,14 +164,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-log10(name: "y"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -206,14 +206,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-sqrt(name: "x"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -248,14 +248,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-sqrt(name: "y"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -290,14 +290,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-reverse(name: "x"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -332,14 +332,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-reverse(name: "y"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

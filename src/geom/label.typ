@@ -32,8 +32,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, name: "a"),
 ///   (x: 2, y: 4, name: "b"),
@@ -46,6 +44,8 @@
 ///     geom-point(size: 2pt),
 ///     geom-label(dy: 0.25),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

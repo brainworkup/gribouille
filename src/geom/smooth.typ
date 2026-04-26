@@ -36,8 +36,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
 ///   y: i * 0.5 + calc.sin(i * 0.4) * 2,
@@ -49,6 +47,8 @@
 ///     geom-point(size: 2pt),
 ///     geom-smooth(method: "lm"),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

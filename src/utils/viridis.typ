@@ -2,8 +2,8 @@
 // 10-stop approximations of the MPL 2.0 tables from matplotlib; sufficient for
 // discrete swatches and interpolated continuous fills in CeTZ.
 // Avoiding purple-heavy default palettes outside viridis itself per user
-// preference: viridis/magma/plasma/inferno/cividis are kept for parity with
-// ggplot2 / plotnine but never chosen automatically.
+// preference: viridis/magma/plasma/inferno/cividis are kept available but
+// never chosen automatically.
 
 #let viridis = (
   rgb("#440154"),

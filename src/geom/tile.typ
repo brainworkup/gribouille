@@ -1,7 +1,6 @@
 ///! Centred tiles at `(x, y)` with optional `width` and `height`.
 ///!
-///! Equivalent to ggplot2's `geom_tile()` and `geom_raster()`. Mapping
-///! provides `x` and `y`; `width` and `height` may be mapped or fixed.
+///! Mapping provides `x` and `y`; `width` and `height` may be mapped or fixed.
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
@@ -32,8 +31,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = ()
 /// #for x in range(0, 5) {
 ///   for y in range(0, 4) {
@@ -44,6 +41,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "v"),
 ///   layers: (geom-tile(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -79,7 +78,7 @@
 /// Raster: shorthand for @geom-tile assuming a regular grid.
 ///
 /// In gribouille both functions render the same way; `geom-raster` is
-/// kept as a familiar synonym for users coming from ggplot2.
+/// kept as a familiar synonym.
 ///
 /// @category Geoms
 /// @stability stable

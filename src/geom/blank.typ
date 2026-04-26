@@ -1,8 +1,7 @@
 ///! Invisible layer that still trains scales.
 ///!
 ///! Renders nothing but contributes its data to scale training. Useful for
-///! forcing axis ranges without drawing marks, in the spirit of ggplot2's
-///! `geom_blank()` and plotnine's `geom_blank`.
+///! forcing axis training without drawing marks.
 
 /// Invisible layer used to extend trained scales without drawing marks.
 ///
@@ -22,13 +21,13 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let frame = ((x: 0, y: 0), (x: 10, y: 5))
 /// #plot(
 ///   data: frame,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-blank(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -33,8 +33,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 1), (x: 3, y: 4), (x: 2, y: 2), (x: 4, y: 5),
 /// )
@@ -42,6 +40,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-path(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

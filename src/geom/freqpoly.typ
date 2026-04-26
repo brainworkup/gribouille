@@ -25,8 +25,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
 /// ))
@@ -34,6 +32,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x"),
 ///   layers: (geom-freqpoly(bins: 12, stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

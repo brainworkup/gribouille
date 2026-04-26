@@ -23,8 +23,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),
@@ -38,6 +36,8 @@
 ///   mapping: aes(x: "x", y: "y", linetype: "grp"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -70,8 +70,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),
@@ -83,6 +81,8 @@
 ///   mapping: aes(x: "x", y: "y", linetype: "grp"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype-manual(values: ("solid", "dashed")),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

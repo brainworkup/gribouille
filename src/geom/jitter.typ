@@ -27,8 +27,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for _ in range(0, 16) { d.push((x: x, y: 1)) }
@@ -37,6 +35,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-jitter(size: 2pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

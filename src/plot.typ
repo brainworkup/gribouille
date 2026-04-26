@@ -29,8 +29,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 12cm
-/// //| height: 7cm
 /// #let mtcars = (
 ///   (mpg: 21.0, wt: 2.620, cyl: "6"),
 ///   (mpg: 22.8, wt: 2.320, cyl: "4"),
@@ -43,6 +41,8 @@
 ///   mapping: aes(x: "wt", y: "mpg", colour: "cyl"),
 ///   layers: (geom-point(size: 3pt),),
 ///   labs: labs(title: "Fuel economy vs. weight"),
+///   width: 12cm,
+///   height: 7cm,
 /// )
 /// ```
 ///

@@ -1,7 +1,7 @@
 ///! Resolution helper: smallest non-zero gap between unique numeric values.
 ///!
 ///! Used by positional adjustments such as `position-dodge` to choose bar
-///! widths when the `x` aesthetic is numeric. Mirrors ggplot2's `resolution()`.
+///! widths when the `x` aesthetic is numeric.
 
 #import "types.typ": parse-number
 
@@ -13,8 +13,8 @@
 ///
 /// With `zero: true` (the default) the value `0` is added to `values` before
 /// the calculation, so the resolution also accounts for the distance to
-/// zero. This matches ggplot2's `resolution()` and is the convention adopted
-/// throughout Gribouille for positional adjustments.
+/// zero. This is the convention adopted throughout Gribouille for positional
+/// adjustments.
 ///
 /// Returns `1` when `values` has fewer than two distinct numeric entries.
 ///

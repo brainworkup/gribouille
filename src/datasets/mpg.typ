@@ -1,12 +1,11 @@
 ///! Bundled mpg dataset.
 ///!
-///! A 30-row subset of ggplot2's `mpg` fuel economy dataset.
+///! A 30-row small fuel-economy reference dataset.
 ///! We ship only the columns used by current examples: `manufacturer`,
 ///! `model`, `displ`, `cyl`, `class`, `cty`, `hwy`.
-///! Rows are real combinations from the source dataset rounded to a
-///! small representative slice that spans several classes.
+///! Rows span several vehicle classes.
 
-/// Fuel economy of 30 cars (subset of ggplot2's `mpg`).
+/// Fuel economy of 30 cars (small fuel-economy reference dataset).
 ///
 /// Each row is one vehicle.
 /// Columns:
@@ -24,12 +23,12 @@
 ///
 /// @example
 /// ```
-/// //| width: 11cm
-/// //| height: 7cm
 /// #plot(
 ///   data: mpg,
 ///   mapping: aes(x: "displ", y: "hwy", colour: "class"),
 ///   layers: (geom-point(size: 3pt),),
+///   width: 11cm,
+///   height: 7cm,
 /// )
 /// ```
 #let mpg = (

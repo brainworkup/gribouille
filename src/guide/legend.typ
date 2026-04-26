@@ -23,8 +23,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -35,6 +33,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-point(size: 3pt),),
 ///   guides: guides(colour: guide-legend(reverse: true)),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -32,8 +32,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
 ///   (q: "Q2", revenue: 18),
@@ -44,6 +42,8 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "revenue"),
 ///   layers: (geom-col(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

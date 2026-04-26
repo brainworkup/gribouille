@@ -93,8 +93,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -104,6 +102,8 @@
 ///     annotate("text", x: 5, y: 4, label: "peak"),
 ///     annotate("vline", xintercept: 5, colour: rgb("#cc0000")),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

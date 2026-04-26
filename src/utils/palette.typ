@@ -13,7 +13,7 @@
 )
 
 // Shape palette: keywords resolved by geom-point's `_draw-shape`.
-// Covers the most common ggplot2 / plotnine shape indices without overlap.
+// Covers the most common shape indices without overlap.
 #let default-shapes = (
   "circle",
   "square",

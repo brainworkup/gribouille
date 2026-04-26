@@ -31,13 +31,13 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.6) + 1.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-area(alpha: 0.4),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
