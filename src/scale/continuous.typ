@@ -314,6 +314,104 @@
   expand: auto,
 )
 
+/// Binned continuous x scale: quantises a numeric axis into `n-breaks` bins.
+///
+/// Keeps the underlying mapping continuous so geoms still receive their raw
+/// numeric position, but places ticks at the midpoint of each equal-width
+/// bin to communicate the discretised reading of the axis.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param name Axis title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param labels Array of tick labels aligned with the bin midpoints, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-x-binned(n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @scale-y-binned, @scale-x-continuous
+#let scale-x-binned(
+  name: none,
+  limits: none,
+  n-breaks: 10,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "x",
+  type: "continuous",
+  name: name,
+  limits: limits,
+  breaks: auto,
+  labels: labels,
+  trans: "identity",
+  expand: auto,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned continuous y scale: quantises a numeric axis into `n-breaks` bins.
+///
+/// Counterpart of @scale-x-binned for the y axis.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param name Axis title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param labels Array of tick labels aligned with the bin midpoints, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-y-binned(n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @scale-x-binned, @scale-y-continuous
+#let scale-y-binned(
+  name: none,
+  limits: none,
+  n-breaks: 10,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "y",
+  type: "continuous",
+  name: name,
+  limits: limits,
+  breaks: auto,
+  labels: labels,
+  trans: "identity",
+  expand: auto,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
 /// Continuous y scale flipped bottom-to-top.
 ///
 /// Thin wrapper over @scale-y-continuous with `trans: "reverse"`. Tick labels

@@ -85,6 +85,7 @@
 #import "src/scale/continuous.typ": scale-x-log10, scale-y-log10
 #import "src/scale/continuous.typ": scale-x-sqrt, scale-y-sqrt
 #import "src/scale/continuous.typ": scale-x-reverse, scale-y-reverse
+#import "src/scale/continuous.typ": scale-x-binned, scale-y-binned
 #import "src/scale/date.typ": scale-x-date, scale-y-date
 #import "src/scale/date.typ": scale-x-datetime, scale-y-datetime
 #import "src/scale/date.typ": scale-x-time, scale-y-time
@@ -110,8 +111,18 @@
 #import "src/scale/colour.typ": scale-colour-grey, scale-fill-grey
 #import "src/scale/colour.typ": scale-colour-hue, scale-fill-hue
 #import "src/scale/colour.typ": scale-colour-distiller, scale-fill-distiller
+#import "src/scale/colour.typ": (
+  scale-colour-fermenter, scale-colour-steps, scale-colour-steps2,
+  scale-colour-stepsn,
+)
+#import "src/scale/colour.typ": (
+  scale-fill-fermenter, scale-fill-steps, scale-fill-steps2, scale-fill-stepsn,
+)
 #import "src/utils/palette.typ": brewer-palette
-#import "src/scale/size.typ": scale-size-continuous
+#import "src/scale/size.typ": (
+  scale-size-area, scale-size-binned, scale-size-binned-area,
+  scale-size-continuous,
+)
 #import "src/scale/linewidth.typ": (
   scale-linewidth-continuous, scale-linewidth-identity,
 )

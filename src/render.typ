@@ -226,9 +226,23 @@
 }
 
 // Trans-aware axis break dispatch. Honours the trained scale's `trans` so log10
-// and sqrt panels get geometry-aware ticks instead of bunched linear ticks.
+// and sqrt panels get geometry-aware ticks instead of bunched linear ticks. If
+// the user spec carries `binned: true`, ticks are placed at bin midpoints so
+// labels sit under each `n-breaks`-wide quantised interval.
 #let _axis-breaks(trained) = {
   let (lo, hi) = trained.domain
+  let spec = trained.at("spec", default: none)
+  let binned = if spec == none { false } else {
+    spec.at("binned", default: false)
+  }
+  if binned {
+    let n = if spec == none { 10 } else { spec.at("n-breaks", default: 10) }
+    let count = calc.max(1, int(n))
+    let span = hi - lo
+    if span <= 0 { return (lo,) }
+    let step = span / count
+    return range(count).map(i => lo + (i + 0.5) * step)
+  }
   let trans = trained.at("trans", default: none)
   if trans == "log10" { return pretty-log10(lo, hi) }
   if trans == "sqrt" { return pretty-sqrt(lo, hi) }
