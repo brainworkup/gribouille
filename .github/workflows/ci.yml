@@ -23,6 +23,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Lint Typst docstrings
+        shell: bash
+        run: tools/check-docs.sh
+
       - name: Read Typst version from typst.toml
         id: typst-version
         shell: bash

@@ -1,0 +1,13 @@
+# Run via `pre-commit install` once, then it runs on every commit.
+# Without the framework, the same script is invoked from `tools/check.sh`
+# and from CI.
+
+repos:
+  - repo: local
+    hooks:
+      - id: check-docs
+        name: Lint Typst docstrings
+        entry: tools/check-docs.sh
+        language: system
+        files: '^src/.*\.typ$'
+        pass_filenames: false
