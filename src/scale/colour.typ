@@ -5,6 +5,7 @@
 ///! file for easy discovery.
 
 #import "../utils/viridis.typ" as viridis-mod
+#import "../utils/palette.typ": brewer-palette
 
 /// Continuous colour scale mapping a numeric column to stroke colours.
 ///
@@ -636,4 +637,353 @@
   labels: labels,
   binned: true,
   n-breaks: n-breaks,
+)
+
+/// Discrete ColorBrewer colour scale.
+///
+/// `palette` selects a named ColorBrewer palette such as `"Set1"`,
+/// `"Dark2"`, or `"Spectral"`. Categorical levels are mapped to colours
+/// in the order they first appear in the data.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param palette ColorBrewer palette name (qualitative, sequential, or diverging).
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Array of level names controlling order and inclusion, or `none`.
+/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-brewer(palette: "Set1"),),
+/// )
+/// ```
+///
+/// @see @scale-fill-brewer, @scale-colour-discrete
+#let scale-colour-brewer(
+  palette: "Set1",
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "discrete",
+  name: name,
+  palette: brewer-palette(palette),
+  limits: limits,
+  labels: labels,
+)
+
+/// Discrete ColorBrewer fill scale.
+///
+/// Fill counterpart of @scale-colour-brewer. Same palette names apply.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param palette ColorBrewer palette name (qualitative, sequential, or diverging).
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Array of level names controlling order and inclusion, or `none`.
+/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-brewer, @scale-fill-discrete
+#let scale-fill-brewer(
+  palette: "Set1",
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "discrete",
+  name: name,
+  palette: brewer-palette(palette),
+  limits: limits,
+  labels: labels,
+)
+
+/// Continuous two-stop colour gradient.
+///
+/// Linearly interpolates between `low` and `high` across the trained domain.
+/// Defaults reproduce ggplot2's `scale_colour_gradient()` blue ramp.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param low Colour for the low end of the domain.
+/// @param high Colour for the high end of the domain.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-gradient(),),
+/// )
+/// ```
+///
+/// @see @scale-colour-gradient2, @scale-colour-gradientn, @scale-fill-gradient
+#let scale-colour-gradient(
+  low: rgb("#132B43"),
+  high: rgb("#56B1F7"),
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "continuous",
+  name: name,
+  palette: (low, high),
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+/// Continuous diverging colour gradient through a midpoint.
+///
+/// Interpolates `low` to `mid` for values at or below `midpoint`, and
+/// `mid` to `high` for values at or above it. Mirrors ggplot2's
+/// `scale_colour_gradient2()` semantics.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param low Colour for values far below `midpoint`.
+/// @param mid Colour at `midpoint`.
+/// @param high Colour for values far above `midpoint`.
+/// @param midpoint Value at which the palette transitions through `mid`.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-gradient2(midpoint: 0),),
+/// )
+/// ```
+///
+/// @see @scale-colour-gradient, @scale-colour-gradientn, @scale-fill-gradient2
+#let scale-colour-gradient2(
+  low: rgb("#1F77B4"),
+  mid: rgb("#FFFFFF"),
+  high: rgb("#D62728"),
+  midpoint: 0,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "continuous",
+  name: name,
+  palette: (low, mid, high),
+  midpoint: midpoint,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+/// Continuous n-stop colour gradient.
+///
+/// Walks `colours` as a sequence of stops and linearly interpolates between
+/// adjacent stops. Useful for ramps that require more than two anchor
+/// colours (for example a ColorBrewer palette used as a continuous ramp).
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param colours Array of two or more colours.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-gradientn(colours: (
+///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
+///   )),),
+/// )
+/// ```
+///
+/// @see @scale-colour-gradient, @scale-colour-gradient2, @scale-fill-gradientn
+#let scale-colour-gradientn(
+  colours: (),
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "continuous",
+  name: name,
+  palette: colours,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+/// Continuous two-stop fill gradient.
+///
+/// Fill counterpart of @scale-colour-gradient.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param low Colour for the low end of the domain.
+/// @param high Colour for the high end of the domain.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-gradient, @scale-fill-gradient2, @scale-fill-gradientn
+#let scale-fill-gradient(
+  low: rgb("#132B43"),
+  high: rgb("#56B1F7"),
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "continuous",
+  name: name,
+  palette: (low, high),
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+/// Continuous diverging fill gradient through a midpoint.
+///
+/// Fill counterpart of @scale-colour-gradient2.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param low Colour for values far below `midpoint`.
+/// @param mid Colour at `midpoint`.
+/// @param high Colour for values far above `midpoint`.
+/// @param midpoint Value at which the palette transitions through `mid`.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-gradient2, @scale-fill-gradient, @scale-fill-gradientn
+#let scale-fill-gradient2(
+  low: rgb("#1F77B4"),
+  mid: rgb("#FFFFFF"),
+  high: rgb("#D62728"),
+  midpoint: 0,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "continuous",
+  name: name,
+  palette: (low, mid, high),
+  midpoint: midpoint,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+/// Continuous n-stop fill gradient.
+///
+/// Fill counterpart of @scale-colour-gradientn.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.1.0
+///
+/// @param colours Array of two or more colours.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-gradientn, @scale-fill-gradient, @scale-fill-gradient2
+#let scale-fill-gradientn(
+  colours: (),
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "continuous",
+  name: name,
+  palette: colours,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
 )
