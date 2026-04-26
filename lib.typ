@@ -38,6 +38,7 @@
 #import "src/stat/count.typ": stat-count
 #import "src/stat/bin.typ": stat-bin
 #import "src/stat/smooth.typ": stat-smooth
+#import "src/stat/boxplot.typ": stat-boxplot
 
 // Scales.
 #import "src/scale/continuous.typ": scale-x-continuous, scale-y-continuous
