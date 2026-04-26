@@ -1,0 +1,58 @@
+///! Empirical cumulative distribution function statistic.
+///!
+///! Backing statistic for ECDF curves. Emits one row per unique x value with
+///! the cumulative fraction reaching that value as y.
+
+#import "../utils/types.typ": parse-number
+
+/// ECDF statistic: one row per unique x value with the cumulative fraction.
+///
+/// Numeric x values are parsed via `parse-number`; `none` and unparseable
+/// inputs are dropped. For each unique value `v` in the sorted sample, y is
+/// the 1-indexed position of `v`'s first occurrence divided by `n`. Output
+/// rows are sorted by x ascending.
+///
+/// @category Stats
+/// @stability stable
+/// @since 0.0.1
+///
+/// @returns Statistic object with `name: "ecdf"`, consumed by geom layers.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (3, 1, 2, 1).map(v => (x: v))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x"),
+///   layers: (geom-line(stat: "ecdf"),),
+/// )
+/// ```
+///
+/// @see @stat-bin, @stat-count
+#let stat-ecdf() = (kind: "stat", name: "ecdf")
+
+#let apply(data, mapping, params: (:)) = {
+  let x-col = if mapping != none { mapping.at("x", default: none) } else {
+    none
+  }
+  let base-mapping = (x: "x", y: "y")
+  if x-col == none { return (data: (), mapping: base-mapping) }
+  let xs = data
+    .map(r => parse-number(r.at(x-col, default: none)))
+    .filter(v => v != none)
+  let n = xs.len()
+  if n == 0 { return (data: (), mapping: base-mapping) }
+  let sorted = xs.sorted()
+  let rows = ()
+  let i = 0
+  while i < n {
+    let v = sorted.at(i)
+    rows.push((x: v, y: (i + 1) / n))
+    let j = i + 1
+    while j < n and sorted.at(j) == v { j = j + 1 }
+    i = j
+  }
+  (data: rows, mapping: base-mapping)
+}
