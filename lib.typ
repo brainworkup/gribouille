@@ -2,10 +2,14 @@
 // Public API for @preview/gribouille.
 
 // Core.
-#import "src/plot.typ": plot
+#import "src/plot.typ": get-alt-text, plot
 #import "src/aes.typ": aes
 #import "src/data.typ": as-factor, as-numeric
 #import "src/annotate.typ": annotate
+
+// Datasets.
+#import "src/datasets/economics.typ": economics
+#import "src/datasets/mpg.typ": mpg
 
 // Labs.
 #import "src/labs.typ": labs

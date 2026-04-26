@@ -23,6 +23,7 @@
 /// @param guides Per-aesthetic guide overrides built with @guides (e.g. `guides(colour: guide-legend(reverse: true))`).
 /// @param width Total plot width, including axes and legends.
 /// @param height Total plot height, including axes and legends.
+/// @param alt Alt text describing the figure for accessibility tooling. Stored on the spec; not rendered.
 ///
 /// @returns Typst content block containing the rendered figure.
 ///
@@ -58,6 +59,7 @@
   guides: (:),
   width: 10cm,
   height: 7cm,
+  alt: none,
 ) = {
   context {
     let effective-theme = if theme != none {
@@ -77,7 +79,24 @@
       guides: guides,
       width: width,
       height: height,
+      alt: alt,
     )
     render-plot(spec)
   }
 }
+
+/// Read the alt text stored on a plot spec.
+///
+/// Returns whatever was passed to @plot via `alt:`, or `none` if the
+/// spec was built without one. This lets renderers and accessibility
+/// tooling pull the description out without parsing the rendered
+/// figure.
+///
+/// @category Core
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param spec Plot spec dictionary (the dict @plot builds internally).
+///
+/// @returns The alt string, or `none` if absent.
+#let get-alt-text(spec) = spec.at("alt", default: none)
