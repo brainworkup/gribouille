@@ -6,6 +6,7 @@
 #import "utils/pretty.typ": pretty
 #import "utils/colour.typ": resolve-continuous-colour
 #import "theme/defaults.typ": resolve-colour, resolve-field
+#import "guide/draw-key.typ": default-key-for, draw-glyph
 
 #let _guide-title(t, spec, aes-name) = {
   if (
@@ -32,6 +33,74 @@
   } else {
     (rows: n, cols: 1)
   }
+}
+
+// Priority used when several layers contribute to the same legend. Points
+// dominate lines, lines dominate rects, so the swatch reflects the most
+// distinctive mark drawn for that aesthetic.
+#let _key-priority(key) = {
+  if key == "point" { return 4 }
+  if key == "path" { return 3 }
+  if key == "line" { return 2 }
+  if key == "rect" { return 1 }
+  0
+}
+
+// Geoms that genuinely consume `fill`. Other geoms inherit it through plot
+// mapping but don't draw anything filled, so they should not steer the legend
+// glyph. Pure stroke geoms still consume `colour`.
+#let _geom-uses-fill(geom) = (
+  "col",
+  "bar",
+  "histogram",
+  "rect",
+  "tile",
+  "area",
+  "ribbon",
+  "polygon",
+  "boxplot",
+  "crossbar",
+  "smooth",
+  "point",
+  "label",
+).contains(geom)
+
+// Resolve the key kind for a swatch driven by `aes-name`. Considers every
+// layer that maps the aesthetic and picks the highest-priority key kind.
+// Layers may pin a kind via `key: draw-key-*()`; otherwise the kind is
+// inferred from the geom name.
+#let _key-kind-for(spec, aes-name) = {
+  let layers = spec.at("layers", default: ())
+  let plot-mapping = spec.at("mapping", default: none)
+  let best = "rect"
+  let best-prio = 0
+  for layer in layers {
+    let mapping = layer.at("mapping", default: none)
+    let inherits = layer.at("inherit-aes", default: true)
+    let merged = if inherits and plot-mapping != none {
+      let m = plot-mapping
+      if mapping != none {
+        for (k, v) in mapping.pairs() {
+          if v != none { m.insert(k, v) }
+        }
+      }
+      m
+    } else if mapping != none { mapping } else { plot-mapping }
+    if merged == none { continue }
+    if merged.at(aes-name, default: none) == none { continue }
+    let geom = layer.at("geom", default: "")
+    if aes-name == "fill" and not _geom-uses-fill(geom) { continue }
+    let pinned = layer.at("key", default: auto)
+    let candidate = if pinned != auto and pinned != none { pinned.key } else {
+      default-key-for(geom)
+    }
+    let prio = _key-priority(candidate)
+    if prio > best-prio {
+      best = candidate
+      best-prio = prio
+    }
+  }
+  best
 }
 
 #let guides-for(spec, trained) = {
@@ -68,6 +137,7 @@
         levels: levels,
         nrow: nrow,
         ncol: ncol,
+        key: _key-kind-for(spec, aes-name),
       ))
     } else if t.type == "continuous" {
       guides.push((
@@ -193,18 +263,14 @@
   }
   let col-w = calc.min(2.5, 0.6 + level-chars * 0.18)
   let col-gap = calc.max(0.15, 0.1 * col-w)
+  let key-kind = guide.at("key", default: "rect")
   for (i, level) in guide.levels.enumerate() {
     let col = calc.quo(i, shape.rows)
     let row = calc.rem(i, shape.rows)
     let cx = ox + col * (col-w + col-gap)
     let cy = top - row * line-h
     let colour = _resolve-colour-simple(trained, level, ctx.palette, ink)
-    cetz.draw.circle(
-      (cx + glyph-size, cy - glyph-size),
-      radius: glyph-size,
-      fill: colour,
-      stroke: none,
-    )
+    draw-glyph(key-kind, cx + glyph-size, cy - glyph-size, glyph-size, colour)
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
       text(size: text-size, fill: text-colour)[#level],

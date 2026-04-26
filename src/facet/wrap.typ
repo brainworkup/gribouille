@@ -4,6 +4,7 @@
 ///! `ncol` columns (or `nrow` rows).
 
 #import "shared.typ"
+#import "labellers.typ": label-value
 
 /// Wrap facets: one panel per level of a discrete variable.
 ///
@@ -24,6 +25,8 @@
 ///   linetype) are always shared so legends stay consistent. An explicit
 ///   `coord-cartesian(xlim:, ylim:)` overrides the per-panel domain on
 ///   the corresponding axis, pinning every panel to the same range.
+/// @param labeller Labeller controlling strip text. Defaults to
+///   `label-value()` which shows the level as-is.
 ///
 /// @returns Facet dictionary consumed by @plot.
 ///
@@ -46,7 +49,13 @@
 /// ```
 ///
 /// @see @facet-grid, @plot
-#let facet-wrap(var, ncol: none, nrow: none, scales: "fixed") = {
+#let facet-wrap(
+  var,
+  ncol: none,
+  nrow: none,
+  scales: "fixed",
+  labeller: label-value(),
+) = {
   if not ("fixed", "free", "free_x", "free_y").contains(scales) {
     panic(
       "facet-wrap: scales must be \"fixed\", \"free\", \"free_x\", or \"free_y\"",
@@ -59,6 +68,7 @@
     ncol: ncol,
     nrow: nrow,
     scales: scales,
+    labeller: labeller,
   )
 }
 
