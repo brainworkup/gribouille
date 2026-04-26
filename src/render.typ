@@ -32,6 +32,7 @@
 #import "geom/label.typ" as label-geom
 #import "geom/boxplot.typ" as boxplot-geom
 #import "geom/errorbar.typ" as errorbar-geom
+#import "geom/errorbarh.typ" as errorbarh-geom
 #import "geom/linerange.typ" as linerange-geom
 #import "geom/crossbar.typ" as crossbar-geom
 #import "geom/pointrange.typ" as pointrange-geom
@@ -543,6 +544,8 @@
       boxplot-geom.draw(layer, ctx)
     } else if layer.geom == "errorbar" {
       errorbar-geom.draw(layer, ctx)
+    } else if layer.geom == "errorbarh" {
+      errorbarh-geom.draw(layer, ctx)
     } else if layer.geom == "linerange" {
       linerange-geom.draw(layer, ctx)
     } else if layer.geom == "crossbar" {
