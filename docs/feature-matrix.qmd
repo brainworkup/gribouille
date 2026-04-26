@@ -203,9 +203,9 @@ Legend for **Priority** (used to order future work):
 | `labs()` | `labs(title:, subtitle:, caption:, x:, y:, colour:, fill:, ...)`. | ✅ | — | Axis names are injected into trained scale specs. |
 | `xlab()` / `ylab()` / `ggtitle()` | `xlab`, `ylab`, `ggtitle`. | ✅ | — | Thin wrappers over `labs()`. |
 | `get_labs()` | — | ⬜ | P3 | — |
-| `lims()` / `xlim()` / `ylim()` | via scale `limits:`. | 🟡 | P2 | Top-level shortcut. |
+| `lims()` / `xlim()` / `ylim()` | `lims`, `xlim`, `ylim`. | ✅ | — | Sugar over `scale-x-continuous(limits:)` / `scale-y-continuous(limits:)`. |
 | `expansion()` / `expand_scale()` | via scale `expand:`. | 🟡 | P3 | Expose helper. |
-| `expand_limits()` | — | ⬜ | P3 | — |
+| `expand_limits()` | `expand-limits`. | ✅ | — | Folds extension values into the trained continuous domain rather than replacing it. |
 
 ### Guides
 
@@ -215,7 +215,7 @@ Legend for **Priority** (used to order future work):
 | `guide_colourbar()` / `guide_colorbar()` | automatic colourbar. | ✅ | — | Emitted when trained colour/fill is continuous. |
 | `guide_legend()` customisation (nrow, ncol, reverse, ...) | `guide-legend(title:, nrow:, ncol:, reverse:)`. | ✅ | — | Plot-level binding via `guides(colour: guide-legend(...))`. |
 | `guide_bins()` / `guide_coloursteps()` | — | ⬜ | P3 | After binned scales. |
-| `guide_axis()` | — | ⬜ | P2 | Tick rotation, dodging. |
+| `guide_axis()` | `guide-axis(angle:, n-dodge:)`. | ✅ | — | x-axis only for v1; y-axis rotation/dodge deferred. |
 | `guide_axis_logticks()` | — | ⬜ | P3 | After log trans. |
 | `guide_none()` | `guide-none`. | ✅ | — | Suppress a specific aesthetic's legend. |
 | `guide_axis_stack()` / `guide_axis_theta()` / `guide_custom()` | — | ⬜ | P4 | Advanced. |
@@ -261,8 +261,8 @@ Legend for **Priority** (used to order future work):
 
 | ggplot2 | gribouille symbol | Status | Priority | Notes |
 |---|---|---|---|---|
-| `cut_interval()` / `cut_number()` / `cut_width()` | — | ⬜ | P2 | Discretise numeric vectors. |
-| `resolution()` | — | ⬜ | P2 | Used by dodge. |
+| `cut_interval()` / `cut_number()` / `cut_width()` | `cut-interval`, `cut-number`, `cut-width`. | ✅ | — | Pure helpers; bin labels of the form `"(lo,hi]"`. |
+| `resolution()` | `resolution`. | ✅ | — | Zero-aware by default; matches ggplot2. |
 | `mean_se()` / `mean_cl_normal()` / `mean_sdl()` / `median_hilow()` | `mean-se`, `mean-cl-normal`, `mean-sdl`, `median-hilow`. | ✅ | — | `mean-cl-normal` panics on `conf != 0.95`. `mean_cl_boot` deferred. |
 
 ### Programming and extension
