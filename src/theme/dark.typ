@@ -3,6 +3,7 @@
 ///! Dark grey panel with white grid lines and dark axis text.
 ///! Mirrors ggplot2's / plotnine's `theme_dark()`.
 
+#import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Dark theme: dark grey panel, white grid, dark axis text.
@@ -39,10 +40,10 @@
   ink: ink,
   paper: paper,
   accent: accent,
-  panel-fill: rgb("#7f7f7f"),
+  panel-fill: col-mix(ink, paper, 0.498),
   grid-colour: paper,
   grid-thickness: 0.5pt,
-  axis-colour: rgb("#666666"),
+  axis-colour: col-mix(ink, paper, 0.4),
   axis-thickness: 0.5pt,
-  axis-text-colour: rgb("#4d4d4d"),
+  axis-text-colour: col-mix(ink, paper, 0.302),
 )

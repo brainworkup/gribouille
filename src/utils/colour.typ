@@ -2,6 +2,7 @@
 ///
 /// Mirrors ggplot2's `col_mix(col1, col2, amount)`:
 /// `amount` is the fraction of `col2` (0 = pure `col1`, 1 = pure `col2`).
+/// Mixing happens in sRGB so `col-mix(black, white, 0.92)` returns `grey92`.
 ///
 /// @category Scales
 /// @stability stable
@@ -9,9 +10,13 @@
 ///
 /// @param col1 Base colour.
 /// @param col2 Colour to blend in.
-/// @param amount Fraction of `col2` in the result (0–1).
+/// @param amount Fraction of `col2` in the result (0 to 1).
 /// @returns Blended colour.
-#let col-mix(col1, col2, amount) = col1.mix((col2, amount * 100%))
+#let col-mix(col1, col2, amount) = color.mix(
+  (col1, 1 - amount),
+  (col2, amount),
+  space: rgb,
+)
 
 // Walk an n-stop palette: linearly interpolate between consecutive stops to
 // turn a normalised position `t` (in 0..1) into a colour. Used by gradientn

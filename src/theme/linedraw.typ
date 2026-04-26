@@ -3,6 +3,7 @@
 ///! White panel framed by a heavier black border, with very faint grid lines.
 ///! Mirrors ggplot2's / plotnine's `theme_linedraw()`.
 
+#import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Linedraw theme: white panel, strong black axes, very faint grid.
@@ -40,7 +41,7 @@
   paper: paper,
   accent: accent,
   panel-fill: paper,
-  grid-colour: rgb("#f0f0f0"),
+  grid-colour: col-mix(ink, paper, 0.9412),
   grid-thickness: 0.3pt,
   axis-colour: ink,
   axis-thickness: 0.8pt,
