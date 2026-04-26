@@ -917,13 +917,22 @@
         let panel-trained = if panel-trained-list.len() == 0 {
           trained
         } else { panel-trained-list.at(i) }
+        let (inner-w, inner-h) = _fixed-inner-size(
+          coord,
+          panel-trained,
+          panel-w,
+          panel-h,
+        )
+        // Top-left anchoring: keep x0 fixed, push the inner panel up against
+        // the strip so any vertical slack falls below the panel.
+        let inner-y0 = y0 + (panel-h - inner-h)
         _draw-axis-and-layers(
           panel-layers,
           panel-trained,
           theme,
           spec,
-          (x0, y0),
-          (panel-w, panel-h),
+          (x0, inner-y0),
+          (inner-w, inner-h),
           show-x-labels: free-x or row == nrow - 1,
           show-y-labels: free-y or col == 0,
           show-x-title: false,
@@ -1014,13 +1023,20 @@
           let x0 = margin.left + c * (panel-w + gutter-x)
           let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
           let panel-layers = panels.at(r * n-cols + c).layers
+          let (inner-w, inner-h) = _fixed-inner-size(
+            coord,
+            trained,
+            panel-w,
+            panel-h,
+          )
+          let inner-y0 = y0 + (panel-h - inner-h)
           _draw-axis-and-layers(
             panel-layers,
             trained,
             theme,
             spec,
-            (x0, y0),
-            (panel-w, panel-h),
+            (x0, inner-y0),
+            (inner-w, inner-h),
             show-x-labels: r == n-rows - 1,
             show-y-labels: c == 0,
             show-x-title: false,
