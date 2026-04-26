@@ -10,6 +10,8 @@
 #import "summary-bin.typ" as summary-bin-stat
 #import "ecdf.typ" as ecdf-stat
 #import "unique.typ" as unique-stat
+#import "qq.typ" as qq-stat
+#import "qq-line.typ" as qq-line-stat
 
 #let apply-stat(name, data, mapping, params) = {
   if name == none or name == "identity" {
@@ -30,6 +32,10 @@
     ecdf-stat.apply(data, mapping, params: params)
   } else if name == "unique" {
     unique-stat.apply(data, mapping, params: params)
+  } else if name == "qq" {
+    qq-stat.apply(data, mapping, params: params)
+  } else if name == "qq-line" {
+    qq-line-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }

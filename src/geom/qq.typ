@@ -1,0 +1,60 @@
+///! Q-Q plot points against the standard normal distribution.
+///!
+///! Thin wrapper around @geom-point that computes its data via @stat-qq.
+
+/// Q-Q point layer: sorted sample versus theoretical standard-normal quantile.
+///
+/// The `sample` aesthetic selects the column to compare against the standard
+/// normal. When `sample` is absent the layer falls back to `y` so simple
+/// `aes(y: ...)` plots also work. Colour, fill, shape, and alpha can be set
+/// or mapped through @aes.
+///
+/// @category Geoms
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
+/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// @param size Marker size (a Typst length).
+/// @param stroke Marker stroke; `none` means no outline.
+/// @param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
+/// @param alpha Marker opacity in `[0, 1]`.
+/// @param shape Marker shape keyword. `auto` honours the shape scale.
+/// @param position Position adjustment name. Usually `"identity"`.
+/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+///
+/// @returns Layer dictionary consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
+/// #plot(
+///   data: d,
+///   mapping: aes(sample: "v"),
+///   layers: (geom-qq(),),
+/// )
+/// ```
+///
+/// @see @geom-qq-line, @stat-qq, @geom-point
+#let geom-qq(
+  mapping: none,
+  data: none,
+  size: 1.5pt,
+  stroke: none,
+  fill: auto,
+  alpha: 1,
+  shape: auto,
+  position: "identity",
+  inherit-aes: true,
+) = (
+  kind: "layer",
+  geom: "point",
+  mapping: mapping,
+  data: data,
+  params: (size: size, stroke: stroke, fill: fill, alpha: alpha, shape: shape),
+  stat: "qq",
+  position: position,
+  inherit-aes: inherit-aes,
+)

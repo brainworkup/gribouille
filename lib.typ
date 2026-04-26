@@ -50,6 +50,8 @@
 #import "src/geom/blank.typ": geom-blank
 #import "src/geom/rug.typ": geom-rug
 #import "src/geom/function.typ": geom-function
+#import "src/geom/qq.typ": geom-qq
+#import "src/geom/qq-line.typ": geom-qq-line
 
 // Stats.
 #import "src/stat/identity.typ": stat-identity
@@ -61,6 +63,9 @@
 #import "src/stat/summary-bin.typ": stat-summary-bin
 #import "src/stat/ecdf.typ": stat-ecdf
 #import "src/stat/unique.typ": stat-unique
+#import "src/stat/qq.typ": stat-qq
+#import "src/stat/qq-line.typ": stat-qq-line
+#import "src/utils/normal.typ": qnorm
 #import "src/utils/summaries.typ": (
   mean-cl-normal, mean-sdl, mean-se, median-hilow,
 )
