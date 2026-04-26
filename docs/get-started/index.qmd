@@ -52,7 +52,7 @@ Drop the following into a `.typ` file alongside a CSV and render with `typst com
 
 #plot(
   data: mtcars,
-  mapping: aes(x: "wt", y: "mpg", colour: "cyl"),
+  mapping: aes(x: "wt", y: "mpg", colour: as-factor("cyl")),
   layers: (
     geom-point(size: 2pt),
     geom-smooth(method: "lm"),
@@ -79,7 +79,7 @@ Drop the following into a `.typ` file alongside a CSV and render with `typst com
 
 #plot(
   data: mtcars,
-  mapping: aes(x: "wt", y: "mpg", colour: "cyl"),
+  mapping: aes(x: "wt", y: "mpg", colour: as-factor("cyl")),
   layers: (
     geom-point(size: 2pt),
     geom-smooth(method: "lm"),
