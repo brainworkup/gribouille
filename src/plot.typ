@@ -20,6 +20,7 @@
 /// @param facet Faceting specification built with @facet-wrap or @facet-grid.
 /// @param theme Theme object (e.g. @theme-grey, @theme-minimal, @theme-classic). Controls non-data ink.
 /// @param labs Labels dictionary built with @labs (title, subtitle, caption, axis titles).
+/// @param guides Per-aesthetic guide overrides built with @guides (e.g. `guides(colour: guide-legend(reverse: true))`).
 /// @param width Total plot width, including axes and legends.
 /// @param height Total plot height, including axes and legends.
 ///
@@ -54,6 +55,7 @@
   facet: none,
   theme: none,
   labs: none,
+  guides: (:),
   width: 10cm,
   height: 7cm,
 ) = {
@@ -72,6 +74,7 @@
       facet: facet,
       theme: effective-theme,
       labs: labs,
+      guides: guides,
       width: width,
       height: height,
     )

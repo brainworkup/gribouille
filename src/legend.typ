@@ -20,19 +20,54 @@
   }
 }
 
+#let _grid-shape(n, nrow, ncol) = {
+  if ncol != none {
+    let cols = calc.max(1, ncol)
+    let rows = calc.max(1, calc.ceil(n / cols))
+    (rows: rows, cols: cols)
+  } else if nrow != none {
+    let rows = calc.max(1, nrow)
+    let cols = calc.max(1, calc.ceil(n / rows))
+    (rows: rows, cols: cols)
+  } else {
+    (rows: n, cols: 1)
+  }
+}
+
 #let guides-for(spec, trained) = {
+  let overrides = spec.at("guides", default: (:))
   let guides = ()
   for aes-name in ("colour", "fill") {
     let t = trained.at(aes-name, default: none)
     if t == none { continue }
     if t.type == "identity" { continue }
+    let override = overrides.at(aes-name, default: none)
+    if override != none and override.at("suppress", default: false) {
+      continue
+    }
     let title = _guide-title(t, spec, aes-name)
+    if override != none and override.at("title", default: none) != none {
+      title = override.title
+    }
     if t.type == "discrete" {
+      let levels = t.domain
+      let reverse = if override != none {
+        override.at("reverse", default: false)
+      } else { false }
+      if reverse { levels = levels.rev() }
+      let nrow = if override != none {
+        override.at("nrow", default: none)
+      } else { none }
+      let ncol = if override != none {
+        override.at("ncol", default: none)
+      } else { none }
       guides.push((
         kind: "swatch",
         aesthetic: aes-name,
         title: title,
-        levels: t.domain,
+        levels: levels,
+        nrow: nrow,
+        ncol: ncol,
       ))
     } else if t.type == "continuous" {
       guides.push((
@@ -77,11 +112,16 @@
   let max-width = 0.0
   for g in guides {
     if g.kind == "swatch" {
-      let max-chars = g.title.len()
+      let title-chars = g.title.len()
+      let level-chars = 0
       for level in g.levels {
-        max-chars = calc.max(max-chars, level.len())
+        level-chars = calc.max(level-chars, level.len())
       }
-      max-width = calc.max(max-width, calc.min(3.5, 0.6 + max-chars * 0.18))
+      let shape = _grid-shape(g.levels.len(), g.nrow, g.ncol)
+      let col-w = calc.min(3.5, 0.6 + level-chars * 0.18)
+      let title-w = calc.min(3.5, 0.6 + title-chars * 0.18)
+      let grid-w = col-w * shape.cols + 0.2 * (shape.cols - 1)
+      max-width = calc.max(max-width, calc.max(title-w, grid-w))
     } else if g.kind == "colourbar" {
       let (lo, hi) = g.domain
       let breaks = pretty(lo, hi, n: 5)
@@ -99,7 +139,8 @@
 #let _swatch-height(guide) = {
   let title-h = 0.45
   let line-h = 0.4
-  title-h + line-h * guide.levels.len() + 0.2
+  let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
+  title-h + line-h * shape.rows + 0.2
 }
 
 #let _colourbar-height() = {
@@ -143,21 +184,31 @@
     )[#guide.title],
     anchor: "north-west",
   )
-  let c = cursor - title-h
+  let top = cursor - title-h
+  let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
+  let level-chars = 0
   for level in guide.levels {
+    level-chars = calc.max(level-chars, level.len())
+  }
+  let col-w = calc.min(3.5, 0.6 + level-chars * 0.18)
+  let col-gap = 0.2
+  for (i, level) in guide.levels.enumerate() {
+    let col = calc.quo(i, shape.rows)
+    let row = calc.rem(i, shape.rows)
+    let cx = ox + col * (col-w + col-gap)
+    let cy = top - row * line-h
     let colour = _resolve-colour-simple(trained, level, ctx.palette, ink)
     cetz.draw.circle(
-      (ox + glyph-size, c - glyph-size),
+      (cx + glyph-size, cy - glyph-size),
       radius: glyph-size,
       fill: colour,
       stroke: none,
     )
     cetz.draw.content(
-      (ox + glyph-size * 2 + 0.15, c - glyph-size),
+      (cx + glyph-size * 2 + 0.15, cy - glyph-size),
       text(size: text-size, fill: text-colour)[#level],
       anchor: "west",
     )
-    c -= line-h
   }
 }
 
