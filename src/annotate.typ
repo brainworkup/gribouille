@@ -16,9 +16,10 @@
 #import "geom/hline.typ": geom-hline
 #import "geom/abline.typ": geom-abline
 
-// Kwarg names treated as aesthetic mappings (everything else is forwarded
-// to the geom constructor as a layer parameter, e.g. `stroke`, `fontsize`).
-#let _aes-keys = (
+// Default kwarg names treated as aesthetic mappings (everything else is
+// forwarded to the geom constructor as a layer parameter, e.g. `stroke`,
+// `fontsize`).
+#let _default-aes-keys = (
   "x",
   "y",
   "xend",
@@ -38,6 +39,16 @@
   "slope",
   "intercept",
 )
+
+// `text` and `label` geoms take `size` as a Typst length layer parameter
+// (the text size), not an aesthetic mapping; route it accordingly.
+#let _aes-keys-for(geom) = {
+  if geom == "text" or geom == "label" {
+    _default-aes-keys.filter(k => k != "size")
+  } else {
+    _default-aes-keys
+  }
+}
 
 #let _geom-table = (
   text: geom-text,
@@ -72,9 +83,11 @@
 /// @param ..fields Named arguments split between aesthetics and layer
 ///   parameters. Aesthetic names are `x`, `y`, `xend`, `yend`, `xmin`,
 ///   `xmax`, `ymin`, `ymax`, `colour`, `fill`, `size`, `alpha`, `shape`,
-///   `linetype`, `label`, `group`, `slope`, `intercept`. Anything else
-///   (e.g. `stroke`, `fontsize`, `xintercept`, `yintercept`) is forwarded
-///   to the geom constructor as a layer parameter.
+///   `linetype`, `label`, `group`, `slope`, `intercept`. For `geom = "text"`
+///   and `geom = "label"`, `size` is treated as a layer parameter (the text
+///   size, a Typst length) rather than an aesthetic. Anything else (e.g.
+///   `stroke`, `fontsize`, `xintercept`, `yintercept`) is forwarded to the
+///   geom constructor as a layer parameter.
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
@@ -118,11 +131,12 @@
     return constructor(..fields.named(), inherit-aes: false)
   }
 
+  let aes-keys = _aes-keys-for(geom)
   let row = (:)
   let mapping-args = (:)
   let layer-args = (:)
   for (k, v) in fields.named().pairs() {
-    if k in _aes-keys {
+    if k in aes-keys {
       row.insert(k, v)
       mapping-args.insert(k, k)
     } else {

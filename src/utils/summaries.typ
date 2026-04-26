@@ -6,6 +6,7 @@
 ///! how to handle missing buckets.
 
 #import "types.typ": parse-number
+#import "normal.typ": qnorm
 
 #let _to-numeric(values) = {
   values.map(v => parse-number(v)).filter(v => v != none)
@@ -70,30 +71,28 @@
 
 /// Mean with normal-approximation confidence interval.
 ///
-/// Only `conf: 0.95` is supported; the multiplier is the two-sided z critical
-/// value `1.959964`. Other confidence levels panic so callers do not silently
-/// receive a 95 % band when they asked for something else.
+/// The two-sided z critical value `qnorm((1 + conf) / 2)` is computed from
+/// Acklam's inverse-normal approximation, so any `conf` in the open interval
+/// `(0, 1)` is supported.
 ///
 /// @category Stats
 /// @stability stable
 /// @since 0.0.1
 ///
 /// @param values Array of numbers; non-numeric entries are dropped.
-/// @param conf Confidence level. Must be `0.95` in v1.
+/// @param conf Confidence level in the open interval `(0, 1)`.
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 #let mean-cl-normal(values, conf: 0.95) = {
-  if conf != 0.95 {
-    panic(
-      "mean-cl-normal: only conf = 0.95 is supported in v1; got " + repr(conf),
-    )
+  if conf <= 0 or conf >= 1 {
+    panic("mean-cl-normal: conf must be in (0, 1); got " + repr(conf))
   }
   let xs = _to-numeric(values)
   let n = xs.len()
   if n == 0 { return _empty-summary }
   let m = _mean(xs)
   let se = if n < 2 { 0.0 } else { _sd(xs) / calc.sqrt(n) }
-  let z = 1.959964
+  let z = qnorm((1 + conf) / 2)
   (y: m, ymin: m - z * se, ymax: m + z * se)
 }
 

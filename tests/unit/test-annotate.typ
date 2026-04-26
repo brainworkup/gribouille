@@ -26,6 +26,23 @@
 #assert.eq(lt3.data, ((x: 1, y: 1, label: "lab", colour: red),))
 #assert.eq(lt3.mapping.colour, "colour")
 
+// `size` on text is a Typst length controlling the layer's text size, not an
+// aesthetic; it must reach params and stay out of the mapping.
+#let lt-size = annotate("text", x: 1, y: 2, label: "hi", size: 12pt)
+#assert.eq(lt-size.params.size, 12pt)
+#assert.eq(lt-size.mapping.at("size", default: none), none)
+#assert.eq(lt-size.data, ((x: 1, y: 2, label: "hi"),))
+
+// Same routing for `geom-label`.
+#let ll-size = annotate("label", x: 0, y: 0, label: "boxed", size: 9pt)
+#assert.eq(ll-size.params.size, 9pt)
+#assert.eq(ll-size.mapping.at("size", default: none), none)
+
+// `size` on `geom-point` stays an aesthetic mapping (default behaviour).
+#let lp-size = annotate("point", x: 3, y: 4, size: 5)
+#assert.eq(lp-size.mapping.size, "size")
+#assert.eq(lp-size.data, ((x: 3, y: 4, size: 5),))
+
 // Point annotation: only x, y -> no label column needed.
 #let lp = annotate("point", x: 3, y: 4)
 #assert.eq(lp.geom, "point")
