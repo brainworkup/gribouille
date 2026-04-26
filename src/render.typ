@@ -8,7 +8,7 @@
 #import "stat/apply.typ": apply-stat
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
-#import "utils/pretty.typ": pretty
+#import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
 #import "utils/palette.typ": default-discrete
 #import "utils/colour.typ": resolve-continuous-colour
@@ -222,6 +222,16 @@
     let v = if type(value) == str { float(value.trim()) } else { float(value) }
     resolve-continuous-colour(trained, v, pal, ink)
   }
+}
+
+// Trans-aware axis break dispatch. Honours the trained scale's `trans` so log10
+// and sqrt panels get geometry-aware ticks instead of bunched linear ticks.
+#let _axis-breaks(trained) = {
+  let (lo, hi) = trained.domain
+  let trans = trained.at("trans", default: none)
+  if trans == "log10" { return pretty-log10(lo, hi) }
+  if trans == "sqrt" { return pretty-sqrt(lo, hi) }
+  pretty(lo, hi, n: 5)
 }
 
 #let _format-break(n) = {
@@ -443,7 +453,7 @@
   }
 
   if x-trained != none and x-trained.type == "continuous" {
-    let breaks = pretty(x-trained.domain.at(0), x-trained.domain.at(1), n: 5)
+    let breaks = _axis-breaks(x-trained)
     for (idx, b) in breaks.enumerate() {
       let cx = map-axis(x-trained, b, px-range)
       if grid-stroke != none {
@@ -466,7 +476,7 @@
   }
 
   if y-trained != none and y-trained.type == "continuous" {
-    let breaks = pretty(y-trained.domain.at(0), y-trained.domain.at(1), n: 5)
+    let breaks = _axis-breaks(y-trained)
     for b in breaks {
       let cy = map-axis(y-trained, b, py-range)
       if grid-stroke != none {
