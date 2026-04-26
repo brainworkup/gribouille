@@ -1,7 +1,9 @@
-///! Standard-normal helpers: inverse CDF (`qnorm`).
+///! Standard-normal helpers and theoretical quantile dispatch.
 ///!
 ///! Used by stat helpers (e.g. `mean-cl-normal`) and exposed publicly so
 ///! future geoms (e.g. a Q-Q plot) can reuse the same approximation.
+///! Also hosts `theoretical-quantile`, the small dispatch used by the
+///! Q-Q stats to pick a reference distribution.
 
 /// Inverse of the standard-normal cumulative distribution function.
 ///
@@ -104,4 +106,41 @@
     )
   }
   q
+}
+
+/// Theoretical quantile for a Q-Q reference distribution.
+///
+/// Dispatches to the inverse CDF of the chosen reference family.
+/// `"normal"` calls @qnorm, `"uniform"` returns `p` directly (the quantile
+/// of `Uniform(0, 1)` at probability `p`), and `"exponential"` returns
+/// `-ln(1 - p)` (the quantile of `Exp(1)` at probability `p`).
+///
+/// @category Utilities
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param p Probability in the open interval `(0, 1)`.
+/// @param distribution One of `"normal"`, `"uniform"`, or `"exponential"`.
+///
+/// @returns Theoretical quantile at probability `p`.
+#let theoretical-quantile(p, distribution) = {
+  if distribution == "normal" {
+    qnorm(p)
+  } else if distribution == "uniform" {
+    if p <= 0 or p >= 1 {
+      panic("theoretical-quantile: p must be in (0, 1); got " + repr(p))
+    }
+    p
+  } else if distribution == "exponential" {
+    if p <= 0 or p >= 1 {
+      panic("theoretical-quantile: p must be in (0, 1); got " + repr(p))
+    }
+    -calc.ln(1 - p)
+  } else {
+    panic(
+      "theoretical-quantile: unknown distribution "
+        + repr(distribution)
+        + "; expected one of \"normal\", \"uniform\", \"exponential\".",
+    )
+  }
 }
