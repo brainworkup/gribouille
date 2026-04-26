@@ -1,0 +1,115 @@
+///! Vertical range from `ymin` to `ymax` at each `x`.
+
+#import "../deps.typ": cetz
+#import "../scale/train.typ": map-position
+#import "../utils/types.typ": parse-number
+
+/// Linerange layer: one vertical line from `ymin` to `ymax` at each `x`.
+///
+/// Mapping must provide `x`, `ymin`, `ymax`. Colour and linetype may be
+/// mapped or set as fixed layer parameters.
+///
+/// @category Geoms
+/// @stability stable
+/// @since 0.0.1
+///
+/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `ymin`, `ymax`.
+/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// @param stroke Line thickness (a Typst length).
+/// @param colour Fixed line colour. `auto` resolves via the colour scale.
+/// @param alpha Line opacity in `[0, 1]`.
+/// @param linetype Dash keyword. Defaults to `"solid"`.
+/// @param stat Statistical transform name. Usually `"identity"`.
+/// @param position Position adjustment name. Usually `"identity"`.
+/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+///
+/// @returns Layer dictionary consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(1, 6).map(i => (
+///   x: i,
+///   lo: i - 0.5,
+///   hi: i + 0.5,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", ymin: "lo", ymax: "hi"),
+///   layers: (geom-linerange(stroke: 1pt),),
+/// )
+/// ```
+///
+/// @see @geom-errorbar, @geom-pointrange
+#let geom-linerange(
+  mapping: none,
+  data: none,
+  stroke: 0.8pt,
+  colour: auto,
+  alpha: 1,
+  linetype: "solid",
+  stat: "identity",
+  position: "identity",
+  inherit-aes: true,
+) = (
+  kind: "layer",
+  geom: "linerange",
+  mapping: mapping,
+  data: data,
+  params: (stroke: stroke, colour: colour, alpha: alpha, linetype: linetype),
+  stat: stat,
+  position: position,
+  inherit-aes: inherit-aes,
+)
+
+#let draw(layer, ctx) = {
+  let mapping = (ctx.resolve-mapping)(layer)
+  let data = (ctx.resolve-data)(layer)
+  if mapping == none { return }
+  let x-col = mapping.at("x", default: none)
+  let ymin-col = mapping.at("ymin", default: none)
+  let ymax-col = mapping.at("ymax", default: none)
+  if x-col == none or ymin-col == none or ymax-col == none { return }
+  let x-trained = ctx.trained.at("x", default: none)
+  let y-trained = ctx.trained.at("y", default: none)
+  if x-trained == none or y-trained == none { return }
+
+  let colour-col = mapping.at("colour", default: none)
+  let colour-trained = ctx.trained.at("colour", default: none)
+  let default-colour = if (
+    layer.params.colour != auto and layer.params.colour != none
+  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+
+  for row in data {
+    let cx = map-position(x-trained, row.at(x-col, default: none), ctx.px-range)
+    let lo = parse-number(row.at(ymin-col, default: none))
+    let hi = parse-number(row.at(ymax-col, default: none))
+    if cx == none or lo == none or hi == none { continue }
+    let cy-lo = map-position(y-trained, lo, ctx.py-range)
+    let cy-hi = map-position(y-trained, hi, ctx.py-range)
+    if cy-lo == none or cy-hi == none { continue }
+
+    let colour = if colour-col != none and colour-trained != none {
+      (ctx.resolve-colour)(
+        colour-trained,
+        row.at(colour-col, default: none),
+        ctx.palette,
+      )
+    } else { default-colour }
+    let alpha = layer.params.alpha
+    let final-colour = if alpha < 1 {
+      colour.transparentize((1 - alpha) * 100%)
+    } else { colour }
+
+    cetz.draw.line(
+      (cx, cy-lo),
+      (cx, cy-hi),
+      stroke: (
+        paint: final-colour,
+        thickness: layer.params.stroke,
+        dash: layer.params.linetype,
+      ),
+    )
+  }
+}

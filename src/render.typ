@@ -31,6 +31,10 @@
 #import "geom/text.typ" as text-geom
 #import "geom/label.typ" as label-geom
 #import "geom/boxplot.typ" as boxplot-geom
+#import "geom/errorbar.typ" as errorbar-geom
+#import "geom/linerange.typ" as linerange-geom
+#import "geom/crossbar.typ" as crossbar-geom
+#import "geom/pointrange.typ" as pointrange-geom
 #import "legend.typ" as legend-mod
 
 // Flatten a merged aesthetic mapping so geoms receive plain column-name
@@ -481,6 +485,14 @@
       label-geom.draw(layer, ctx)
     } else if layer.geom == "boxplot" {
       boxplot-geom.draw(layer, ctx)
+    } else if layer.geom == "errorbar" {
+      errorbar-geom.draw(layer, ctx)
+    } else if layer.geom == "linerange" {
+      linerange-geom.draw(layer, ctx)
+    } else if layer.geom == "crossbar" {
+      crossbar-geom.draw(layer, ctx)
+    } else if layer.geom == "pointrange" {
+      pointrange-geom.draw(layer, ctx)
     }
   }
 
