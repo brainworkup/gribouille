@@ -1,7 +1,8 @@
 ///! Vertical line from `ymin` to `ymax` with horizontal caps at each `x`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous, map-position
+#import "../scale/train.typ": map-position
+#import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
 
 /// Errorbar layer: vertical range with a horizontal cap at each end.
@@ -91,12 +92,6 @@
   ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
 
   let half-width = layer.params.width / 2
-  let (px-lo, px-hi) = ctx.px-range
-  let discrete-slot = if (
-    x-trained.type == "discrete" and x-trained.domain.len() > 0
-  ) {
-    (px-hi - px-lo) / x-trained.domain.len()
-  } else { 0 }
 
   for row in data {
     let raw-x = row.at(x-col, default: none)
@@ -108,18 +103,8 @@
     let cy-hi = map-position(y-trained, hi, ctx.py-range)
     if cy-lo == none or cy-hi == none { continue }
 
-    let (cap-lo, cap-hi) = if x-trained.type == "discrete" {
-      let cap-px = discrete-slot * half-width
-      (cx - cap-px, cx + cap-px)
-    } else {
-      let raw-num = parse-number(raw-x)
-      if raw-num == none { (cx, cx) } else {
-        (
-          map-continuous(raw-num - half-width, x-trained.domain, ctx.px-range),
-          map-continuous(raw-num + half-width, x-trained.domain, ctx.px-range),
-        )
-      }
-    }
+    let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
+    let (cap-lo, cap-hi) = if band == none { (cx, cx) } else { band }
 
     let colour = if colour-col != none and colour-trained != none {
       (ctx.resolve-colour)(
