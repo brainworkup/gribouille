@@ -29,6 +29,7 @@
 #import "geom/abline.typ" as abline-geom
 #import "geom/text.typ" as text-geom
 #import "geom/label.typ" as label-geom
+#import "geom/boxplot.typ" as boxplot-geom
 #import "legend.typ" as legend-mod
 
 // Flatten a merged aesthetic mapping so geoms receive plain column-name
@@ -482,6 +483,8 @@
       text-geom.draw(layer, ctx)
     } else if layer.geom == "label" {
       label-geom.draw(layer, ctx)
+    } else if layer.geom == "boxplot" {
+      boxplot-geom.draw(layer, ctx)
     }
   }
 
