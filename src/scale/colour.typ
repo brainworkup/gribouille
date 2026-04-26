@@ -1226,6 +1226,72 @@
   )
 }
 
+/// Continuous alpha (opacity) scale mapping a numeric column to opacities.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param range Pair `(lo, hi)` bounding the output opacity, each in `[0, 1]`.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param breaks Array of break values for the legend, or `auto`.
+/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// //| width: 10cm
+/// //| height: 6cm
+/// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", alpha: "w"),
+///   layers: (geom-point(size: 4pt),),
+///   scales: (scale-alpha-continuous(range: (0.1, 1)),),
+/// )
+/// ```
+///
+/// @see @scale-alpha-identity, @scale-colour-continuous
+#let scale-alpha-continuous(
+  name: none,
+  range: (0.1, 1),
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "alpha",
+  type: "continuous",
+  name: name,
+  range: range,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+/// Alpha scale that uses each row's value as the opacity directly.
+///
+/// Values are clamped to `[0, 1]` before being applied to the colour.
+/// No legend is drawn because the column carries the visual outcome verbatim.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.2.0
+///
+/// @param name Legend title. Identity scales draw no legend.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-alpha-continuous, @scale-colour-identity
+#let scale-alpha-identity(name: none) = (
+  kind: "scale",
+  aesthetic: "alpha",
+  type: "identity",
+  name: name,
+)
+
 /// Continuous ColorBrewer fill scale.
 ///
 /// Fill counterpart of @scale-colour-distiller.

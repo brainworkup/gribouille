@@ -89,6 +89,7 @@
 #import "src/scale/colour.typ": scale-fill-continuous, scale-fill-discrete
 #import "src/scale/colour.typ": scale-colour-manual, scale-fill-manual
 #import "src/scale/colour.typ": scale-colour-identity, scale-fill-identity
+#import "src/scale/colour.typ": scale-alpha-continuous, scale-alpha-identity
 #import "src/scale/colour.typ": (
   scale-colour-viridis-b, scale-colour-viridis-c, scale-colour-viridis-d,
 )
@@ -107,6 +108,9 @@
 #import "src/scale/colour.typ": scale-colour-distiller, scale-fill-distiller
 #import "src/utils/palette.typ": brewer-palette
 #import "src/scale/size.typ": scale-size-continuous
+#import "src/scale/linewidth.typ": (
+  scale-linewidth-continuous, scale-linewidth-identity,
+)
 #import "src/scale/shape.typ": (
   scale-shape, scale-shape-identity, scale-shape-manual,
 )

@@ -9,7 +9,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/palette.typ": default-linetypes
 #import "../utils/group.typ": partition-by-group
-#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 
 /// Step layer connecting observations as a stair-step path, one per group.
 ///
@@ -174,9 +174,16 @@
       }
     } else { default-linetype }
 
+    let thickness = resolve-linewidth(
+      layer,
+      mapping,
+      ctx,
+      rows.first(),
+      layer.params.stroke,
+    )
     cetz.draw.line(
       ..stair,
-      stroke: (paint: final-colour, thickness: layer.params.stroke, dash: dash),
+      stroke: (paint: final-colour, thickness: thickness, dash: dash),
     )
   }
 }

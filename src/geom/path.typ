@@ -8,7 +8,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/palette.typ": default-linetypes
 #import "../utils/group.typ": partition-by-group
-#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 
 /// Path layer connecting observations in row order, one path per group.
 ///
@@ -131,9 +131,16 @@
       }
     } else { default-linetype }
 
+    let thickness = resolve-linewidth(
+      layer,
+      mapping,
+      ctx,
+      rows.first(),
+      layer.params.stroke,
+    )
     cetz.draw.line(
       ..pts,
-      stroke: (paint: final-colour, thickness: layer.params.stroke, dash: dash),
+      stroke: (paint: final-colour, thickness: thickness, dash: dash),
     )
   }
 }

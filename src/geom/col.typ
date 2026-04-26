@@ -7,6 +7,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-continuous, map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
 /// Bar layer with heights taken from the y aesthetic.
 ///
@@ -166,10 +167,8 @@
         ctx.palette,
       )
     } else { default-fill }
-    let alpha = layer.params.alpha
-    let final-fill = if alpha < 1 {
-      colour.transparentize((1 - alpha) * 100%)
-    } else { colour }
+    let alpha = resolve-alpha(layer, mapping, ctx, row)
+    let final-fill = apply-alpha(colour, alpha)
 
     cetz.draw.rect(
       (centre - bar-half, y-lo-cy),
