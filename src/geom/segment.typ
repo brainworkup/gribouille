@@ -3,6 +3,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": resolve-stroke-colour
 
 /// Segment layer: one line from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -78,8 +79,6 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
   let default-colour = if (
     layer.params.colour != auto and layer.params.colour != none
   ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
@@ -96,14 +95,13 @@
     let cy1 = map-position(y-trained, y1, ctx.py-range)
     if cx0 == none or cy0 == none or cx1 == none or cy1 == none { continue }
 
-    let colour = if colour-col != none and colour-trained != none {
-      let sample = row.at(colour-col, default: none)
-      (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
-    } else { default-colour }
-    let alpha = layer.params.alpha
-    let final-colour = if alpha < 1 {
-      colour.transparentize((1 - alpha) * 100%)
-    } else { colour }
+    let final-colour = resolve-stroke-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
+    )
 
     cetz.draw.line(
       (cx0, cy0),

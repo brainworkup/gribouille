@@ -9,6 +9,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/palette.typ": default-linetypes
 #import "../utils/group.typ": partition-by-group
+#import "../utils/colour-resolve.typ": resolve-stroke-colour
 
 /// Line layer connecting observations in x order, one path per group.
 ///
@@ -81,8 +82,6 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
   let default-colour = if (
     layer.params.colour != auto and layer.params.colour != none
   ) {
@@ -138,15 +137,13 @@
     }
     if pts.len() < 2 { continue }
 
-    let colour = if colour-col != none and colour-trained != none {
-      let sample = rows.first().at(colour-col, default: none)
-      (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
-    } else { default-colour }
-
-    let alpha = layer.params.alpha
-    let final-colour = if alpha < 1 {
-      colour.transparentize((1 - alpha) * 100%)
-    } else { colour }
+    let final-colour = resolve-stroke-colour(
+      layer,
+      mapping,
+      ctx,
+      rows.first(),
+      default-colour,
+    )
 
     let dash = if linetype-col != none and linetype-trained != none {
       let sample = rows.first().at(linetype-col, default: none)

@@ -3,6 +3,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
+#import "../utils/colour-resolve.typ": resolve-stroke-colour
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
 ///
@@ -87,8 +88,6 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
   let default-colour = if (
     layer.params.colour != auto and layer.params.colour != none
   ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
@@ -104,17 +103,13 @@
     let cy-hi = map-position(y-trained, hi, ctx.py-range)
     if cy-mid == none or cy-lo == none or cy-hi == none { continue }
 
-    let colour = if colour-col != none and colour-trained != none {
-      (ctx.resolve-colour)(
-        colour-trained,
-        row.at(colour-col, default: none),
-        ctx.palette,
-      )
-    } else { default-colour }
-    let alpha = layer.params.alpha
-    let final-colour = if alpha < 1 {
-      colour.transparentize((1 - alpha) * 100%)
-    } else { colour }
+    let final-colour = resolve-stroke-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
+    )
 
     cetz.draw.line(
       (cx, cy-lo),
