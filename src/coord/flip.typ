@@ -1,0 +1,44 @@
+///! Flipped coordinate system swapping the x and y axes at render time.
+///!
+///! Scale training is unchanged; only the rendered axes and any direction-
+///! sensitive geoms are swapped so vertical bars become horizontal bars,
+///! horizontal reference lines become vertical, and so on.
+
+/// Cartesian coordinate system with the x and y axes swapped at render time.
+///
+/// Use this to turn a vertical bar chart into a horizontal one without
+/// rewriting the data or the mapping. The axis labels, ticks, and the
+/// directional geoms (`geom-col`, `geom-hline`, `geom-vline`, `geom-abline`)
+/// follow the swap automatically. Direction-agnostic geoms (`geom-point`,
+/// `geom-line`, `geom-path`, `geom-step`, `geom-segment`) work via the same
+/// swap with no per-geom changes.
+///
+/// @category Coords
+/// @stability experimental
+/// @since 0.0.1
+///
+/// @returns Coordinate dictionary consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = (
+///   (q: "Q1", revenue: 10),
+///   (q: "Q2", revenue: 18),
+///   (q: "Q3", revenue: 25),
+///   (q: "Q4", revenue: 22),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "q", y: "revenue"),
+///   layers: (geom-col(),),
+///   coord: coord-flip(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @plot, @coord-cartesian, @geom-col
+#let coord-flip() = (
+  kind: "coord",
+  coord: "flip",
+)
