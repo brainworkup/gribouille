@@ -14,4 +14,11 @@
 #let c3 = coord-fixed(ratio: 0.5)
 #assert.eq(c3.ratio, 0.5)
 
+// The dict shape must stay stable so the faceted draw paths can read
+// `ratio` and `coord` exactly like the non-faceted path.
+#let keys-c1 = c1.keys().sorted()
+#assert.eq(keys-c1, ("coord", "kind", "ratio"))
+#let keys-c2 = c2.keys().sorted()
+#assert.eq(keys-c2, ("coord", "kind", "ratio"))
+
 coord-fixed tests passed.
