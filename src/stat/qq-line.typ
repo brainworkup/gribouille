@@ -42,7 +42,7 @@
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
-///   mapping: aes(sample: "v"),
+///   mapping: aes(y: "v"),
 ///   layers: (geom-qq(), geom-qq-line()),
 ///   width: 10cm,
 ///   height: 6cm,

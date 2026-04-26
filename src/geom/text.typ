@@ -22,6 +22,8 @@
 /// @param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
 /// @param dx Horizontal offset in canvas units.
 /// @param dy Vertical offset in canvas units.
+/// @param stat Statistical transform name. Usually `"identity"`.
+/// @param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// @returns Layer dictionary consumed by @plot.
@@ -54,6 +56,8 @@
   anchor: "center",
   dx: 0,
   dy: 0,
+  stat: "identity",
+  position: "identity",
   inherit-aes: true,
 ) = (
   kind: "layer",
@@ -67,8 +71,8 @@
     dx: dx,
     dy: dy,
   ),
-  stat: "identity",
-  position: "identity",
+  stat: stat,
+  position: position,
   inherit-aes: inherit-aes,
 )
 

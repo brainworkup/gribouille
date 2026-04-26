@@ -1,6 +1,6 @@
 project:
   type: website
-  lib-dir: lib
+  # lib-dir: lib
   output-dir: _site
   pre-render:
     - ../tools/typstdoc/main.lua
