@@ -76,7 +76,6 @@ local function build_typst_block(slug, alt)
     "//| output-filename: '" .. slug .. ".svg'",
     '//| alt: ' .. quoted_alt,
     "//| file: '/assets/examples/" .. slug .. ".typ'",
-    '//| output: false',
   }, '\n')
   return pandoc.CodeBlock(text, pandoc.Attr('', { '{typst}' }, {}))
 end
