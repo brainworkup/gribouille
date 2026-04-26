@@ -1328,3 +1328,373 @@
     labels: labels,
   )
 }
+
+/// Binned two-stop colour gradient.
+///
+/// Quantises the trained continuous domain into `n-breaks` equal-width bins
+/// and fills each bin with a single colour drawn from the `low` to `high`
+/// ramp. Defaults to a blue ramp.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param low Colour for the low end of the domain.
+/// @param high Colour for the high end of the domain.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-steps(n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @scale-colour-steps2, @scale-colour-stepsn, @scale-fill-steps
+#let scale-colour-steps(
+  low: rgb("#132B43"),
+  high: rgb("#56B1F7"),
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "continuous",
+  name: name,
+  palette: (low, high),
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned diverging colour gradient through a midpoint.
+///
+/// Quantises the trained continuous domain into `n-breaks` equal-width bins
+/// using a three-stop palette that pivots through `mid` at `midpoint`.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param low Colour for values far below `midpoint`.
+/// @param mid Colour at `midpoint`.
+/// @param high Colour for values far above `midpoint`.
+/// @param midpoint Value at which the palette transitions through `mid`.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-steps2(midpoint: 0, n-breaks: 6),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @scale-colour-steps, @scale-colour-stepsn, @scale-fill-steps2
+#let scale-colour-steps2(
+  low: rgb("#005A32"),
+  mid: white,
+  high: rgb("#A50026"),
+  midpoint: 0,
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "continuous",
+  name: name,
+  palette: (low, mid, high),
+  midpoint: midpoint,
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned n-stop colour gradient.
+///
+/// Walks `colours` as a sequence of stops and quantises the lookup into
+/// `n-breaks` equal-width bins.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param colours Array of two or more colours.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-stepsn(colours: (
+///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
+///   ), n-breaks: 6),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @scale-colour-steps, @scale-colour-steps2, @scale-fill-stepsn
+#let scale-colour-stepsn(
+  colours: (),
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "colour",
+  type: "continuous",
+  name: name,
+  palette: colours,
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned ColorBrewer colour scale.
+///
+/// Looks up a Brewer palette by name, interpolates across its stops, and
+/// quantises the lookup into `n-breaks` equal-width bins. `direction` flips
+/// the palette: `1` keeps the canonical order, `-1` reverses it.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param palette ColorBrewer palette name (sequential or diverging works best).
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param direction `1` for canonical order, `-1` for reversed.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @example
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-fermenter(palette: "Spectral", n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @see @scale-colour-distiller, @scale-fill-fermenter
+#let scale-colour-fermenter(
+  palette: "Spectral",
+  n-breaks: 5,
+  direction: 1,
+  name: none,
+  limits: none,
+  labels: auto,
+) = {
+  let stops = brewer-palette(palette)
+  if direction < 0 { stops = stops.rev() }
+  (
+    kind: "scale",
+    aesthetic: "colour",
+    type: "continuous",
+    name: name,
+    palette: stops,
+    limits: limits,
+    labels: labels,
+    binned: true,
+    n-breaks: n-breaks,
+  )
+}
+
+/// Binned two-stop fill gradient.
+///
+/// Fill counterpart of @scale-colour-steps.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param low Colour for the low end of the domain.
+/// @param high Colour for the high end of the domain.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-steps, @scale-fill-steps2, @scale-fill-stepsn
+#let scale-fill-steps(
+  low: rgb("#132B43"),
+  high: rgb("#56B1F7"),
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "continuous",
+  name: name,
+  palette: (low, high),
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned diverging fill gradient through a midpoint.
+///
+/// Fill counterpart of @scale-colour-steps2.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param low Colour for values far below `midpoint`.
+/// @param mid Colour at `midpoint`.
+/// @param high Colour for values far above `midpoint`.
+/// @param midpoint Value at which the palette transitions through `mid`.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-steps2, @scale-fill-steps, @scale-fill-stepsn
+#let scale-fill-steps2(
+  low: rgb("#005A32"),
+  mid: white,
+  high: rgb("#A50026"),
+  midpoint: 0,
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "continuous",
+  name: name,
+  palette: (low, mid, high),
+  midpoint: midpoint,
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned n-stop fill gradient.
+///
+/// Fill counterpart of @scale-colour-stepsn.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param colours Array of two or more colours.
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-stepsn, @scale-fill-steps, @scale-fill-steps2
+#let scale-fill-stepsn(
+  colours: (),
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "fill",
+  type: "continuous",
+  name: name,
+  palette: colours,
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Binned ColorBrewer fill scale.
+///
+/// Fill counterpart of @scale-colour-fermenter.
+///
+/// @category Scales
+/// @stability stable
+/// @since 0.3.0
+///
+/// @param palette ColorBrewer palette name (sequential or diverging works best).
+/// @param n-breaks Number of bins to partition the domain into.
+/// @param direction `1` for canonical order, `-1` for reversed.
+/// @param name Legend title. Overrides any name set via @labs when both are present.
+/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// @param labels Array of legend labels aligned with the bins, or `auto`.
+///
+/// @returns Scale object consumed by @plot.
+///
+/// @see @scale-colour-fermenter, @scale-fill-distiller
+#let scale-fill-fermenter(
+  palette: "Spectral",
+  n-breaks: 5,
+  direction: 1,
+  name: none,
+  limits: none,
+  labels: auto,
+) = {
+  let stops = brewer-palette(palette)
+  if direction < 0 { stops = stops.rev() }
+  (
+    kind: "scale",
+    aesthetic: "fill",
+    type: "continuous",
+    name: name,
+    palette: stops,
+    limits: limits,
+    labels: labels,
+    binned: true,
+    n-breaks: n-breaks,
+  )
+}

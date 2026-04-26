@@ -63,10 +63,21 @@
   a.mix((b, frac * 100%))
 }
 
+// Snap a normalised position `t` in 0..1 to the midpoint of one of `n` equal
+// bins. Used by binned colour scales to quantise the gradient lookup.
+#let _snap-bin(t, n) = {
+  let count = calc.max(1, int(n))
+  let tc = calc.max(0.0, calc.min(1.0, t))
+  let idx = calc.min(count - 1, int(tc * count))
+  (idx + 0.5) / count
+}
+
 // Resolve a continuous numeric value to a colour, given a trained scale dict
 // (with `domain`) and a palette of one or more stops. If the trained spec
 // carries a `midpoint`, treat the palette as `(low, mid, high)` and split
-// the interpolation at the midpoint.
+// the interpolation at the midpoint. If the spec carries `binned: true`, the
+// domain is partitioned into `n-breaks` equal-width bins and the lookup
+// snaps to each bin's midpoint, producing a stepped palette.
 #let resolve-continuous-colour(trained, value, palette, fallback) = {
   if palette == none or palette.len() == 0 { return fallback }
   let (lo, hi) = trained.domain
@@ -74,6 +85,12 @@
   let spec = trained.at("spec", default: none)
   let midpoint = if spec == none { none } else {
     spec.at("midpoint", default: none)
+  }
+  let binned = if spec == none { false } else {
+    spec.at("binned", default: false)
+  }
+  let n-breaks = if spec == none { 5 } else {
+    spec.at("n-breaks", default: 5)
   }
   if midpoint != none and palette.len() >= 3 {
     let low = palette.first()
@@ -83,6 +100,7 @@
       let span = midpoint - lo
       if span <= 0 { return mid }
       let t = calc.max(0.0, calc.min(1.0, (value - lo) / span))
+      if binned { t = _snap-bin(t, n-breaks) }
       if t <= 0.0 { return low }
       if t >= 1.0 { return mid }
       return low.mix((mid, t * 100%))
@@ -90,10 +108,12 @@
     let span = hi - midpoint
     if span <= 0 { return mid }
     let t = calc.max(0.0, calc.min(1.0, (value - midpoint) / span))
+    if binned { t = _snap-bin(t, n-breaks) }
     if t <= 0.0 { return mid }
     if t >= 1.0 { return high }
     return mid.mix((high, t * 100%))
   }
   let t = (value - lo) / (hi - lo)
+  if binned { t = _snap-bin(t, n-breaks) }
   interpolate-stops(palette, t)
 }
