@@ -1,14 +1,14 @@
 ///! Test theme preset.
 ///!
 ///! Loud red borders and obvious styling so panel, axis, and grid regions are
-///! easy to identify visually. Mirrors ggplot2's / plotnine's `theme_test()`.
+///! easy to identify visually.
 
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Test theme: white panel, red axes, no grid, for visual debugging.
 ///
-/// Equivalent to ggplot2's / plotnine's `theme_test()`. Designed to make
-/// theme regions stand out so test renderings are easy to inspect.
+/// Designed to make theme regions stand out so test renderings are easy to
+/// inspect.
 ///
 /// @category Themes
 /// @stability stable
@@ -22,14 +22,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-test(),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

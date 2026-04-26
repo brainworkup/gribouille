@@ -30,14 +30,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 12cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: 8766 + 30 * i, y: i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-line(), geom-point(size: 2pt)),
 ///   scales: (scale-x-date(date-format: "[year]-[month repr:numerical]"),),
+///   width: 12cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

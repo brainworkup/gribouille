@@ -1,7 +1,7 @@
 ///! Structured theme elements.
 ///!
-///! Mirrors ggplot2's / plotnine's `element_*` constructors. @theme translates these
-///! into the flat theme fields consumed internally by `merge-theme`.
+///! `element_*` constructors. @theme translates these into the flat theme
+///! fields consumed internally by `merge-theme`.
 
 /// Text element: font size, weight, colour, and angle.
 ///
@@ -22,14 +22,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(axis-title: element-text(size: 14pt)),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -64,14 +64,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-grid: element-line(colour: rgb("#d9cfbf"))),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -97,14 +97,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-background: element-rect(fill: rgb("#f7f0e7"))),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -128,14 +128,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-grid: element-blank()),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

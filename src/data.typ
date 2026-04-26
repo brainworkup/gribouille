@@ -39,8 +39,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let raw = (
 ///   (x: "1", y: 2.0),
 ///   (x: "2", y: 4.0),
@@ -51,6 +49,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -90,8 +90,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let iris = (
 ///   (sl: 5.1, sp: 1),
 ///   (sl: 7.0, sp: 2),
@@ -101,6 +99,8 @@
 ///   data: iris,
 ///   mapping: aes(x: as-factor("sp"), y: "sl", fill: as-factor("sp")),
 ///   layers: (geom-col(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

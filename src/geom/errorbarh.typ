@@ -30,8 +30,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 6).map(i => (
 ///   y: i,
 ///   lo: i - 0.5,
@@ -41,6 +39,8 @@
 ///   data: d,
 ///   mapping: aes(y: "y", xmin: "lo", xmax: "hi"),
 ///   layers: (geom-errorbarh(height: 0.4),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

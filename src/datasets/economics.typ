@@ -25,13 +25,13 @@
 ///
 /// @example
 /// ```
-/// //| width: 11cm
-/// //| height: 6cm
 /// #plot(
 ///   data: economics,
 ///   mapping: aes(x: "date", y: "unemploy"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-x-date(),),
+///   width: 11cm,
+///   height: 6cm,
 /// )
 /// ```
 #let economics = (

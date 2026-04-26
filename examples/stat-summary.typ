@@ -23,7 +23,7 @@
   "summary",
   raw,
   (x: "x", y: "y"),
-  (fun: "mean_se", "fun-args": (mult: 1)),
+  (fun: "mean-se", "fun-args": (mult: 1)),
 ).data
 
 #plot(

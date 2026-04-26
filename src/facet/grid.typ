@@ -20,8 +20,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 12cm
-/// //| height: 7cm
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for sex in ("F", "M") {
@@ -35,6 +33,8 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-grid(rows: "sex", cols: "sp"),
+///   width: 12cm,
+///   height: 7cm,
 /// )
 /// ```
 ///

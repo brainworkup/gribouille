@@ -20,13 +20,13 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (3, 1, 2, 1).map(v => (x: v))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x"),
 ///   layers: (geom-line(stat: "ecdf"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

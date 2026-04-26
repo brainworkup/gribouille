@@ -1,14 +1,12 @@
 ///! Minimal theme preset.
 ///!
 ///! White panel with thin light grey gridlines, no axis lines, no tick marks.
-///! Matches ggplot2's / plotnine's `theme_minimal()`.
 
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Minimal theme: white panel, light grey gridlines, no axis lines.
 ///
-/// Equivalent to ggplot2's / plotnine's `theme_minimal()`. For the gribouille default
-/// (grey panel with white gridlines) use @theme-grey.
+/// For the gribouille default (grey panel with white gridlines) use @theme-grey.
 ///
 /// @category Themes
 /// @stability stable
@@ -22,14 +20,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-minimal(),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

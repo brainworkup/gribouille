@@ -27,8 +27,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for grp in ("a", "b") {
@@ -41,6 +39,8 @@
 ///   layers: (
 ///     geom-jitter(size: 2pt, position: position-jitterdodge()),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

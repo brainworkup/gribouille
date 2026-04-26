@@ -1,6 +1,5 @@
 /// Blend two colours.
 ///
-/// Mirrors ggplot2's `col_mix(col1, col2, amount)`:
 /// `amount` is the fraction of `col2` (0 = pure `col1`, 1 = pure `col2`).
 /// Mixing happens in sRGB so `col-mix(black, white, 0.92)` returns `grey92`.
 ///
@@ -34,7 +33,7 @@
 // Build an n-stop equally-spaced hue ramp in OKLCh space. `h` is a pair
 // `(start, end)` of angles. The first colour sits at `h.at(0)` and
 // successive colours step by `(end - start) / n` so the endpoint is
-// excluded, matching ggplot2's `scale_colour_hue()` default.
+// excluded.
 #let hue-palette(n, h: (15deg, 375deg), c: 100, l: 65) = {
   let count = calc.max(1, int(n))
   let (h-lo, h-hi) = h
@@ -67,7 +66,7 @@
 // Resolve a continuous numeric value to a colour, given a trained scale dict
 // (with `domain`) and a palette of one or more stops. If the trained spec
 // carries a `midpoint`, treat the palette as `(low, mid, high)` and split
-// the interpolation at the midpoint, matching ggplot2's gradient2 semantics.
+// the interpolation at the midpoint.
 #let resolve-continuous-colour(trained, value, palette, fallback) = {
   if palette == none or palette.len() == 0 { return fallback }
   let (lo, hi) = trained.domain

@@ -1,8 +1,7 @@
 ///! Marginal tick marks at observed x and / or y positions.
 ///!
 ///! Adds short ticks just outside the panel edges to expose the raw
-///! distribution of one or both positional aesthetics, mirroring the
-///! behaviour of ggplot2's `geom_rug()` and plotnine's `geom_rug`.
+///! distribution of one or both positional aesthetics.
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
@@ -35,8 +34,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.5)))
 /// #plot(
 ///   data: d,
@@ -45,6 +42,8 @@
 ///     geom-point(size: 2pt),
 ///     geom-rug(sides: "bl"),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

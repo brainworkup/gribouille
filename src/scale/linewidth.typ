@@ -19,14 +19,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
 ///   layers: (geom-line(),),
 ///   scales: (scale-linewidth-continuous(range: (0.4pt, 2pt)),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

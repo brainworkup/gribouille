@@ -18,8 +18,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "b", y: 3),
 ///   (grp: "a", y: 5),
@@ -30,6 +28,8 @@
 ///   mapping: aes(x: "grp", y: "y"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-x-discrete(limits: ("a", "b", "c")),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -59,8 +59,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "b", x: 3),
 ///   (grp: "a", x: 5),
@@ -71,6 +69,8 @@
 ///   mapping: aes(x: "x", y: "grp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-y-discrete(limits: ("a", "b", "c")),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

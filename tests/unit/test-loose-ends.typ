@@ -106,22 +106,15 @@
 #let r-boot-99 = mean-cl-boot(xs, conf: 0.99, n-boot: 200, seed: 42)
 #assert((r-boot-99.ymax - r-boot-99.ymin) >= (r-boot-a.ymax - r-boot-a.ymin))
 
-// summarise() dispatches both spellings.
-#let r-disp = summarise(
-  "mean_cl_boot",
-  xs,
-  fun-args: (conf: 0.95, n-boot: 200, seed: 42),
-)
-#assert.eq(r-disp.y, r-boot-a.y)
-#assert.eq(r-disp.ymin, r-boot-a.ymin)
-#assert.eq(r-disp.ymax, r-boot-a.ymax)
-
+// summarise() dispatches by name.
 #let r-disp-kebab = summarise(
   "mean-cl-boot",
   xs,
   fun-args: (conf: 0.95, n-boot: 200, seed: 42),
 )
 #assert.eq(r-disp-kebab.y, r-boot-a.y)
+#assert.eq(r-disp-kebab.ymin, r-boot-a.ymin)
+#assert.eq(r-disp-kebab.ymax, r-boot-a.ymax)
 
 // Empty input collapses to none.
 #let r-empty = mean-cl-boot(())

@@ -24,8 +24,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -36,6 +34,8 @@
 ///   mapping: aes(x: "x", y: "y", shape: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-shape(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -68,8 +68,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -82,6 +80,8 @@
 ///   scales: (scale-shape-manual(
 ///     values: ("circle", "triangle", "diamond"),
 ///   ),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

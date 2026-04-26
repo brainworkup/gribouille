@@ -110,7 +110,7 @@
   let stat-data = data
   let stat-mapping = if stat-identity { mapping } else { stripped }
   if not stat-identity {
-    // ggplot2 v4 compute_group() pattern: split by discrete-aesthetic groups,
+    // compute-group pattern: split by discrete-aesthetic groups,
     // apply the stat to each group independently, then recombine.
     let gcols = group-cols(mapping)
     let group-list = partition-by-group(data, mapping)
@@ -606,7 +606,7 @@
 }
 
 // Inject labs `x`/`y`/... names into trained scale specs so axis and legend
-// titles follow labs() just like ggplot2's / plotnine's labs() overrides.
+// titles follow labs() overrides.
 #let _apply-labs(trained, labs) = {
   if labs == none { return trained }
   for (aes-name, label) in labs.axes.pairs() {
@@ -735,8 +735,8 @@
   )
 
   // Faceted plots prepare layers per panel so that stats (smooth, bin,
-  // count) are computed on each panel's own subset of rows — the
-  // grammar-of-graphics semantics followed by ggplot2 and plotnine.
+  // count) are computed on each panel's own subset of rows, following
+  // grammar-of-graphics semantics.
   // Non-faceted plots run the classic single-pass preparation.
   let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
   let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
@@ -825,9 +825,8 @@
   trained = _post-train(trained, prepared)
 
   // coord-cartesian zooms the view: override trained domains with the user's
-  // clip limits so axis ticks and marks follow them. Data outside still exists
-  // for stats and training but may render outside the panel. This preserves
-  // ggplot's "data is not dropped" distinction.
+  // clip limits so axis ticks and marks follow them. Data outside the limits
+  // is preserved for stats and training but may render outside the panel.
   let coord = spec.at("coord", default: none)
   trained = _apply-coord(trained, coord)
 

@@ -18,8 +18,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, lab: "alpha"),
 ///   (x: 2, y: 4, lab: "beta"),
@@ -32,6 +30,8 @@
 ///     geom-point(size: 3pt),
 ///     geom-text(position: "nudge"),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

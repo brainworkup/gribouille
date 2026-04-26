@@ -16,8 +16,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "a"),
 ///   (grp: "b"),
@@ -29,6 +27,8 @@
 ///   data: d,
 ///   mapping: aes(x: "grp"),
 ///   layers: (geom-bar(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

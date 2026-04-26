@@ -16,7 +16,7 @@
   kind: "theme",
   name: "grey",
 
-  // Base colours (ggplot2 v4: ink / paper / accent)
+  // Base colours: ink / paper / accent
   ink: _tr-ink,
   paper: _tr-paper,
   accent: rgb("#3366FF"),

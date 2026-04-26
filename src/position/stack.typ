@@ -23,8 +23,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
 ///   (q: "Q1", grp: "b", y: 5),
@@ -37,6 +35,8 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "y", fill: "grp"),
 ///   layers: (geom-col(position: "stack"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -17,8 +17,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),
@@ -28,6 +26,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-count(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

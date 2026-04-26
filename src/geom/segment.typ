@@ -28,8 +28,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 0, y: 0, xend: 4, yend: 3),
 ///   (x: 0, y: 3, xend: 4, yend: 0),
@@ -39,6 +37,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", xend: "xend", yend: "yend"),
 ///   layers: (geom-segment(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

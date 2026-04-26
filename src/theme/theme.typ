@@ -126,8 +126,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -138,6 +136,8 @@
 ///     panel-background: element-rect(fill: rgb("#f7f0e7")),
 ///     panel-grid: element-line(colour: rgb("#d9cfbf")),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

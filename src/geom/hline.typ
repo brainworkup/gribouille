@@ -28,8 +28,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i + 2))
 /// #plot(
 ///   data: d,
@@ -38,6 +36,8 @@
 ///     geom-point(size: 2pt),
 ///     geom-hline(yintercept: 5, colour: rgb("#cc0000")),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

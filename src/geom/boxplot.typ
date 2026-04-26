@@ -40,8 +40,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {
@@ -52,6 +50,8 @@
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y"),
 ///   layers: (geom-boxplot(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

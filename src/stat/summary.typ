@@ -1,8 +1,8 @@
 ///! Per-x summary statistic backing @geom-pointrange and friends.
 ///!
 ///! For every distinct x level in the input data, reduces the y values to a
-///! single `(x, y, ymin, ymax)` row using one of the ggplot2-style summary
-///! helpers in `src/utils/summaries.typ`.
+///! single `(x, y, ymin, ymax)` row using one of the summary helpers in
+///! `src/utils/summaries.typ`.
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": summarise
@@ -10,10 +10,8 @@
 /// Per-x reduction to a central value and an uncertainty band.
 ///
 /// One output row per distinct x value with keys `(x, y, ymin, ymax)`. The
-/// reduction is chosen by `fun`; supported names mirror ggplot2's family:
-/// `"mean_se"`, `"mean_cl_normal"`, `"mean_sdl"`, and `"median_hilow"`.
-/// Hyphenated spellings (e.g. `"mean-se"`) are accepted to match Gribouille's
-/// kebab-case convention.
+/// reduction is chosen by `fun`; supported names are `"mean-se"`,
+/// `"mean-cl-normal"`, `"mean-sdl"`, and `"median-hilow"`.
 ///
 /// @category Stats
 /// @stability stable
@@ -21,14 +19,12 @@
 ///
 /// @param fun Name of the summary helper to apply to each bucket of y values.
 /// @param fun-args Keyword arguments forwarded to the helper, for example
-///   `(mult: 2)` for `mean_se` or `(conf: 0.5)` for `median_hilow`.
+///   `(mult: 2)` for `mean-se` or `(conf: 0.5)` for `median-hilow`.
 ///
 /// @returns Statistic object with `name: "summary"`, consumed by geom layers.
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {
@@ -39,14 +35,16 @@
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y"),
 ///   layers: (
-///     geom-line(stat: stat-summary(fun: "mean_se")),
-///     geom-ribbon(stat: stat-summary(fun: "mean_se")),
+///     geom-line(stat: stat-summary(fun: "mean-se")),
+///     geom-ribbon(stat: stat-summary(fun: "mean-se")),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
 /// @see @stat-summary-bin, @stat-boxplot
-#let stat-summary(fun: "mean_se", fun-args: (:)) = (
+#let stat-summary(fun: "mean-se", fun-args: (:)) = (
   kind: "stat",
   name: "summary",
   params: (fun: fun, "fun-args": fun-args),
@@ -62,7 +60,7 @@
   }
   if data.len() == 0 { return (data: (), mapping: base-mapping) }
 
-  let fun = params.at("fun", default: "mean_se")
+  let fun = params.at("fun", default: "mean-se")
   let fun-args = params.at("fun-args", default: (:))
 
   // Bucket rows by their raw x value; emit one summary row per bucket in

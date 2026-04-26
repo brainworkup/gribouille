@@ -35,8 +35,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let iris = (
 ///   (x: 5.1, y: 3.5, sp: "setosa"),
 ///   (x: 7.0, y: 3.2, sp: "versicolor"),
@@ -46,6 +44,8 @@
 ///   data: iris,
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

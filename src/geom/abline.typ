@@ -31,8 +31,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i + calc.rem(i, 2)))
 /// #plot(
 ///   data: d,
@@ -41,6 +39,8 @@
 ///     geom-point(size: 2pt),
 ///     geom-abline(slope: 1, intercept: 0, colour: rgb("#cc0000")),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

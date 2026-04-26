@@ -28,8 +28,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
 ///   lo: i - 0.5,
@@ -39,6 +37,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", ymin: "lo", ymax: "hi"),
 ///   layers: (geom-linerange(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

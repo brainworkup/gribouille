@@ -1,14 +1,11 @@
 ///! Light theme preset.
 ///!
 ///! Light grey panel with white grid lines and a subtle grey border.
-///! Mirrors ggplot2's / plotnine's `theme_light()`.
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Light theme: light grey panel, white grid, soft grey axes.
-///
-/// Equivalent to ggplot2's / plotnine's `theme_light()`.
 ///
 /// @category Themes
 /// @stability stable
@@ -22,14 +19,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-light(),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

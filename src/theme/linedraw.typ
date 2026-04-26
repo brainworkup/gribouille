@@ -1,14 +1,11 @@
 ///! Linedraw theme preset.
 ///!
 ///! White panel framed by a heavier black border, with very faint grid lines.
-///! Mirrors ggplot2's / plotnine's `theme_linedraw()`.
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 
 /// Linedraw theme: white panel, strong black axes, very faint grid.
-///
-/// Equivalent to ggplot2's / plotnine's `theme_linedraw()`.
 ///
 /// @category Themes
 /// @stability stable
@@ -22,14 +19,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-linedraw(),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -1,7 +1,7 @@
 ///! Global theme state.
 ///!
-///! Mirrors ggplot2's `theme_set()` / `theme_get()`. Plots that do not
-///! specify an explicit `theme:` argument inherit the global theme.
+///! Plots that do not specify an explicit `theme:` argument inherit the
+///! global theme.
 
 #let _theme-state = state("gribouille-theme", none)
 

@@ -28,8 +28,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -38,6 +36,8 @@
 ///     geom-point(size: 2pt),
 ///     geom-vline(xintercept: (3, 6), colour: rgb("#4c78a8")),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -35,8 +35,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),
@@ -49,6 +47,8 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "grp"),
 ///   layers: (geom-line(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

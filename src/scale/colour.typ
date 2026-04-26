@@ -24,14 +24,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-continuous(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -68,8 +68,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -80,6 +78,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-discrete(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -115,8 +115,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -127,6 +125,8 @@
 ///   mapping: aes(x: "grp", y: "y", fill: "y"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-fill-continuous(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -163,8 +163,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -175,6 +173,8 @@
 ///   mapping: aes(x: "grp", y: "y", fill: "grp"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-fill-discrete(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -212,8 +212,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -226,6 +224,8 @@
 ///   scales: (scale-colour-manual(values: (
 ///     rgb("#1b9e77"), rgb("#d95f02"), rgb("#7570b3"),
 ///   )),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -258,8 +258,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -272,6 +270,8 @@
 ///   scales: (scale-fill-manual(values: (
 ///     rgb("#66c2a5"), rgb("#fc8d62"), rgb("#8da0cb"),
 ///   )),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -304,8 +304,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -317,6 +315,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-viridis-d(option: "plasma"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -355,14 +355,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-viridis-c(option: "magma"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -403,14 +403,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-viridis-b(n-breaks: 4),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -451,8 +451,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -464,6 +462,8 @@
 ///   mapping: aes(x: "grp", y: "y", fill: "grp"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-fill-viridis-d(option: "cividis"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -502,14 +502,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y", fill: "y"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-fill-viridis-c(option: "viridis"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -548,8 +548,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, c: "#1b9e77"),
 ///   (x: 2, y: 4, c: "#d95f02"),
@@ -560,6 +558,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "c"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-identity(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -610,14 +610,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y", fill: "y"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-fill-viridis-b(n-breaks: 4),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -659,8 +659,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -671,6 +669,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-brewer(palette: "Set1"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -724,7 +724,7 @@
 /// Continuous two-stop colour gradient.
 ///
 /// Linearly interpolates between `low` and `high` across the trained domain.
-/// Defaults reproduce ggplot2's `scale_colour_gradient()` blue ramp.
+/// Defaults to a blue ramp.
 ///
 /// @category Scales
 /// @stability stable
@@ -741,14 +741,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-gradient(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -774,8 +774,7 @@
 /// Continuous diverging colour gradient through a midpoint.
 ///
 /// Interpolates `low` to `mid` for values at or below `midpoint`, and
-/// `mid` to `high` for values at or above it. Mirrors ggplot2's
-/// `scale_colour_gradient2()` semantics.
+/// `mid` to `high` for values at or above it.
 ///
 /// @category Scales
 /// @stability stable
@@ -794,14 +793,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-gradient2(midpoint: 0),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -847,8 +846,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -857,6 +854,8 @@
 ///   scales: (scale-colour-gradientn(colours: (
 ///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
 ///   )),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -992,8 +991,7 @@
 /// Discrete grey colour scale.
 ///
 /// Generates `n` evenly-spaced `luma` colours from `start` (darker) to `end`
-/// (lighter), each in `[0, 1]` where 0 is black and 1 is white. Mirrors
-/// ggplot2's `scale_colour_grey()`.
+/// (lighter), each in `[0, 1]` where 0 is black and 1 is white.
 ///
 /// @category Scales
 /// @stability stable
@@ -1009,8 +1007,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1021,6 +1017,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-grey(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -1077,8 +1075,8 @@
 /// Discrete equally-spaced hue colour scale.
 ///
 /// Steps `n` hues across the angular range `h` in OKLCh space, picking
-/// chroma and luminance from `c` and `l`. Defaults match ggplot2's
-/// `scale_colour_hue()` with `h = (15deg, 375deg)`, `c = 100`, `l = 65`.
+/// chroma and luminance from `c` and `l`. Defaults to
+/// `h = (15deg, 375deg)`, `c = 100`, `l = 65`.
 ///
 /// OKLCh is used as a perceptually uniform near-equivalent of HCL, which
 /// Typst does not expose directly. The first colour sits at `h.at(0)` and
@@ -1101,8 +1099,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1114,6 +1110,8 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-hue(),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -1174,8 +1172,7 @@
 ///
 /// Looks up a Brewer palette by name and interpolates linearly across its
 /// stops as a continuous ramp. `direction` flips the palette: `1` keeps the
-/// canonical order, `-1` reverses it. Mirrors ggplot2's
-/// `scale_colour_distiller()`.
+/// canonical order, `-1` reverses it.
 ///
 /// @category Scales
 /// @stability stable
@@ -1192,14 +1189,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-distiller(palette: "Spectral"),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -1242,14 +1239,14 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", alpha: "w"),
 ///   layers: (geom-point(size: 4pt),),
 ///   scales: (scale-alpha-continuous(range: (0.1, 1)),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

@@ -29,8 +29,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 12cm
-/// //| height: 7cm
 /// #let d = ()
 /// #for sp in ("a", "b", "c") {
 ///   for i in range(0, 6) {
@@ -42,6 +40,8 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-wrap("sp", ncol: 3, scales: "free_y"),
+///   width: 12cm,
+///   height: 7cm,
 /// )
 /// ```
 ///

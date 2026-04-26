@@ -76,12 +76,10 @@
 #let r-non-numeric = median-hilow(("a", "b"))
 #assert.eq(r-non-numeric.y, none)
 
-// --- summarise dispatches by name (both spellings) ------------------------
+// --- summarise dispatches by name -----------------------------------------
 
-#let r-dispatch-1 = summarise("mean_se", (1, 2, 3, 4, 5))
-#assert.eq(r-dispatch-1.y, 3.0)
-#let r-dispatch-2 = summarise("mean-se", (1, 2, 3, 4, 5))
-#assert.eq(r-dispatch-2.y, 3.0)
+#let r-dispatch = summarise("mean-se", (1, 2, 3, 4, 5))
+#assert.eq(r-dispatch.y, 3.0)
 
 // --- stat-summary: one row per x bucket -----------------------------------
 
@@ -99,7 +97,7 @@
   "summary",
   df,
   (x: "g", y: "y"),
-  (fun: "mean_se", "fun-args": (:)),
+  (fun: "mean-se", "fun-args": (:)),
 )
 #assert.eq(r-stat.data.len(), 2)
 #assert.eq(r-stat.data.at(0).x, "a")
@@ -122,7 +120,7 @@
   "summary",
   df-num,
   (x: "x", y: "y"),
-  (fun: "mean_se", "fun-args": (:)),
+  (fun: "mean-se", "fun-args": (:)),
 )
 #assert.eq(r-stat-num.data.at(0).x, 2.0)
 
@@ -133,7 +131,7 @@
   "summary_bin",
   df-bin,
   (x: "x", y: "y"),
-  (fun: "mean_se", bins: 2, binwidth: none, "fun-args": (:)),
+  (fun: "mean-se", bins: 2, binwidth: none, "fun-args": (:)),
 )
 #assert.eq(r-bin.data.len(), 2)
 // First bin holds 0..4 with mean 2; second bin holds 5..9 with mean 7.

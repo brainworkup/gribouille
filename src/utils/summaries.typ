@@ -1,4 +1,4 @@
-///! Summary helpers: ggplot2's `mean_*` and `median_hilow` family.
+///! Summary helpers: `mean-*` and `median-hilow` family.
 ///!
 ///! Each helper accepts an array of numbers and returns a dict
 ///! `(y: <central>, ymin: <low>, ymax: <high>)`. Empty or all-`none` inputs
@@ -199,10 +199,10 @@
   )
 }
 
-/// Look up a summary helper by ggplot2-style name.
+/// Look up a summary helper by name.
 ///
-/// Accepts both the ggplot2 underscore form (`"mean_se"`) and the kebab form
-/// (`"mean-se"`) used elsewhere in Gribouille. Unknown names panic.
+/// Names use the kebab form (`"mean-se"`, `"mean-cl-normal"`, `"mean-cl-boot"`,
+/// `"mean-sdl"`, `"median-hilow"`). Unknown names panic.
 ///
 /// @category Stats
 /// @stability stable
@@ -214,29 +214,28 @@
 ///
 /// @returns Dict `(y, ymin, ymax)`.
 #let summarise(name, values, fun-args: (:)) = {
-  let key = name.replace("_", "-")
-  if key == "mean-se" {
+  if name == "mean-se" {
     let mult = fun-args.at("mult", default: 1)
     return mean-se(values, mult: mult)
-  } else if key == "mean-cl-normal" {
+  } else if name == "mean-cl-normal" {
     let conf = fun-args.at("conf", default: 0.95)
     return mean-cl-normal(values, conf: conf)
-  } else if key == "mean-cl-boot" {
+  } else if name == "mean-cl-boot" {
     let conf = fun-args.at("conf", default: 0.95)
     let n-boot = fun-args.at("n-boot", default: 1000)
     let seed = fun-args.at("seed", default: 0)
     return mean-cl-boot(values, conf: conf, n-boot: n-boot, seed: seed)
-  } else if key == "mean-sdl" {
+  } else if name == "mean-sdl" {
     let mult = fun-args.at("mult", default: 2)
     return mean-sdl(values, mult: mult)
-  } else if key == "median-hilow" {
+  } else if name == "median-hilow" {
     let conf = fun-args.at("conf", default: 0.5)
     return median-hilow(values, conf: conf)
   }
   panic(
     "summarise: unknown summary function "
       + repr(name)
-      + "; expected one of mean_se, mean_cl_normal, mean_cl_boot, "
-      + "mean_sdl, median_hilow.",
+      + "; expected one of mean-se, mean-cl-normal, mean-cl-boot, "
+      + "mean-sdl, median-hilow.",
   )
 }

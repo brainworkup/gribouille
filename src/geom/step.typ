@@ -14,8 +14,7 @@
 /// Step layer connecting observations as a stair-step path, one per group.
 ///
 /// `direction` chooses between `"hv"` (horizontal first, then vertical)
-/// and `"vh"` (vertical first, then horizontal), matching ggplot2's
-/// `geom_step(direction = ...)`.
+/// and `"vh"` (vertical first, then horizontal).
 ///
 /// @category Geoms
 /// @stability stable
@@ -36,13 +35,13 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-step(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

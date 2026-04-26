@@ -27,8 +27,6 @@
 ///
 /// @example
 /// ```
-/// //| width: 10cm
-/// //| height: 6cm
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
 ///   data: frame,
@@ -40,6 +38,8 @@
 ///       xlim: (-calc.pi, calc.pi),
 ///     )),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
 /// )
 /// ```
 ///

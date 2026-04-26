@@ -1,9 +1,9 @@
 // Canonical grouping utilities shared across geoms, stats, and positions.
 //
 // Groups are determined by discrete aesthetics (non-numeric values or those
-// forced discrete via as-factor()), matching the ggplot2 v4 compute_group()
-// pattern. The explicit "group" aesthetic always contributes regardless of
-// value type.
+// forced discrete via as-factor()), following the compute-group pattern.
+// The explicit "group" aesthetic always contributes regardless of value
+// type.
 
 #import "../utils/types.typ": is-numeric-value
 #import "../scale/train.typ": mapping-ref-col, mapping-ref-type
