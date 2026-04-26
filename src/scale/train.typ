@@ -182,10 +182,17 @@
     let trans = if user-scale != none {
       user-scale.at("trans", default: "identity")
     } else { "identity" }
-    trained.insert(
-      a,
-      (type: scale-type, domain: domain, spec: user-scale, trans: trans),
+    let entry = (
+      type: scale-type,
+      domain: domain,
+      spec: user-scale,
+      trans: trans,
     )
+    if user-scale != none and user-scale.at("temporal", default: none) != none {
+      entry.insert("temporal", user-scale.temporal)
+      entry.insert("date-format", user-scale.at("date-format", default: ""))
+    }
+    trained.insert(a, entry)
   }
 
   // Fold the directional aesthetics into the positional axes so the x and y
@@ -219,10 +226,27 @@
     } else if spec != none {
       spec.at("trans", default: "identity")
     } else { "identity" }
-    trained.insert(
-      axis,
-      (type: "continuous", domain: (lo, hi), spec: spec, trans: trans),
+    let entry = (
+      type: "continuous",
+      domain: (lo, hi),
+      spec: spec,
+      trans: trans,
     )
+    let temporal = if target != none {
+      target.at("temporal", default: none)
+    } else if spec != none {
+      spec.at("temporal", default: none)
+    } else { none }
+    if temporal != none {
+      entry.insert("temporal", temporal)
+      let fmt = if target != none {
+        target.at("date-format", default: "")
+      } else if spec != none {
+        spec.at("date-format", default: "")
+      } else { "" }
+      entry.insert("date-format", fmt)
+    }
+    trained.insert(axis, entry)
   }
 
   trained

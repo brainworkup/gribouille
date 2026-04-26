@@ -227,6 +227,38 @@
   str(calc.round(n, digits: 3))
 }
 
+// Convert a numeric break back to a Typst datetime against a fixed epoch and
+// render it via `dt.display(fmt)`. `kind` selects the unit of `n`: `"date"`
+// counts whole days, `"datetime"` and `"time"` count whole seconds.
+#let _format-temporal(n, kind, fmt) = {
+  let epoch = datetime(
+    year: 2000,
+    month: 1,
+    day: 1,
+    hour: 0,
+    minute: 0,
+    second: 0,
+  )
+  let dt = if kind == "date" {
+    epoch + duration(days: int(calc.round(n)))
+  } else {
+    epoch + duration(seconds: int(calc.round(n)))
+  }
+  dt.display(fmt)
+}
+
+#let _axis-label(trained, n) = {
+  let temporal = trained.at("temporal", default: none)
+  if temporal != none {
+    return _format-temporal(
+      n,
+      temporal,
+      trained.at("date-format", default: ""),
+    )
+  }
+  _format-break(n)
+}
+
 #let _extend-x-for-bins(trained, layers) = {
   if trained.at("x", default: none) == none { return trained }
   if trained.x.type != "continuous" { return trained }
@@ -417,7 +449,7 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      _draw-x-label(cx, _format-break(b), idx)
+      _draw-x-label(cx, _axis-label(x-trained, b), idx)
     }
   } else if x-trained != none and x-trained.type == "discrete" {
     let n = x-trained.domain.len()
@@ -447,7 +479,7 @@
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#_format-break(b)],
+          )[#_axis-label(y-trained, b)],
           anchor: "east",
         )
       }
