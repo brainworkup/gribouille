@@ -77,8 +77,8 @@ Legend for **Priority** (used to order future work):
 | `geom_polygon()` | `geom-polygon`. | ✅ | — | One closed polygon per group; fill via `fill` or scale. |
 | `geom_segment()` | `geom-segment`. | ✅ | — | Maps `x`/`y`/`xend`/`yend`. |
 | `geom_curve()` | — | ⬜ | P3 | Curved variant of segment; deferred until a real use case appears. |
-| `geom_errorbar()` / `geom_errorbarh()` | — | ⬜ | P2 | Ship with boxplot work. |
-| `geom_linerange()` / `geom_crossbar()` / `geom_pointrange()` | — | ⬜ | P2 | Same family as errorbar. |
+| `geom_errorbar()` | `geom-errorbar`. | ✅ | — | Vertical range with horizontal end caps. `geom_errorbarh` deferred. |
+| `geom_linerange()` / `geom_crossbar()` / `geom_pointrange()` | `geom-linerange`, `geom-crossbar`, `geom-pointrange`. | ✅ | — | linerange has no caps, crossbar is a filled box with a thick median bar, pointrange is a marker plus linerange. |
 | `geom_abline()` / `geom_hline()` / `geom_vline()` | `geom-abline`, `geom-hline`, `geom-vline`. | ✅ | — | Scalar or array intercepts. |
 | `geom_blank()` | — | ⬜ | P3 | Useful for forcing scale training. |
 | `geom_function()` | — | ⬜ | P3 | Evaluate a Typst callable over the x-range. |
@@ -99,7 +99,7 @@ Legend for **Priority** (used to order future work):
 | `stat_bin()` | `stat-bin`. | ✅ | — | — |
 | `stat_smooth()` | `stat-smooth`. | 🟡 | P3 | OLS only; `"loess"` deferred, wasm is last resort. |
 | `stat_boxplot()` | `stat-boxplot`. | ✅ | — | Per-x bucketing with R type-7 quantiles; outliers retained for the geom. |
-| `stat_summary()` / `stat_summary_bin()` | — | ⬜ | P2 | Aggregated mean/median/sd. |
+| `stat_summary()` / `stat_summary_bin()` | `stat-summary`, `stat-summary-bin`. | ✅ | — | Per-x bucket or per-bin reduction via `mean-se` / `mean-cl-normal` / `mean-sdl` / `median-hilow`. |
 | `stat_ecdf()` | — | ⬜ | P3 | Sort + cumulative fraction. |
 | `stat_ellipse()` | — | ⬜ | P4 | Normal data ellipses. |
 | `stat_density()` / `stat_density_2d()` / `stat_density_2d_filled()` / `stat_ydensity()` | — | ⬜ | P4 | KDE; deferred, wasm is last resort. |
@@ -213,13 +213,13 @@ Legend for **Priority** (used to order future work):
 |---|---|---|---|---|
 | Discrete `guide_legend()` for colour/fill | automatic legend. | ✅ | — | — |
 | `guide_colourbar()` / `guide_colorbar()` | automatic colourbar. | ✅ | — | Emitted when trained colour/fill is continuous. |
-| `guide_legend()` customisation (nrow, ncol, reverse, ...) | — | ⬜ | P2 | — |
+| `guide_legend()` customisation (nrow, ncol, reverse, ...) | `guide-legend(title:, nrow:, ncol:, reverse:)`. | ✅ | — | Plot-level binding via `guides(colour: guide-legend(...))`. |
 | `guide_bins()` / `guide_coloursteps()` | — | ⬜ | P3 | After binned scales. |
 | `guide_axis()` | — | ⬜ | P2 | Tick rotation, dodging. |
 | `guide_axis_logticks()` | — | ⬜ | P3 | After log trans. |
-| `guide_none()` | — | ⬜ | P2 | Suppress a specific legend. |
+| `guide_none()` | `guide-none`. | ✅ | — | Suppress a specific aesthetic's legend. |
 | `guide_axis_stack()` / `guide_axis_theta()` / `guide_custom()` | — | ⬜ | P4 | Advanced. |
-| `guides()` top-level | — | ⬜ | P2 | Plot-level guide control. |
+| `guides()` top-level | `guides`. | ✅ | — | Threaded into `plot(..., guides: guides(colour: guide-legend(...)))`. |
 | `sec_axis()` / `dup_axis()` / `derive()` | — | ⬜ | P3 | Secondary axes. |
 | `draw_key_*()` glyph family | — | ⬜ | P3 | Per-geom legend glyphs. |
 
@@ -263,7 +263,7 @@ Legend for **Priority** (used to order future work):
 |---|---|---|---|---|
 | `cut_interval()` / `cut_number()` / `cut_width()` | — | ⬜ | P2 | Discretise numeric vectors. |
 | `resolution()` | — | ⬜ | P2 | Used by dodge. |
-| `mean_se()` / `mean_cl_boot()` / `mean_cl_normal()` / `mean_sdl()` / `median_hilow()` | — | ⬜ | P3 | Summary helpers for `stat_summary`. |
+| `mean_se()` / `mean_cl_normal()` / `mean_sdl()` / `median_hilow()` | `mean-se`, `mean-cl-normal`, `mean-sdl`, `median-hilow`. | ✅ | — | `mean-cl-normal` panics on `conf != 0.95`. `mean_cl_boot` deferred. |
 
 ### Programming and extension
 
