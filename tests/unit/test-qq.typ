@@ -1,6 +1,6 @@
 // Q-Q statistic and helper tests.
 
-#import "../../src/utils/normal.typ": qnorm
+#import "../../src/utils/normal.typ": qnorm, theoretical-quantile
 #import "../../src/stat/apply.typ": apply-stat
 
 // --- qnorm: classic 95 % quantile -----------------------------------------
@@ -64,5 +64,63 @@
 #assert(calc.abs(r-line.data.at(1).theoretical - t-hi) < 1e-9)
 #assert(calc.abs(r-line.data.at(0).sample - (intercept + slope * t-lo)) < 1e-9)
 #assert(calc.abs(r-line.data.at(1).sample - (intercept + slope * t-hi)) < 1e-9)
+
+// --- theoretical-quantile: dispatches per distribution -------------------
+
+#assert(calc.abs(theoretical-quantile(0.5, "normal")) < 1e-9)
+#assert(calc.abs(theoretical-quantile(0.25, "uniform") - 0.25) < 1e-9)
+#assert(
+  calc.abs(theoretical-quantile(0.5, "exponential") - calc.ln(2)) < 1e-9,
+)
+
+// --- stat-qq: uniform distribution uses p directly -----------------------
+
+#let r-uniform = apply-stat(
+  "qq",
+  df,
+  (y: "v"),
+  (distribution: "uniform"),
+)
+#assert.eq(r-uniform.data.len(), 5)
+#for (i, p) in expected-ps.enumerate() {
+  assert(calc.abs(r-uniform.data.at(i).theoretical - p) < 1e-9)
+}
+
+// --- stat-qq: exponential distribution uses -ln(1 - p) -------------------
+
+#let r-exp = apply-stat(
+  "qq",
+  df,
+  (y: "v"),
+  (distribution: "exponential"),
+)
+#assert.eq(r-exp.data.len(), 5)
+#for (i, p) in expected-ps.enumerate() {
+  assert(calc.abs(r-exp.data.at(i).theoretical - (-calc.ln(1 - p))) < 1e-9)
+}
+
+// --- stat-qq-line: exponential matches the IQR fit -----------------------
+
+#let r-line-exp = apply-stat(
+  "qq-line",
+  df,
+  (y: "v"),
+  (distribution: "exponential"),
+)
+#assert.eq(r-line-exp.data.len(), 2)
+#let z1-exp = -calc.ln(0.75)
+#let z3-exp = -calc.ln(0.25)
+#let slope-exp = 2.0 / (z3-exp - z1-exp)
+#let intercept-exp = 2.0 - slope-exp * z1-exp
+#let t-lo-exp = -calc.ln(1 - 0.5 / 5)
+#let t-hi-exp = -calc.ln(1 - 4.5 / 5)
+#assert(calc.abs(r-line-exp.data.at(0).theoretical - t-lo-exp) < 1e-9)
+#assert(calc.abs(r-line-exp.data.at(1).theoretical - t-hi-exp) < 1e-9)
+#assert(
+  calc.abs(
+    r-line-exp.data.at(0).sample - (intercept-exp + slope-exp * t-lo-exp),
+  )
+    < 1e-9,
+)
 
 QQ tests passed.

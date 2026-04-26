@@ -1,13 +1,14 @@
-///! Q-Q plot points against the standard normal distribution.
+///! Q-Q plot points against a reference distribution.
 ///!
 ///! Thin wrapper around @geom-point that computes its data via @stat-qq.
 
-/// Q-Q point layer: sorted sample versus theoretical standard-normal quantile.
+/// Q-Q point layer: sorted sample versus theoretical quantile.
 ///
-/// The `sample` aesthetic selects the column to compare against the standard
-/// normal. When `sample` is absent the layer falls back to `y` so simple
-/// `aes(y: ...)` plots also work. Colour, fill, shape, and alpha can be set
-/// or mapped through @aes.
+/// The `sample` aesthetic selects the column to compare against the chosen
+/// reference distribution.
+/// When `sample` is absent the layer falls back to `y` so simple
+/// `aes(y: ...)` plots also work.
+/// Colour, fill, shape, and alpha can be set or mapped through @aes.
 ///
 /// @category Geoms
 /// @stability stable
@@ -20,6 +21,7 @@
 /// @param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword. `auto` honours the shape scale.
+/// @param distribution Reference distribution name; one of `"normal"` (default), `"uniform"`, `"exponential"`.
 /// @param position Position adjustment name. Usually `"identity"`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
@@ -46,6 +48,7 @@
   fill: auto,
   alpha: 1,
   shape: auto,
+  distribution: "normal",
   position: "identity",
   inherit-aes: true,
 ) = (
@@ -53,7 +56,14 @@
   geom: "point",
   mapping: mapping,
   data: data,
-  params: (size: size, stroke: stroke, fill: fill, alpha: alpha, shape: shape),
+  params: (
+    size: size,
+    stroke: stroke,
+    fill: fill,
+    alpha: alpha,
+    shape: shape,
+    distribution: distribution,
+  ),
   stat: "qq",
   position: position,
   inherit-aes: inherit-aes,

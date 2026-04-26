@@ -1,4 +1,4 @@
-///! Reference line for a normal Q-Q plot.
+///! Reference line for a Q-Q plot.
 ///!
 ///! Thin wrapper around @geom-line that computes its data via @stat-qq-line.
 
@@ -6,6 +6,8 @@
 ///
 /// The `sample` aesthetic selects the column whose 25th and 75th quantiles
 /// anchor the line; when `sample` is absent the layer falls back to `y`.
+/// The reference distribution is selected via `distribution` and must match
+/// the matching @geom-qq layer.
 ///
 /// @category Geoms
 /// @stability stable
@@ -17,6 +19,7 @@
 /// @param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
 /// @param alpha Line opacity in `[0, 1]`.
 /// @param linetype Dash keyword. `auto` honours the linetype scale.
+/// @param distribution Reference distribution name; one of `"normal"` (default), `"uniform"`, `"exponential"`.
 /// @param position Position adjustment name. Usually `"identity"`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
@@ -42,6 +45,7 @@
   colour: auto,
   alpha: 1,
   linetype: auto,
+  distribution: "normal",
   position: "identity",
   inherit-aes: true,
 ) = (
@@ -49,7 +53,13 @@
   geom: "line",
   mapping: mapping,
   data: data,
-  params: (stroke: stroke, colour: colour, alpha: alpha, linetype: linetype),
+  params: (
+    stroke: stroke,
+    colour: colour,
+    alpha: alpha,
+    linetype: linetype,
+    distribution: distribution,
+  ),
   stat: "qq-line",
   position: position,
   inherit-aes: inherit-aes,

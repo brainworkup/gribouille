@@ -1,18 +1,22 @@
-///! Quantile-quantile statistic against the standard normal distribution.
+///! Quantile-quantile statistic against a reference distribution.
 ///!
-///! Backing statistic for @geom-qq. Sorts numeric values from the `sample`
-///! aesthetic and pairs them with theoretical standard-normal quantiles at
-///! the plotting positions `(i + 0.5) / n`.
+///! Backing statistic for @geom-qq.
+///! Sorts numeric values from the `sample` aesthetic and pairs them with
+///! theoretical quantiles of the chosen reference distribution at the
+///! plotting positions `(i + 0.5) / n`.
 
 #import "../utils/types.typ": parse-number
-#import "../utils/normal.typ": qnorm
+#import "../utils/normal.typ": theoretical-quantile
 
-/// Q-Q statistic: theoretical-vs-sample pairs against the standard normal.
+/// Q-Q statistic: theoretical-vs-sample pairs against a reference distribution.
 ///
 /// Reads the `sample` aesthetic from the mapping; if `sample` is absent the
-/// statistic falls back to `y`. Non-numeric and `none` values are dropped.
+/// statistic falls back to `y`.
+/// Non-numeric and `none` values are dropped.
 /// Output rows are sorted by `sample` ascending, with `theoretical` taken
-/// from `qnorm((i + 0.5) / n)` for `i` in `0..n`.
+/// from `theoretical-quantile((i + 0.5) / n, distribution)` for `i` in `0..n`.
+/// Supported reference distributions are `"normal"` (default), `"uniform"`,
+/// and `"exponential"`.
 ///
 /// @category Stats
 /// @stability stable
@@ -42,6 +46,7 @@
     if s != none { s } else { mapping.at("y", default: none) }
   } else { none }
   if sample-col == none { return (data: (), mapping: base-mapping) }
+  let distribution = params.at("distribution", default: "normal")
   let xs = data
     .map(r => parse-number(r.at(sample-col, default: none)))
     .filter(v => v != none)
@@ -52,7 +57,10 @@
   let i = 0
   while i < n {
     let p = (i + 0.5) / n
-    rows.push((theoretical: qnorm(p), sample: sorted.at(i)))
+    rows.push((
+      theoretical: theoretical-quantile(p, distribution),
+      sample: sorted.at(i),
+    ))
     i = i + 1
   }
   (data: rows, mapping: base-mapping)
