@@ -13,6 +13,7 @@
 // Guides.
 #import "src/guide/legend.typ": guide-legend
 #import "src/guide/none.typ": guide-none
+#import "src/guide/axis.typ": guide-axis
 #import "src/guides.typ": guides
 
 // Geoms.
@@ -87,6 +88,7 @@
   scale-linetype, scale-linetype-identity, scale-linetype-manual,
 )
 #import "src/utils/colour.typ": col-mix
+#import "src/limits.typ": expand-limits, lims, xlim, ylim
 
 // Coord.
 #import "src/coord/cartesian.typ": coord-cartesian
