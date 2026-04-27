@@ -707,11 +707,11 @@
   // trained.y already carry the swapped scale specs (and labs labels), so
   // only the mapping-name fallback needs an explicit swap here.
   let _mapping-x-name = if spec.mapping == none { none } else if flipped {
-    spec.mapping.at("y", default: none)
-  } else { spec.mapping.at("x", default: none) }
+    mapping-ref-col(spec.mapping.at("y", default: none))
+  } else { mapping-ref-col(spec.mapping.at("x", default: none)) }
   let _mapping-y-name = if spec.mapping == none { none } else if flipped {
-    spec.mapping.at("x", default: none)
-  } else { spec.mapping.at("y", default: none) }
+    mapping-ref-col(spec.mapping.at("x", default: none))
+  } else { mapping-ref-col(spec.mapping.at("y", default: none)) }
   let x-title = {
     let from-scale = if x-trained != none and x-trained.spec != none {
       x-trained.spec.name
@@ -1153,7 +1153,7 @@
           x-trained.spec.name
         } else { none }
         if from-scale != none { from-scale } else if spec.mapping != none {
-          spec.mapping.at("x", default: none)
+          mapping-ref-col(spec.mapping.at("x", default: none))
         } else { none }
       }
       let y-title = {
@@ -1161,7 +1161,7 @@
           y-trained.spec.name
         } else { none }
         if from-scale != none { from-scale } else if spec.mapping != none {
-          spec.mapping.at("y", default: none)
+          mapping-ref-col(spec.mapping.at("y", default: none))
         } else { none }
       }
       if x-title != none and theme.axis-title-size > 0pt {
@@ -1334,7 +1334,7 @@
           x-trained.spec.name
         } else { none }
         if from-scale != none { from-scale } else if spec.mapping != none {
-          spec.mapping.at("x", default: none)
+          mapping-ref-col(spec.mapping.at("x", default: none))
         } else { none }
       }
       let y-title = {
@@ -1342,7 +1342,7 @@
           y-trained.spec.name
         } else { none }
         if from-scale != none { from-scale } else if spec.mapping != none {
-          spec.mapping.at("y", default: none)
+          mapping-ref-col(spec.mapping.at("y", default: none))
         } else { none }
       }
       if x-title != none and theme.axis-title-size > 0pt {

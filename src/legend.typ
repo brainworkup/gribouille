@@ -7,6 +7,7 @@
 #import "utils/colour.typ": resolve-continuous-colour
 #import "theme/defaults.typ": resolve-colour, resolve-field
 #import "guide/draw-key.typ": default-key-for, draw-glyph
+#import "scale/train.typ": mapping-ref-col
 
 #let _guide-title(t, spec, aes-name) = {
   if (
@@ -15,7 +16,7 @@
   ) {
     t.spec.name
   } else if spec.mapping != none {
-    spec.mapping.at(aes-name, default: aes-name)
+    mapping-ref-col(spec.mapping.at(aes-name, default: aes-name))
   } else {
     aes-name
   }

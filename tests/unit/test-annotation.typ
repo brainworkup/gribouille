@@ -30,6 +30,11 @@
 #assert.eq(mapping-ref-col("plain"), "plain")
 #assert.eq(mapping-ref-type("plain"), none)
 
+// Title fallbacks unwrap mapping-ref dicts to the bare column name, so
+// legends and axis titles never display the raw annotation dictionary.
+#let m = aes(colour: as-factor("cluster"))
+#assert.eq(mapping-ref-col(m.colour), "cluster")
+
 // Training respects forced type: cluster inferred as continuous becomes
 // discrete when annotated.
 #let layers = (geom-point(),)
