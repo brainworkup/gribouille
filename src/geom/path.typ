@@ -25,6 +25,7 @@
 /// @param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
 /// @param alpha Line opacity in `[0, 1]`.
 /// @param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
+/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
 /// @param stat Statistical transform name. Usually `"identity"`.
 /// @param position Position adjustment name. Usually `"identity"`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -53,6 +54,7 @@
   colour: auto,
   alpha: 1,
   linetype: auto,
+  key: auto,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -62,6 +64,7 @@
   mapping: mapping,
   data: data,
   params: (stroke: stroke, colour: colour, alpha: alpha, linetype: linetype),
+  key: key,
   stat: stat,
   position: position,
   inherit-aes: inherit-aes,

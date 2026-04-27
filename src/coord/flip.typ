@@ -13,7 +13,7 @@
 /// `geom-line`, `geom-path`, `geom-step`, `geom-segment`) work via the same
 /// swap with no per-geom changes.
 ///
-/// @category Coords
+/// @category Coord
 /// @stability experimental
 /// @since 0.0.1
 ///

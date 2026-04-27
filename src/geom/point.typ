@@ -26,6 +26,7 @@
 /// @param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword (e.g. `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
+/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
 /// @param stat Statistical transform name. Usually left at `"identity"`.
 /// @param position Position adjustment name. Usually left at `"identity"`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -58,6 +59,7 @@
   fill: auto,
   alpha: 1,
   shape: auto,
+  key: auto,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -67,6 +69,7 @@
   mapping: mapping,
   data: data,
   params: (size: size, stroke: stroke, fill: fill, alpha: alpha, shape: shape),
+  key: key,
   stat: stat,
   position: position,
   inherit-aes: inherit-aes,

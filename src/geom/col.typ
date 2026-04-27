@@ -24,6 +24,7 @@
 /// @param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
 /// @param stroke Bar outline; `none` means no border.
 /// @param alpha Bar opacity in `[0, 1]`.
+/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
 /// @param stat Statistical transform name. Usually `"identity"`.
 /// @param position Position adjustment: `"identity"`, `"stack"`, `"dodge"`, or `"fill"`.
 /// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -55,6 +56,7 @@
   fill: auto,
   stroke: none,
   alpha: 1,
+  key: auto,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -64,6 +66,7 @@
   mapping: mapping,
   data: data,
   params: (width: width, fill: fill, stroke: stroke, alpha: alpha),
+  key: key,
   stat: stat,
   position: position,
   inherit-aes: inherit-aes,
