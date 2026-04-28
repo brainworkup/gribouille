@@ -1,10 +1,8 @@
 // stat-summary: per-x mean ± standard error rendered as a line plus a ribbon
 // uncertainty band. Five x-buckets, eight observations per bucket. The
-// summary statistic is computed via `apply-stat("summary", ...)` and the
-// resulting `(x, y, ymin, ymax)` rows are drawn with identity-stat layers.
+// summary statistic is applied per layer via `stat-summary`.
 
 #import "../lib.typ": *
-#import "../src/stat/apply.typ": apply-stat
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
@@ -19,20 +17,25 @@
   }
 }
 
-#let summarised = apply-stat(
-  "summary",
-  raw,
-  (x: "x", y: "y"),
-  (fun: "mean-se", "fun-args": (mult: 1)),
-).data
-
 #plot(
-  data: summarised,
-  mapping: aes(x: "x", y: "y", ymin: "ymin", ymax: "ymax"),
+  data: raw,
+  mapping: aes(x: "x", y: "y"),
   layers: (
-    geom-ribbon(fill: rgb("#4c78a8"), alpha: 0.3),
-    geom-line(colour: rgb("#4c78a8"), stroke: 1pt),
-    geom-point(fill: rgb("#4c78a8"), size: 3pt),
+    geom-ribbon(
+      stat: stat-summary(fun: "mean-se", fun-args: (mult: 1)),
+      fill: rgb("#4c78a8"),
+      alpha: 0.3,
+    ),
+    geom-line(
+      stat: stat-summary(fun: "mean-se", fun-args: (mult: 1)),
+      colour: rgb("#4c78a8"),
+      stroke: 1pt,
+    ),
+    geom-point(
+      stat: stat-summary(fun: "mean-se", fun-args: (mult: 1)),
+      fill: rgb("#4c78a8"),
+      size: 3pt,
+    ),
   ),
   scales: (
     scale-x-continuous(name: "x"),
