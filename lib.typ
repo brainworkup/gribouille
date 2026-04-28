@@ -8,6 +8,7 @@
 // Datasets.
 #import "src/datasets/economics.typ": economics
 #import "src/datasets/mpg.typ": mpg
+#import "src/datasets/penguins.typ": penguins
 
 // Labs.
 #import "src/labs.typ": labs

@@ -1,10 +1,8 @@
-// Penguins dataset loaded from CSV: flipper length vs body mass by species.
+// Bundled penguins dataset: flipper length vs body mass by species.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
-
-#let penguins = csv("/examples/penguins.csv", row-type: dictionary)
 
 #plot(
   data: penguins,
@@ -21,7 +19,11 @@
   scales: (
     scale-x-continuous(),
     scale-y-continuous(),
-    scale-colour-discrete(palette: (rgb("#ff8c00"), rgb("#800080"), rgb("#008B8B"))),
+    scale-colour-discrete(palette: (
+      rgb("#ff8c00"),
+      rgb("#800080"),
+      rgb("#008B8B"),
+    )),
   ),
   labs: labs(
     title: "Penguins Dataset",

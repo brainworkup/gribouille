@@ -4,10 +4,8 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let df = csv("/examples/penguins.csv", row-type: dictionary)
-
 #plot(
-  data: df,
+  data: penguins,
   mapping: aes(
     x: "flipper-len",
     y: "body-mass",

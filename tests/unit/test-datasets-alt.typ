@@ -3,6 +3,7 @@
 
 #import "../../src/datasets/economics.typ": economics
 #import "../../src/datasets/mpg.typ": mpg
+#import "../../src/datasets/penguins.typ": penguins
 #import "../../src/plot.typ": get-alt-text, plot
 #import "../../src/aes.typ": aes
 #import "../../src/geom/point.typ": geom-point
@@ -25,6 +26,17 @@
 #assert(first-mpg.keys().contains("class"))
 #assert(first-mpg.keys().contains("cty"))
 #assert(first-mpg.keys().contains("hwy"))
+
+#assert.eq(penguins.len(), 344)
+#let first-penguin = penguins.at(0)
+#assert.eq(first-penguin.species, "Adelie")
+#assert(first-penguin.keys().contains("island"))
+#assert(first-penguin.keys().contains("bill-len"))
+#assert(first-penguin.keys().contains("bill-dep"))
+#assert(first-penguin.keys().contains("flipper-len"))
+#assert(first-penguin.keys().contains("body-mass"))
+#assert(first-penguin.keys().contains("sex"))
+#assert(first-penguin.keys().contains("year"))
 
 // `plot()` returns rendered content, so exercise the spec contract via
 // the accessor on a hand-built spec dict mirroring what `plot()` stores.
