@@ -33,7 +33,7 @@
 ///
 /// @returns Dictionary tagged `kind: "aes"`, consumed by @plot and geom layers.
 ///
-/// @example
+/// @examples Bind three columns: `x`, `y`, and a categorical `colour`.
 /// ```
 /// #let iris = (
 ///   (x: 5.1, y: 3.5, sp: "setosa"),
@@ -44,6 +44,24 @@
 ///   data: iris,
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Bind ribbon endpoints (`ymin`, `ymax`) alongside a centre
+/// line, sharing the same `x` between the two layers.
+/// ```
+/// #let d = range(0, 10).map(i => (
+///   x: i, y: i * 0.5, lo: i * 0.5 - 0.6, hi: i * 0.5 + 0.6,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi"),
+///   layers: (
+///     geom-ribbon(alpha: 0.3),
+///     geom-line(stroke: 1pt),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

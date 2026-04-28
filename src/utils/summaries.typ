@@ -60,6 +60,18 @@
 /// @param mult Multiplier on the standard error.
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+///
+/// @examples-static One-σ band around the sample mean.
+/// ```
+/// #let s = mean-se((2, 3, 4, 5, 6))
+/// // s.y == 4, s.ymin ≈ 3.29, s.ymax ≈ 4.71
+/// ```
+///
+/// @examples-static Bump `mult` to 2 for an approximate 95% interval
+/// (assuming a roughly normal sampling distribution).
+/// ```
+/// #let s = mean-se((2, 3, 4, 5, 6), mult: 2)
+/// ```
 #let mean-se(values, mult: 1) = {
   let xs = _to-numeric(values)
   let n = xs.len()
@@ -83,6 +95,17 @@
 /// @param conf Confidence level in the open interval `(0, 1)`.
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+///
+/// @examples-static Standard 95% normal-approximation interval.
+/// ```
+/// #let s = mean-cl-normal((2, 3, 4, 5, 6))
+/// ```
+///
+/// @examples-static Tighten to a 50% interval to highlight the central
+/// location.
+/// ```
+/// #let s = mean-cl-normal((2, 3, 4, 5, 6), conf: 0.5)
+/// ```
 #let mean-cl-normal(values, conf: 0.95) = {
   if conf <= 0 or conf >= 1 {
     panic("mean-cl-normal: conf must be in (0, 1); got " + repr(conf))
@@ -106,6 +129,16 @@
 /// @param mult Multiplier on the sample standard deviation.
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+///
+/// @examples-static Default ±2 σ band, useful for spotting outliers.
+/// ```
+/// #let s = mean-sdl((2, 3, 4, 5, 6))
+/// ```
+///
+/// @examples-static Tighten to ±1 σ for a one-deviation spread.
+/// ```
+/// #let s = mean-sdl((2, 3, 4, 5, 6), mult: 1)
+/// ```
 #let mean-sdl(values, mult: 2) = {
   let xs = _to-numeric(values)
   if xs.len() == 0 { return _empty-summary }
@@ -128,6 +161,17 @@
 /// @param conf Proportion of the data covered by the interval, in `(0, 1)`.
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+///
+/// @examples-static Default 50% interval returns the median plus the IQR.
+/// ```
+/// #let s = median-hilow((1, 2, 3, 4, 5, 6, 7, 8))
+/// ```
+///
+/// @examples-static A 90% interval covers the bulk of the data while still
+/// trimming the tails.
+/// ```
+/// #let s = median-hilow((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), conf: 0.9)
+/// ```
 #let median-hilow(values, conf: 0.5) = {
   if conf <= 0 or conf >= 1 {
     panic("median-hilow: conf must be in (0, 1); got " + repr(conf))
@@ -169,6 +213,17 @@
 /// @param seed Integer seed for the deterministic resampling sequence.
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+///
+/// @examples-static Default 95% bootstrap interval with 1000 resamples.
+/// ```
+/// #let s = mean-cl-boot((2, 3, 4, 5, 6, 7))
+/// ```
+///
+/// @examples-static Bump `n-boot` for a smoother bound and pin `seed` to
+/// keep results reproducible across renders.
+/// ```
+/// #let s = mean-cl-boot((2, 3, 4, 5, 6, 7), n-boot: 5000, seed: 42)
+/// ```
 #let mean-cl-boot(values, conf: 0.95, n-boot: 1000, seed: 0) = {
   if conf <= 0 or conf >= 1 {
     panic("mean-cl-boot: conf must be in (0, 1); got " + repr(conf))
@@ -213,6 +268,22 @@
 /// @param fun-args Keyword arguments forwarded to the helper.
 ///
 /// @returns Dict `(y, ymin, ymax)`.
+///
+/// @examples-static Dispatch by name; equivalent to calling @mean-se
+/// directly.
+/// ```
+/// #let s = summarise("mean-se", (2, 3, 4, 5, 6))
+/// ```
+///
+/// @examples-static Pass keyword arguments via `fun-args` to forward
+/// helper-specific parameters.
+/// ```
+/// #let s = summarise(
+///   "median-hilow",
+///   (1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+///   fun-args: (conf: 0.9),
+/// )
+/// ```
 #let summarise(name, values, fun-args: (:)) = {
   if name == "mean-se" {
     let mult = fun-args.at("mult", default: 1)

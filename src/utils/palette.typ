@@ -289,6 +289,42 @@
 ///
 /// @param name Palette name, e.g. `"Set1"`, `"Spectral"`, `"Blues"`.
 /// @returns Array of `color` values.
+///
+/// @examples Look up the Set1 palette and feed it into a manual fill scale
+/// rendered as swatches via @geom-rect.
+/// ```
+/// #let pal = brewer-palette("Set1")
+/// #let d = pal.enumerate().map(((i, _)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-manual(values: pal),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
+/// )
+/// ```
+///
+/// @examples The diverging Spectral palette laid out as swatches; the same
+/// pattern works for any qualitative, sequential, or diverging name.
+/// ```
+/// #let pal = brewer-palette("Spectral")
+/// #let d = pal.enumerate().map(((i, _)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-manual(values: pal),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
+/// )
+/// ```
 #let brewer-palette(name) = {
   let pal = brewer-palettes.at(name, default: none)
   if pal == none {

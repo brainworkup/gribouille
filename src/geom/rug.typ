@@ -32,7 +32,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Bottom and left rug ticks marking each observation's position.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.5)))
 /// #plot(
@@ -41,6 +41,27 @@
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-rug(sides: "bl"),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Rug on every side, coloured by a categorical column to expose
+/// per-group density along both axes.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b") {
+///   for i in range(0, 12) {
+///     d.push((x: i + (if grp == "b" { 0.3 } else { 0 }), y: calc.sin(i * 0.5), grp: grp))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "grp"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-rug(sides: "tblr"),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

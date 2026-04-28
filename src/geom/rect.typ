@@ -25,7 +25,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Three categorical rectangles overlapping along x.
 /// ```
 /// #let d = (
 ///   (xmin: 0, xmax: 1, ymin: 0, ymax: 2, k: "a"),
@@ -38,6 +38,24 @@
 ///   layers: (geom-rect(alpha: 0.6),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples A unit-strip swatch lays out a discrete palette horizontally,
+/// one rectangle per level.
+/// ```
+/// #let levels = ("a", "b", "c", "d", "e")
+/// #let d = levels.enumerate().map(((i, k)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-brewer(palette: "Set1"),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
 /// )
 /// ```
 ///

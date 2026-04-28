@@ -331,13 +331,13 @@ describe("parser: validate_function", function()
 end)
 
 -- -----------------------------------------------------------------------
-describe("parser: @example handling", function()
+describe("parser: @examples handling", function()
   it("captures renderable example with //| attributes", function()
     local f = tmpfile("example", [[
 /// Summary.
 ///
 /// @category Core
-/// @example
+/// @examples
 /// ```
 /// //| width: 10cm
 /// //| height: 6cm
@@ -352,14 +352,15 @@ describe("parser: @example handling", function()
     assert_eq(exs[1].attributes.width, "10cm")
     assert_eq(exs[1].attributes.height, "6cm")
     assert_contains(exs[1].source, "#plot")
+    assert_eq(exs[1].caption, "")
   end)
 
-  it("distinguishes @example from @example-static", function()
+  it("distinguishes @examples from @examples-static", function()
     local f = tmpfile("static", [[
 /// Summary.
 ///
 /// @category Core
-/// @example-static
+/// @examples-static
 /// ```
 /// foo()
 /// ```
@@ -376,12 +377,64 @@ describe("parser: @example handling", function()
 /// Summary.
 ///
 /// @category Core
-/// @example
+/// @examples
 /// ```
 /// foo()
 #let foo() = none
 ]])
     assert_throws(function() parser.parse_file(f) end, "fence never closes")
+  end)
+
+  it("captures inline caption on the tag line", function()
+    local f = tmpfile("inlinecap", [[
+/// Summary.
+///
+/// @category Core
+/// @examples Default invocation.
+/// ```
+/// foo()
+/// ```
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local exs = parsed.functions[1].doc.examples
+    assert_eq(exs[1].caption, "Default invocation.")
+  end)
+
+  it("captures multi-line caption between tag and fence", function()
+    local f = tmpfile("multilinecap", [[
+/// Summary.
+///
+/// @category Core
+/// @examples
+/// First sentence of the caption.
+/// Second sentence on the next line.
+///
+/// A second paragraph.
+/// ```
+/// foo()
+/// ```
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local exs = parsed.functions[1].doc.examples
+    assert_contains(exs[1].caption, "First sentence of the caption.")
+    assert_contains(exs[1].caption, "Second sentence on the next line.")
+    assert_contains(exs[1].caption, "\n\nA second paragraph.")
+  end)
+
+  it("rejects unknown legacy @example tag", function()
+    local f = tmpfile("legacy", [[
+/// Summary.
+///
+/// @category Core
+/// @example
+/// ```
+/// foo()
+/// ```
+#let foo() = none
+]])
+    assert_throws(function() parser.parse_file(f) end, "unknown tag")
   end)
 end)
 

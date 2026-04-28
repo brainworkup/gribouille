@@ -17,7 +17,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Linear size mapping with the default 1pt-to-6pt range.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
@@ -25,6 +25,20 @@
 ///   mapping: aes(x: "x", y: "y", size: "w"),
 ///   layers: (geom-point(),),
 ///   scales: (scale-size-continuous(range: (1pt, 6pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Widen the `range` for stronger visual contrast on small
+/// numeric differences.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", size: "w"),
+///   layers: (geom-point(),),
+///   scales: (scale-size-continuous(range: (2pt, 14pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -66,7 +80,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Four-bin discretisation across the default size range.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
@@ -74,6 +88,20 @@
 ///   mapping: aes(x: "x", y: "y", size: "w"),
 ///   layers: (geom-point(),),
 ///   scales: (scale-size-binned(n-breaks: 4, range: (1pt, 6pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples More bins (`n-breaks: 8`) on a wider `range` give finer steps
+/// while keeping the visual binning.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", size: "w"),
+///   layers: (geom-point(),),
+///   scales: (scale-size-binned(n-breaks: 8, range: (1pt, 12pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -118,7 +146,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Area-proportional sizing on a quadratic series; markers grow
+/// with the square root of `w` so visual area tracks the value.
 /// ```
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i * i))
 /// #plot(
@@ -126,6 +155,24 @@
 ///   mapping: aes(x: "x", y: "y", size: "w"),
 ///   layers: (geom-point(),),
 ///   scales: (scale-size-area(range: (1pt, 12pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Use `scale-size-area` with @geom-count so the count of
+/// duplicate `(x, y)` rows reads as proportional area.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1), (x: 1, y: 1),
+///   (x: 2, y: 2),
+///   (x: 3, y: 3), (x: 3, y: 3), (x: 3, y: 3), (x: 3, y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-count(),),
+///   scales: (scale-size-area(range: (2pt, 14pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -168,7 +215,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Four-bin area-proportional discretisation on a quadratic
+/// series.
 /// ```
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i * i))
 /// #plot(
@@ -176,6 +224,20 @@
 ///   mapping: aes(x: "x", y: "y", size: "w"),
 ///   layers: (geom-point(),),
 ///   scales: (scale-size-binned-area(n-breaks: 4, range: (1pt, 12pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine more bins with a wider `range` for a finer banded
+/// area scale on dense data.
+/// ```
+/// #let d = range(1, 16).map(i => (x: i, y: i, w: i * i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", size: "w"),
+///   layers: (geom-point(),),
+///   scales: (scale-size-binned-area(n-breaks: 8, range: (1pt, 16pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

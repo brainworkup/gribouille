@@ -13,7 +13,7 @@
 ///
 /// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
 ///
-/// @example
+/// @examples Strip text shows the level value as-is (`"a"`, `"b"`).
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -49,7 +49,7 @@
 ///
 /// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
 ///
-/// @example
+/// @examples Strip shows the variable name and level (`"sp: a"`, `"sp: b"`).
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -62,6 +62,24 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-wrap("sp", labeller: label-both()),
+///   width: 10cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Override `sep` to use a different separator.
+/// ```
+/// #let d = ()
+/// #for sp in ("a", "b") {
+///   for i in range(0, 4) {
+///     d.push((sp: sp, x: i, y: i))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-wrap("sp", labeller: label-both(sep: " = ")),
 ///   width: 10cm,
 ///   height: 5cm,
 /// )
@@ -86,7 +104,7 @@
 ///
 /// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
 ///
-/// @example
+/// @examples Strip text appends the per-panel row count.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -125,7 +143,7 @@
 ///
 /// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
 ///
-/// @example
+/// @examples Wrap long category names onto multiple strip lines.
 /// ```
 /// #let d = (
 ///   (sp: "a long category name", x: 1, y: 1),
@@ -138,6 +156,24 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-wrap("sp", labeller: label-wrap(width: 10)),
+///   width: 10cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Combine `inner` with @label-both to wrap a `var: value` label.
+/// ```
+/// #let d = (
+///   (sp: "alpha-with-long-suffix", x: 1, y: 1),
+///   (sp: "alpha-with-long-suffix", x: 2, y: 2),
+///   (sp: "beta-with-long-suffix",  x: 1, y: 3),
+///   (sp: "beta-with-long-suffix",  x: 2, y: 4),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-wrap("sp", labeller: label-wrap(width: 14, inner: label-both())),
 ///   width: 10cm,
 ///   height: 5cm,
 /// )
@@ -165,7 +201,8 @@
 ///
 /// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
 ///
-/// @example
+/// @examples Mix labellers per facet variable: rows show `var: level`,
+/// columns show level only.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -182,6 +219,33 @@
 ///     rows: "sex",
 ///     cols: "sp",
 ///     labeller: labeller(rules: (sex: label-both(), sp: label-value())),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Set `default` to a fallback labeller for variables not listed
+/// in `rules`.
+/// ```
+/// #let d = ()
+/// #for sp in ("a", "b") {
+///   for sex in ("F", "M") {
+///     d.push((sp: sp, sex: sex, x: 1, y: 1))
+///     d.push((sp: sp, sex: sex, x: 2, y: 2))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-grid(
+///     rows: "sex",
+///     cols: "sp",
+///     labeller: labeller(
+///       rules: (sex: label-both()),
+///       default: label-context(),
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

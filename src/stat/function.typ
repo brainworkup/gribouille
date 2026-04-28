@@ -25,7 +25,7 @@
 ///
 /// @returns Statistic object with `name: "function"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Sine sampled across `xlim` and rendered as a line.
 /// ```
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
@@ -37,6 +37,26 @@
 ///       fun: x => calc.sin(x),
 ///       xlim: (-calc.pi, calc.pi),
 ///     )),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine with @geom-point to overlay sampled markers on the
+/// curve; bumping `n` smooths the line further.
+/// ```
+/// #let frame = ((x: 0, y: 0), (x: 6.28, y: 1))
+/// #plot(
+///   data: frame,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-blank(),
+///     geom-point(
+///       size: 2pt,
+///       stat: stat-function(fun: x => calc.cos(x), n: 13, xlim: (0, 6.28)),
+///     ),
+///     geom-line(stat: stat-function(fun: x => calc.cos(x), n: 201, xlim: (0, 6.28))),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

@@ -18,13 +18,26 @@
 ///
 /// @returns Statistic object with `name: "ecdf"`, consumed by geom layers.
 ///
-/// @example
+/// @examples ECDF curve over a tiny sample, drawn as a polyline.
 /// ```
 /// #let d = (3, 1, 2, 1).map(v => (x: v))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x"),
 ///   layers: (geom-line(stat: "ecdf"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Use @geom-step instead of @geom-line to render the ECDF as a
+/// staircase, which is the conventional shape for empirical CDFs.
+/// ```
+/// #let d = range(0, 30).map(i => (x: calc.sin(i) + i / 10))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x"),
+///   layers: (geom-step(stat: "ecdf", stroke: 1pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

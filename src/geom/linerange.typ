@@ -26,7 +26,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Bare vertical ranges, no end caps.
 /// ```
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
@@ -37,6 +37,22 @@
 ///   data: d,
 ///   mapping: aes(x: "x", ymin: "lo", ymax: "hi"),
 ///   layers: (geom-linerange(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `colour` to a categorical column to differentiate ranges
+/// per group.
+/// ```
+/// #let d = range(1, 6).map(i => (
+///   x: i, lo: i - 0.5, hi: i + 0.5,
+///   k: if calc.rem(i, 2) == 0 { "even" } else { "odd" },
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", ymin: "lo", ymax: "hi", colour: "k"),
+///   layers: (geom-linerange(stroke: 1.2pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

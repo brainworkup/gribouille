@@ -31,13 +31,31 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Single filled area between `y = 0` and a smooth curve.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.6) + 1.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-area(alpha: 0.4),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `fill` to a discrete column to draw one polygon per group;
+/// `position: "stack"` accumulates them.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b") {
+///   for i in range(0, 12) {
+///     d.push((x: i, y: 0.5 + calc.sin(i * 0.5) + (if grp == "b" { 1 } else { 0 }), grp: grp))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", fill: "grp"),
+///   layers: (geom-area(position: "stack", alpha: 0.6),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

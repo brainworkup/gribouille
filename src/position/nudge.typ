@@ -16,7 +16,8 @@
 ///
 /// @returns Position dictionary with `name: "nudge"`, consumed by @plot.
 ///
-/// @example
+/// @examples Offset text labels above their points using a default
+/// `position-nudge()`.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, lab: "alpha"),
@@ -29,6 +30,26 @@
 ///   layers: (
 ///     geom-point(size: 3pt),
 ///     geom-text(position: "nudge"),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pass explicit `x` and `y` offsets to flow labels diagonally
+/// off the points.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, lab: "alpha"),
+///   (x: 2, y: 4, lab: "beta"),
+///   (x: 3, y: 3, lab: "gamma"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", label: "lab"),
+///   layers: (
+///     geom-point(size: 3pt),
+///     geom-text(position: position-nudge(x: 0.2, y: 0.3)),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

@@ -17,7 +17,7 @@
 ///
 /// @returns Theme dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Default black-on-white theme with a thin panel border.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -25,6 +25,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-bw(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Override `accent` to recolour data ink and key glyphs while
+/// keeping the high-contrast panel.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-bw(accent: rgb("#cc0000")),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

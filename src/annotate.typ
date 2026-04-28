@@ -91,7 +91,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Inline text plus a vertical reference line at the same x.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -101,6 +101,27 @@
 ///     geom-point(size: 2pt),
 ///     annotate("text", x: 5, y: 4, label: "peak"),
 ///     annotate("vline", xintercept: 5, colour: rgb("#cc0000")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Highlight a region with a translucent rectangle and a boxed
+/// label callout.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     annotate(
+///       "rect",
+///       xmin: 3, xmax: 6, ymin: 1, ymax: 3.5,
+///       fill: rgb("#fff7e6"), alpha: 0.5,
+///     ),
+///     geom-point(size: 2pt),
+///     annotate("label", x: 4.5, y: 3.2, label: "window"),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

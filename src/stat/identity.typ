@@ -13,7 +13,8 @@
 ///
 /// @returns Statistic object with `name: "identity"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Explicit `stat: "identity"` on a scatter, equivalent to the
+/// default behaviour.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2),
@@ -24,6 +25,24 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 3pt, stat: "identity"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pre-aggregated heights drawn directly with @geom-col, using
+/// `stat-identity` to skip any binning.
+/// ```
+/// #let d = (
+///   (q: "Q1", revenue: 10),
+///   (q: "Q2", revenue: 18),
+///   (q: "Q3", revenue: 25),
+///   (q: "Q4", revenue: 22),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "q", y: "revenue"),
+///   layers: (geom-col(stat: stat-identity()),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

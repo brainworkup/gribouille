@@ -18,7 +18,7 @@
 ///
 /// @returns Dictionary mapping aesthetic name to guide spec.
 ///
-/// @example
+/// @examples Lay the colour legend out across two columns.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -30,6 +30,28 @@
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-point(size: 3pt),),
 ///   guides: guides(colour: guide-legend(ncol: 2)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine `guide-axis` and `guide-none` to rotate x ticks and
+/// hide the redundant fill legend in one call.
+/// ```
+/// #let d = (
+///   (x: "January", y: 1, g: "a"),
+///   (x: "February", y: 2, g: "a"),
+///   (x: "March", y: 3, g: "b"),
+///   (x: "April", y: 4, g: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", fill: "g"),
+///   layers: (geom-col(),),
+///   guides: guides(
+///     x: guide-axis(angle: 30),
+///     fill: guide-none(),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

@@ -27,13 +27,26 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Simple Q-Q against a normal reference, mapping `y` only.
 /// ```
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(y: "v"),
 ///   layers: (geom-qq(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Switch `distribution` to `"uniform"` to compare against a
+/// different reference.
+/// ```
+/// #let d = range(1, 21).map(i => (v: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(y: "v"),
+///   layers: (geom-qq(distribution: "uniform"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

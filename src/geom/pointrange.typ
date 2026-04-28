@@ -27,7 +27,8 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Centred point with vertical range, drawn together for forest-plot
+/// style summaries.
 /// ```
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
@@ -38,6 +39,22 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi"),
+///   layers: (geom-pointrange(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `colour` to a categorical column to colour both the point
+/// and its range per group.
+/// ```
+/// #let d = range(1, 6).map(i => (
+///   x: i, y: i, lo: i - 0.5, hi: i + 0.5,
+///   k: if calc.rem(i, 2) == 0 { "even" } else { "odd" },
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi", colour: "k"),
 ///   layers: (geom-pointrange(size: 3pt),),
 ///   width: 10cm,
 ///   height: 6cm,

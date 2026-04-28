@@ -15,7 +15,7 @@
 ///
 /// @returns Statistic object with `name: "sum"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Marker size grows with the count of duplicate `(x, y)` rows.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1),
@@ -26,6 +26,24 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-count(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair with @scale-size-area to make the count proportional to
+/// the marker area, easier to read for large frequency contrasts.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1), (x: 1, y: 1), (x: 1, y: 1),
+///   (x: 2, y: 2),
+///   (x: 3, y: 3), (x: 3, y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-count(),),
+///   scales: (scale-size-area(range: (2pt, 14pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

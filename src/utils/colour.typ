@@ -11,6 +11,31 @@
 /// @param col2 Colour to blend in.
 /// @param amount Fraction of `col2` in the result (0 to 1).
 /// @returns Blended colour.
+///
+/// @examples-static Inline blending: half-mix two brand colours.
+/// ```
+/// #let purple = col-mix(rgb("#1f77b4"), rgb("#d62728"), 0.5)
+/// ```
+///
+/// @examples Sweeping `amount` from 0 to 1 produces a custom two-stop ramp,
+/// rendered as a swatch via @geom-rect.
+/// ```
+/// #let stops = range(0, 9).map(i => col-mix(
+///   rgb("#1f77b4"), rgb("#d62728"), i / 8,
+/// ))
+/// #let d = stops.enumerate().map(((i, _)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-manual(values: stops),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
+/// )
+/// ```
 #let col-mix(col1, col2, amount) = color.mix(
   (col1, 1 - amount),
   (col2, amount),

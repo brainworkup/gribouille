@@ -24,13 +24,25 @@
 ///
 /// @returns Statistic object with `name: "qq"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Q-Q points against a normal reference, mapping `y` only.
 /// ```
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(y: "v"),
 ///   layers: (geom-qq(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine with @geom-qq-line to overlay the IQR reference line.
+/// ```
+/// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
+/// #plot(
+///   data: d,
+///   mapping: aes(y: "v"),
+///   layers: (geom-qq(size: 2pt), geom-qq-line(stroke: 1pt)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

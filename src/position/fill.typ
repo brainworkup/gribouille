@@ -16,7 +16,8 @@
 ///
 /// @returns Position dictionary with `name: "fill"`, consumed by @plot.
 ///
-/// @example
+/// @examples Stacked bars normalised so each quarter sums to one, useful
+/// for showing share of total.
 /// ```
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
@@ -30,6 +31,23 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "y", fill: "grp"),
 ///   layers: (geom-col(position: "fill"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Compare with @position-stack to show the same data in
+/// absolute counts instead of proportions.
+/// ```
+/// #let d = (
+///   (q: "Q1", grp: "a", y: 3), (q: "Q1", grp: "b", y: 7),
+///   (q: "Q2", grp: "a", y: 4), (q: "Q2", grp: "b", y: 6),
+///   (q: "Q3", grp: "a", y: 5), (q: "Q3", grp: "b", y: 5),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "q", y: "y", fill: "grp"),
+///   layers: (geom-col(position: "stack"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

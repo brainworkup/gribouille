@@ -21,7 +21,7 @@
 ///
 /// @returns Guide dictionary tagged `kind: "guide"`, consumed by @guides.
 ///
-/// @example
+/// @examples Reverse the level order shown in the legend.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -33,6 +33,23 @@
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-point(size: 3pt),),
 ///   guides: guides(colour: guide-legend(reverse: true)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Override the legend title and lay swatches out across two
+/// columns to compress the legend horizontally.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b", "c", "d") {
+///   for i in range(0, 4) { d.push((x: i, y: i, g: grp)) }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   layers: (geom-point(size: 3pt),),
+///   guides: guides(colour: guide-legend(title: "Group", ncol: 2)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

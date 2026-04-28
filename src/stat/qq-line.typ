@@ -37,13 +37,29 @@
 ///
 /// @returns Statistic object with `name: "qq-line"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Reference line under @geom-qq for a normal Q-Q plot.
 /// ```
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(y: "v"),
 ///   layers: (geom-qq(), geom-qq-line()),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Style the reference line distinctly so it stays legible over
+/// the points.
+/// ```
+/// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
+/// #plot(
+///   data: d,
+///   mapping: aes(y: "v"),
+///   layers: (
+///     geom-qq(size: 2pt),
+///     geom-qq-line(stroke: 1pt, colour: rgb("#cc0000"), linetype: "dashed"),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

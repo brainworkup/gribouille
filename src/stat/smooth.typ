@@ -20,7 +20,7 @@
 ///
 /// @returns Statistic object with `name: "smooth"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Linear fit with the default 95% confidence band.
 /// ```
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
@@ -29,6 +29,27 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-smooth(method: "lm"),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `colour` to a categorical column so each group gets its
+/// own fit and band.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b") {
+///   for i in range(0, 20) {
+///     d.push((x: i, y: i * 0.5 + (if grp == "b" { 1.5 } else { 0 }) + calc.sin(i * 0.4), grp: grp))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "grp"),
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-smooth(method: "lm"),

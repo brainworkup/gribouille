@@ -21,7 +21,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default linetype palette mapping two groups to distinct dash
+/// patterns.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
@@ -36,6 +37,22 @@
 ///   mapping: aes(x: "x", y: "y", linetype: "grp"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Override `palette` with a custom keyword cycle.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
+///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", linetype: "grp"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-linetype(palette: ("dotted", "dash-dotted")),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -68,7 +85,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Two-keyword cycle assigned in input order.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
@@ -81,6 +98,26 @@
 ///   mapping: aes(x: "x", y: "y", linetype: "grp"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype-manual(values: ("solid", "dashed")),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples `limits` fixes the level order so the same dash maps to the
+/// same group regardless of input order.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
+///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", linetype: "grp"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-linetype-manual(
+///     values: ("solid", "dashed"),
+///     limits: ("a", "b"),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -115,6 +152,22 @@
 /// @param name Legend title. Identity scales draw no legend.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Per-row dash keyword carried straight through to the line.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, dt: "solid"),  (x: 2, y: 3, dt: "solid"),
+///   (x: 1, y: 1, dt: "dashed"), (x: 2, y: 2, dt: "dashed"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", linetype: "dt"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-linetype-identity(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// @see @scale-linetype, @scale-linetype-manual, @geom-line
 #let scale-linetype-identity(name: none) = (

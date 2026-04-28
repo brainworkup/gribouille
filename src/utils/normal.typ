@@ -19,6 +19,20 @@
 /// @param p Probability in the open interval `(0, 1)`.
 ///
 /// @returns Quantile `z` such that `P(Z <= z) = p` for `Z ~ N(0, 1)`.
+///
+/// @examples-static The 97.5th percentile is the canonical 1.96 normal
+/// quantile used in two-sided 95% intervals.
+/// ```
+/// #let z = qnorm(0.975)
+/// // z ≈ 1.96
+/// ```
+///
+/// @examples-static Use `qnorm` to derive a custom symmetric confidence
+/// multiplier for any level.
+/// ```
+/// #let level = 0.99
+/// #let mult = qnorm(0.5 + level / 2)
+/// ```
 #let qnorm(p) = {
   if p <= 0 or p >= 1 {
     panic("qnorm: p must be in (0, 1); got " + repr(p))
@@ -123,6 +137,21 @@
 /// @param distribution One of `"normal"`, `"uniform"`, or `"exponential"`.
 ///
 /// @returns Theoretical quantile at probability `p`.
+///
+/// @examples-static Same probability under the three supported reference
+/// distributions.
+/// ```
+/// #let z-norm = theoretical-quantile(0.5, "normal")     // 0
+/// #let z-uni  = theoretical-quantile(0.5, "uniform")    // 0.5
+/// #let z-exp  = theoretical-quantile(0.5, "exponential") // ~0.693
+/// ```
+///
+/// @examples-static Build an array of plotting positions for use inside a
+/// custom Q-Q derivation.
+/// ```
+/// #let n = 5
+/// #let qs = range(0, n).map(i => theoretical-quantile((i + 0.5) / n, "normal"))
+/// ```
 #let theoretical-quantile(p, distribution) = {
   if distribution == "normal" {
     qnorm(p)

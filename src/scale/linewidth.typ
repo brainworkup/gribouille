@@ -17,7 +17,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Linewidth grows with `w`, with one segment per row driven by
+/// the `group` mapping.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
 /// #plot(
@@ -25,6 +26,20 @@
 ///   mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
 ///   layers: (geom-line(),),
 ///   scales: (scale-linewidth-continuous(range: (0.4pt, 2pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair `colour` and `linewidth` with the same column to encode
+/// magnitude through both channels.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "w", linewidth: "w", group: "g"),
+///   layers: (geom-line(),),
+///   scales: (scale-linewidth-continuous(range: (0.4pt, 3pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -60,6 +75,25 @@
 /// @param name Legend title. Identity scales draw no legend.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Per-row Typst lengths carried straight through to the line
+/// strokes; no legend is drawn.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, g: "a", lw: 0.4pt),
+///   (x: 2, y: 3, g: "a", lw: 0.4pt),
+///   (x: 1, y: 1, g: "b", lw: 1.2pt),
+///   (x: 2, y: 2, g: "b", lw: 1.2pt),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", group: "g", linewidth: "lw"),
+///   layers: (geom-line(),),
+///   scales: (scale-linewidth-identity(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// @see @scale-linewidth-continuous
 #let scale-linewidth-identity(name: none) = (

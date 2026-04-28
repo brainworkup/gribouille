@@ -21,7 +21,8 @@
 ///
 /// @returns Position dictionary with `name: "stack"`, consumed by @plot.
 ///
-/// @example
+/// @examples Two groups stacked per quarter to show component contribution
+/// to a total.
 /// ```
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
@@ -35,6 +36,24 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "y", fill: "grp"),
 ///   layers: (geom-col(position: "stack"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Stacked area chart over time, useful when the running total
+/// itself is informative.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b", "c") {
+///   for i in range(0, 10) {
+///     d.push((x: i, y: i * 0.3 + (if grp == "b" { 1 } else if grp == "c" { 2 } else { 0 }), grp: grp))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", fill: "grp"),
+///   layers: (geom-area(position: "stack", alpha: 0.6),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

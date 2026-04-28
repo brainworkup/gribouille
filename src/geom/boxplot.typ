@@ -38,7 +38,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Five-number summary computed per category from raw observations.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -50,6 +50,26 @@
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y"),
 ///   layers: (geom-boxplot(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Add a second mapping (`fill`) and switch `position` to
+/// `"dodge"` to compare distributions side by side per group.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b", "c") {
+///   for k in ("x", "y") {
+///     for i in range(20) {
+///       d.push((grp: grp, k: k, y: calc.sin(i) + i / 10 + (if k == "y" { 0.7 } else { 0 })))
+///     }
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: "y", fill: "k"),
+///   layers: (geom-boxplot(position: "dodge"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

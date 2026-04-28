@@ -23,7 +23,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Twelve-bin frequency polygon over a noisy series.
 /// ```
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
@@ -31,6 +31,24 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x"),
+///   layers: (geom-freqpoly(bins: 12, stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `colour` to overlay frequency polygons per group on the
+/// same axes.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b") {
+///   for i in range(0, 40) {
+///     d.push((x: calc.sin(i * 0.3) * 5 + i * 0.2 + (if grp == "b" { 2 } else { 0 }), grp: grp))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", colour: "grp"),
 ///   layers: (geom-freqpoly(bins: 12, stroke: 1pt),),
 ///   width: 10cm,
 ///   height: 6cm,

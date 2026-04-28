@@ -20,7 +20,7 @@
 ///
 /// @returns Secondary axis dictionary consumed by @scale-x-continuous and @scale-y-continuous.
 ///
-/// @example
+/// @examples Mirror the x axis on top with a different title.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
@@ -29,6 +29,24 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (
 ///     scale-x-continuous(name: "x", secondary: dup-axis(name: "x'")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Mirror the y axis on the right with custom break positions.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i, y: i * i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (
+///     scale-y-continuous(
+///       name: "y",
+///       secondary: dup-axis(breaks: (0, 25, 50, 75, 100)),
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -61,7 +79,8 @@
 ///
 /// @returns Secondary axis dictionary consumed by @scale-x-continuous and @scale-y-continuous.
 ///
-/// @example
+/// @examples Celsius primary axis with a Fahrenheit secondary derived
+/// through a callable.
 /// ```
 /// #let d = range(0, 11).map(i => (c: i * 5, mpg: i))
 /// #plot(
@@ -72,6 +91,25 @@
 ///     scale-x-continuous(
 ///       name: "Celsius",
 ///       secondary: sec-axis(trans: x => x * 9 / 5 + 32, name: "Fahrenheit"),
+///     ),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples A y secondary axis converting metres to feet, useful for
+/// dual-unit displays.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i, m: i * 3))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "m"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (
+///     scale-y-continuous(
+///       name: "Metres",
+///       secondary: sec-axis(trans: m => m * 3.281, name: "Feet"),
 ///     ),
 ///   ),
 ///   width: 10cm,

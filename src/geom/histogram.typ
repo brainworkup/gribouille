@@ -25,7 +25,8 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Twelve-bin partition, letting the layer pick bin width
+/// automatically.
 /// ```
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
@@ -34,6 +35,21 @@
 ///   data: d,
 ///   mapping: aes(x: "x"),
 ///   layers: (geom-histogram(bins: 12),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pin `binwidth` directly to align bin edges to integer
+/// boundaries.
+/// ```
+/// #let d = range(0, 40).map(i => (
+///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x"),
+///   layers: (geom-histogram(binwidth: 1),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

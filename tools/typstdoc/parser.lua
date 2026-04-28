@@ -15,7 +15,7 @@ local VALID_STABILITY = { stable = true, experimental = true, deprecated = true 
 local KNOWN_TAGS = {
   ["@category"] = true, ["@stability"] = true, ["@since"] = true,
   ["@param"] = true, ["@arity"] = true, ["@returns"] = true,
-  ["@example"] = true, ["@example-static"] = true, ["@see"] = true,
+  ["@examples"] = true, ["@examples-static"] = true, ["@see"] = true,
   ["@internal"] = true, ["@advanced"] = true,
 }
 
@@ -295,15 +295,39 @@ local function parse_doc_block(doc_lines, file, start_line)
           error_at(file, start_line + i - 1, "expected `@arity (sig): desc`, got: " .. rest)
         end
         table.insert(doc.arities, model.new_arity({ signature = sig, description = desc }))
-      elseif tag == "@example" or tag == "@example-static" then
-        local render = (tag == "@example")
+      elseif tag == "@examples" or tag == "@examples-static" then
+        local render = (tag == "@examples")
         local attrs = {}
         local src = {}
+        local caption_paras = {}
+        local caption_buf = {}
+        local function flush_caption_para()
+          if #caption_buf > 0 then
+            table.insert(caption_paras, util.trim(table.concat(caption_buf, " ")))
+            caption_buf = {}
+          end
+        end
+        local first_caption = util.trim(rest)
+        if first_caption ~= "" then
+          table.insert(caption_buf, first_caption)
+        end
         local j = i + 1
-        while j <= n and util.trim(doc_lines[j]) == "" do j = j + 1 end
-        if j > n or not util.trim(doc_lines[j]):match("^```") then
+        while j <= n do
+          local trimmed_inner = util.trim(doc_lines[j])
+          if trimmed_inner:match("^```") then
+            break
+          elseif trimmed_inner == "" then
+            flush_caption_para()
+          else
+            table.insert(caption_buf, trimmed_inner)
+          end
+          j = j + 1
+        end
+        flush_caption_para()
+        if j > n then
           error_at(file, start_line + i - 1, tag .. " must be followed by a triple-backtick fence")
         end
+        local caption = table.concat(caption_paras, "\n\n")
         j = j + 1
         while j <= n do
           local ln = doc_lines[j]
@@ -327,6 +351,7 @@ local function parse_doc_block(doc_lines, file, start_line)
           render = render,
           attributes = attrs,
           source = table.concat(src, "\n"),
+          caption = caption,
         }))
         i = j
       end

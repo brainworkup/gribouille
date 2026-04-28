@@ -17,7 +17,7 @@
 ///
 /// @returns Theme dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Strong black border around a white panel with faint grid.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -25,6 +25,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-linedraw(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Switch `ink` to a softer hue for a less stark publication
+/// look while keeping the heavy axis frame.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-linedraw(ink: rgb("#2c3e50")),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

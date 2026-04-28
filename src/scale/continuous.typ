@@ -22,7 +22,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Override the axis title and pin the domain.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: i * i))
 /// #plot(
@@ -30,6 +30,24 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-continuous(name: "Index", limits: (0, 12)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Switch `trans` to `"sqrt"` and supply explicit `breaks` for a
+/// custom non-linear axis.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i * i, y: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-x-continuous(
+///     name: "x (sqrt)",
+///     trans: "sqrt",
+///     breaks: (0, 25, 50, 75, 100),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -75,7 +93,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Log-10 transform compresses an exponential growth curve into
+/// a near-linear axis.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
@@ -83,6 +102,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-continuous(name: "Value", trans: "log10"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Reverse the y axis to put the largest values at the bottom,
+/// useful for ranks where lower numbers are better.
+/// ```
+/// #let d = range(1, 11).map(i => (x: i, y: 11 - i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-y-continuous(name: "Rank", trans: "reverse"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -126,7 +159,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Log-10 axis with auto breaks across several decades of x.
 /// ```
 /// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
 /// #plot(
@@ -134,6 +167,23 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-log10(name: "x"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pin tick positions explicitly for tidier labelling on a known
+/// log range.
+/// ```
+/// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-x-log10(
+///     name: "x",
+///     breaks: (1, 10, 100, 1000, 10000),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -168,7 +218,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Log-10 y axis turns an exponential into a near-linear shape.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
@@ -176,6 +226,24 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-log10(name: "y"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine `limits` and `breaks` to clip and label a specific
+/// log range.
+/// ```
+/// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-y-log10(
+///     name: "y",
+///     limits: (2, 1024),
+///     breaks: (2, 8, 32, 128, 512),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -210,7 +278,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Square-root x axis spreads small values and compresses large
+/// ones.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
 /// #plot(
@@ -218,6 +287,23 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-sqrt(name: "x"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pin breaks at perfect squares so the labels match the
+/// underlying data structure.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i * i, y: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-x-sqrt(
+///     name: "x",
+///     breaks: (0, 4, 16, 36, 64, 100),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -252,7 +338,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Square-root y axis straightens a quadratic relationship.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
@@ -260,6 +346,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-sqrt(name: "y"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine with `limits` to highlight a specific range without
+/// changing the underlying data.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i, y: i * i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-y-sqrt(name: "y", limits: (0, 64)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -294,7 +394,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Reverse the x axis so values decrease left-to-right.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
@@ -302,6 +402,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-reverse(name: "x"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair with `limits` to clip a reversed timeline to a specific
+/// window.
+/// ```
+/// #let d = range(2000, 2025).map(y => (x: y, y: calc.sin(y / 4)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-x-reverse(name: "Year", limits: (2024, 2010)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -337,7 +451,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Five equal-width bins along the x axis.
 /// ```
 /// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
 /// #plot(
@@ -345,6 +459,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-binned(n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Bump `n-breaks` for a finer grid; pair with `limits` to focus
+/// on a sub-range.
+/// ```
+/// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-x-binned(n-breaks: 10, limits: (2, 8)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -385,7 +513,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Five equal-width bins along the y axis.
 /// ```
 /// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
 /// #plot(
@@ -393,6 +521,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-binned(n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples A finer ten-bin partition with `limits` clipping the lower
+/// tail.
+/// ```
+/// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   scales: (scale-y-binned(n-breaks: 10, limits: (2, 9)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -434,7 +576,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Reverse the y axis so larger values sit at the bottom.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
@@ -442,6 +584,24 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-y-reverse(name: "y"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Useful for ranking displays where rank 1 should sit at the top.
+/// ```
+/// #let d = (
+///   (team: "A", rank: 1),
+///   (team: "B", rank: 2),
+///   (team: "C", rank: 3),
+///   (team: "D", rank: 4),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "team", y: "rank"),
+///   layers: (geom-point(size: 4pt),),
+///   scales: (scale-y-reverse(name: "Rank", breaks: (1, 2, 3, 4)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

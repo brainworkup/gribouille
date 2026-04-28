@@ -27,7 +27,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Plain count of rows per category.
 /// ```
 /// #let d = (
 ///   (grp: "a"),
@@ -41,6 +41,26 @@
 ///   data: d,
 ///   mapping: aes(x: "grp"),
 ///   layers: (geom-bar(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `fill` to a second column and switch `position` to
+/// `"dodge"` to compare counts side by side.
+/// ```
+/// #let d = (
+///   (grp: "a", k: "x"),
+///   (grp: "b", k: "x"),
+///   (grp: "a", k: "y"),
+///   (grp: "c", k: "x"),
+///   (grp: "b", k: "y"),
+///   (grp: "a", k: "y"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", fill: "k"),
+///   layers: (geom-bar(position: "dodge"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

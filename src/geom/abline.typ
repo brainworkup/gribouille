@@ -29,7 +29,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples The `y = x` identity reference line over a noisy point cloud.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i + calc.rem(i, 2)))
 /// #plot(
@@ -38,6 +38,22 @@
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-abline(slope: 1, intercept: 0, colour: rgb("#cc0000")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Adjust `slope` and `intercept` to anchor a custom regression
+/// reference.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: 0.7 * i + 1 + calc.sin(i)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-abline(slope: 0.7, intercept: 1, colour: rgb("#1b9e77")),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

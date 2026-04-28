@@ -17,7 +17,7 @@
 ///
 /// @returns Theme dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Strip away axes, grid, and panel background entirely.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -25,6 +25,22 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-void(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Useful behind a custom annotated figure where axes would be
+/// visual noise; pass an explicit `paper` for a solid background.
+/// ```
+/// #let d = range(0, 12).map(i => (
+///   x: calc.cos(i * 0.5), y: calc.sin(i * 0.5), t: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "t"),
+///   layers: (geom-path(stroke: 1.4pt),),
+///   theme: theme-void(paper: rgb("#fff7e6")),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

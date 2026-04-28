@@ -25,13 +25,29 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Reference line under @geom-qq for a normal Q-Q plot.
 /// ```
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(y: "v"),
 ///   layers: (geom-qq(), geom-qq-line()),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Distinguish the line by colour and dash to keep it visible
+/// over the points.
+/// ```
+/// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
+/// #plot(
+///   data: d,
+///   mapping: aes(y: "v"),
+///   layers: (
+///     geom-qq(size: 2pt),
+///     geom-qq-line(colour: rgb("#cc0000"), stroke: 1pt, linetype: "dashed"),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

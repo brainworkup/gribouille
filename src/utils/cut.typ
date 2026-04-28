@@ -101,6 +101,21 @@
 ///   length `n` providing explicit labels.
 ///
 /// @returns Array of bin labels with the same length as `values`.
+///
+/// @examples-static Default labels show the boundary intervals.
+/// ```
+/// #let bins = cut-interval((1, 2, 3, 4, 5, 6, 7, 8), n: 4)
+/// // ("(1,2.75]", "(1,2.75]", "(2.75,4.5]", "(2.75,4.5]", ...)
+/// ```
+///
+/// @examples-static Provide explicit labels per bin for tidier display.
+/// ```
+/// #let bins = cut-interval(
+///   (1, 2, 3, 4, 5, 6, 7, 8),
+///   n: 4,
+///   labels: ("low", "mid-low", "mid-high", "high"),
+/// )
+/// ```
 #let cut-interval(values, n: 4, labels: auto) = {
   if n < 1 { panic("cut-interval: n must be >= 1; got " + repr(n)) }
   let parsed = _to-numeric(values)
@@ -142,6 +157,21 @@
 ///   length `n` providing explicit labels.
 ///
 /// @returns Array of bin labels with the same length as `values`.
+///
+/// @examples-static Quartile bins so each bin holds roughly the same
+/// number of observations.
+/// ```
+/// #let bins = cut-number((1, 2, 3, 4, 5, 6, 7, 8), n: 4)
+/// ```
+///
+/// @examples-static Tertile bins with custom labels.
+/// ```
+/// #let bins = cut-number(
+///   (1, 2, 3, 4, 5, 6, 7, 8, 9),
+///   n: 3,
+///   labels: ("low", "mid", "high"),
+/// )
+/// ```
 #let cut-number(values, n: 4, labels: auto) = {
   if n < 1 { panic("cut-number: n must be >= 1; got " + repr(n)) }
   let parsed = _to-numeric(values)
@@ -184,6 +214,16 @@
 ///   length matching the number of bins.
 ///
 /// @returns Array of bin labels with the same length as `values`.
+///
+/// @examples-static Bin widths of 2 align to multiples of two.
+/// ```
+/// #let bins = cut-width((1, 2, 3, 4, 5, 6, 7, 8), width: 2)
+/// ```
+///
+/// @examples-static Force a bin to be centred at zero by passing `center`.
+/// ```
+/// #let bins = cut-width((-3, -1, 0, 1, 2, 4), width: 2, center: 0)
+/// ```
 #let cut-width(values, width: 1, center: none, labels: auto) = {
   if width <= 0 {
     panic("cut-width: width must be positive; got " + repr(width))

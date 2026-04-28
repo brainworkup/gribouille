@@ -20,7 +20,7 @@
 ///
 /// @returns Guide dictionary tagged `kind: "guide"`, consumed by @guides.
 ///
-/// @example
+/// @examples Rotate long x tick labels so they don't overlap.
 /// ```
 /// #let d = (
 ///   (x: "January", y: 1),
@@ -33,6 +33,21 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 3pt),),
 ///   guides: guides(x: guide-axis(angle: 30)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Stagger labels across two rows when many short ticks would
+/// pile up.
+/// ```
+/// #let months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug")
+/// #let d = months.enumerate().map(((i, m)) => (x: m, y: i + 1))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-col(),),
+///   guides: guides(x: guide-axis(n-dodge: 2)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

@@ -18,7 +18,7 @@
 ///
 /// @returns Theme dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Minimal style: faint gridlines, no axis lines or tick marks.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -26,6 +26,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme-minimal(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair the minimal theme with a coloured `accent` for slide
+/// decks where you still want a brand colour.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-minimal(accent: rgb("#1f77b4")),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

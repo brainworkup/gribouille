@@ -22,7 +22,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default shape palette mapping three categories to distinct
+/// markers.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -34,6 +35,23 @@
 ///   mapping: aes(x: "x", y: "y", shape: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-shape(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair `shape` and `colour` mappings with the same column to
+/// reinforce the categorical encoding.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", shape: "sp", colour: "sp"),
+///   layers: (geom-point(size: 4pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -66,7 +84,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Custom three-shape cycle assigned in input order.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -79,6 +97,27 @@
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-shape-manual(
 ///     values: ("circle", "triangle", "diamond"),
+///   ),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples `limits` pins the level order so the shape mapping stays
+/// stable across datasets.
+/// ```
+/// #let d = (
+///   (x: 1, y: 3, sp: "c"),
+///   (x: 2, y: 4, sp: "a"),
+///   (x: 3, y: 2, sp: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", shape: "sp"),
+///   layers: (geom-point(size: 4pt),),
+///   scales: (scale-shape-manual(
+///     values: ("circle", "triangle", "diamond"),
+///     limits: ("a", "b", "c"),
 ///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -109,6 +148,23 @@
 /// @param name Legend title. Identity scales draw no legend.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Per-row shape keyword carried straight through to the marker.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sh: "circle"),
+///   (x: 2, y: 4, sh: "triangle"),
+///   (x: 3, y: 3, sh: "diamond"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", shape: "sh"),
+///   layers: (geom-point(size: 4pt),),
+///   scales: (scale-shape-identity(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// @see @scale-shape, @scale-shape-manual, @geom-point
 #let scale-shape-identity(name: none) = (

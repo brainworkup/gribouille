@@ -29,7 +29,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Heatmap of `v` values across an integer grid.
 /// ```
 /// #let d = ()
 /// #for x in range(0, 5) {
@@ -41,6 +41,25 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "v"),
 ///   layers: (geom-tile(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair the heatmap with a viridis scale for a perceptually
+/// uniform palette.
+/// ```
+/// #let d = ()
+/// #for x in range(0, 5) {
+///   for y in range(0, 4) {
+///     d.push((x: x, y: y, v: x * y))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", fill: "v"),
+///   layers: (geom-tile(),),
+///   scales: (scale-fill-viridis-c(option: "magma"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

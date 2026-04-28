@@ -32,7 +32,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Connect rows in input order (deliberately not sorted by x).
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1), (x: 3, y: 4), (x: 2, y: 2), (x: 4, y: 5),
@@ -41,6 +41,21 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-path(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Trajectory of a moving point parameterised by `t`, drawn in
+/// time order with a coloured fade.
+/// ```
+/// #let d = range(0, 24).map(t => (
+///   x: calc.cos(t * 0.4), y: calc.sin(t * 0.4) * (t / 24 + 0.5), t: t,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "t"),
+///   layers: (geom-path(stroke: 1.2pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

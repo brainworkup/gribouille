@@ -26,7 +26,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Three crossing segments specified by their two endpoints.
 /// ```
 /// #let d = (
 ///   (x: 0, y: 0, xend: 4, yend: 3),
@@ -36,6 +36,23 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", xend: "xend", yend: "yend"),
+///   layers: (geom-segment(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `colour` and `linetype` to colour-coded categorical
+/// segments.
+/// ```
+/// #let d = (
+///   (x: 0, y: 0, xend: 4, yend: 3, k: "a"),
+///   (x: 0, y: 3, xend: 4, yend: 0, k: "b"),
+///   (x: 2, y: 0, xend: 2, yend: 3, k: "a"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", xend: "xend", yend: "yend", colour: "k", linetype: "k"),
 ///   layers: (geom-segment(stroke: 1pt),),
 ///   width: 10cm,
 ///   height: 6cm,

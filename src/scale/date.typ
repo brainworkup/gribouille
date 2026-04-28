@@ -28,7 +28,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Numeric days since 2000-01-01 formatted as year-month ticks.
 /// ```
 /// #let d = range(0, 12).map(i => (x: 8766 + 30 * i, y: i))
 /// #plot(
@@ -36,6 +36,25 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-line(), geom-point(size: 2pt)),
 ///   scales: (scale-x-date(date-format: "[year]-[month repr:numerical]"),),
+///   width: 12cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples ISO-8601 strings work just as well; pick a longer
+/// `date-format` to spell the month out.
+/// ```
+/// #let d = (
+///   (x: "2024-01-15", y: 1),
+///   (x: "2024-04-15", y: 4),
+///   (x: "2024-07-15", y: 9),
+///   (x: "2024-10-15", y: 16),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-line(), geom-point(size: 2pt)),
+///   scales: (scale-x-date(date-format: "[month repr:short] [year]"),),
 ///   width: 12cm,
 ///   height: 6cm,
 /// )
@@ -77,6 +96,24 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Date axis on the y, useful for horizontal bar charts of
+/// time-stamped events.
+/// ```
+/// #let d = (
+///   (label: "Alpha", y: "2024-01-15"),
+///   (label: "Beta",  y: "2024-03-01"),
+///   (label: "Gamma", y: "2024-05-20"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "label", y: "y"),
+///   layers: (geom-point(size: 4pt),),
+///   scales: (scale-y-date(date-format: "[month repr:short] [day]"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// @see @scale-x-date, @scale-y-datetime
 #let scale-y-date(
   name: none,
@@ -116,6 +153,22 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples ISO-8601 datetime strings rendered with hour-and-minute ticks.
+/// ```
+/// #let d = range(0, 6).map(i => (
+///   x: "2024-04-01T0" + str(8 + i) + ":00",
+///   y: i * i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-line(), geom-point(size: 2pt)),
+///   scales: (scale-x-datetime(date-format: "[hour]:[minute]"),),
+///   width: 12cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// @see @scale-y-datetime, @scale-x-date, @scale-x-time
 #let scale-x-datetime(
   name: none,
@@ -152,6 +205,23 @@
 /// @param date-format Typst `datetime.display` pattern used for break labels.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Datetime axis on the y, useful for laying out events along a
+/// vertical timeline.
+/// ```
+/// #let d = range(0, 6).map(i => (
+///   x: i,
+///   y: "2024-04-01T0" + str(8 + i) + ":00",
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-y-datetime(date-format: "[hour]:[minute]"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// @see @scale-x-datetime, @scale-y-date
 #let scale-y-datetime(
@@ -193,6 +263,25 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Time-of-day axis using ISO-8601 `HH:MM` strings.
+/// ```
+/// #let d = (
+///   (x: "08:00", y: 1),
+///   (x: "10:00", y: 4),
+///   (x: "12:00", y: 9),
+///   (x: "16:00", y: 16),
+///   (x: "20:00", y: 5),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-line(), geom-point(size: 2pt)),
+///   scales: (scale-x-time(),),
+///   width: 12cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// @see @scale-y-time, @scale-x-datetime
 #let scale-x-time(
   name: none,
@@ -228,6 +317,24 @@
 /// @param date-format Typst `datetime.display` pattern used for break labels.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Time-of-day axis on the y for vertical event displays.
+/// ```
+/// #let d = (
+///   (x: "Mon", y: "08:30"),
+///   (x: "Tue", y: "09:15"),
+///   (x: "Wed", y: "10:00"),
+///   (x: "Thu", y: "08:45"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-y-time(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// @see @scale-x-time, @scale-y-datetime
 #let scale-y-time(

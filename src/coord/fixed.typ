@@ -17,7 +17,8 @@
 ///
 /// @returns Coordinate dictionary consumed by @plot.
 ///
-/// @example
+/// @examples One x unit equals one y unit, useful for spatial data where
+/// the axes share units.
 /// ```
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -25,6 +26,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   coord: coord-fixed(ratio: 1),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples `ratio: 0.5` makes y units half the size of x units, useful
+/// for stretching tall data into a wide panel.
+/// ```
+/// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-line(stroke: 1pt), geom-point(size: 2pt)),
+///   coord: coord-fixed(ratio: 0.5),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

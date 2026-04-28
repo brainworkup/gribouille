@@ -31,7 +31,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Pre-aggregated heights drawn one bar per row.
 /// ```
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
@@ -43,6 +43,26 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "revenue"),
 ///   layers: (geom-col(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Adding a `fill` mapping with `position: "stack"` (default for
+/// stacked) accumulates contributions per category.
+/// ```
+/// #let d = (
+///   (q: "Q1", revenue: 6, region: "EU"),
+///   (q: "Q1", revenue: 4, region: "US"),
+///   (q: "Q2", revenue: 9, region: "EU"),
+///   (q: "Q2", revenue: 9, region: "US"),
+///   (q: "Q3", revenue: 14, region: "EU"),
+///   (q: "Q3", revenue: 11, region: "US"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "q", y: "revenue", fill: "region"),
+///   layers: (geom-col(position: "stack"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

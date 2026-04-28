@@ -124,7 +124,7 @@
 ///
 /// @returns Theme dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Custom panel and grid colours via structured element records.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -135,6 +135,23 @@
 ///     text: element-text(colour: rgb("#2c3e50")),
 ///     panel-background: element-rect(fill: rgb("#f7f0e7")),
 ///     panel-grid: element-line(colour: rgb("#d9cfbf")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Hide elements entirely with @element-blank, useful for very
+/// minimalist figures.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(
+///     panel-grid: element-blank(),
+///     axis-line: element-blank(),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

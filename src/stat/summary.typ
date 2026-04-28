@@ -23,7 +23,8 @@
 ///
 /// @returns Statistic object with `name: "summary"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Mean and standard-error summary per group, drawn as a line and
+/// ribbon stack.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -37,6 +38,29 @@
 ///   layers: (
 ///     geom-line(stat: stat-summary(fun: "mean-se")),
 ///     geom-ribbon(stat: stat-summary(fun: "mean-se")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Use the `median-hilow` reducer with @geom-pointrange to surface
+/// the median plus a customisable confidence band.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b", "c") {
+///   for i in range(20) {
+///     d.push((grp: grp, y: calc.sin(i) + i / 10))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: "y"),
+///   layers: (
+///     geom-pointrange(
+///       size: 3pt,
+///       stat: stat-summary(fun: "median-hilow", fun-args: (conf: 0.5)),
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

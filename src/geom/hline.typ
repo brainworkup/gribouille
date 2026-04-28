@@ -28,7 +28,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Single horizontal reference line at `y = 5`.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i + 2))
 /// #plot(
@@ -37,6 +37,22 @@
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-hline(yintercept: 5, colour: rgb("#cc0000")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pass an array of intercepts to draw several reference lines at
+/// once.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i + 2))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-hline(yintercept: (3, 6, 9), colour: rgb("#888888")),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

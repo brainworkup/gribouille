@@ -33,13 +33,26 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Default `"hv"` step path moving right then up between points.
 /// ```
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-step(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples `"vh"` direction reverses the corner placement, useful when
+/// the change is best read as happening at the previous timestamp.
+/// ```
+/// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-step(direction: "vh", stroke: 1pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

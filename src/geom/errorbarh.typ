@@ -28,7 +28,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Horizontal error bars across an integer y axis.
 /// ```
 /// #let d = range(1, 6).map(i => (
 ///   y: i,
@@ -39,6 +39,24 @@
 ///   data: d,
 ///   mapping: aes(y: "y", xmin: "lo", xmax: "hi"),
 ///   layers: (geom-errorbarh(height: 0.4),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine with @geom-point at the central estimate to show point
+/// estimates with horizontal uncertainty.
+/// ```
+/// #let d = range(1, 6).map(i => (
+///   x: i, y: i, lo: i - 0.5, hi: i + 0.5,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", xmin: "lo", xmax: "hi"),
+///   layers: (
+///     geom-errorbarh(height: 0.3),
+///     geom-point(size: 3pt),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

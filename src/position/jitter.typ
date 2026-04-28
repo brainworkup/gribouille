@@ -26,7 +26,7 @@
 ///
 /// @returns Position dictionary with `name: "jitter"`, consumed by @plot.
 ///
-/// @example
+/// @examples Spread overplotted points with the default jitter amount.
 /// ```
 /// #let d = ()
 /// #for x in (1, 2, 3) {
@@ -36,6 +36,25 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-jitter(size: 2pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Tighten `width` and zero `height` to keep jitter purely
+/// horizontal; bump `seed` to draw a different reproducible cloud.
+/// ```
+/// #let d = ()
+/// #for x in (1, 2, 3) {
+///   for _ in range(0, 12) { d.push((x: x, y: 1)) }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(
+///     size: 2pt,
+///     position: position-jitter(width: 0.15, height: 0, seed: 7),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

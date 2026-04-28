@@ -20,7 +20,7 @@
 ///
 /// @returns Element dictionary consumed by @theme.
 ///
-/// @example
+/// @examples Bigger axis-title font passed via @theme.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -28,6 +28,26 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(axis-title: element-text(size: 14pt)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine multiple text fields and a rotation angle on axis
+/// tick labels.
+/// ```
+/// #let d = (
+///   (q: "Q1", y: 3), (q: "Q2", y: 5), (q: "Q3", y: 4), (q: "Q4", y: 6),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "q", y: "y"),
+///   layers: (geom-col(),),
+///   theme: theme(axis-text: element-text(
+///     size: 9pt,
+///     angle: 30deg,
+///     colour: rgb("#1f77b4"),
+///   )),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -62,7 +82,7 @@
 ///
 /// @returns Element dictionary consumed by @theme.
 ///
-/// @example
+/// @examples Recolour the panel grid via @theme.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -70,6 +90,23 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-grid: element-line(colour: rgb("#d9cfbf"))),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Strengthen the axis line by setting both `colour` and
+/// `thickness`.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(axis-line: element-line(
+///     colour: rgb("#cc0000"),
+///     thickness: 1pt,
+///   )),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -95,7 +132,7 @@
 ///
 /// @returns Element dictionary consumed by @theme.
 ///
-/// @example
+/// @examples Tinted panel background via @theme.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -103,6 +140,22 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-background: element-rect(fill: rgb("#f7f0e7"))),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Add a stroke to frame the panel as well as fill it.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(panel-background: element-rect(
+///     fill: rgb("#fff7e6"),
+///     stroke: 1pt + rgb("#cc7a00"),
+///   )),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -126,7 +179,7 @@
 ///
 /// @returns Element dictionary consumed by @theme.
 ///
-/// @example
+/// @examples Hide the panel grid entirely.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -134,6 +187,23 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-grid: element-blank()),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine `element-blank` with other overrides to remove
+/// multiple non-data marks at once.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(
+///     panel-grid: element-blank(),
+///     axis-line: element-blank(),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

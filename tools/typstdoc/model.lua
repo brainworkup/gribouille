@@ -14,6 +14,7 @@ function M.new_example(opts)
     render = opts.render,
     attributes = opts.attributes or {},
     source = opts.source or "",
+    caption = opts.caption or "",
   }
 end
 

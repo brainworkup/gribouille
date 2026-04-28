@@ -33,7 +33,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Default scatter, mapping `colour` to a categorical column.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -45,6 +45,24 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `shape` and `size` alongside `colour` to encode three
+/// dimensions on the same scatter.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a", w: 1),
+///   (x: 2, y: 4, sp: "b", w: 2),
+///   (x: 3, y: 3, sp: "a", w: 3),
+///   (x: 4, y: 5, sp: "b", w: 4),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp", shape: "sp", size: "w"),
+///   layers: (geom-point(),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

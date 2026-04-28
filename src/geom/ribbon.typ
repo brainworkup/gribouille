@@ -31,7 +31,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Plain shaded band between `ymin` and `ymax`.
 /// ```
 /// #let d = range(0, 10).map(i => (
 ///   x: i,
@@ -42,6 +42,24 @@
 ///   data: d,
 ///   mapping: aes(x: "x", ymin: "lo", ymax: "hi"),
 ///   layers: (geom-ribbon(alpha: 0.3),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair the ribbon with @geom-line over a `y` mid-line for a
+/// classic uncertainty-around-trend visualisation.
+/// ```
+/// #let d = range(0, 10).map(i => (
+///   x: i, y: i * 0.5, lo: i * 0.5 - 0.6, hi: i * 0.5 + 0.6,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi"),
+///   layers: (
+///     geom-ribbon(alpha: 0.3),
+///     geom-line(stroke: 1pt),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

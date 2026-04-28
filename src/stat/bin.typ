@@ -19,13 +19,26 @@
 ///
 /// @returns Statistic object with `name: "bin"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Histogram driven by an eight-bin partition.
 /// ```
 /// #let d = range(0, 40).map(i => (x: i * 0.25))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x"),
 ///   layers: (geom-histogram(bins: 8),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pin `binwidth` to align bin edges to integer boundaries when
+/// the data range is known.
+/// ```
+/// #let d = range(0, 40).map(i => (x: i * 0.25))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x"),
+///   layers: (geom-histogram(binwidth: 1),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

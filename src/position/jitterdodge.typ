@@ -25,7 +25,8 @@
 ///
 /// @returns Position dictionary with `name: "jitterdodge"`, consumed by @plot.
 ///
-/// @example
+/// @examples Dodge by `colour` then jitter within each slot, useful for
+/// dense categorical scatters.
 /// ```
 /// #let d = ()
 /// #for x in (1, 2, 3) {
@@ -39,6 +40,27 @@
 ///   layers: (
 ///     geom-jitter(size: 2pt, position: position-jitterdodge()),
 ///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Tune `dodge-width` and `width` to keep jittered clusters
+/// inside their dodged slots.
+/// ```
+/// #let d = ()
+/// #for x in (1, 2, 3) {
+///   for grp in ("a", "b", "c") {
+///     for _ in range(0, 8) { d.push((x: x, y: 1, grp: grp)) }
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "grp"),
+///   layers: (geom-jitter(
+///     size: 2pt,
+///     position: position-jitterdodge(dodge-width: 0.9, width: 0.15),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

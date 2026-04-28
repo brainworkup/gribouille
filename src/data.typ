@@ -37,7 +37,8 @@
 ///
 /// @returns New dataset (2-arg) or mapping-ref dict (1-arg).
 ///
-/// @example
+/// @examples Two-arg form rewrites a column with parsed numbers; useful
+/// when the data arrived as strings.
 /// ```
 /// #let raw = (
 ///   (x: "1", y: 2.0),
@@ -48,6 +49,23 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples One-arg form tags the column inside @aes so the scale picks
+/// continuous semantics without rewriting the dataset.
+/// ```
+/// #let raw = (
+///   (x: 1, y: 2.0),
+///   (x: 2, y: 4.0),
+///   (x: 3, y: 9.0),
+/// )
+/// #plot(
+///   data: raw,
+///   mapping: aes(x: as-numeric("x"), y: "y"),
 ///   layers: (geom-point(size: 3pt),),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -88,7 +106,9 @@
 ///
 /// @returns New dataset (2-arg) or mapping-ref dict (1-arg).
 ///
-/// @example
+/// @examples One-arg form tags the column as discrete inline in @aes,
+/// useful when a numeric column should be treated as categorical without
+/// rewriting the dataset.
 /// ```
 /// #let iris = (
 ///   (sl: 5.1, sp: 1),
@@ -98,6 +118,24 @@
 /// #plot(
 ///   data: iris,
 ///   mapping: aes(x: as-factor("sp"), y: "sl", fill: as-factor("sp")),
+///   layers: (geom-col(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Two-arg form rewrites the column to strings, useful as a
+/// one-shot pre-processing step.
+/// ```
+/// #let raw = (
+///   (sp: 1, y: 5.1),
+///   (sp: 2, y: 7.0),
+///   (sp: 3, y: 6.3),
+/// )
+/// #let d = as-factor(raw, "sp")
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "sp", y: "y"),
 ///   layers: (geom-col(),),
 ///   width: 10cm,
 ///   height: 6cm,

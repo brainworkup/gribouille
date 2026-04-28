@@ -27,7 +27,7 @@
 ///
 /// @returns Typst content block containing the rendered figure.
 ///
-/// @example
+/// @examples Single-layer scatter coloured by category, with a title.
 /// ```
 /// #let mtcars = (
 ///   (mpg: 21.0, wt: 2.620, cyl: "6"),
@@ -43,6 +43,30 @@
 ///   labs: labs(title: "Fuel economy vs. weight"),
 ///   width: 12cm,
 ///   height: 7cm,
+/// )
+/// ```
+///
+/// @examples Stack two layers (`geom-point` + `geom-smooth`) and apply a
+/// theme, scales, and facets in one call.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b") {
+///   for i in range(0, 12) {
+///     d.push((x: i, y: i * 0.5 + (if grp == "b" { 1 } else { 0 }) + calc.sin(i), grp: grp))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "grp"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-smooth(method: "lm", se: false),
+///   ),
+///   facet: facet-wrap("grp"),
+///   theme: theme-minimal(),
+///   labs: labs(title: "Per-group trend"),
+///   width: 12cm,
+///   height: 6cm,
 /// )
 /// ```
 ///
@@ -99,4 +123,11 @@
 /// @param spec Plot spec dictionary (the dict @plot builds internally).
 ///
 /// @returns The alt string, or `none` if absent.
+///
+/// @examples-static Pull the alt text from a built spec for accessibility
+/// reporting.
+/// ```
+/// #let spec = (data: (), alt: "Scatter of weight vs mpg")
+/// #let alt = get-alt-text(spec)
+/// ```
 #let get-alt-text(spec) = spec.at("alt", default: none)

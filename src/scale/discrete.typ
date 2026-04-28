@@ -16,7 +16,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Force the level order with `limits` so the bars sit in
+/// alphabetical order regardless of input.
 /// ```
 /// #let d = (
 ///   (grp: "b", y: 3),
@@ -28,6 +29,27 @@
 ///   mapping: aes(x: "grp", y: "y"),
 ///   layers: (geom-col(),),
 ///   scales: (scale-x-discrete(limits: ("a", "b", "c")),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Provide custom `labels` to display human-friendly tick text
+/// without renaming the underlying data.
+/// ```
+/// #let d = (
+///   (grp: "a", y: 3),
+///   (grp: "b", y: 5),
+///   (grp: "c", y: 2),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: "y"),
+///   layers: (geom-col(),),
+///   scales: (scale-x-discrete(
+///     limits: ("a", "b", "c"),
+///     labels: ("Alpha", "Beta", "Gamma"),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -57,7 +79,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Force level order so bars stay in `(a, b, c)` regardless of
+/// input order.
 /// ```
 /// #let d = (
 ///   (grp: "b", x: 3),
@@ -69,6 +92,24 @@
 ///   mapping: aes(x: "x", y: "grp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-y-discrete(limits: ("a", "b", "c")),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Subset the levels (omit `"b"`) to drop a category from the
+/// axis without filtering the underlying data.
+/// ```
+/// #let d = (
+///   (grp: "a", x: 5),
+///   (grp: "b", x: 3),
+///   (grp: "c", x: 2),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "grp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-y-discrete(limits: ("a", "c")),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

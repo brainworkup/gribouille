@@ -21,13 +21,29 @@
 /// @stability stable
 /// @since 0.0.1
 ///
-/// @example
+/// @examples Highway mpg vs engine displacement, coloured by vehicle class.
 /// ```
 /// #plot(
 ///   data: mpg,
 ///   mapping: aes(x: "displ", y: "hwy", colour: "class"),
 ///   layers: (geom-point(size: 3pt),),
 ///   width: 11cm,
+///   height: 7cm,
+/// )
+/// ```
+///
+/// @examples Facet by `class` and add a linear smoother per panel to
+/// compare per-class trends.
+/// ```
+/// #plot(
+///   data: mpg,
+///   mapping: aes(x: "displ", y: "hwy"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-smooth(method: "lm", se: false),
+///   ),
+///   facet: facet-wrap("class", ncol: 3),
+///   width: 12cm,
 ///   height: 7cm,
 /// )
 /// ```

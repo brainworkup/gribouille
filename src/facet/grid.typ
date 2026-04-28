@@ -22,7 +22,7 @@
 ///
 /// @returns Facet dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Two discrete variables driving the row and column structure.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -37,6 +37,25 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-grid(rows: "sex", cols: "sp"),
+///   width: 12cm,
+///   height: 7cm,
+/// )
+/// ```
+///
+/// @examples Pass only `rows:` (or only `cols:`) for a one-dimensional
+/// grid layout.
+/// ```
+/// #let d = ()
+/// #for sex in ("F", "M") {
+///   for i in range(0, 6) {
+///     d.push((sex: sex, x: i, y: i * 1.5))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-grid(rows: "sex"),
 ///   width: 12cm,
 ///   height: 7cm,
 /// )

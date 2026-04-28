@@ -32,7 +32,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Default boxed labels nudged above their points.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, name: "a"),
@@ -45,6 +45,32 @@
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-label(dy: 0.25),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Customise `fill`, `stroke`, and `radius` to match a coloured
+/// callout style.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, name: "alpha"),
+///   (x: 2, y: 4, name: "beta"),
+///   (x: 3, y: 3, name: "gamma"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", label: "name"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-label(
+///       fill: rgb("#fff7e6"),
+///       stroke: 0.6pt + rgb("#cc7a00"),
+///       radius: 3pt,
+///       inset: 4pt,
+///       dy: 0.3,
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

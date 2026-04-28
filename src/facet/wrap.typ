@@ -30,7 +30,8 @@
 ///
 /// @returns Facet dictionary consumed by @plot.
 ///
-/// @example
+/// @examples One panel per level of `sp`, three columns, with each panel
+/// training y independently.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b", "c") {
@@ -43,6 +44,25 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-wrap("sp", ncol: 3, scales: "free_y"),
+///   width: 12cm,
+///   height: 7cm,
+/// )
+/// ```
+///
+/// @examples Default `scales: "fixed"` shares both axes across panels;
+/// useful when you want comparable scales side by side.
+/// ```
+/// #let d = ()
+/// #for sp in ("a", "b", "c", "d") {
+///   for i in range(0, 6) {
+///     d.push((sp: sp, x: i, y: i + calc.rem(i, 3)))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-wrap("sp", nrow: 2),
 ///   width: 12cm,
 ///   height: 7cm,
 /// )

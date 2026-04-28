@@ -30,7 +30,7 @@
 ///
 /// @returns Dictionary tagged `kind: "labs"`, consumed by @plot.
 ///
-/// @example
+/// @examples Title block plus axis titles passed via `labs`.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2),
@@ -47,6 +47,28 @@
 ///     caption: "Source: made up",
 ///     x: "Index",
 ///     y: "Value",
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Setting an aesthetic name (`colour`) overrides the legend
+/// title; alt text is stored on the spec for accessibility tooling.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   labs: labs(
+///     title: "Coloured groups",
+///     colour: "Species",
+///     alt: "Three points coloured by species",
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

@@ -23,13 +23,31 @@
 /// @stability stable
 /// @since 0.0.1
 ///
-/// @example
+/// @examples Plot the unemployment series over time, treating `date` as a
+/// continuous date axis.
 /// ```
 /// #plot(
 ///   data: economics,
 ///   mapping: aes(x: "date", y: "unemploy"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-x-date(),),
+///   width: 11cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Stack two layers with their own y mappings to compare two
+/// series on the same panel.
+/// ```
+/// #plot(
+///   data: economics,
+///   mapping: aes(x: "date"),
+///   layers: (
+///     geom-line(mapping: aes(y: "psavert"), colour: rgb("#1b9e77"), stroke: 1pt),
+///     geom-line(mapping: aes(y: "uempmed"), colour: rgb("#d95f02"), stroke: 1pt),
+///   ),
+///   scales: (scale-x-date(),),
+///   labs: labs(y: "Percent / Weeks"),
 ///   width: 11cm,
 ///   height: 6cm,
 /// )

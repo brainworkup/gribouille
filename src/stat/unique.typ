@@ -14,7 +14,8 @@
 ///
 /// @returns Statistic object with `name: "unique"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Drop the duplicate `(1, 1)` row; the rendered scatter shows
+/// each pair only once.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1),
@@ -25,6 +26,26 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(stat: "unique"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Compare the same data with @stat-sum to keep duplicates and
+/// encode the count in marker size.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1),
+///   (x: 1, y: 1),
+///   (x: 1, y: 1),
+///   (x: 2, y: 2),
+///   (x: 3, y: 3),
+///   (x: 3, y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-count(),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

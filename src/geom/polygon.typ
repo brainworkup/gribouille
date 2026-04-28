@@ -27,7 +27,8 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Two filled triangles, each defined by three vertex rows in a
+/// shared column.
 /// ```
 /// #let d = (
 ///   (x: 0, y: 0, k: "a"),
@@ -41,6 +42,26 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "k"),
 ///   layers: (geom-polygon(alpha: 0.5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples A regular pentagon constructed from sampled angles.
+/// ```
+/// #let n = 5
+/// #let d = range(0, n).map(i => (
+///   x: calc.cos(2 * calc.pi * i / n),
+///   y: calc.sin(2 * calc.pi * i / n),
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-polygon(
+///     fill: rgb("#4c78a8"),
+///     stroke: 1pt + black,
+///     alpha: 0.7,
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

@@ -27,6 +27,20 @@
 ///
 /// @returns The smallest positive difference between consecutive unique
 ///   values, or `1` when no such difference exists.
+///
+/// @examples-static Default behaviour folds in zero so the result reflects
+/// the smallest distinct increment from the origin too.
+/// ```
+/// #let r = resolution((1, 2, 4, 7))
+/// // r == 1.0
+/// ```
+///
+/// @examples-static Pass `zero: false` when the data does not naturally
+/// include zero and you only want gaps between observed values.
+/// ```
+/// #let r = resolution((10, 12, 16, 22), zero: false)
+/// // r == 2.0
+/// ```
 #let resolution(values, zero: true) = {
   let xs = _to-numeric(values)
   if zero { xs.push(0.0) }

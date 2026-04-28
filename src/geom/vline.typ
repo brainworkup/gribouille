@@ -28,7 +28,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Two vertical reference lines at `x = 3` and `x = 6`.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -37,6 +37,21 @@
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-vline(xintercept: (3, 6), colour: rgb("#4c78a8")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples A single dashed reference line at the data midpoint.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-vline(xintercept: 4.5, stroke: 1pt, colour: rgb("#cc0000")),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

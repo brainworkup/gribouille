@@ -34,7 +34,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples One line per group, derived implicitly from the `colour` mapping.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
@@ -47,6 +47,26 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "grp"),
+///   layers: (geom-line(stroke: 1pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `linetype` to the same column to give each group a distinct
+/// dash pattern in addition to colour.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, grp: "a"),
+///   (x: 2, y: 4, grp: "a"),
+///   (x: 3, y: 3, grp: "a"),
+///   (x: 1, y: 1, grp: "b"),
+///   (x: 2, y: 2, grp: "b"),
+///   (x: 3, y: 4, grp: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "grp", linetype: "grp"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   width: 10cm,
 ///   height: 6cm,

@@ -29,7 +29,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Sine curve sampled across the trained x-domain.
 /// ```
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
@@ -38,6 +38,26 @@
 ///   layers: (
 ///     geom-blank(),
 ///     geom-function(fun: x => calc.sin(x)),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pass `xlim` to override the domain when the training data does
+/// not match the function's natural range.
+/// ```
+/// #let frame = ((x: 0, y: 0), (x: 1, y: 1))
+/// #plot(
+///   data: frame,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-blank(),
+///     geom-function(
+///       fun: x => calc.sin(x) * 0.5 + 0.5,
+///       xlim: (0, 4 * calc.pi),
+///       n: 201,
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

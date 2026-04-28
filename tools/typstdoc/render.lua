@@ -133,11 +133,15 @@ local function emit_returns(fn, from_qmd, index, strict)
   return table.concat(out, "\n")
 end
 
-local function emit_examples(fn)
+local function emit_examples(fn, from_qmd, index, strict)
   if #fn.doc.examples == 0 then return "" end
   local out = { "## Examples", "" }
   local render_idx = 0
   for _, ex in ipairs(fn.doc.examples) do
+    if ex.caption and ex.caption ~= "" then
+      table.insert(out, resolve.resolve_refs_in_text(ex.caption, from_qmd, index, strict, fn.file, fn.line))
+      table.insert(out, "")
+    end
     if ex.render then
       render_idx = render_idx + 1
       table.insert(out, "```typst")
@@ -200,7 +204,7 @@ function M.render_function(fn, index, opts)
     emit_arities(fn, from_qmd, index, strict),
     emit_params(fn, from_qmd, index, strict),
     emit_returns(fn, from_qmd, index, strict),
-    emit_examples(fn),
+    emit_examples(fn, from_qmd, index, strict),
     emit_see_also(fn, from_qmd, index, strict),
   }
   local parts = {}

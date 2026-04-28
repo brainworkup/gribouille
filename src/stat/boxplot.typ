@@ -23,7 +23,7 @@
 ///
 /// @returns Statistic object with `name: "boxplot"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Default 1.5 × IQR whisker rule on grouped raw observations.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -35,6 +35,24 @@
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y"),
 ///   layers: (geom-boxplot(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Tighten the whiskers (`coef: 1.0`) so more values surface as
+/// outliers; useful for spotting borderline points.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b", "c") {
+///   for i in range(20) {
+///     d.push((grp: grp, y: calc.sin(i) + i / 10))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: "y"),
+///   layers: (geom-boxplot(stat: stat-boxplot(coef: 1.0)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

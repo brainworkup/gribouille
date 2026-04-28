@@ -34,7 +34,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Linear fit through points with the default 95% confidence band.
 /// ```
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
@@ -46,6 +46,24 @@
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-smooth(method: "lm"),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Disable the ribbon with `se: false` for a cleaner trend overlay.
+/// ```
+/// #let d = range(0, 20).map(i => (
+///   x: i,
+///   y: i * 0.5 + calc.sin(i * 0.4) * 2,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-smooth(method: "lm", se: false, stroke: 1.4pt),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

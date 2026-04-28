@@ -20,13 +20,32 @@
 ///
 /// @returns Theme dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Loud red axes and strips so theme regions are easy to spot.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
+///   theme: theme-test(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Particularly handy with facets to verify strip styling.
+/// ```
+/// #let d = ()
+/// #for sp in ("a", "b") {
+///   for i in range(0, 6) {
+///     d.push((sp: sp, x: i, y: i * 0.5))
+///   }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-wrap("sp"),
 ///   theme: theme-test(),
 ///   width: 10cm,
 ///   height: 6cm,

@@ -23,7 +23,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Marker size grows with the number of duplicate `(x, y)` rows.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1),
@@ -37,6 +37,27 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-count(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair with @scale-size-area to give markers an area-proportional
+/// scaling (instead of a radius-proportional one).
+/// ```
+/// #let d = (
+///   (x: 1, y: 1),
+///   (x: 1, y: 1),
+///   (x: 2, y: 2),
+///   (x: 3, y: 3),
+///   (x: 3, y: 3),
+///   (x: 3, y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-count(),),
+///   scales: (scale-size-area(range: (1pt, 12pt)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

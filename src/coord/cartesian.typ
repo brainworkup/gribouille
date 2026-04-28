@@ -19,7 +19,7 @@
 ///
 /// @returns Coordinate dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Clip the drawn panel without dropping rows from training.
 /// ```
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -27,6 +27,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   coord: coord-cartesian(xlim: (2, 15), ylim: (0, 8)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Disabling `expand` removes the default margin so axis lines
+/// hug the data range.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i, y: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-line(stroke: 1pt), geom-point(size: 2pt)),
+///   coord: coord-cartesian(expand: false),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

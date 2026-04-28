@@ -22,7 +22,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default ramp interpolating between the library's low and high
+/// blue stops.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -30,6 +31,20 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-continuous(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pin `limits` to clip the trained domain and render extremes at
+/// the palette endpoints.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-continuous(limits: (1, 4)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -66,7 +81,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default palette mapping three categories to the library's eight
+/// reserved discrete colours.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -78,6 +94,26 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-discrete(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Override `palette` with an explicit colour array to hand-pick
+/// the mapping order.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-discrete(palette: (
+///     rgb("#1b9e77"), rgb("#d95f02"), rgb("#7570b3"),
+///   )),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -113,7 +149,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default ramp filling bars by their numeric value.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -127,6 +163,23 @@
 ///   scales: (scale-fill-continuous(),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples The default ramp shown as a continuous swatch via @geom-rect
+/// over a sampled gradient.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-continuous(),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
 /// )
 /// ```
 ///
@@ -161,7 +214,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default palette filling three bars from the library's reserved
+/// discrete colours.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -175,6 +229,24 @@
 ///   scales: (scale-fill-discrete(),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples The palette laid out as a swatch strip via @geom-rect, one
+/// rectangle per level.
+/// ```
+/// #let levels = ("a", "b", "c", "d", "e", "f", "g", "h")
+/// #let d = levels.enumerate().map(((i, k)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-discrete(),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
 /// )
 /// ```
 ///
@@ -210,7 +282,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Hand-picked colour array applied to three categorical levels.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -224,6 +296,27 @@
 ///   scales: (scale-colour-manual(values: (
 ///     rgb("#1b9e77"), rgb("#d95f02"), rgb("#7570b3"),
 ///   )),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples `limits` fixes the level order independently of how rows appear
+/// in the data, useful for stable legends across datasets.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "c"),
+///   (x: 2, y: 4, sp: "a"),
+///   (x: 3, y: 3, sp: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-manual(
+///     values: (rgb("#1b9e77"), rgb("#d95f02"), rgb("#7570b3")),
+///     limits: ("a", "b", "c"),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -256,7 +349,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Hand-picked colour array applied to three categorical levels.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -272,6 +365,23 @@
 ///   )),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples The same array shown as a swatch strip via @geom-rect.
+/// ```
+/// #let pal = (rgb("#66c2a5"), rgb("#fc8d62"), rgb("#8da0cb"))
+/// #let d = pal.enumerate().map(((i, _)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-manual(values: pal),),
+///   guides: guides(fill: guide-none()),
+///   width: 6cm,
+///   height: 1cm,
 /// )
 /// ```
 ///
@@ -302,7 +412,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Plasma option of the viridis family applied to four categories.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -315,6 +425,25 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-viridis-d(option: "plasma"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Switching `option` to `"cividis"` selects the colour-blind safe
+/// alternative.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+///   (x: 4, y: 5, sp: "d"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-viridis-d(option: "cividis"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -353,7 +482,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Magma option applied to a continuous numeric column.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -361,6 +490,19 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-viridis-c(option: "magma"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Default `"viridis"` ramp with `limits` clipping the lower tail.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-viridis-c(limits: (2, 6)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -401,7 +543,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Four equal-width bins coloured from the default viridis ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -409,6 +551,20 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-viridis-b(n-breaks: 4),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Bumping `n-breaks` and switching to the inferno option produces
+/// a finer-grained banded scale.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-viridis-b(option: "inferno", n-breaks: 8),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -449,7 +605,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Cividis option filling four categorical bars.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -464,6 +620,23 @@
 ///   scales: (scale-fill-viridis-d(option: "cividis"),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Each viridis option laid out as a swatch strip via @geom-rect.
+/// ```
+/// #let opts = ("viridis", "magma", "plasma", "inferno", "cividis")
+/// #let d = opts.enumerate().map(((i, k)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-viridis-d(option: "magma"),),
+///   guides: guides(fill: guide-none()),
+///   width: 6cm,
+///   height: 1cm,
 /// )
 /// ```
 ///
@@ -500,7 +673,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default viridis ramp filling bars by their numeric value.
 /// ```
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
@@ -510,6 +683,22 @@
 ///   scales: (scale-fill-viridis-c(option: "viridis"),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples The viridis ramp shown as a continuous swatch via @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-viridis-c(),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
 /// )
 /// ```
 ///
@@ -546,7 +735,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Hex strings carried straight through to point strokes; no
+/// legend is drawn.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, c: "#1b9e77"),
@@ -583,6 +773,24 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Per-row hex strings used as fills, with @geom-rect drawing a
+/// custom swatch from arbitrary colours.
+/// ```
+/// #let d = (
+///   (xmin: 0, xmax: 1, ymin: 0, ymax: 1, c: "#1b9e77"),
+///   (xmin: 1, xmax: 2, ymin: 0, ymax: 1, c: "#d95f02"),
+///   (xmin: 2, xmax: 3, ymin: 0, ymax: 1, c: "#7570b3"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "c"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-identity(),),
+///   width: 6cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-fill-manual, @scale-colour-identity
 #let scale-fill-identity(name: none) = (
   kind: "scale",
@@ -608,7 +816,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default viridis ramp quantised into four bins for a banded fill.
 /// ```
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
@@ -618,6 +826,22 @@
 ///   scales: (scale-fill-viridis-b(n-breaks: 4),),
 ///   width: 10cm,
 ///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples The same ramp shown as a banded swatch via @geom-rect.
+/// ```
+/// #let d = range(0, 12).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-viridis-b(option: "plasma", n-breaks: 6),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
 /// )
 /// ```
 ///
@@ -657,7 +881,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Set1 palette mapping three categorical levels to bold qualitative
+/// hues.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -669,6 +894,27 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-brewer(palette: "Set1"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Switching to the diverging Spectral palette suits ordered
+/// categories with a meaningful midpoint.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "low"),
+///   (x: 2, y: 3, sp: "mid"),
+///   (x: 3, y: 4, sp: "high"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-brewer(
+///     palette: "Spectral",
+///     limits: ("low", "mid", "high"),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -705,6 +951,40 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Set1 palette filling categorical bars.
+/// ```
+/// #let d = (
+///   (grp: "a", y: 1),
+///   (grp: "b", y: 2),
+///   (grp: "c", y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: "y", fill: "grp"),
+///   layers: (geom-col(),),
+///   scales: (scale-fill-brewer(palette: "Set1"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples The Spectral palette laid out as a swatch strip via @geom-rect.
+/// ```
+/// #let levels = ("a", "b", "c", "d", "e", "f", "g")
+/// #let d = levels.enumerate().map(((i, k)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-brewer(palette: "Spectral"),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-colour-brewer, @scale-fill-discrete
 #let scale-fill-brewer(
   palette: "Set1",
@@ -739,7 +1019,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default low-to-high blue ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -747,6 +1027,22 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-gradient(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Custom two-stop ramp passing explicit `low` and `high` colours.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-gradient(
+///     low: rgb("#fee5d9"),
+///     high: rgb("#a50f15"),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -791,7 +1087,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default diverging ramp pivoting at zero, useful for signed
+/// numeric values.
 /// ```
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
 /// #plot(
@@ -799,6 +1096,24 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-gradient2(midpoint: 0),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Shift `midpoint` to centre the ramp around a non-zero baseline.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i, y: i, z: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-gradient2(
+///     low: rgb("#1a9850"),
+///     mid: rgb("#ffffbf"),
+///     high: rgb("#d73027"),
+///     midpoint: 5,
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -844,7 +1159,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Three-stop ramp interpolating green-yellow-red across the domain.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -854,6 +1169,22 @@
 ///   scales: (scale-colour-gradientn(colours: (
 ///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
 ///   )),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Feeding a brewer palette into `scale-colour-gradientn` lifts a
+/// discrete palette into a continuous ramp.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-gradientn(
+///     colours: brewer-palette("RdYlBu"),
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -894,6 +1225,25 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Custom two-stop ramp shown as a continuous swatch via @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-gradient(
+///     low: rgb("#fee5d9"),
+///     high: rgb("#a50f15"),
+///   ),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-colour-gradient, @scale-fill-gradient2, @scale-fill-gradientn
 #let scale-fill-gradient(
   low: rgb("#132B43"),
@@ -931,6 +1281,23 @@
 /// @param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Diverging ramp pivoting at zero, shown as a swatch via
+/// @geom-rect.
+/// ```
+/// #let d = range(-7, 8).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-gradient2(midpoint: 0),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
 ///
 /// @see @scale-colour-gradient2, @scale-fill-gradient, @scale-fill-gradientn
 #let scale-fill-gradient2(
@@ -970,6 +1337,24 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Three-stop ramp shown as a continuous swatch via @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-gradientn(colours: (
+///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
+///   )),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-colour-gradientn, @scale-fill-gradient, @scale-fill-gradient2
 #let scale-fill-gradientn(
   colours: (),
@@ -1005,7 +1390,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default grey ramp from dark to light spread across three levels.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -1017,6 +1402,24 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-grey(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Narrowing `start` and `end` constrains the ramp to a darker
+/// range for tighter contrast.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-grey(start: 0.1, end: 0.5),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1054,6 +1457,23 @@
 /// @param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Default grey ramp shown as a swatch strip via @geom-rect.
+/// ```
+/// #let levels = ("a", "b", "c", "d", "e", "f")
+/// #let d = levels.enumerate().map(((i, k)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-grey(),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
+/// )
+/// ```
 ///
 /// @see @scale-colour-grey, @scale-fill-discrete
 #let scale-fill-grey(
@@ -1097,7 +1517,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Default hue wheel mapping four levels to evenly-spaced colours.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -1110,6 +1530,25 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-hue(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Lower `c` (chroma) and `l` (luminance) yield a muted, pastel-like
+/// palette.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+///   (x: 4, y: 5, sp: "d"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-hue(c: 50, l: 80),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1150,6 +1589,23 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Default hue wheel shown as a swatch strip via @geom-rect.
+/// ```
+/// #let levels = ("a", "b", "c", "d", "e", "f", "g", "h")
+/// #let d = levels.enumerate().map(((i, k)) => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "k"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-hue(),),
+///   guides: guides(fill: guide-none()),
+///   width: 8cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-colour-hue, @scale-fill-discrete
 #let scale-fill-hue(
   h: (15deg, 375deg),
@@ -1187,7 +1643,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Spectral palette interpolated as a continuous ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1195,6 +1651,20 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-distiller(palette: "Spectral"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Set `direction: -1` to reverse the palette so high values map
+/// to the canonical low end.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-distiller(palette: "Blues", direction: -1),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1237,7 +1707,8 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Linear opacity mapping with a wide `range` to fade points from
+/// near-transparent to fully opaque.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
@@ -1245,6 +1716,20 @@
 ///   mapping: aes(x: "x", y: "y", alpha: "w"),
 ///   layers: (geom-point(size: 4pt),),
 ///   scales: (scale-alpha-continuous(range: (0.1, 1)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples A narrower `range` keeps every point visible while still
+/// encoding magnitude.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", alpha: "w"),
+///   layers: (geom-point(size: 4pt),),
+///   scales: (scale-alpha-continuous(range: (0.4, 0.9)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1281,6 +1766,24 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Per-row opacity carried straight through to the point fills.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, w: 0.2),
+///   (x: 2, y: 3, w: 0.5),
+///   (x: 3, y: 4, w: 0.8),
+///   (x: 4, y: 5, w: 1.0),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", alpha: "w"),
+///   layers: (geom-point(size: 6pt, fill: rgb("#1f77b4")),),
+///   scales: (scale-alpha-identity(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// @see @scale-alpha-continuous, @scale-colour-identity
 #let scale-alpha-identity(name: none) = (
   kind: "scale",
@@ -1305,6 +1808,23 @@
 /// @param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Spectral palette interpolated across a continuous swatch via
+/// @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-distiller(palette: "Spectral"),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
 ///
 /// @see @scale-colour-distiller, @scale-fill-gradientn, @scale-fill-brewer
 #let scale-fill-distiller(
@@ -1348,7 +1868,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Five-bin discretisation of the default low-to-high blue ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
 /// #plot(
@@ -1356,6 +1876,23 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-steps(n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Custom `low`/`high` colours discretised into eight bins.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-steps(
+///     low: rgb("#fee5d9"),
+///     high: rgb("#a50f15"),
+///     n-breaks: 8,
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1401,7 +1938,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Six-bin diverging discretisation pivoting at zero.
 /// ```
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
 /// #plot(
@@ -1409,6 +1946,26 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-steps2(midpoint: 0, n-breaks: 6),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Shift `midpoint` and adjust the three stops to highlight a
+/// non-zero pivot.
+/// ```
+/// #let d = range(0, 11).map(i => (x: i, y: i, z: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-steps2(
+///     low: rgb("#1a9850"),
+///     mid: rgb("#ffffbf"),
+///     high: rgb("#d73027"),
+///     midpoint: 5,
+///     n-breaks: 8,
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1454,7 +2011,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Three-stop ramp discretised into six bins.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1464,6 +2021,23 @@
 ///   scales: (scale-colour-stepsn(colours: (
 ///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
 ///   ), n-breaks: 6),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Reuse a brewer palette as the stop list to fold a discrete
+/// palette into a banded continuous scale.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-stepsn(
+///     colours: brewer-palette("YlOrRd"),
+///     n-breaks: 5,
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1507,7 +2081,7 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
-/// @example
+/// @examples Spectral palette quantised into five bins.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1515,6 +2089,24 @@
 ///   mapping: aes(x: "x", y: "y", colour: "z"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (scale-colour-fermenter(palette: "Spectral", n-breaks: 5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Sequential blues palette reversed via `direction: -1` for an
+/// inverted banding.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "z"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-fermenter(
+///     palette: "Blues",
+///     direction: -1,
+///     n-breaks: 7,
+///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1561,6 +2153,22 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Five-bin discretised fill ramp shown as a swatch via @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-steps(n-breaks: 5),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-colour-steps, @scale-fill-steps2, @scale-fill-stepsn
 #let scale-fill-steps(
   low: rgb("#132B43"),
@@ -1599,6 +2207,22 @@
 /// @param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Six-bin diverging swatch pivoting at zero.
+/// ```
+/// #let d = range(-7, 8).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-steps2(midpoint: 0, n-breaks: 6),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
 ///
 /// @see @scale-colour-steps2, @scale-fill-steps, @scale-fill-stepsn
 #let scale-fill-steps2(
@@ -1639,6 +2263,25 @@
 ///
 /// @returns Scale object consumed by @plot.
 ///
+/// @examples Three-stop ramp discretised into six bins, shown as a swatch
+/// via @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-stepsn(colours: (
+///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
+///   ), n-breaks: 6),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
+///
 /// @see @scale-colour-stepsn, @scale-fill-steps, @scale-fill-steps2
 #let scale-fill-stepsn(
   colours: (),
@@ -1674,6 +2317,23 @@
 /// @param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// @returns Scale object consumed by @plot.
+///
+/// @examples Spectral palette quantised into five bins, shown as a swatch
+/// via @geom-rect.
+/// ```
+/// #let d = range(0, 16).map(i => (
+///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "z"),
+///   layers: (geom-rect(),),
+///   scales: (scale-fill-fermenter(palette: "Spectral", n-breaks: 5),),
+///   guides: guides(fill: guide-none()),
+///   width: 10cm,
+///   height: 1cm,
+/// )
+/// ```
 ///
 /// @see @scale-colour-fermenter, @scale-fill-distiller
 #let scale-fill-fermenter(

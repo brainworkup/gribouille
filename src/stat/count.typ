@@ -14,7 +14,7 @@
 ///
 /// @returns Statistic object with `name: "count"`, consumed by geom layers.
 ///
-/// @example
+/// @examples Count rows per category, drawn as bars via @geom-bar.
 /// ```
 /// #let d = (
 ///   (grp: "a"),
@@ -26,6 +26,25 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "grp"),
+///   layers: (geom-bar(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `fill` to a second column to break the count down by
+/// subgroup (stacked by default).
+/// ```
+/// #let d = (
+///   (grp: "a", k: "x"),
+///   (grp: "b", k: "x"),
+///   (grp: "a", k: "y"),
+///   (grp: "c", k: "x"),
+///   (grp: "a", k: "y"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", fill: "k"),
 ///   layers: (geom-bar(),),
 ///   width: 10cm,
 ///   height: 6cm,

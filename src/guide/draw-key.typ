@@ -16,7 +16,7 @@
 ///
 /// @returns Draw-key dictionary consumed by the legend renderer.
 ///
-/// @example
+/// @examples Force the point glyph in the legend (the default for points).
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -26,6 +26,22 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-point(size: 3pt, key: draw-key-point()),),
+///   width: 8cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Use the point glyph on a layer that would otherwise default
+/// to a different shape, like a line layered over points.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
+///   (x: 1, y: 3, g: "b"), (x: 2, y: 1, g: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   layers: (geom-line(key: draw-key-point()),),
 ///   width: 8cm,
 ///   height: 5cm,
 /// )
@@ -44,7 +60,7 @@
 ///
 /// @returns Draw-key dictionary consumed by the legend renderer.
 ///
-/// @example
+/// @examples Short stroke glyph (the default for line layers).
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -56,6 +72,22 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-line(key: draw-key-line()),),
+///   width: 8cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Override a column layer's default rectangle glyph with a line
+/// stroke.
+/// ```
+/// #let d = (
+///   (g: "a", n: 3),
+///   (g: "b", n: 5),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "g", y: "n", fill: "g"),
+///   layers: (geom-col(key: draw-key-line()),),
 ///   width: 8cm,
 ///   height: 5cm,
 /// )
@@ -74,7 +106,7 @@
 ///
 /// @returns Draw-key dictionary consumed by the legend renderer.
 ///
-/// @example
+/// @examples Filled rectangle glyph (the default for column layers).
 /// ```
 /// #let d = (
 ///   (g: "a", n: 3),
@@ -84,6 +116,23 @@
 ///   data: d,
 ///   mapping: aes(x: "g", y: "n", fill: "g"),
 ///   layers: (geom-col(key: draw-key-rect()),),
+///   width: 8cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Use the rectangle glyph on a point layer when the legend
+/// reads more naturally as colour swatches.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1, g: "a"),
+///   (x: 2, y: 2, g: "b"),
+///   (x: 3, y: 3, g: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   layers: (geom-point(size: 3pt, key: draw-key-rect()),),
 ///   width: 8cm,
 ///   height: 5cm,
 /// )
@@ -102,7 +151,7 @@
 ///
 /// @returns Draw-key dictionary consumed by the legend renderer.
 ///
-/// @example
+/// @examples Short polyline glyph that hints at a non-monotonic path.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -114,6 +163,21 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-path(key: draw-key-path()),),
+///   width: 8cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Use the path glyph for trajectory-style line layers to make
+/// the legend visually consistent with the data.
+/// ```
+/// #let d = range(0, 24).map(t => (
+///   x: calc.cos(t * 0.4), y: calc.sin(t * 0.4) * (t / 24 + 0.5), g: "trajectory",
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   layers: (geom-path(stroke: 1pt, key: draw-key-path()),),
 ///   width: 8cm,
 ///   height: 5cm,
 /// )
@@ -133,7 +197,8 @@
 ///
 /// @returns Draw-key dictionary consumed by the legend renderer.
 ///
-/// @example
+/// @examples Suppress just the layer's glyph in the legend, keeping the
+/// label slot.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -143,6 +208,26 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-point(size: 3pt, key: draw-key-blank()),),
+///   width: 8cm,
+///   height: 5cm,
+/// )
+/// ```
+///
+/// @examples Useful when one layer in a stack should not appear in the
+/// legend; here a `geom-line` carries the legend, a `geom-point` is
+/// silenced.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
+///   (x: 1, y: 3, g: "b"), (x: 2, y: 1, g: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   layers: (
+///     geom-line(stroke: 1pt),
+///     geom-point(size: 3pt, key: draw-key-blank()),
+///   ),
 ///   width: 8cm,
 ///   height: 5cm,
 /// )

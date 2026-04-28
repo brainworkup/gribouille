@@ -15,10 +15,18 @@
 ///
 /// @returns None.
 ///
-/// @example
+/// @examples-static Set the project default once so every plot inherits it.
 /// ```
 /// #theme-set(theme-minimal())
 /// // All plots below use theme-minimal() by default.
+/// ```
+///
+/// @examples-static Pin a custom theme as the project default.
+/// ```
+/// #theme-set(theme(
+///   panel-background: element-rect(fill: rgb("#fff7e6")),
+///   panel-grid: element-line(colour: rgb("#d9cfbf")),
+/// ))
 /// ```
 ///
 /// @see @theme-get, @theme
@@ -33,6 +41,12 @@
 /// @since 0.1.0
 ///
 /// @returns The current global theme dictionary, or `none`.
+///
+/// @examples-static Read back the theme that subsequent plots will inherit.
+/// ```
+/// #theme-set(theme-minimal())
+/// #let active = theme-get()
+/// ```
 ///
 /// @see @theme-set
 #let theme-get() = context _theme-state.get()

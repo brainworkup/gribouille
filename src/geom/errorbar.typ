@@ -31,7 +31,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Vertical error bars with default cap span.
 /// ```
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
@@ -42,6 +42,24 @@
 ///   data: d,
 ///   mapping: aes(x: "x", ymin: "lo", ymax: "hi"),
 ///   layers: (geom-errorbar(width: 0.4),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Combine with @geom-point at the central estimate to convey the
+/// uncertainty around it.
+/// ```
+/// #let d = range(1, 6).map(i => (
+///   x: i, y: i, lo: i - 0.5, hi: i + 0.5,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi"),
+///   layers: (
+///     geom-errorbar(width: 0.3),
+///     geom-point(size: 3pt),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

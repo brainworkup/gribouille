@@ -25,7 +25,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Spread overlapping points with the default jitter amount.
 /// ```
 /// #let d = ()
 /// #for x in (1, 2, 3) {
@@ -34,6 +34,21 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-jitter(size: 2pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `colour` so each jittered cluster is visually distinct.
+/// ```
+/// #let d = ()
+/// #for grp in ("a", "b", "c") {
+///   for _ in range(0, 16) { d.push((x: grp, y: 1, grp: grp)) }
+/// }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "grp"),
 ///   layers: (geom-jitter(size: 2pt),),
 ///   width: 10cm,
 ///   height: 6cm,

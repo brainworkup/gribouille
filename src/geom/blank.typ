@@ -19,13 +19,29 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Two corner rows train the axes without drawing any marks.
 /// ```
 /// #let frame = ((x: 0, y: 0), (x: 10, y: 5))
 /// #plot(
 ///   data: frame,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-blank(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Stack a blank under @geom-function to reserve room for the
+/// curve's domain without overriding the function output.
+/// ```
+/// #let frame = ((x: -2, y: -1), (x: 2, y: 4))
+/// #plot(
+///   data: frame,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-blank(),
+///     geom-function(fun: x => x * x),
+///   ),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

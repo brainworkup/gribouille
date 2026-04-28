@@ -19,7 +19,8 @@
 ///
 /// @returns Coordinate dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Flip a vertical bar chart into a horizontal one without
+/// rewriting the mapping.
 /// ```
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
@@ -31,6 +32,23 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "revenue"),
 ///   layers: (geom-col(),),
+///   coord: coord-flip(),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Reference lines follow the flip: a `yintercept` becomes a
+/// vertical reference once the axes swap.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     geom-hline(yintercept: 2.5, colour: rgb("#cc0000")),
+///   ),
 ///   coord: coord-flip(),
 ///   width: 10cm,
 ///   height: 6cm,

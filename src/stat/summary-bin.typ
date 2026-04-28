@@ -29,7 +29,7 @@
 /// @returns Statistic object with `name: "summary_bin"`, consumed by geom
 ///   layers.
 ///
-/// @example
+/// @examples Mean and standard-error bands per bin, drawn as a polyline.
 /// ```
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
 /// #plot(
@@ -37,6 +37,24 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (
 ///     geom-line(stat: stat-summary-bin(fun: "mean-se", bins: 8)),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pair `geom-pointrange` with a median-low-high reduction to
+/// surface the spread per bin.
+/// ```
+/// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-pointrange(
+///       size: 3pt,
+///       stat: stat-summary-bin(fun: "median-hilow", bins: 8),
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

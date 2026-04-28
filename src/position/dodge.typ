@@ -29,7 +29,7 @@
 ///
 /// @returns Position dictionary with `name: "dodge"`, consumed by @plot.
 ///
-/// @example
+/// @examples Bars dodged side by side per `fill` group within each x slot.
 /// ```
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
@@ -41,6 +41,23 @@
 ///   data: d,
 ///   mapping: aes(x: "q", y: "y", fill: "grp"),
 ///   layers: (geom-col(position: "dodge"),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Increase `padding` to widen the gap between dodged bars.
+/// ```
+/// #let d = (
+///   (q: "Q1", grp: "a", y: 3),
+///   (q: "Q1", grp: "b", y: 5),
+///   (q: "Q2", grp: "a", y: 4),
+///   (q: "Q2", grp: "b", y: 2),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "q", y: "y", fill: "grp"),
+///   layers: (geom-col(position: position-dodge(padding: 0.3)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

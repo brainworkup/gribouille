@@ -30,7 +30,7 @@
 ///
 /// @returns Layer dictionary consumed by @plot.
 ///
-/// @example
+/// @examples Box from `lo` to `hi` with the median bar at `y`.
 /// ```
 /// #let d = range(1, 5).map(i => (
 ///   x: i,
@@ -42,6 +42,21 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi"),
 ///   layers: (geom-crossbar(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Map `fill` to a categorical column to colour the box per group.
+/// ```
+/// #let d = range(1, 5).map(i => (
+///   x: i, y: i, lo: i - 0.6, hi: i + 0.6,
+///   k: if calc.rem(i, 2) == 0 { "even" } else { "odd" },
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", ymin: "lo", ymax: "hi", fill: "k"),
+///   layers: (geom-crossbar(alpha: 0.6),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

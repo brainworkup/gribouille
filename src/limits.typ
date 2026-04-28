@@ -23,7 +23,8 @@
 ///
 /// @returns Array of scale specs ready to splat into `scales:` on @plot.
 ///
-/// @example
+/// @examples Force a y baseline at zero so positive observations sit above
+/// the axis floor.
 /// ```
 /// #let d = range(1, 6).map(i => (x: i, y: i))
 /// #plot(
@@ -31,6 +32,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: expand-limits(y: 0),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// @examples Pass arrays to extend both axes towards multiple targets at
+/// once, useful for highlighting a reference value.
+/// ```
+/// #let d = range(1, 6).map(i => (x: i, y: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: expand-limits(x: (0, 10), y: (0, 10)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
