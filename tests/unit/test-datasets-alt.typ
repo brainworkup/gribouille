@@ -8,35 +8,43 @@
 #import "../../src/aes.typ": aes
 #import "../../src/geom/point.typ": geom-point
 
-#assert.eq(economics.len(), 24)
-#let first-econ = economics.at(0)
-#assert.eq(first-econ.date, "2008-01-01")
-#assert(first-econ.keys().contains("pce"))
-#assert(first-econ.keys().contains("pop"))
-#assert(first-econ.keys().contains("psavert"))
-#assert(first-econ.keys().contains("uempmed"))
-#assert(first-econ.keys().contains("unemploy"))
+#let assert-schema(data, count, columns) = {
+  assert.eq(data.len(), count)
+  let missing = columns.filter(col => not data.at(0).keys().contains(col))
+  assert.eq(missing, (), message: "Missing columns: " + repr(missing))
+}
 
-#assert.eq(mpg.len(), 30)
-#let first-mpg = mpg.at(0)
-#assert(first-mpg.keys().contains("manufacturer"))
-#assert(first-mpg.keys().contains("model"))
-#assert(first-mpg.keys().contains("displ"))
-#assert(first-mpg.keys().contains("cyl"))
-#assert(first-mpg.keys().contains("class"))
-#assert(first-mpg.keys().contains("cty"))
-#assert(first-mpg.keys().contains("hwy"))
+#assert-schema(economics, 24, (
+  "date",
+  "pce",
+  "pop",
+  "psavert",
+  "uempmed",
+  "unemploy",
+))
+#assert.eq(economics.at(0).date, "2008-01-01")
 
-#assert.eq(penguins.len(), 344)
-#let first-penguin = penguins.at(0)
-#assert.eq(first-penguin.species, "Adelie")
-#assert(first-penguin.keys().contains("island"))
-#assert(first-penguin.keys().contains("bill-len"))
-#assert(first-penguin.keys().contains("bill-dep"))
-#assert(first-penguin.keys().contains("flipper-len"))
-#assert(first-penguin.keys().contains("body-mass"))
-#assert(first-penguin.keys().contains("sex"))
-#assert(first-penguin.keys().contains("year"))
+#assert-schema(mpg, 30, (
+  "manufacturer",
+  "model",
+  "displ",
+  "cyl",
+  "class",
+  "cty",
+  "hwy",
+))
+
+#assert-schema(penguins, 344, (
+  "species",
+  "island",
+  "bill-len",
+  "bill-dep",
+  "flipper-len",
+  "body-mass",
+  "sex",
+  "year",
+))
+#assert.eq(penguins.at(0).species, "Adelie")
 
 // `plot()` returns rendered content, so exercise the spec contract via
 // the accessor on a hand-built spec dict mirroring what `plot()` stores.
