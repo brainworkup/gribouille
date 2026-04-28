@@ -18,33 +18,35 @@ Documentation: <https://m.canouil.dev/gribouille>.
 #let df = csv("penguins.csv", row-type: dictionary)
 
 #plot(
-  data: df,
+  data: penguins,
   mapping: aes(
     x: "flipper-len",
     y: "body-mass",
     colour: "species",
+    shape: "species",
   ),
   layers: (
-    geom-point(size: 2pt),
-    geom-smooth(method: "lm"),
+    geom-point(size: 2pt, stroke: 0.5pt, alpha: 0.5),
+    geom-smooth(method: "lm", se: true, alpha: 0.2),
   ),
-  facet: facet-wrap("island"),
+  scales: (
+    scale-x-continuous(),
+    scale-y-continuous(),
+    scale-colour-discrete(palette: (rgb("#ff8c00"), rgb("#800080"), rgb("#008B8B"))),
+  ),
+  labs: labs(
+    title: "Penguins Dataset",
+    subtitle: "Flipper length vs body mass by species",
+    caption: "Data from Palmer Archipelago (Antarctica) penguin dataset",
+    colour: "Species",
+    x: "Flipper length (mm)",
+    y: "Body mass (g)",
+  ),
   theme: theme-minimal(),
+  width: 11cm,
+  height: 7cm,
 )
 ```
-
-## Scope
-
-- Geoms: `geom-point`, `geom-line`, `geom-col`, `geom-bar`, `geom-histogram`, `geom-smooth`, `geom-ribbon`, `geom-boxplot`, `geom-hline`, `geom-vline`, `geom-abline`, `geom-text`, `geom-label`.
-- Aesthetics: `x`, `y`, `colour`, `fill`, `size`, `shape`, `linetype`, `group`, `alpha`.
-- Stats: `stat-identity`, `stat-count`, `stat-bin`, `stat-smooth`.
-- Scales: continuous and discrete for `x`, `y`, `colour`, `fill`, `size`, `shape`, and `linetype`, with Viridis and manual palettes.
-- Coordinates: `coord-cartesian` with non-dropping limits.
-- Positions: `position-identity`, `position-stack`, `position-dodge`, `position-fill`.
-- Facets: `facet-wrap` and `facet-grid` with shared or free scales.
-- Themes: `theme-grey`, `theme-minimal`, `theme-classic`, `theme-void`, plus `theme()` element overrides.
-- Labels: `labs`.
-- Automatic legends.
 
 ## Dependencies
 
