@@ -91,7 +91,7 @@
 /// closed on the left so the minimum value is captured. The default labels
 /// are `"(lo,hi]"` strings using the bin boundaries.
 ///
-/// @category Vector helpers
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -147,7 +147,7 @@
 /// `src/stat/boxplot.typ`. Bins are right-open (`(lo, hi]`), with the
 /// leftmost bin closed on the left.
 ///
-/// @category Vector helpers
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -203,7 +203,7 @@
 /// to multiples of `width` covering `[min, max]`. Bins are right-open
 /// (`(lo, hi]`), except the leftmost bin is closed on the left.
 ///
-/// @category Vector helpers
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///

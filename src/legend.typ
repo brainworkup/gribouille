@@ -121,6 +121,11 @@
     }
     if t.type == "discrete" {
       let levels = t.domain
+      let user-limits = (
+        t.at("spec", default: none) != none
+          and t.spec.at("limits", default: none) != none
+      )
+      if not user-limits { levels = levels.sorted() }
       let reverse = if override != none {
         override.at("reverse", default: false)
       } else { false }

@@ -2,10 +2,8 @@
 // Public API for @preview/gribouille.
 
 // Core.
-#import "src/plot.typ": get-alt-text, plot
+#import "src/plot.typ": plot
 #import "src/aes.typ": aes
-#import "src/data.typ": as-factor, as-numeric
-#import "src/annotate.typ": annotate
 
 // Datasets.
 #import "src/datasets/economics.typ": economics
@@ -24,6 +22,7 @@
 )
 
 // Geoms.
+#import "src/annotate.typ": annotate
 #import "src/geom/point.typ": geom-point
 #import "src/geom/line.typ": geom-line
 #import "src/geom/path.typ": geom-path
@@ -72,11 +71,13 @@
 #import "src/stat/unique.typ": stat-unique
 #import "src/stat/qq.typ": stat-qq
 #import "src/stat/qq-line.typ": stat-qq-line
-#import "src/utils/summaries.typ": (
-  mean-cl-boot, mean-cl-normal, mean-sdl, mean-se, median-hilow,
-)
 
-// Vector helpers.
+// Helpers.
+#import "src/plot.typ": get-alt-text
+#import "src/data.typ": as-factor, as-numeric
+#import "src/utils/summaries.typ": (
+  mean-cl-boot, mean-cl-normal, mean-sdl, mean-se, median-hilow, summarise,
+)
 #import "src/utils/cut.typ": cut-interval, cut-number, cut-width
 #import "src/utils/resolution.typ": resolution
 

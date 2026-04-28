@@ -116,7 +116,7 @@
 /// tooling pull the description out without parsing the rendered
 /// figure.
 ///
-/// @category Core
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///

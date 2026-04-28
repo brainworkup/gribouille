@@ -52,7 +52,7 @@
 /// `se = sd / sqrt(n)` using the sample standard deviation. Returns
 /// `(y: <mean>, ymin: <mean - mult * se>, ymax: <mean + mult * se>)`.
 ///
-/// @category Stats
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -87,7 +87,7 @@
 /// Acklam's inverse-normal approximation, so any `conf` in the open interval
 /// `(0, 1)` is supported.
 ///
-/// @category Stats
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -121,7 +121,7 @@
 
 /// Mean and standard-deviation band: `mean ± mult * sd`.
 ///
-/// @category Stats
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -153,7 +153,7 @@
 /// same convention as `src/stat/boxplot.typ`. The default `conf: 0.5`
 /// returns the median with the IQR (25th to 75th percentile).
 ///
-/// @category Stats
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -203,7 +203,7 @@
 /// deterministic noise sequence seeded by `seed`, so identical inputs always
 /// produce identical bounds.
 ///
-/// @category Stats
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///
@@ -259,7 +259,7 @@
 /// Names use the kebab form (`"mean-se"`, `"mean-cl-normal"`, `"mean-cl-boot"`,
 /// `"mean-sdl"`, `"median-hilow"`). Unknown names panic.
 ///
-/// @category Stats
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///

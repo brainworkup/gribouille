@@ -18,7 +18,7 @@
 ///
 /// Returns `1` when `values` has fewer than two distinct numeric entries.
 ///
-/// @category Vector helpers
+/// @category Helpers
 /// @stability stable
 /// @since 0.0.1
 ///

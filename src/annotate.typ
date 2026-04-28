@@ -74,7 +74,7 @@
 /// layer parameters. The resulting layer always has `inherit-aes: false`
 /// so it does not pick up the plot-level mapping.
 ///
-/// @category Core
+/// @category Geoms
 /// @stability stable
 /// @since 0.0.1
 ///

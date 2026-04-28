@@ -255,7 +255,7 @@ Legend for **Priority** (used to order future work):
 | `theme_get()` / `theme_set()` / `theme_update()` / `theme_replace()` / `%+replace%`                                                     | —                                                                                      | ⬜     | P3       | Global theme state; may stay plot-arg only.                            |
 | `theme_sub_axis*()` / `theme_sub_legend()` / `theme_sub_panel()` / `theme_sub_plot()` / `theme_sub_strip()`                             | —                                                                                      | ⬜     | P4       | Shortcut groups.                                                       |
 
-### Vector helpers
+### Helpers
 
 | ggplot2                                                            | gribouille symbol                                        | Status | Priority | Notes                                                               |
 | ------------------------------------------------------------------ | -------------------------------------------------------- | ------ | -------- | ------------------------------------------------------------------- |
@@ -294,7 +294,7 @@ Legend for **Priority** (used to order future work):
 - **Facets**: `facet-wrap` (`fixed`/`free`/`free_x`/`free_y` scales) and `facet-grid` (shared scales only).
 - **Themes**: `theme-minimal`, `theme-classic`, `theme-void`, `theme-grey`, `theme-bw`, `theme-linedraw`, `theme-light`, `theme-dark`, `theme-test`, plus `theme()` with `element-blank`, `element-rect`, `element-line`, `element-text`.
 - **Guides**: `guide-legend` with `title`/`nrow`/`ncol`/`reverse`, automatic `guide-colourbar` for continuous colour and fill, `guide-axis` (x-axis only), `guide-none`, and a top-level `guides()` binder.
-- **Vector helpers**: `cut-interval`, `cut-number`, `cut-width`, `resolution`, `mean-se`, `mean-cl-normal`, `mean-sdl`, `median-hilow`.
+- **Helpers**: `cut-interval`, `cut-number`, `cut-width`, `resolution`, `mean-se`, `mean-cl-normal`, `mean-sdl`, `median-hilow`.
 - **Datasets**: `mpg` (30 rows) and `economics` (24 rows).
 
 ## How this page is updated
