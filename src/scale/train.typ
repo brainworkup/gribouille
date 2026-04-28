@@ -55,6 +55,20 @@
   }
 }
 
+// Two-arg `as-factor(data, col)` stamps each row with `_gribouille-factors`
+// listing every column it has stringified. Read the first row only because
+// every row carries the same array.
+#let _factor-sentinel-type(data, col-name) = {
+  if type(data) != array or data.len() == 0 { return none }
+  let first = data.at(0)
+  if type(first) != dictionary { return none }
+  let factors = first.at("_gribouille-factors", default: none)
+  if type(factors) == array and factors.contains(col-name) {
+    return "discrete"
+  }
+  none
+}
+
 #let _column-for-aesthetic(layer, aesthetic, plot-mapping, plot-data) = {
   let mapping = _resolve-mapping(layer, plot-mapping)
   let data = _resolve-data(layer, plot-data)
@@ -62,10 +76,14 @@
   let raw = mapping.at(aesthetic, default: none)
   if raw == none { return none }
   let col-name = mapping-ref-col(raw)
+  let forced = mapping-ref-type(raw)
+  if forced == none {
+    forced = _factor-sentinel-type(data, col-name)
+  }
   (
     name: col-name,
     values: column(data, col-name),
-    forced-type: mapping-ref-type(raw),
+    forced-type: forced,
   )
 }
 

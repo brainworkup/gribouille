@@ -309,6 +309,46 @@
   trained
 }
 
+// `geom-col` centres each bar on its category value and draws it from
+// `centre ± min-gap * bar-frac / 2`. On a continuous category axis the
+// trained domain is `(min, max)` of the raw values, so the outer bars hang
+// off the panel by half a bar width. Mirror the geom's minimum-gap heuristic
+// to compute the half-width in domain units and pad the trained domain on
+// both sides. `axis` is "x" for normal orientation and "y" under coord-flip;
+// the renderer applies the flip after `_post-train`, so padding pre-flip x
+// covers the unflipped case and pre-flip y covers the flipped case.
+#let _extend-axis-for-cols(trained, layers, axis) = {
+  if trained.at(axis, default: none) == none { return trained }
+  if trained.at(axis).type != "continuous" { return trained }
+  let max-half = 0.0
+  for layer in layers {
+    if layer.at("geom", default: none) != "col" { continue }
+    let mapping = layer.at("mapping", default: none)
+    if mapping == none { continue }
+    let col-name = mapping.at(axis, default: none)
+    if col-name == none { continue }
+    let bar-frac = layer.at("params", default: (:)).at("width", default: 0.9)
+    let xs = layer
+      .at("data", default: ())
+      .map(r => parse-number(r.at(col-name, default: none)))
+      .filter(v => v != none)
+    if xs.len() < 2 { continue }
+    let sorted = xs.dedup().sorted()
+    let gaps = range(sorted.len() - 1).map(i => (
+      sorted.at(i + 1) - sorted.at(i)
+    ))
+    let min-gap = calc.min(..gaps)
+    let half = min-gap * bar-frac / 2
+    if half > max-half { max-half = half }
+  }
+  if max-half == 0 { return trained }
+  let (lo, hi) = trained.at(axis).domain
+  let new-axis = trained.at(axis)
+  new-axis.insert("domain", (lo - max-half, hi + max-half))
+  trained.insert(axis, new-axis)
+  trained
+}
+
 #let _extend-y-for-ribbon(trained, layers) = {
   if trained.at("y", default: none) == none { return trained }
   if trained.y.type != "continuous" { return trained }
@@ -880,6 +920,8 @@
     trained.insert("y", new-y)
   }
   trained = _extend-x-for-bins(trained, layers)
+  trained = _extend-axis-for-cols(trained, layers, "x")
+  trained = _extend-axis-for-cols(trained, layers, "y")
   trained = _extend-y-for-ribbon(trained, layers)
   trained
 }

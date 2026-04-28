@@ -153,6 +153,9 @@
     let v = row.at(col, default: none)
     let new-row = row
     new-row.insert(col, if v == none { none } else { str(v) })
+    let factors = new-row.at("_gribouille-factors", default: ())
+    if not factors.contains(col) { factors.push(col) }
+    new-row.insert("_gribouille-factors", factors)
     new-row
   })
 }
