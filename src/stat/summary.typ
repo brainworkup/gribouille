@@ -11,7 +11,7 @@
 ///
 /// One output row per distinct x value with keys `(x, y, ymin, ymax)`. The
 /// reduction is chosen by `fun`; supported names are `"mean-se"`,
-/// `"mean-cl-normal"`, `"mean-sdl"`, and `"median-hilow"`.
+/// `"mean-cl-normal"`, `"mean-sd"`, and `"median-hilow"`.
 ///
 /// @category Stats
 /// @stability stable

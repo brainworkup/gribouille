@@ -22,12 +22,12 @@
     ),
     geom-errorbar(
       mapping: aes(colour: "species"),
-      stat: stat-summary(fun: "mean-sdl", fun-args: (mult: 1)),
+      stat: stat-summary(fun: "mean-sd"),
       width: 5pt,
     ),
     geom-errorbarh(
       mapping: aes(colour: "species"),
-      stat: stat-summary(fun: "mean-sdl", fun-args: (mult: 1)),
+      stat: stat-summary(fun: "mean-sd"),
       height: 5pt,
     ),
     // geom-point(stat: stat-summary(fun: "mean-se"), size: 3pt),

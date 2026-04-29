@@ -12,7 +12,7 @@
 /// Partitions x into uniform-width bins (same rule as `stat-bin`), then for
 /// every bin reduces the y values inside to a `(x, y, ymin, ymax)` row where
 /// `x` is the bin midpoint. The reduction is chosen by `fun`; supported names
-/// are `"mean-se"`, `"mean-cl-normal"`, `"mean-sdl"`, and `"median-hilow"`.
+/// are `"mean-se"`, `"mean-cl-normal"`, `"mean-sd"`, and `"median-hilow"`.
 ///
 /// Either `bins` or `binwidth` fixes the partition; if both are supplied,
 /// `binwidth` wins.

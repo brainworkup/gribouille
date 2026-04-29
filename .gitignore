@@ -9,7 +9,7 @@
 
 # Test outputs
 /tests/**/output/
-/tests/visual/*.pdf
+/tests/**/*.pdf
 
 # Quarto build artefacts
 /.quarto/

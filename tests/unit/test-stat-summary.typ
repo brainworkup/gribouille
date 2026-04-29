@@ -3,7 +3,7 @@
 #import "../../src/stat/apply.typ": apply-stat
 #import "../../src/utils/normal.typ": qnorm
 #import "../../src/utils/summaries.typ": (
-  mean-cl-normal, mean-sdl, mean-se, median-hilow, summarise,
+  mean-cl-normal, mean-sd, mean-se, median-hilow, summarise,
 )
 
 // --- qnorm: Acklam's inverse-normal -----------------------------------------
@@ -30,13 +30,13 @@
   calc.abs((r-mse2.ymax - r-mse2.ymin) - 2 * (r-mse.ymax - r-mse.ymin)) < 1e-9,
 )
 
-// --- mean-sdl on 1..5 ------------------------------------------------------
-// Default mult = 2, sd ≈ 1.5811, so half-width ≈ 3.1623.
+// --- mean-sd on 1..5 -------------------------------------------------------
+// Default mult = 1, sd ≈ 1.5811, so half-width ≈ 1.5811.
 
-#let r-sdl = mean-sdl((1, 2, 3, 4, 5))
-#assert.eq(r-sdl.y, 3.0)
-#assert(calc.abs(r-sdl.ymin - (3 - 2 * 1.581139)) < 1e-4)
-#assert(calc.abs(r-sdl.ymax - (3 + 2 * 1.581139)) < 1e-4)
+#let r-sd = mean-sd((1, 2, 3, 4, 5))
+#assert.eq(r-sd.y, 3.0)
+#assert(calc.abs(r-sd.ymin - (3 - 1.581139)) < 1e-4)
+#assert(calc.abs(r-sd.ymax - (3 + 1.581139)) < 1e-4)
 
 // --- mean-cl-normal at 95 % ------------------------------------------------
 // Half-width = 1.959964 * se.

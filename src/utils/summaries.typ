@@ -130,16 +130,16 @@
 ///
 /// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
-/// @examples-static Default ±2 σ band, useful for spotting outliers.
+/// @examples-static Default ±1 σ band.
 /// ```
-/// #let s = mean-sdl((2, 3, 4, 5, 6))
+/// #let s = mean-sd((2, 3, 4, 5, 6))
 /// ```
 ///
-/// @examples-static Tighten to ±1 σ for a one-deviation spread.
+/// @examples-static Widen to ±2 σ for a two-deviation spread.
 /// ```
-/// #let s = mean-sdl((2, 3, 4, 5, 6), mult: 1)
+/// #let s = mean-sd((2, 3, 4, 5, 6), mult: 2)
 /// ```
-#let mean-sdl(values, mult: 2) = {
+#let mean-sd(values, mult: 1) = {
   let xs = _to-numeric(values)
   if xs.len() == 0 { return _empty-summary }
   let m = _mean(xs)
@@ -257,7 +257,7 @@
 /// Look up a summary helper by name.
 ///
 /// Names use the kebab form (`"mean-se"`, `"mean-cl-normal"`, `"mean-cl-boot"`,
-/// `"mean-sdl"`, `"median-hilow"`). Unknown names panic.
+/// `"mean-sd"`, `"median-hilow"`). Unknown names panic.
 ///
 /// @category Helpers
 /// @stability stable
@@ -296,9 +296,9 @@
     let n-boot = fun-args.at("n-boot", default: 1000)
     let seed = fun-args.at("seed", default: 0)
     return mean-cl-boot(values, conf: conf, n-boot: n-boot, seed: seed)
-  } else if name == "mean-sdl" {
-    let mult = fun-args.at("mult", default: 2)
-    return mean-sdl(values, mult: mult)
+  } else if name == "mean-sd" {
+    let mult = fun-args.at("mult", default: 1)
+    return mean-sd(values, mult: mult)
   } else if name == "median-hilow" {
     let conf = fun-args.at("conf", default: 0.5)
     return median-hilow(values, conf: conf)
@@ -307,6 +307,6 @@
     "summarise: unknown summary function "
       + repr(name)
       + "; expected one of mean-se, mean-cl-normal, mean-cl-boot, "
-      + "mean-sdl, median-hilow.",
+      + "mean-sd, median-hilow.",
   )
 }
