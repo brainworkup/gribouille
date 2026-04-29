@@ -129,9 +129,7 @@
 /// of `Uniform(0, 1)` at probability `p`), and `"exponential"` returns
 /// `-ln(1 - p)` (the quantile of `Exp(1)` at probability `p`).
 ///
-/// \@category Utilities
-/// \@stability stable
-/// \@since 0.0.1
+/// \@internal
 ///
 /// \@param p Probability in the open interval `(0, 1)`.
 /// \@param distribution One of `"normal"`, `"uniform"`, or `"exponential"`.

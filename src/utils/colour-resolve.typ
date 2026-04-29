@@ -6,6 +6,7 @@
 /// Returns `colour` unchanged when `alpha` is `>= 1`, otherwise returns
 /// `colour.transparentize((1 - alpha) * 100%)`.
 ///
+/// \@internal
 /// \@param colour A resolved colour value.
 /// \@param alpha Opacity in `[0, 1]`.
 /// \@returns The colour with alpha applied.
@@ -24,6 +25,7 @@
 /// 2. The trained alpha scale (continuous/discrete/identity), if `mapping.alpha` is set.
 /// 3. `default-alpha` otherwise (defaults to `1`, geoms with intrinsic translucency pass their own).
 ///
+/// \@internal
 /// \@param layer The layer dictionary providing `params.alpha`.
 /// \@param mapping The resolved aesthetic mapping.
 /// \@param ctx The plot context exposing `trained`.
@@ -76,6 +78,7 @@
 /// when neither the mapping nor an explicit `linewidth:` pin applies, the
 /// layer's configured stroke length is used as the fallback thickness.
 ///
+/// \@internal
 /// \@param layer The layer dictionary providing `params.linewidth`.
 /// \@param mapping The resolved aesthetic mapping.
 /// \@param ctx The plot context exposing `trained`.
@@ -131,6 +134,7 @@
 /// 2. The trained size scale, if `mapping.size` is set.
 /// 3. `default-size` otherwise.
 ///
+/// \@internal
 /// \@param layer The layer dictionary providing `params.size`.
 /// \@param mapping The resolved aesthetic mapping.
 /// \@param ctx The plot context exposing `trained`.
@@ -188,6 +192,7 @@
 ///
 /// Applies the per-row alpha (mapped or pinned) as a transparentise step.
 ///
+/// \@internal
 /// \@param layer The layer dictionary providing `params.colour`/`params.alpha`.
 /// \@param mapping The resolved aesthetic mapping.
 /// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.

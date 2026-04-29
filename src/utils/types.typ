@@ -24,9 +24,7 @@
 /// - `"datetime"`: `YYYY-MM-DDTHH:MM[:SS]` or `YYYY-MM-DD HH:MM[:SS]`.
 /// - `"time"`: `HH:MM[:SS]`.
 ///
-/// \@category Utilities
-/// \@stability experimental
-/// \@since 0.0.1
+/// \@internal
 ///
 /// \@param value Raw cell value: numeric, string, or `none`.
 /// \@param kind One of `"date"`, `"datetime"`, `"time"`.
@@ -116,6 +114,8 @@
 #let infer-column-type(values) = {
   let non-empty = values.filter(v => v != none and v != "")
   if non-empty.len() == 0 { return "unknown" }
+  if non-empty.all(v => type(v) == color) { return "colour" }
+  if non-empty.all(v => type(v) == length) { return "length" }
   if non-empty.all(is-numeric-value) { return "numeric" }
   "string"
 }

@@ -9,9 +9,7 @@
 /// half-width is interpreted in x data units. For discrete x the band is sized
 /// as a fraction of the per-category slot width.
 ///
-/// \@category Utilities
-/// \@stability stable
-/// \@since 0.0.1
+/// \@internal
 ///
 /// \@param x-trained Trained x scale dictionary providing `type` and `domain`.
 /// \@param raw-x Row x value (numeric for continuous, raw level for discrete).

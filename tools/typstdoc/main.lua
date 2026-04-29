@@ -135,7 +135,9 @@ local function copy_examples(opts)
       if ext == "typ" then
         local content, err = util.read_file(src)
         if not content then util.die("could not read " .. src .. ": " .. tostring(err)) end
-        util.write_file(dst, content:gsub('#import "%.%./lib%.typ":[^\n]*\n\n?', ''))
+        content = content:gsub('#import "%.%./lib%.typ":[^\n]*\n\n?', '')
+        content = content:gsub('"%.%./docs/', '"/docs/')
+        util.write_file(dst, content)
       else
         os.execute(string.format("cp %q %q", src, dst))
       end

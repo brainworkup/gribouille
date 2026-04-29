@@ -122,7 +122,9 @@
     if col == none { continue }
     if col.forced-type != none { return col.forced-type }
     let t = infer-column-type(col.values)
-    return if t == "numeric" { "continuous" } else { "discrete" }
+    if t == "numeric" { return "continuous" }
+    if t == "colour" or t == "length" { return "identity" }
+    return "discrete"
   }
   "continuous"
 }

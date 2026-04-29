@@ -24,7 +24,7 @@
 - slug: factor-inline
   section: basics
   title: "Inline factor coercion"
-  description: '<a href="../reference/core/as-factor.qmd"><code>as-factor</code></a> forces a numeric column to be treated as discrete for the colour aesthetic.'
+  description: '<a href="../reference/helpers/as-factor.qmd"><code>as-factor</code></a> forces a numeric column to be treated as discrete for the colour aesthetic.'
   alt: "Scatter plot of a noisy sinusoidal pattern with points coloured by a three-level cluster factor coerced from a numeric column."
 
 - slug: penguins
