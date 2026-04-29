@@ -15,8 +15,9 @@
 /// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
 /// @param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// @param size Marker size (a Typst length).
-/// @param stroke Marker stroke; `none` means no outline.
-/// @param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
+/// @param stroke Marker outline thickness; `none` disables the outline and the `colour` aesthetic.
+/// @param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
+/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword.
 /// @param stat Statistical transform name.
@@ -40,7 +41,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `colour` so each jittered cluster is visually distinct.
+/// @examples Map `fill` so each jittered cluster is visually distinct.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -48,7 +49,7 @@
 /// }
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "grp"),
+///   mapping: aes(x: "x", y: "y", fill: "grp"),
 ///   layers: (geom-jitter(size: 2pt),),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -62,6 +63,7 @@
   size: 1.5pt,
   stroke: none,
   fill: auto,
+  colour: auto,
   alpha: 1,
   shape: auto,
   stat: "identity",
@@ -73,6 +75,7 @@
   size: size,
   stroke: stroke,
   fill: fill,
+  colour: colour,
   alpha: alpha,
   shape: shape,
   stat: stat,

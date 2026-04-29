@@ -281,16 +281,28 @@
 }
 
 // Draw a small key glyph centred at (cx, cy) of the given half-extent `r`,
-// using `colour` for fill (point/rect) or stroke (line/path).
-#let draw-glyph(key, cx, cy, r, colour) = {
+// using `colour` for fill (point/rect) or stroke (line/path). When the swatch
+// represents the `colour` aesthetic on a point glyph, the marker renders as a
+// stroked ring (no body fill) so that colour and fill swatches stay visually
+// distinct.
+#let draw-glyph(key, cx, cy, r, colour, aesthetic: "fill") = {
   if key == "blank" { return }
   if key == "point" {
-    cetz.draw.circle(
-      (cx, cy),
-      radius: r,
-      fill: colour,
-      stroke: none,
-    )
+    if aesthetic == "colour" {
+      cetz.draw.circle(
+        (cx, cy),
+        radius: r,
+        fill: none,
+        stroke: (paint: colour, thickness: 1pt),
+      )
+    } else {
+      cetz.draw.circle(
+        (cx, cy),
+        radius: r,
+        fill: colour,
+        stroke: none,
+      )
+    }
   } else if key == "rect" {
     cetz.draw.rect(
       (cx - r, cy - r),

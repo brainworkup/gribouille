@@ -20,7 +20,7 @@
 ///
 /// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `ymin`, `ymax`.
 /// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param width Cap span. In x data units for continuous x; a fraction of the slot width for discrete x.
+/// @param width Cap span. A Typst length sets the cap span directly in panel units; a number is interpreted as x data units for continuous x and a fraction of the slot width for discrete x.
 /// @param stroke Line thickness (a Typst length).
 /// @param colour Fixed line colour. `auto` resolves via the colour scale.
 /// @param alpha Line opacity in `[0, 1]`.
@@ -112,7 +112,12 @@
     layer.params.colour != auto and layer.params.colour != none
   ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
 
-  let half-width = layer.params.width / 2
+  // `width` accepts a Typst length (cap span in panel units) or a number (cap
+  // span in x data units for continuous x, fraction of slot for discrete x).
+  let width-is-length = type(layer.params.width) == length
+  let half-width = if width-is-length {
+    (layer.params.width / 1cm) / 2
+  } else { layer.params.width / 2 }
 
   for row in data {
     let raw-x = row.at(x-col, default: none)
@@ -124,8 +129,12 @@
     let cy-hi = map-position(y-trained, hi, ctx.py-range)
     if cy-lo == none or cy-hi == none { continue }
 
-    let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
-    let (cap-lo, cap-hi) = if band == none { (cx, cx) } else { band }
+    let (cap-lo, cap-hi) = if width-is-length {
+      (cx - half-width, cx + half-width)
+    } else {
+      let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
+      if band == none { (cx, cx) } else { band }
+    }
 
     let colour = if colour-col != none and colour-trained != none {
       (ctx.resolve-colour)(

@@ -5,8 +5,9 @@
 /// Priority order:
 /// 1. Fixed `layer.params.fill` when it is not `auto` and not `none`.
 /// 2. The fill scale, when `fill-mapping` is `true`, a fill mapping is set, and the fill scale is trained.
-/// 3. The colour scale, when `colour-fallback` is `true`, a colour mapping is set, and the colour scale is trained.
-/// 4. `default-fill` otherwise.
+/// 3. `default-fill` otherwise.
+///
+/// `colour-fallback` is off by default: the `colour` aesthetic drives strokes, not fills, and must be opted into explicitly when a geom truly wants the legacy fallback.
 ///
 /// Applies the per-row alpha (mapped or fixed) via @apply-alpha as the final step.
 ///
@@ -25,7 +26,7 @@
   sample-row,
   default-fill,
   fill-mapping: true,
-  colour-fallback: true,
+  colour-fallback: false,
 ) = {
   let fill-param = layer.params.at("fill", default: auto)
   let resolved = if fill-param != auto and fill-param != none {

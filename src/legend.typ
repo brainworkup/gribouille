@@ -276,7 +276,14 @@
     let cx = ox + col * (col-w + col-gap)
     let cy = top - row * line-h
     let colour = _resolve-colour-simple(trained, level, ctx.palette, ink)
-    draw-glyph(key-kind, cx + glyph-size, cy - glyph-size, glyph-size, colour)
+    draw-glyph(
+      key-kind,
+      cx + glyph-size,
+      cy - glyph-size,
+      glyph-size,
+      colour,
+      aesthetic: guide.aesthetic,
+    )
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
       text(size: text-size, fill: text-colour)[#level],

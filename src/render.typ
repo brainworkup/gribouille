@@ -104,8 +104,17 @@
   // a geom's draw function.
   let mapping = _merge-mapping(layer, plot-mapping)
   let data = _resolve-data(layer, plot-data)
-  let stat-name = layer.at("stat", default: "identity")
+  // `stat:` accepts either a string name (with default params from the geom's
+  // own params dict) or a dict returned by a `stat-*()` constructor carrying
+  // its own name and params. Match the same pattern used for `position:` below.
+  let stat-spec = layer.at("stat", default: "identity")
   let params = layer.at("params", default: (:))
+  let stat-name = if type(stat-spec) == str {
+    stat-spec
+  } else { stat-spec.at("name", default: "identity") }
+  let stat-params = if type(stat-spec) == str { params } else {
+    stat-spec.at("params", default: (:))
+  }
   let stripped = _strip-mapping-refs(mapping)
 
   let stat-identity = stat-name == none or stat-name == "identity"
@@ -119,7 +128,7 @@
     let combined = ()
     let last-mapping = stripped
     for g in group-list {
-      let r = apply-stat(stat-name, g.data, stripped, params)
+      let r = apply-stat(stat-name, g.data, stripped, stat-params)
       last-mapping = r.mapping
       // Re-inject group column values from the first row of this group so
       // scale training and position adjustments can still see them.

@@ -19,6 +19,7 @@
 /// @param size Marker size (a Typst length).
 /// @param stroke Marker stroke; `none` means no outline.
 /// @param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
+/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword. `auto` honours the shape scale.
 /// @param distribution Reference distribution name; one of `"normal"` (default), `"uniform"`, `"exponential"`.
@@ -59,6 +60,7 @@
   size: 1.5pt,
   stroke: none,
   fill: auto,
+  colour: auto,
   alpha: 1,
   shape: auto,
   distribution: "normal",
@@ -73,6 +75,7 @@
     size: size,
     stroke: stroke,
     fill: fill,
+    colour: colour,
     alpha: alpha,
     shape: shape,
     distribution: distribution,

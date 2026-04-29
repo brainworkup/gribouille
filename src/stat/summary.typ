@@ -74,6 +74,8 @@
   params: (fun: fun, "fun-args": fun-args),
 )
 
+#let _group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
+
 #let apply(data, mapping, params: (:)) = {
   let base-mapping = (x: "x", y: "y", ymin: "ymin", ymax: "ymax")
   if mapping == none { return (data: (), mapping: base-mapping) }
@@ -87,9 +89,60 @@
   let fun = params.at("fun", default: "mean-se")
   let fun-args = params.at("fun-args", default: (:))
 
-  // Bucket rows by their raw x value; emit one summary row per bucket in
-  // first-appearance order so the downstream x scale keeps the same level
-  // ordering as the input.
+  // Bivariate path: when a grouping aesthetic (colour, shape …) is set, the
+  // data has already been pre-partitioned upstream so each call sees one
+  // group's rows. If x is continuous within that group, sub-bucketing by x
+  // would produce one row per individual observation; instead emit a single
+  // bivariate summary covering both x- and y-direction uncertainty.
+  let has-grouping = _group-aesthetics.any(a => (
+    mapping.at(a, default: none) != none
+  ))
+  let x-nonnull = data
+    .map(r => r.at(x-col, default: none))
+    .filter(v => v != none)
+  let x-continuous = (
+    x-nonnull.len() > 0 and x-nonnull.all(v => parse-number(v) != none)
+  )
+  if has-grouping and x-continuous {
+    let xs = data.map(r => r.at(x-col, default: none))
+    let ys = data.map(r => r.at(y-col, default: none))
+    let sx = summarise(fun, xs, fun-args: fun-args)
+    let sy = summarise(fun, ys, fun-args: fun-args)
+    if sx.y == none or sy.y == none { return (data: (), mapping: base-mapping) }
+    let bmap = (
+      x: "x",
+      y: "y",
+      xmin: "xmin",
+      xmax: "xmax",
+      ymin: "ymin",
+      ymax: "ymax",
+    )
+    for aes in _group-aesthetics {
+      let col = mapping.at(aes, default: none)
+      if col != none { bmap.insert(aes, col) }
+    }
+    return (
+      data: (
+        (
+          x: sx.y,
+          y: sy.y,
+          xmin: sx.ymin,
+          xmax: sx.ymax,
+          ymin: sy.ymin,
+          ymax: sy.ymax,
+        ),
+      ),
+      mapping: bmap,
+    )
+  }
+
+  // Discrete x: bucket rows by their raw x value; emit one summary row per
+  // bucket in first-appearance order so the downstream x scale keeps the same
+  // level ordering as the input.
+  for aes in _group-aesthetics {
+    let col = mapping.at(aes, default: none)
+    if col != none { base-mapping.insert(aes, col) }
+  }
   let buckets = (:)
   let order = ()
   for row in data {

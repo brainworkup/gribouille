@@ -15,6 +15,7 @@
 /// @param size Marker size (a Typst length). Used as the fixed size when no size scale is active.
 /// @param stroke Marker stroke; `none` means no outline.
 /// @param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
+/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword. `auto` honours the shape scale.
 /// @param stat Statistical transform name. Defaults to `"sum"`.
@@ -70,6 +71,7 @@
   size: 3pt,
   stroke: none,
   fill: auto,
+  colour: auto,
   alpha: 1,
   shape: auto,
   stat: "sum",
@@ -80,7 +82,14 @@
   geom: "point",
   mapping: mapping,
   data: data,
-  params: (size: size, stroke: stroke, fill: fill, alpha: alpha, shape: shape),
+  params: (
+    size: size,
+    stroke: stroke,
+    fill: fill,
+    colour: colour,
+    alpha: alpha,
+    shape: shape,
+  ),
   stat: stat,
   position: position,
   inherit-aes: inherit-aes,

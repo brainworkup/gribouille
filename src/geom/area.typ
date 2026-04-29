@@ -124,6 +124,7 @@
       ctx,
       rows.first(),
       neutral-fill,
+      colour-fallback: false,
     )
 
     cetz.draw.line(

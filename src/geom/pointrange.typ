@@ -4,11 +4,12 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
+#import "../utils/fill-resolve.typ": resolve-fill-colour
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
 ///
-/// Mapping must provide `x`, `y`, `ymin`, `ymax`. Colour and linetype apply
-/// to both the line and the point.
+/// Mapping must provide `x`, `y`, `ymin`, `ymax`. `colour` paints the range
+/// line and the point outline; `fill` paints the point body.
 ///
 /// @category Geoms
 /// @stability stable
@@ -18,7 +19,8 @@
 /// @param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// @param size Point radius (a Typst length).
 /// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed colour for the line and point. `auto` resolves via the colour scale.
+/// @param colour Fixed range-line colour. `auto` resolves via the colour scale.
+/// @param fill Fixed point body fill. `auto` resolves via the fill scale, falling back to the resolved range-line colour.
 /// @param alpha Opacity in `[0, 1]`.
 /// @param linetype Dash keyword for the range line. Defaults to `"solid"`.
 /// @param stat Statistical transform name. Usually `"identity"`.
@@ -68,6 +70,7 @@
   size: 2.5pt,
   stroke: 0.8pt,
   colour: auto,
+  fill: auto,
   alpha: 1,
   linetype: "solid",
   stat: "identity",
@@ -82,6 +85,7 @@
     size: size,
     stroke: stroke,
     colour: colour,
+    fill: fill,
     alpha: alpha,
     linetype: linetype,
   ),
@@ -127,6 +131,13 @@
       row,
       default-colour,
     )
+    let final-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      final-colour,
+    )
 
     let thickness = resolve-linewidth(
       layer,
@@ -147,7 +158,7 @@
     cetz.draw.circle(
       (cx, cy-mid),
       radius: layer.params.size,
-      fill: final-colour,
+      fill: final-fill,
       stroke: none,
     )
   }

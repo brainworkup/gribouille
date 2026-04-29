@@ -9,7 +9,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
+#import "../utils/fill-resolve.typ": resolve-fill-colour
 
 /// Filled band between `ymin` and `ymax` along the x aesthetic.
 ///
@@ -123,20 +123,14 @@
   let pts = upper + lower
   if pts.any(p => p.at(0) == none or p.at(1) == none) { return }
 
-  let colour = if layer.params.fill != auto and layer.params.fill != none {
-    layer.params.fill
-  } else {
-    let colour-col = mapping.at("colour", default: none)
-    let colour-trained = ctx.trained.at("colour", default: none)
-    if colour-col != none and colour-trained != none {
-      let sample = sorted.first().at("x", default: none)
-      (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
-    } else {
-      rgb("#4c78a8")
-    }
-  }
-  let alpha = resolve-alpha(layer, mapping, ctx, data.first())
-  let final-fill = apply-alpha(colour, alpha)
+  let final-fill = resolve-fill-colour(
+    layer,
+    mapping,
+    ctx,
+    data.first(),
+    rgb("#4c78a8"),
+    colour-fallback: false,
+  )
 
   cetz.draw.line(
     ..pts,

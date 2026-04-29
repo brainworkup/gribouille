@@ -9,17 +9,38 @@
   mapping: aes(
     x: "flipper-len",
     y: "body-mass",
-    colour: "species",
+    fill: "species",
     shape: "species",
   ),
   layers: (
-    geom-point(size: 2pt, stroke: 0.5pt, alpha: 0.5),
-    geom-smooth(method: "lm", se: true, alpha: 0.2),
+    geom-point(size: 2pt, alpha: 0.25, stroke: 0.5pt, colour: rgb("#ffffff")),
+    geom-smooth(
+      mapping: aes(colour: "species"),
+      method: "lm",
+      se: true,
+      alpha: 0.2,
+    ),
+    geom-errorbar(
+      mapping: aes(colour: "species"),
+      stat: stat-summary(fun: "mean-sdl", fun-args: (mult: 1)),
+      width: 5pt,
+    ),
+    geom-errorbarh(
+      mapping: aes(colour: "species"),
+      stat: stat-summary(fun: "mean-sdl", fun-args: (mult: 1)),
+      height: 5pt,
+    ),
+    // geom-point(stat: stat-summary(fun: "mean-se"), size: 3pt),
   ),
   scales: (
     scale-x-continuous(),
     scale-y-continuous(),
     scale-colour-discrete(palette: (
+      rgb("#ff8c00"),
+      rgb("#800080"),
+      rgb("#008B8B"),
+    )),
+    scale-fill-discrete(palette: (
       rgb("#ff8c00"),
       rgb("#800080"),
       rgb("#008B8B"),
@@ -30,6 +51,7 @@
     subtitle: "Flipper length vs body mass by species",
     caption: "Data from Palmer Archipelago (Antarctica) penguin dataset",
     colour: "Species",
+    fill: "Species",
     x: "Flipper length (mm)",
     y: "Body mass (g)",
   ),
