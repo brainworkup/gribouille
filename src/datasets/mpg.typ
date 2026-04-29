@@ -9,6 +9,7 @@
 ///
 /// Each row is one vehicle.
 /// Columns:
+///
 /// - `manufacturer` (string).
 /// - `model` (string).
 /// - `displ` (engine displacement, litres).

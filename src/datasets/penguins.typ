@@ -10,6 +10,7 @@
 ///
 /// Each row is one penguin observation.
 /// Columns:
+///
 /// - `species` (string: `"Adelie"`, `"Chinstrap"`, `"Gentoo"`).
 /// - `island` (string: `"Torgersen"`, `"Biscoe"`, `"Dream"`).
 /// - `"bill-len"` (culmen length, mm; float, may be `none`).

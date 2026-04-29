@@ -12,6 +12,7 @@
 ///
 /// Each row is a month from 2008-01-01 to 2009-12-01.
 /// Columns:
+///
 /// - `date` (string `"YYYY-MM-DD"`).
 /// - `pce` (personal consumption expenditures, billions of dollars).
 /// - `pop` (total population, thousands).
