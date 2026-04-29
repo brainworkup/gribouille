@@ -31,11 +31,11 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 ::: {.hero-art}
 
 ::: {.light-content}
-![A faceted scatter plot of Palmer penguins.](/assets/typst-render/examples/penguins-light.svg){fig-alt="A faceted scatter plot of Palmer penguins, flipper length versus body mass, coloured by species."}
+![](/assets/typst-render/examples/penguins-light.svg){fig-alt="To be Updated"}
 :::
 
 ::: {.dark-content}
-![A faceted scatter plot of Palmer penguins.](/assets/typst-render/examples/penguins-dark.svg){fig-alt="A faceted scatter plot of Palmer penguins, flipper length versus body mass, coloured by species."}
+![](/assets/typst-render/examples/penguins-dark.svg){fig-alt="To be Updated"}
 :::
 
 :::
