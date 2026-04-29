@@ -1,31 +1,31 @@
 ///! Histogram of a continuous variable.
 ///!
-///! Uses @stat-bin to partition x into uniform-width bins and draws bars of
+///! Uses \@stat-bin to partition x into uniform-width bins and draws bars of
 ///! the per-bin counts. Choose either `bins` (count) or `binwidth` (width).
 
 /// Histogram layer: bars of binned counts along the x aesthetic.
 ///
-/// The layer runs @stat-bin over the x column, then draws one bar per bin.
+/// The layer runs \@stat-bin over the x column, then draws one bar per bin.
 /// Supply `bins` for a target bin count or `binwidth` to fix the width.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param bins Target number of bins when `binwidth` is `none`.
-/// @param binwidth Fixed bin width. Overrides `bins` when set.
-/// @param width Bar width as a fraction of the bin width (0 to 1).
-/// @param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param stroke Bar outline; `none` means no border.
-/// @param alpha Bar opacity in `[0, 1]`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param bins Target number of bins when `binwidth` is `none`.
+/// \@param binwidth Fixed bin width. Overrides `bins` when set.
+/// \@param width Bar width as a fraction of the bin width (0 to 1).
+/// \@param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param stroke Bar outline; `none` means no border.
+/// \@param alpha Bar opacity in `[0, 1]`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Twelve-bin partition, letting the layer pick bin width
+/// \@examples Twelve-bin partition, letting the layer pick bin width
 /// automatically.
 /// ```
 /// #let d = range(0, 40).map(i => (
@@ -40,7 +40,7 @@
 /// )
 /// ```
 ///
-/// @examples Pin `binwidth` directly to align bin edges to integer
+/// \@examples Pin `binwidth` directly to align bin edges to integer
 /// boundaries.
 /// ```
 /// #let d = range(0, 40).map(i => (
@@ -55,7 +55,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-bin, @geom-bar, @geom-col
+/// \@see \@stat-bin, \@geom-bar, \@geom-col
 #let geom-histogram(
   mapping: none,
   data: none,

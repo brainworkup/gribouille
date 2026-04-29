@@ -6,9 +6,9 @@
 /// Returns `colour` unchanged when `alpha` is `>= 1`, otherwise returns
 /// `colour.transparentize((1 - alpha) * 100%)`.
 ///
-/// @param colour A resolved colour value.
-/// @param alpha Opacity in `[0, 1]`.
-/// @returns The colour with alpha applied.
+/// \@param colour A resolved colour value.
+/// \@param alpha Opacity in `[0, 1]`.
+/// \@returns The colour with alpha applied.
 #let apply-alpha(colour, alpha) = {
   if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
 }
@@ -24,12 +24,12 @@
 /// 2. The trained alpha scale (continuous/discrete/identity), if `mapping.alpha` is set.
 /// 3. `default-alpha` otherwise (defaults to `1`, geoms with intrinsic translucency pass their own).
 ///
-/// @param layer The layer dictionary providing `params.alpha`.
-/// @param mapping The resolved aesthetic mapping.
-/// @param ctx The plot context exposing `trained`.
-/// @param sample-row The row used to read the alpha value.
-/// @param default-alpha Fallback opacity when no pin or mapping applies.
-/// @returns A scalar alpha in `[0, 1]`.
+/// \@param layer The layer dictionary providing `params.alpha`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the alpha value.
+/// \@param default-alpha Fallback opacity when no pin or mapping applies.
+/// \@returns A scalar alpha in `[0, 1]`.
 #let resolve-alpha(layer, mapping, ctx, sample-row, default-alpha: 1) = {
   let pinned = layer.params.at("alpha", default: auto)
   if pinned != auto and pinned != none {
@@ -76,12 +76,12 @@
 /// when neither the mapping nor an explicit `linewidth:` pin applies, the
 /// layer's configured stroke length is used as the fallback thickness.
 ///
-/// @param layer The layer dictionary providing `params.linewidth`.
-/// @param mapping The resolved aesthetic mapping.
-/// @param ctx The plot context exposing `trained`.
-/// @param sample-row The row used to read the linewidth value.
-/// @param default-thickness Fallback thickness when no mapping or pin applies.
-/// @returns A Typst length suitable for `stroke.thickness`.
+/// \@param layer The layer dictionary providing `params.linewidth`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the linewidth value.
+/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@returns A Typst length suitable for `stroke.thickness`.
 #let resolve-linewidth(layer, mapping, ctx, sample-row, default-thickness) = {
   let pinned-lw = layer.params.at("linewidth", default: auto)
   if pinned-lw != auto and pinned-lw != none and type(pinned-lw) == length {
@@ -131,12 +131,12 @@
 /// 2. The trained size scale, if `mapping.size` is set.
 /// 3. `default-size` otherwise.
 ///
-/// @param layer The layer dictionary providing `params.size`.
-/// @param mapping The resolved aesthetic mapping.
-/// @param ctx The plot context exposing `trained`.
-/// @param sample-row The row used to read the size value.
-/// @param default-size Fallback length when no mapping or pin applies.
-/// @returns A Typst length suitable for a marker radius.
+/// \@param layer The layer dictionary providing `params.size`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the size value.
+/// \@param default-size Fallback length when no mapping or pin applies.
+/// \@returns A Typst length suitable for a marker radius.
 #let resolve-size(layer, mapping, ctx, sample-row, default-size) = {
   let pinned = layer.params.at("size", default: auto)
   if pinned != auto and pinned != none and type(pinned) == length {
@@ -188,12 +188,12 @@
 ///
 /// Applies the per-row alpha (mapped or pinned) as a transparentise step.
 ///
-/// @param layer The layer dictionary providing `params.colour`/`params.alpha`.
-/// @param mapping The resolved aesthetic mapping.
-/// @param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
-/// @param sample-row The row used to read the colour value (group leader or per-row).
-/// @param default-colour The colour used when no scale resolution applies.
-/// @returns A colour ready to use as a stroke paint.
+/// \@param layer The layer dictionary providing `params.colour`/`params.alpha`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
+/// \@param sample-row The row used to read the colour value (group leader or per-row).
+/// \@param default-colour The colour used when no scale resolution applies.
+/// \@returns A colour ready to use as a stroke paint.
 #let resolve-stroke-colour(layer, mapping, ctx, sample-row, default-colour) = {
   let colour-param = layer.params.at("colour", default: auto)
   let resolved = if colour-param != auto and colour-param != none {

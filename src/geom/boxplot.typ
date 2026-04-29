@@ -1,4 +1,4 @@
-///! Boxplots from raw observations using @stat-boxplot.
+///! Boxplots from raw observations using \@stat-boxplot.
 ///!
 ///! The default `stat = "boxplot"` reduces each group to one summary row
 ///! before the geom draws. Pass `stat: "identity"` only when the layer
@@ -18,27 +18,27 @@
 /// `position = "identity"` keeps groups at their categorical x slot; switch
 /// to `"dodge"` if you want side-by-side boxes per fill level.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param width Box width in x data units. For discrete x this is also a data-unit width.
-/// @param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param colour Stroke colour for the box, median, and whiskers. `auto` falls back to the theme ink.
-/// @param stroke Stroke thickness for the box outline and whiskers.
-/// @param alpha Box opacity in `[0, 1]`.
-/// @param outlier-size Marker size for outlier points.
-/// @param outlier-colour Marker colour for outlier points. `auto` follows the box stroke colour.
-/// @param whisker-cap Cap length at the whisker ends as a fraction of `width`.
-/// @param stat Statistical transform name. `"boxplot"` by default.
-/// @param position Position adjustment name. `"identity"` by default.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param width Box width in x data units. For discrete x this is also a data-unit width.
+/// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param colour Stroke colour for the box, median, and whiskers. `auto` falls back to the theme ink.
+/// \@param stroke Stroke thickness for the box outline and whiskers.
+/// \@param alpha Box opacity in `[0, 1]`.
+/// \@param outlier-size Marker size for outlier points.
+/// \@param outlier-colour Marker colour for outlier points. `auto` follows the box stroke colour.
+/// \@param whisker-cap Cap length at the whisker ends as a fraction of `width`.
+/// \@param stat Statistical transform name. `"boxplot"` by default.
+/// \@param position Position adjustment name. `"identity"` by default.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Five-number summary computed per category from raw observations.
+/// \@examples Five-number summary computed per category from raw observations.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -55,7 +55,7 @@
 /// )
 /// ```
 ///
-/// @examples Add a second mapping (`fill`) and switch `position` to
+/// \@examples Add a second mapping (`fill`) and switch `position` to
 /// `"dodge"` to compare distributions side by side per group.
 /// ```
 /// #let d = ()
@@ -75,7 +75,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-boxplot, @geom-col
+/// \@see \@stat-boxplot, \@geom-col
 #let geom-boxplot(
   mapping: none,
   data: none,

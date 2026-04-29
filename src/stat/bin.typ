@@ -1,6 +1,6 @@
 ///! Uniform-width histogram binning.
 ///!
-///! Backing statistic for @geom-histogram. Emits one row per bin with the
+///! Backing statistic for \@geom-histogram. Emits one row per bin with the
 ///! bin midpoint as x, the count as y, and the bin `width` for reference.
 
 #import "../utils/types.typ": parse-number
@@ -10,16 +10,16 @@
 /// Either `bins` or `binwidth` fixes the partition; if both are supplied,
 /// `binwidth` wins.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param bins Target number of bins when `binwidth` is `none`.
-/// @param binwidth Fixed bin width. Overrides `bins` when set.
+/// \@param bins Target number of bins when `binwidth` is `none`.
+/// \@param binwidth Fixed bin width. Overrides `bins` when set.
 ///
-/// @returns Statistic object with `name: "bin"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "bin"`, consumed by geom layers.
 ///
-/// @examples Histogram driven by an eight-bin partition.
+/// \@examples Histogram driven by an eight-bin partition.
 /// ```
 /// #let d = range(0, 40).map(i => (x: i * 0.25))
 /// #plot(
@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// @examples Pin `binwidth` to align bin edges to integer boundaries when
+/// \@examples Pin `binwidth` to align bin edges to integer boundaries when
 /// the data range is known.
 /// ```
 /// #let d = range(0, 40).map(i => (x: i * 0.25))
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-histogram, @stat-count
+/// \@see \@geom-histogram, \@stat-count
 #let stat-bin(bins: 30, binwidth: none) = (
   kind: "stat",
   name: "bin",

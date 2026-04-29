@@ -7,16 +7,16 @@
 
 /// Shift every row's x and y by a fixed amount in data units.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param x Offset added to the x value of each row.
-/// @param y Offset added to the y value of each row.
+/// \@param x Offset added to the x value of each row.
+/// \@param y Offset added to the y value of each row.
 ///
-/// @returns Position dictionary with `name: "nudge"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "nudge"`, consumed by \@plot.
 ///
-/// @examples Offset text labels above their points using a default
+/// \@examples Offset text labels above their points using a default
 /// `position-nudge()`.
 /// ```
 /// #let d = (
@@ -36,7 +36,7 @@
 /// )
 /// ```
 ///
-/// @examples Pass explicit `x` and `y` offsets to flow labels diagonally
+/// \@examples Pass explicit `x` and `y` offsets to flow labels diagonally
 /// off the points.
 /// ```
 /// #let d = (
@@ -56,7 +56,7 @@
 /// )
 /// ```
 ///
-/// @see @position-jitter, @geom-text
+/// \@see \@position-jitter, \@geom-text
 #let position-nudge(x: 0, y: 0) = (
   kind: "position",
   name: "nudge",

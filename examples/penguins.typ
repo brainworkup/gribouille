@@ -49,5 +49,7 @@
 
 #place(
   bottom + right,
-  image("../docs/assets/images/logo-stacked.svg", height: 1cm),
+  dx: 0.5cm,
+  dy: 0.5cm,
+  image("../docs/assets/images/logo-stacked.svg", height: 2cm),
 )

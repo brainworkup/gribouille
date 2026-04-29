@@ -14,18 +14,18 @@
 /// each dodged slot so overlapping points become visible. The same `seed`
 /// always produces the same offsets so renders are reproducible.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param width Maximum absolute jitter applied to the (already dodged) x position, in data units.
-/// @param height Maximum absolute jitter applied to the y position, in data units.
-/// @param dodge-width Total width reserved for the dodged group, as a fraction of the category width.
-/// @param seed Integer seed for the deterministic pseudo-random offsets.
+/// \@param width Maximum absolute jitter applied to the (already dodged) x position, in data units.
+/// \@param height Maximum absolute jitter applied to the y position, in data units.
+/// \@param dodge-width Total width reserved for the dodged group, as a fraction of the category width.
+/// \@param seed Integer seed for the deterministic pseudo-random offsets.
 ///
-/// @returns Position dictionary with `name: "jitterdodge"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "jitterdodge"`, consumed by \@plot.
 ///
-/// @examples Dodge by `colour` then jitter within each slot, useful for
+/// \@examples Dodge by `colour` then jitter within each slot, useful for
 /// dense categorical scatters.
 /// ```
 /// #let d = ()
@@ -45,7 +45,7 @@
 /// )
 /// ```
 ///
-/// @examples Tune `dodge-width` and `width` to keep jittered clusters
+/// \@examples Tune `dodge-width` and `width` to keep jittered clusters
 /// inside their dodged slots.
 /// ```
 /// #let d = ()
@@ -66,7 +66,7 @@
 /// )
 /// ```
 ///
-/// @see @position-jitter, @position-dodge
+/// \@see \@position-jitter, \@position-dodge
 #let position-jitterdodge(
   width: 0.4,
   height: 0,

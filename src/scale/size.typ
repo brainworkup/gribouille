@@ -5,19 +5,19 @@
 
 /// Continuous size scale mapping a numeric column to a size range.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param range Pair of Typst lengths `(min, max)` bounding the output size.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Linear size mapping with the default 1pt-to-6pt range.
+/// \@examples Linear size mapping with the default 1pt-to-6pt range.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Widen the `range` for stronger visual contrast on small
+/// \@examples Widen the `range` for stronger visual contrast on small
 /// numeric differences.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-shape, @scale-colour-continuous
+/// \@see \@scale-shape, \@scale-colour-continuous
 #let scale-size-continuous(
   name: none,
   range: (1pt, 6pt),
@@ -68,19 +68,19 @@
 /// bin take the same visual size, drawn from the midpoint position of the
 /// `range` interval.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param range Pair of Typst lengths `(min, max)` bounding the output size.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Four-bin discretisation across the default size range.
+/// \@examples Four-bin discretisation across the default size range.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
@@ -93,7 +93,7 @@
 /// )
 /// ```
 ///
-/// @examples More bins (`n-breaks: 8`) on a wider `range` give finer steps
+/// \@examples More bins (`n-breaks: 8`) on a wider `range` give finer steps
 /// while keeping the visual binning.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
@@ -107,7 +107,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-size-continuous, @scale-size-binned-area
+/// \@see \@scale-size-continuous, \@scale-size-binned-area
 #let scale-size-binned(
   n-breaks: 4,
   range: (1pt, 6pt),
@@ -134,19 +134,19 @@
 /// data. This is the perceptually neutral default when the visual quantity
 /// of interest is a count or magnitude.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param range Pair of Typst lengths `(min, max)` bounding the output size.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Area-proportional sizing on a quadratic series; markers grow
+/// \@examples Area-proportional sizing on a quadratic series; markers grow
 /// with the square root of `w` so visual area tracks the value.
 /// ```
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i * i))
@@ -160,7 +160,7 @@
 /// )
 /// ```
 ///
-/// @examples Use `scale-size-area` with @geom-count so the count of
+/// \@examples Use `scale-size-area` with \@geom-count so the count of
 /// duplicate `(x, y)` rows reads as proportional area.
 /// ```
 /// #let d = (
@@ -178,7 +178,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-size-continuous, @scale-size-binned-area
+/// \@see \@scale-size-continuous, \@scale-size-binned-area
 #let scale-size-area(
   name: none,
   range: (1pt, 6pt),
@@ -203,19 +203,19 @@
 /// `n-breaks` bins, and the size of each bin grows with the square root of
 /// its normalised midpoint position.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param range Pair of Typst lengths `(min, max)` bounding the output size.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Four-bin area-proportional discretisation on a quadratic
+/// \@examples Four-bin area-proportional discretisation on a quadratic
 /// series.
 /// ```
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i * i))
@@ -229,7 +229,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine more bins with a wider `range` for a finer banded
+/// \@examples Combine more bins with a wider `range` for a finer banded
 /// area scale on dense data.
 /// ```
 /// #let d = range(1, 16).map(i => (x: i, y: i, w: i * i))
@@ -243,7 +243,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-size-binned, @scale-size-area
+/// \@see \@scale-size-binned, \@scale-size-area
 #let scale-size-binned-area(
   n-breaks: 4,
   range: (1pt, 6pt),

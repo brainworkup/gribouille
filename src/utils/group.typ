@@ -9,7 +9,7 @@
 #import "../scale/train.typ": mapping-ref-col, mapping-ref-type
 
 /// Canonical set of aesthetics that may create groups, in priority order.
-/// @internal
+/// \@internal
 #let group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
 
 /// Compute a canonical group key for a row.
@@ -26,10 +26,10 @@
 /// The `"group"` aesthetic is always included.
 ///
 /// Returns `"_all"` when no aesthetics qualify.
-/// @param row Row dictionary providing aesthetic cell values.
-/// @param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
-/// @param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
-/// @internal
+/// \@param row Row dictionary providing aesthetic cell values.
+/// \@param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
+/// \@param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
+/// \@internal
 #let group-key(row, mapping, trained: none) = {
   let keys = ()
   let x-col = mapping-ref-col(mapping.at("x", default: none))
@@ -61,10 +61,10 @@
 /// Returns an array of `(key: str, data: array)` in first-appearance order.
 /// `trained` is forwarded to `group-key`: pass `none` for data-type mode
 /// (stats and positions) or `ctx.trained` for scale-aware mode (geoms).
-/// @param data Array of row dictionaries to partition.
-/// @param mapping Aesthetic mapping forwarded to `group-key`.
-/// @param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
-/// @internal
+/// \@param data Array of row dictionaries to partition.
+/// \@param mapping Aesthetic mapping forwarded to `group-key`.
+/// \@param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
+/// \@internal
 #let partition-by-group(data, mapping, trained: none) = {
   let groups = (:)
   let order = ()
@@ -82,8 +82,8 @@
 ///
 /// Used by the per-group stat framework to know which columns to re-inject
 /// into stat output rows so group identity is preserved across the stat.
-/// @param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
-/// @internal
+/// \@param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
+/// \@internal
 #let group-cols(mapping) = {
   let out = ()
   let x-col = mapping-ref-col(mapping.at("x", default: none))

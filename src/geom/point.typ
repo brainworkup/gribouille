@@ -17,29 +17,29 @@
 ///
 /// Default `stat` is `"identity"` and default `position` is `"identity"`.
 /// `fill` paints the marker body; `colour` paints the outline. Shape and
-/// alpha can be mapped via @aes or set to fixed values through the layer
+/// alpha can be mapped via \@aes or set to fixed values through the layer
 /// parameters below.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param size Marker size (a Typst length).
-/// @param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
-/// @param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
-/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
-/// @param alpha Marker opacity in `[0, 1]`.
-/// @param shape Marker shape keyword (e.g. `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
-/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
-/// @param stat Statistical transform name. Usually left at `"identity"`.
-/// @param position Position adjustment name. Usually left at `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param size Marker size (a Typst length).
+/// \@param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
+/// \@param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
+/// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
+/// \@param alpha Marker opacity in `[0, 1]`.
+/// \@param shape Marker shape keyword (e.g. `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
+/// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
+/// \@param stat Statistical transform name. Usually left at `"identity"`.
+/// \@param position Position adjustment name. Usually left at `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Default scatter, mapping `fill` to a categorical column.
+/// \@examples Default scatter, mapping `fill` to a categorical column.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -56,7 +56,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `shape` and `size` alongside `fill` to encode three
+/// \@examples Map `shape` and `size` alongside `fill` to encode three
 /// dimensions on the same scatter.
 /// ```
 /// #let d = (
@@ -74,7 +74,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-line, @geom-text, @scale-shape, @aes
+/// \@see \@geom-line, \@geom-text, \@scale-shape, \@aes
 #let geom-point(
   mapping: none,
   data: none,

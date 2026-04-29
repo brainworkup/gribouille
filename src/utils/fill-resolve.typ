@@ -9,16 +9,16 @@
 ///
 /// `colour-fallback` is off by default: the `colour` aesthetic drives strokes, not fills, and must be opted into explicitly when a geom truly wants the legacy fallback.
 ///
-/// Applies the per-row alpha (mapped or fixed) via @apply-alpha as the final step.
+/// Applies the per-row alpha (mapped or fixed) via \@apply-alpha as the final step.
 ///
-/// @param layer The layer dictionary providing `params.fill` and `params.alpha`.
-/// @param mapping The resolved aesthetic mapping.
-/// @param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
-/// @param sample-row The row used to read the fill or colour value.
-/// @param default-fill The colour used when no scale resolution applies.
-/// @param fill-mapping Whether to consult the fill mapping and scale.
-/// @param colour-fallback Whether to fall back to the colour scale when fill is unmapped.
-/// @returns A fill colour with alpha applied.
+/// \@param layer The layer dictionary providing `params.fill` and `params.alpha`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
+/// \@param sample-row The row used to read the fill or colour value.
+/// \@param default-fill The colour used when no scale resolution applies.
+/// \@param fill-mapping Whether to consult the fill mapping and scale.
+/// \@param colour-fallback Whether to fall back to the colour scale when fill is unmapped.
+/// \@returns A fill colour with alpha applied.
 #let resolve-fill-colour(
   layer,
   mapping,

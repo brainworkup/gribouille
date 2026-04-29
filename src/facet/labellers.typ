@@ -7,13 +7,13 @@
 
 /// Default labeller: shows the level value as-is.
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
+/// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
 ///
-/// @examples Strip text shows the level value as-is (`"a"`, `"b"`).
+/// \@examples Strip text shows the level value as-is (`"a"`, `"b"`).
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// @see @label-both, @label-context, @label-wrap, @labeller
+/// \@see \@label-both, \@label-context, \@label-wrap, \@labeller
 #let label-value() = (
   kind: "labeller",
   labeller: "value",
@@ -41,15 +41,15 @@
 ///
 /// Produces a label of the form `"<var>: <level>"`, e.g. `"cyl: 6"`.
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param sep Separator between the variable name and the level.
+/// \@param sep Separator between the variable name and the level.
 ///
-/// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
+/// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
 ///
-/// @examples Strip shows the variable name and level (`"sp: a"`, `"sp: b"`).
+/// \@examples Strip shows the variable name and level (`"sp: a"`, `"sp: b"`).
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -67,7 +67,7 @@
 /// )
 /// ```
 ///
-/// @examples Override `sep` to use a different separator.
+/// \@examples Override `sep` to use a different separator.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -85,7 +85,7 @@
 /// )
 /// ```
 ///
-/// @see @label-value, @label-context, @labeller
+/// \@see \@label-value, \@label-context, \@labeller
 #let label-both(sep: ": ") = (
   kind: "labeller",
   labeller: "both",
@@ -98,13 +98,13 @@
 /// is the number of rows in the panel.
 /// The renderer supplies the count when it draws the strip.
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
+/// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
 ///
-/// @examples Strip text appends the per-panel row count.
+/// \@examples Strip text appends the per-panel row count.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -122,7 +122,7 @@
 /// )
 /// ```
 ///
-/// @see @label-value, @label-both, @labeller
+/// \@see \@label-value, \@label-both, \@labeller
 #let label-context() = (
   kind: "labeller",
   labeller: "context",
@@ -134,16 +134,16 @@
 /// nearest preceding space when one exists.
 /// Inner labellers may be supplied to first transform the level.
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param width Maximum number of characters per line.
-/// @param inner Labeller applied before wrapping, or `none` for the raw level.
+/// \@param width Maximum number of characters per line.
+/// \@param inner Labeller applied before wrapping, or `none` for the raw level.
 ///
-/// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
+/// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
 ///
-/// @examples Wrap long category names onto multiple strip lines.
+/// \@examples Wrap long category names onto multiple strip lines.
 /// ```
 /// #let d = (
 ///   (sp: "a long category name", x: 1, y: 1),
@@ -161,7 +161,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine `inner` with @label-both to wrap a `var: value` label.
+/// \@examples Combine `inner` with \@label-both to wrap a `var: value` label.
 /// ```
 /// #let d = (
 ///   (sp: "alpha-with-long-suffix", x: 1, y: 1),
@@ -179,7 +179,7 @@
 /// )
 /// ```
 ///
-/// @see @label-value, @label-both, @labeller
+/// \@see \@label-value, \@label-both, \@labeller
 #let label-wrap(width: 20, inner: none) = (
   kind: "labeller",
   labeller: "wrap",
@@ -192,16 +192,16 @@
 /// `rules` is a dict of `var-name -> labeller`. Variables not listed fall
 /// back to the labeller passed via `default`.
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param rules Dict mapping facet variable names to labellers.
-/// @param default Labeller used for variables absent from `rules`.
+/// \@param rules Dict mapping facet variable names to labellers.
+/// \@param default Labeller used for variables absent from `rules`.
 ///
-/// @returns Labeller dictionary consumed by @facet-wrap and @facet-grid.
+/// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
 ///
-/// @examples Mix labellers per facet variable: rows show `var: level`,
+/// \@examples Mix labellers per facet variable: rows show `var: level`,
 /// columns show level only.
 /// ```
 /// #let d = ()
@@ -225,7 +225,7 @@
 /// )
 /// ```
 ///
-/// @examples Set `default` to a fallback labeller for variables not listed
+/// \@examples Set `default` to a fallback labeller for variables not listed
 /// in `rules`.
 /// ```
 /// #let d = ()
@@ -252,7 +252,7 @@
 /// )
 /// ```
 ///
-/// @see @label-value, @label-both, @label-context
+/// \@see \@label-value, \@label-both, \@label-context
 #let labeller(rules: (:), default: none) = (
   kind: "labeller",
   labeller: "compound",

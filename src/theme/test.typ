@@ -10,17 +10,17 @@
 /// Designed to make theme regions stand out so test renderings are easy to
 /// inspect.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ink Foreground colour (text). Default: `black`.
-/// @param paper Background colour. Default: `white`.
-/// @param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ink Foreground colour (text). Default: `black`.
+/// \@param paper Background colour. Default: `white`.
+/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Loud red axes and strips so theme regions are easy to spot.
+/// \@examples Loud red axes and strips so theme regions are easy to spot.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -33,7 +33,7 @@
 /// )
 /// ```
 ///
-/// @examples Particularly handy with facets to verify strip styling.
+/// \@examples Particularly handy with facets to verify strip styling.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -52,7 +52,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-grey, @theme-minimal, @theme-classic, @theme-bw, @theme-void, @theme
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-bw, \@theme-void, \@theme
 #let theme-test(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "test",

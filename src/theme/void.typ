@@ -7,17 +7,17 @@
 
 /// Void theme: no axes, no grid, no panel background.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ink Foreground colour. Default: `black`.
-/// @param paper Background colour. Default: transparent (`rgb(0, 0, 0, 0)`).
-/// @param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ink Foreground colour. Default: `black`.
+/// \@param paper Background colour. Default: transparent (`rgb(0, 0, 0, 0)`).
+/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Strip away axes, grid, and panel background entirely.
+/// \@examples Strip away axes, grid, and panel background entirely.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Useful behind a custom annotated figure where axes would be
+/// \@examples Useful behind a custom annotated figure where axes would be
 /// visual noise; pass an explicit `paper` for a solid background.
 /// ```
 /// #let d = range(0, 12).map(i => (
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-grey, @theme-minimal, @theme-classic, @theme
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme
 #let theme-void(
   ink: _tr-ink,
   paper: rgb(0, 0, 0, 0),

@@ -1,6 +1,6 @@
 ///! Temporal position scales: date, datetime, and time.
 ///!
-///! These wrappers train a continuous numeric domain like @scale-x-continuous
+///! These wrappers train a continuous numeric domain like \@scale-x-continuous
 ///! and only differ at axis-label time, where the numeric break is converted
 ///! back to a Typst `datetime` against a fixed epoch and rendered through
 ///! `dt.display(date-format)`.
@@ -16,19 +16,19 @@
 /// `datetime(year: 2000, month: 1, day: 1) + duration(days: int(n))` and
 /// rendered with `dt.display(date-format)`.
 ///
-/// @category Scales
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain (in days), or `none` for automatic limits.
-/// @param breaks Array of break values (in days), or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain (in days), or `none` for automatic limits.
+/// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param date-format Typst `datetime.display` pattern used for break labels.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Numeric days since 2000-01-01 formatted as year-month ticks.
+/// \@examples Numeric days since 2000-01-01 formatted as year-month ticks.
 /// ```
 /// #let d = range(0, 12).map(i => (x: 8766 + 30 * i, y: i))
 /// #plot(
@@ -41,7 +41,7 @@
 /// )
 /// ```
 ///
-/// @examples ISO-8601 strings work just as well; pick a longer
+/// \@examples ISO-8601 strings work just as well; pick a longer
 /// `date-format` to spell the month out.
 /// ```
 /// #let d = (
@@ -60,7 +60,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-date, @scale-x-datetime, @scale-x-continuous
+/// \@see \@scale-y-date, \@scale-x-datetime, \@scale-x-continuous
 #let scale-x-date(
   name: none,
   limits: none,
@@ -84,19 +84,19 @@
 /// Column values may be numeric days since 2000-01-01 or ISO-8601 strings
 /// of the form `YYYY-MM-DD`.
 ///
-/// @category Scales
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain (in days), or `none` for automatic limits.
-/// @param breaks Array of break values (in days), or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain (in days), or `none` for automatic limits.
+/// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param date-format Typst `datetime.display` pattern used for break labels.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Date axis on the y, useful for horizontal bar charts of
+/// \@examples Date axis on the y, useful for horizontal bar charts of
 /// time-stamped events.
 /// ```
 /// #let d = (
@@ -114,7 +114,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-date, @scale-y-datetime
+/// \@see \@scale-x-date, \@scale-y-datetime
 #let scale-y-date(
   name: none,
   limits: none,
@@ -141,19 +141,19 @@
 /// `datetime(year: 2000, month: 1, day: 1, hour: 0, minute: 0, second: 0) + duration(seconds: int(n))`
 /// and rendered with `dt.display(date-format)`.
 ///
-/// @category Scales
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
-/// @param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param date-format Typst `datetime.display` pattern used for break labels.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples ISO-8601 datetime strings rendered with hour-and-minute ticks.
+/// \@examples ISO-8601 datetime strings rendered with hour-and-minute ticks.
 /// ```
 /// #let d = range(0, 6).map(i => (
 ///   x: "2024-04-01T0" + str(8 + i) + ":00",
@@ -169,7 +169,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-datetime, @scale-x-date, @scale-x-time
+/// \@see \@scale-y-datetime, \@scale-x-date, \@scale-x-time
 #let scale-x-datetime(
   name: none,
   limits: none,
@@ -194,19 +194,19 @@
 /// ISO-8601 strings of the form `YYYY-MM-DDTHH:MM[:SS]` or
 /// `YYYY-MM-DD HH:MM[:SS]`.
 ///
-/// @category Scales
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
-/// @param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param date-format Typst `datetime.display` pattern used for break labels.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Datetime axis on the y, useful for laying out events along a
+/// \@examples Datetime axis on the y, useful for laying out events along a
 /// vertical timeline.
 /// ```
 /// #let d = range(0, 6).map(i => (
@@ -223,7 +223,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-datetime, @scale-y-date
+/// \@see \@scale-x-datetime, \@scale-y-date
 #let scale-y-datetime(
   name: none,
   limits: none,
@@ -251,19 +251,19 @@
 /// and rendered with `dt.display(date-format)`; only the time portion of the
 /// pattern should be used.
 ///
-/// @category Scales
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
-/// @param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param date-format Typst `datetime.display` pattern used for break labels.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Time-of-day axis using ISO-8601 `HH:MM` strings.
+/// \@examples Time-of-day axis using ISO-8601 `HH:MM` strings.
 /// ```
 /// #let d = (
 ///   (x: "08:00", y: 1),
@@ -282,7 +282,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-time, @scale-x-datetime
+/// \@see \@scale-y-time, \@scale-x-datetime
 #let scale-x-time(
   name: none,
   limits: none,
@@ -306,19 +306,19 @@
 /// Column values may be numeric seconds since midnight (an integer in
 /// `[0, 86400)`) or ISO-8601 strings of the form `HH:MM[:SS]`.
 ///
-/// @category Scales
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
-/// @param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param date-format Typst `datetime.display` pattern used for break labels.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Time-of-day axis on the y for vertical event displays.
+/// \@examples Time-of-day axis on the y for vertical event displays.
 /// ```
 /// #let d = (
 ///   (x: "Mon", y: "08:30"),
@@ -336,7 +336,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-time, @scale-y-datetime
+/// \@see \@scale-x-time, \@scale-y-datetime
 #let scale-y-time(
   name: none,
   limits: none,

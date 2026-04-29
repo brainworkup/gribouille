@@ -14,27 +14,27 @@
 /// Line layer connecting observations in x order, one path per group.
 ///
 /// Grouping is implicit: rows sharing the same discrete colour, fill, or
-/// `group` mapping form one path. Set `group` in @aes to override when
+/// `group` mapping form one path. Set `group` in \@aes to override when
 /// you need separate lines without mapping colour.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
-/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
+/// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples One line per group, derived implicitly from the `colour` mapping.
+/// \@examples One line per group, derived implicitly from the `colour` mapping.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
@@ -53,7 +53,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `linetype` to the same column to give each group a distinct
+/// \@examples Map `linetype` to the same column to give each group a distinct
 /// dash pattern in addition to colour.
 /// ```
 /// #let d = (
@@ -73,7 +73,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-point, @geom-smooth, @scale-linetype, @aes
+/// \@see \@geom-point, \@geom-smooth, \@scale-linetype, \@aes
 #let geom-line(
   mapping: none,
   data: none,

@@ -8,26 +8,26 @@
 /// facet, theme, and label choices, and dispatches to the internal renderer.
 /// Call it once per figure, passing the layers you want to stack.
 ///
-/// @category Core
-/// @stability stable
-/// @since 0.0.1
+/// \@category Core
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param data Array of row dictionaries. Each row is a `(column: value, ...)` dict.
-/// @param mapping Aesthetic mapping built with@aes. Maps column names to visual channels.
-/// @param layers Array of geom layers (e.g.@geom-point,@geom-line). Drawn in order.
-/// @param scales Array of scale objects overriding defaults @scale-x-continuous,@scale-colour-viridis-d, etc.).
-/// @param coord Coordinate system. Defaults to@coord-cartesian when `none`.
-/// @param facet Faceting specification built with@facet-wrap or@facet-grid.
-/// @param theme Theme object (e.g.@theme-grey,@theme-minimal,@theme-classic). Controls non-data ink.
-/// @param labs Labels dictionary built with@labs (title, subtitle, caption, axis titles).
-/// @param guides Per-aesthetic guide overrides built with@guides (e.g. `guides(colour: guide-legend(reverse: true))`).
-/// @param width Total plot width, including axes and legends.
-/// @param height Total plot height, including axes and legends.
-/// @param alt Alt text describing the figure for accessibility tooling. Stored on the spec; not rendered.
+/// \@param data Array of row dictionaries. Each row is a `(column: value, ...)` dict.
+/// \@param mapping Aesthetic mapping built with\@aes. Maps column names to visual channels.
+/// \@param layers Array of geom layers (e.g.\@geom-point,\@geom-line). Drawn in order.
+/// \@param scales Array of scale objects overriding defaults \@scale-x-continuous,\@scale-colour-viridis-d, etc.).
+/// \@param coord Coordinate system. Defaults to\@coord-cartesian when `none`.
+/// \@param facet Faceting specification built with\@facet-wrap or\@facet-grid.
+/// \@param theme Theme object (e.g.\@theme-grey,\@theme-minimal,\@theme-classic). Controls non-data ink.
+/// \@param labs Labels dictionary built with\@labs (title, subtitle, caption, axis titles).
+/// \@param guides Per-aesthetic guide overrides built with\@guides (e.g. `guides(colour: guide-legend(reverse: true))`).
+/// \@param width Total plot width, including axes and legends.
+/// \@param height Total plot height, including axes and legends.
+/// \@param alt Alt text describing the figure for accessibility tooling. Stored on the spec; not rendered.
 ///
-/// @returns Typst content block containing the rendered figure.
+/// \@returns Typst content block containing the rendered figure.
 ///
-/// @examples Single-layer scatter coloured by category, with a title.
+/// \@examples Single-layer scatter coloured by category, with a title.
 /// ```
 /// #let mtcars = (
 ///   (mpg: 21.0, wt: 2.620, cyl: "6"),
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @examples Stack two layers (`geom-point` + `geom-smooth`) and apply a
+/// \@examples Stack two layers (`geom-point` + `geom-smooth`) and apply a
 /// theme, scales, and facets in one call.
 /// ```
 /// #let d = ()
@@ -70,7 +70,7 @@
 /// )
 /// ```
 ///
-/// @see@aes,@geom-point,@coord-cartesian,@facet-wrap,@theme-grey,@labs
+/// \@see\@aes,\@geom-point,\@coord-cartesian,\@facet-wrap,\@theme-grey,\@labs
 #let plot(
   data: none,
   mapping: none,
@@ -111,20 +111,20 @@
 
 /// Read the alt text stored on a plot spec.
 ///
-/// Returns whatever was passed to@plot via `alt:`, or `none` if the
+/// Returns whatever was passed to\@plot via `alt:`, or `none` if the
 /// spec was built without one. This lets renderers and accessibility
 /// tooling pull the description out without parsing the rendered
 /// figure.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param spec Plot spec dictionary (the dict@plot builds internally).
+/// \@param spec Plot spec dictionary (the dict\@plot builds internally).
 ///
-/// @returns The alt string, or `none` if absent.
+/// \@returns The alt string, or `none` if absent.
 ///
-/// @examples-static Pull the alt text from a built spec for accessibility
+/// \@examples-static Pull the alt text from a built spec for accessibility
 /// reporting.
 /// ```
 /// #let spec = (data: (), alt: "Scatter of weight vs mpg")

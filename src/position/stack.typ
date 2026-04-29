@@ -1,7 +1,7 @@
 ///! Stack position adjustment.
 ///!
 ///! Cumulates y per x bucket, writing `ymin` and `ymax` per row so geoms
-///! that honour them (like @geom-col) can draw the stacked segment. Groups
+///! that honour them (like \@geom-col) can draw the stacked segment. Groups
 ///! sharing the same x and discrete aesthetic are stacked in the order rows
 ///! appear in `data`.
 
@@ -15,13 +15,13 @@
 /// Typically set on a layer as `position: "stack"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Position dictionary with `name: "stack"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "stack"`, consumed by \@plot.
 ///
-/// @examples Two groups stacked per quarter to show component contribution
+/// \@examples Two groups stacked per quarter to show component contribution
 /// to a total.
 /// ```
 /// #let d = (
@@ -41,7 +41,7 @@
 /// )
 /// ```
 ///
-/// @examples Stacked area chart over time, useful when the running total
+/// \@examples Stacked area chart over time, useful when the running total
 /// itself is informative.
 /// ```
 /// #let d = ()
@@ -59,7 +59,7 @@
 /// )
 /// ```
 ///
-/// @see @position-dodge, @position-fill, @position-identity
+/// \@see \@position-dodge, \@position-fill, \@position-identity
 #let position-stack() = (kind: "position", name: "stack")
 
 #let apply(data, mapping, params: (:)) = {

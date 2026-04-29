@@ -1,6 +1,6 @@
 ///! Count observations per level of x.
 ///!
-///! Backing statistic for @geom-bar. Groups rows by the x column and returns
+///! Backing statistic for \@geom-bar. Groups rows by the x column and returns
 ///! one row per level with the count as y.
 
 /// Count statistic: one output row per distinct x level with `y = count`.
@@ -8,13 +8,13 @@
 /// Empty strings and `none` x values are dropped. Output rows preserve the
 /// first-seen order of x levels.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "count"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "count"`, consumed by geom layers.
 ///
-/// @examples Count rows per category, drawn as bars via @geom-bar.
+/// \@examples Count rows per category, drawn as bars via \@geom-bar.
 /// ```
 /// #let d = (
 ///   (grp: "a"),
@@ -32,7 +32,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `fill` to a second column to break the count down by
+/// \@examples Map `fill` to a second column to break the count down by
 /// subgroup (stacked by default).
 /// ```
 /// #let d = (
@@ -51,7 +51,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-bar, @stat-bin, @stat-identity
+/// \@see \@geom-bar, \@stat-bin, \@stat-identity
 #let stat-count() = (kind: "stat", name: "count")
 
 #let apply(data, mapping, params: (:)) = {

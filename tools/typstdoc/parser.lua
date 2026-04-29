@@ -27,7 +27,8 @@ end
 local function strip_doc_prefix(s, marker)
   local body = s:sub(#marker + 1)
   if body:sub(1, 1) == " " then body = body:sub(2) end
-  return body
+  -- tinymist parses bare @name in /// as a label ref; sources write \@ to silence it.
+  return (body:gsub("\\@", "@"))
 end
 
 local function parse_signature_params(raw, file, line)

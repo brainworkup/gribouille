@@ -23,21 +23,21 @@
 /// Two call forms:
 /// when given `(data, col)` it returns a new dataset with `col` parsed as a
 /// number in every row; when given `(col)` alone it returns a mapping-ref
-/// annotation that @aes accepts in place of a column name, forcing the scale
+/// annotation that \@aes accepts in place of a column name, forcing the scale
 /// system to treat that channel as continuous.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ..args Either `(data, col)` or `(col)`. See arities.
+/// \@param ..args Either `(data, col)` or `(col)`. See arities.
 ///
-/// @arity (data, col): Return a new dataset with `col` converted to numbers via `parse-number`.
-/// @arity (col): Return a `mapping-ref` dict tagging `col` as continuous for @aes.
+/// \@arity (data, col): Return a new dataset with `col` converted to numbers via `parse-number`.
+/// \@arity (col): Return a `mapping-ref` dict tagging `col` as continuous for \@aes.
 ///
-/// @returns New dataset (2-arg) or mapping-ref dict (1-arg).
+/// \@returns New dataset (2-arg) or mapping-ref dict (1-arg).
 ///
-/// @examples Two-arg form rewrites a column with parsed numbers; useful
+/// \@examples Two-arg form rewrites a column with parsed numbers; useful
 /// when the data arrived as strings.
 /// ```
 /// #let raw = (
@@ -55,7 +55,7 @@
 /// )
 /// ```
 ///
-/// @examples One-arg form tags the column inside @aes so the scale picks
+/// \@examples One-arg form tags the column inside \@aes so the scale picks
 /// continuous semantics without rewriting the dataset.
 /// ```
 /// #let raw = (
@@ -72,7 +72,7 @@
 /// )
 /// ```
 ///
-/// @see @as-factor, @aes
+/// \@see \@as-factor, \@aes
 #let as-numeric(..args) = {
   let pos = args.pos()
   if pos.len() == 1 {
@@ -92,21 +92,21 @@
 /// Two call forms:
 /// when given `(data, col)` it returns a new dataset with `col` stringified in
 /// every row; when given `(col)` alone it returns a mapping-ref annotation
-/// that @aes accepts in place of a column name, forcing the scale system to
+/// that \@aes accepts in place of a column name, forcing the scale system to
 /// treat that channel as discrete.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ..args Either `(data, col)` or `(col)`. See arities.
+/// \@param ..args Either `(data, col)` or `(col)`. See arities.
 ///
-/// @arity (data, col): Return a new dataset with `col` coerced to strings (preserving `none`).
-/// @arity (col): Return a `mapping-ref` dict tagging `col` as discrete for @aes.
+/// \@arity (data, col): Return a new dataset with `col` coerced to strings (preserving `none`).
+/// \@arity (col): Return a `mapping-ref` dict tagging `col` as discrete for \@aes.
 ///
-/// @returns New dataset (2-arg) or mapping-ref dict (1-arg).
+/// \@returns New dataset (2-arg) or mapping-ref dict (1-arg).
 ///
-/// @examples One-arg form tags the column as discrete inline in @aes,
+/// \@examples One-arg form tags the column as discrete inline in \@aes,
 /// useful when a numeric column should be treated as categorical without
 /// rewriting the dataset.
 /// ```
@@ -124,7 +124,7 @@
 /// )
 /// ```
 ///
-/// @examples Two-arg form rewrites the column to strings, useful as a
+/// \@examples Two-arg form rewrites the column to strings, useful as a
 /// one-shot pre-processing step.
 /// ```
 /// #let raw = (
@@ -142,7 +142,7 @@
 /// )
 /// ```
 ///
-/// @see @as-numeric, @aes
+/// \@see \@as-numeric, \@aes
 #let as-factor(..args) = {
   let pos = args.pos()
   if pos.len() == 1 {

@@ -2,7 +2,7 @@
 ///!
 ///! Works only with a continuous y scale. `yintercept` accepts a single value
 ///! or an array for drawing multiple reference lines at once.
-///! Under @coord-flip the line is drawn as a vertical reference at the same
+///! Under \@coord-flip the line is drawn as a vertical reference at the same
 ///! data value because the y axis becomes the rendered horizontal axis.
 
 #import "../deps.typ": cetz
@@ -16,19 +16,19 @@
 /// `yintercept` can be a scalar or an array. The layer does not inherit the
 /// plot mapping by default; it draws purely from the `yintercept` parameter.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param yintercept Scalar or array of y values at which to draw horizontal lines.
-/// @param colour Line colour. `auto` inherits the theme `ink`.
-/// @param stroke Line thickness (a Typst length).
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
+/// \@param yintercept Scalar or array of y values at which to draw horizontal lines.
+/// \@param colour Line colour. `auto` inherits the theme `ink`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Single horizontal reference line at `y = 5`.
+/// \@examples Single horizontal reference line at `y = 5`.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i + 2))
 /// #plot(
@@ -43,7 +43,7 @@
 /// )
 /// ```
 ///
-/// @examples Pass an array of intercepts to draw several reference lines at
+/// \@examples Pass an array of intercepts to draw several reference lines at
 /// once.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i + 2))
@@ -59,7 +59,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-vline, @geom-abline
+/// \@see \@geom-vline, \@geom-abline
 #let geom-hline(
   yintercept: none,
   colour: auto,

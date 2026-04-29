@@ -10,13 +10,13 @@
 /// Typically set on a layer as `position: "fill"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Position dictionary with `name: "fill"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "fill"`, consumed by \@plot.
 ///
-/// @examples Stacked bars normalised so each quarter sums to one, useful
+/// \@examples Stacked bars normalised so each quarter sums to one, useful
 /// for showing share of total.
 /// ```
 /// #let d = (
@@ -36,7 +36,7 @@
 /// )
 /// ```
 ///
-/// @examples Compare with @position-stack to show the same data in
+/// \@examples Compare with \@position-stack to show the same data in
 /// absolute counts instead of proportions.
 /// ```
 /// #let d = (
@@ -53,7 +53,7 @@
 /// )
 /// ```
 ///
-/// @see @position-stack, @position-dodge, @position-identity
+/// \@see \@position-stack, \@position-dodge, \@position-identity
 #let position-fill() = (kind: "position", name: "fill")
 
 #let apply(data, mapping, params: (:)) = {

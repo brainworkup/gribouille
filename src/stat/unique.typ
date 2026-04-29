@@ -8,13 +8,13 @@
 /// The dedup key concatenates the values referenced by `mapping.x` and
 /// `mapping.y`. Mapping is returned unchanged.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "unique"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "unique"`, consumed by geom layers.
 ///
-/// @examples Drop the duplicate `(1, 1)` row; the rendered scatter shows
+/// \@examples Drop the duplicate `(1, 1)` row; the rendered scatter shows
 /// each pair only once.
 /// ```
 /// #let d = (
@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// @examples Compare the same data with @stat-sum to keep duplicates and
+/// \@examples Compare the same data with \@stat-sum to keep duplicates and
 /// encode the count in marker size.
 /// ```
 /// #let d = (
@@ -51,7 +51,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-identity
+/// \@see \@stat-identity
 #let stat-unique() = (kind: "stat", name: "unique")
 
 #let apply(data, mapping, params: (:)) = {

@@ -17,19 +17,19 @@
 /// Either `bins` or `binwidth` fixes the partition; if both are supplied,
 /// `binwidth` wins.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param fun Name of the summary helper to apply to each bin's y values.
-/// @param bins Target number of bins when `binwidth` is `none`.
-/// @param binwidth Fixed bin width. Overrides `bins` when set.
-/// @param fun-args Keyword arguments forwarded to the helper.
+/// \@param fun Name of the summary helper to apply to each bin's y values.
+/// \@param bins Target number of bins when `binwidth` is `none`.
+/// \@param binwidth Fixed bin width. Overrides `bins` when set.
+/// \@param fun-args Keyword arguments forwarded to the helper.
 ///
-/// @returns Statistic object with `name: "summary_bin"`, consumed by geom
+/// \@returns Statistic object with `name: "summary_bin"`, consumed by geom
 ///   layers.
 ///
-/// @examples Mean and standard-error bands per bin, drawn as a polyline.
+/// \@examples Mean and standard-error bands per bin, drawn as a polyline.
 /// ```
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
 /// #plot(
@@ -43,7 +43,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair `geom-pointrange` with a median-low-high reduction to
+/// \@examples Pair `geom-pointrange` with a median-low-high reduction to
 /// surface the spread per bin.
 /// ```
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
@@ -61,7 +61,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-summary, @stat-bin
+/// \@see \@stat-summary, \@stat-bin
 #let stat-summary-bin(
   fun: "mean-se",
   bins: 30,

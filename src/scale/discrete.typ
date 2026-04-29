@@ -5,18 +5,18 @@
 
 /// Discrete x scale: axis title, level ordering, and tick labels.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none` for first-seen order.
-/// @param labels Array of tick labels aligned with `limits`, or `auto`.
-/// @param expand Expansion added to each side of the domain, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none` for first-seen order.
+/// \@param labels Array of tick labels aligned with `limits`, or `auto`.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Force the level order with `limits` so the bars sit in
+/// \@examples Force the level order with `limits` so the bars sit in
 /// alphabetical order regardless of input.
 /// ```
 /// #let d = (
@@ -34,7 +34,7 @@
 /// )
 /// ```
 ///
-/// @examples Provide custom `labels` to display human-friendly tick text
+/// \@examples Provide custom `labels` to display human-friendly tick text
 /// without renaming the underlying data.
 /// ```
 /// #let d = (
@@ -55,7 +55,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-discrete, @scale-x-continuous
+/// \@see \@scale-y-discrete, \@scale-x-continuous
 #let scale-x-discrete(name: none, limits: none, labels: auto, expand: auto) = (
   kind: "scale",
   aesthetic: "x",
@@ -68,18 +68,18 @@
 
 /// Discrete y scale: axis title, level ordering, and tick labels.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none` for first-seen order.
-/// @param labels Array of tick labels aligned with `limits`, or `auto`.
-/// @param expand Expansion added to each side of the domain, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none` for first-seen order.
+/// \@param labels Array of tick labels aligned with `limits`, or `auto`.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Force level order so bars stay in `(a, b, c)` regardless of
+/// \@examples Force level order so bars stay in `(a, b, c)` regardless of
 /// input order.
 /// ```
 /// #let d = (
@@ -97,7 +97,7 @@
 /// )
 /// ```
 ///
-/// @examples Subset the levels (omit `"b"`) to drop a category from the
+/// \@examples Subset the levels (omit `"b"`) to drop a category from the
 /// axis without filtering the underlying data.
 /// ```
 /// #let d = (
@@ -115,7 +115,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-discrete, @scale-y-continuous
+/// \@see \@scale-x-discrete, \@scale-y-continuous
 #let scale-y-discrete(name: none, limits: none, labels: auto, expand: auto) = (
   kind: "scale",
   aesthetic: "y",

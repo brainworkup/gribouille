@@ -7,13 +7,13 @@
 ///
 /// Useful as an explicit marker; most geoms default to this statistic.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "identity"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "identity"`, consumed by geom layers.
 ///
-/// @examples Explicit `stat: "identity"` on a scatter, equivalent to the
+/// \@examples Explicit `stat: "identity"` on a scatter, equivalent to the
 /// default behaviour.
 /// ```
 /// #let d = (
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Pre-aggregated heights drawn directly with @geom-col, using
+/// \@examples Pre-aggregated heights drawn directly with \@geom-col, using
 /// `stat-identity` to skip any binning.
 /// ```
 /// #let d = (
@@ -48,7 +48,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-count, @stat-bin, @stat-smooth
+/// \@see \@stat-count, \@stat-bin, \@stat-smooth
 #let stat-identity() = (kind: "stat", name: "identity")
 
 #let apply(data, mapping, params: (:)) = (data: data, mapping: mapping)

@@ -12,22 +12,22 @@
 /// outside the open interval `(0, 1)` panic so callers do not silently
 /// receive an undefined result.
 ///
-/// @category Utilities
-/// @stability stable
-/// @since 0.0.1
+/// \@category Utilities
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param p Probability in the open interval `(0, 1)`.
+/// \@param p Probability in the open interval `(0, 1)`.
 ///
-/// @returns Quantile `z` such that `P(Z <= z) = p` for `Z ~ N(0, 1)`.
+/// \@returns Quantile `z` such that `P(Z <= z) = p` for `Z ~ N(0, 1)`.
 ///
-/// @examples-static The 97.5th percentile is the canonical 1.96 normal
+/// \@examples-static The 97.5th percentile is the canonical 1.96 normal
 /// quantile used in two-sided 95% intervals.
 /// ```
 /// #let z = qnorm(0.975)
 /// // z ≈ 1.96
 /// ```
 ///
-/// @examples-static Use `qnorm` to derive a custom symmetric confidence
+/// \@examples-static Use `qnorm` to derive a custom symmetric confidence
 /// multiplier for any level.
 /// ```
 /// #let level = 0.99
@@ -125,20 +125,20 @@
 /// Theoretical quantile for a Q-Q reference distribution.
 ///
 /// Dispatches to the inverse CDF of the chosen reference family.
-/// `"normal"` calls @qnorm, `"uniform"` returns `p` directly (the quantile
+/// `"normal"` calls \@qnorm, `"uniform"` returns `p` directly (the quantile
 /// of `Uniform(0, 1)` at probability `p`), and `"exponential"` returns
 /// `-ln(1 - p)` (the quantile of `Exp(1)` at probability `p`).
 ///
-/// @category Utilities
-/// @stability stable
-/// @since 0.0.1
+/// \@category Utilities
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param p Probability in the open interval `(0, 1)`.
-/// @param distribution One of `"normal"`, `"uniform"`, or `"exponential"`.
+/// \@param p Probability in the open interval `(0, 1)`.
+/// \@param distribution One of `"normal"`, `"uniform"`, or `"exponential"`.
 ///
-/// @returns Theoretical quantile at probability `p`.
+/// \@returns Theoretical quantile at probability `p`.
 ///
-/// @examples-static Same probability under the three supported reference
+/// \@examples-static Same probability under the three supported reference
 /// distributions.
 /// ```
 /// #let z-norm = theoretical-quantile(0.5, "normal")     // 0
@@ -146,7 +146,7 @@
 /// #let z-exp  = theoretical-quantile(0.5, "exponential") // ~0.693
 /// ```
 ///
-/// @examples-static Build an array of plotting positions for use inside a
+/// \@examples-static Build an array of plotting positions for use inside a
 /// custom Q-Q derivation.
 /// ```
 /// #let n = 5

@@ -11,24 +11,24 @@
 /// cap span in y data units for continuous y, and as a fraction of the
 /// per-category slot height for discrete y.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `y`, `xmin`, `xmax`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param height Cap span. A Typst length sets the cap span directly in panel units; a number is interpreted as y data units for continuous y and a fraction of the slot height for discrete y.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword. Defaults to `"solid"`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `y`, `xmin`, `xmax`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param height Cap span. A Typst length sets the cap span directly in panel units; a number is interpreted as y data units for continuous y and a fraction of the slot height for discrete y.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword. Defaults to `"solid"`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Horizontal error bars across an integer y axis.
+/// \@examples Horizontal error bars across an integer y axis.
 /// ```
 /// #let d = range(1, 6).map(i => (
 ///   y: i,
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine with @geom-point at the central estimate to show point
+/// \@examples Combine with \@geom-point at the central estimate to show point
 /// estimates with horizontal uncertainty.
 /// ```
 /// #let d = range(1, 6).map(i => (
@@ -62,7 +62,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-errorbar, @geom-linerange, @geom-pointrange
+/// \@see \@geom-errorbar, \@geom-linerange, \@geom-pointrange
 #let geom-errorbarh(
   mapping: none,
   data: none,

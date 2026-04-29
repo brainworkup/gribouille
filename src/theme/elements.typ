@@ -1,26 +1,26 @@
 ///! Structured theme elements.
 ///!
-///! `element_*` constructors. @theme translates these into the flat theme
+///! `element_*` constructors. \@theme translates these into the flat theme
 ///! fields consumed internally by `merge-theme`.
 
 /// Text element: font size, weight, colour, and angle.
 ///
-/// Pass the result to @theme under keys like `axis-text`, `axis-title`,
+/// Pass the result to \@theme under keys like `axis-text`, `axis-title`,
 /// `legend-text`, or `legend-title`.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param size Text size (a Typst length), or `none` to inherit.
-/// @param weight Font weight (e.g. `"regular"`, `"bold"`), or `none` to inherit.
-/// @param colour Text colour, or `none` to inherit.
-/// @param angle Rotation angle (a Typst angle), or `none` to inherit.
-/// @param family Font family (e.g. `"sans"`, `"serif"`), or `none` to inherit.
+/// \@param size Text size (a Typst length), or `none` to inherit.
+/// \@param weight Font weight (e.g. `"regular"`, `"bold"`), or `none` to inherit.
+/// \@param colour Text colour, or `none` to inherit.
+/// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
+/// \@param family Font family (e.g. `"sans"`, `"serif"`), or `none` to inherit.
 ///
-/// @returns Element dictionary consumed by @theme.
+/// \@returns Element dictionary consumed by \@theme.
 ///
-/// @examples Bigger axis-title font passed via @theme.
+/// \@examples Bigger axis-title font passed via \@theme.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -33,7 +33,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine multiple text fields and a rotation angle on axis
+/// \@examples Combine multiple text fields and a rotation angle on axis
 /// tick labels.
 /// ```
 /// #let d = (
@@ -53,7 +53,7 @@
 /// )
 /// ```
 ///
-/// @see @theme, @element-line, @element-rect, @element-blank
+/// \@see \@theme, \@element-line, \@element-rect, \@element-blank
 #let element-text(
   size: none,
   weight: none,
@@ -71,18 +71,18 @@
 
 /// Line element: colour and thickness.
 ///
-/// Pass the result to @theme under keys like `panel-grid` or `axis-line`.
+/// Pass the result to \@theme under keys like `panel-grid` or `axis-line`.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param colour Line colour, or `none` to inherit.
-/// @param thickness Line thickness (a Typst length), or `none`.
+/// \@param colour Line colour, or `none` to inherit.
+/// \@param thickness Line thickness (a Typst length), or `none`.
 ///
-/// @returns Element dictionary consumed by @theme.
+/// \@returns Element dictionary consumed by \@theme.
 ///
-/// @examples Recolour the panel grid via @theme.
+/// \@examples Recolour the panel grid via \@theme.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -95,7 +95,7 @@
 /// )
 /// ```
 ///
-/// @examples Strengthen the axis line by setting both `colour` and
+/// \@examples Strengthen the axis line by setting both `colour` and
 /// `thickness`.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -112,7 +112,7 @@
 /// )
 /// ```
 ///
-/// @see @theme, @element-text, @element-rect, @element-blank
+/// \@see \@theme, \@element-text, \@element-rect, \@element-blank
 #let element-line(colour: none, thickness: none) = (
   kind: "element-line",
   colour: colour,
@@ -121,18 +121,18 @@
 
 /// Rectangle element: fill and stroke.
 ///
-/// Pass the result to @theme under keys like `panel-background`.
+/// Pass the result to \@theme under keys like `panel-background`.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param fill Rectangle fill colour, or `none` to inherit.
-/// @param stroke Rectangle stroke, or `none` to inherit.
+/// \@param fill Rectangle fill colour, or `none` to inherit.
+/// \@param stroke Rectangle stroke, or `none` to inherit.
 ///
-/// @returns Element dictionary consumed by @theme.
+/// \@returns Element dictionary consumed by \@theme.
 ///
-/// @examples Tinted panel background via @theme.
+/// \@examples Tinted panel background via \@theme.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -145,7 +145,7 @@
 /// )
 /// ```
 ///
-/// @examples Add a stroke to frame the panel as well as fill it.
+/// \@examples Add a stroke to frame the panel as well as fill it.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -161,7 +161,7 @@
 /// )
 /// ```
 ///
-/// @see @theme, @element-text, @element-line, @element-blank
+/// \@see \@theme, \@element-text, \@element-line, \@element-blank
 #let element-rect(fill: none, stroke: none) = (
   kind: "element-rect",
   fill: fill,
@@ -170,16 +170,16 @@
 
 /// Blank element: hides the corresponding theme element.
 ///
-/// Pass the result to @theme under keys like `panel-grid` or `axis-line`
+/// Pass the result to \@theme under keys like `panel-grid` or `axis-line`
 /// to turn them off entirely.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Element dictionary consumed by @theme.
+/// \@returns Element dictionary consumed by \@theme.
 ///
-/// @examples Hide the panel grid entirely.
+/// \@examples Hide the panel grid entirely.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -192,7 +192,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine `element-blank` with other overrides to remove
+/// \@examples Combine `element-blank` with other overrides to remove
 /// multiple non-data marks at once.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -209,5 +209,5 @@
 /// )
 /// ```
 ///
-/// @see @theme, @element-text, @element-line, @element-rect
+/// \@see \@theme, \@element-text, \@element-line, \@element-rect
 #let element-blank() = (kind: "element-blank")

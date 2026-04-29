@@ -12,25 +12,25 @@
 /// the box width in x data units for continuous x, and as a fraction of the
 /// per-category slot width for discrete x.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, `ymin`, `ymax`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param width Box width. In x data units for continuous x; a fraction of the slot width for discrete x.
-/// @param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink.
-/// @param stroke Stroke thickness for the box outline.
-/// @param middle-stroke Stroke thickness for the median bar.
-/// @param alpha Box opacity in `[0, 1]`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `ymin`, `ymax`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param width Box width. In x data units for continuous x; a fraction of the slot width for discrete x.
+/// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink.
+/// \@param stroke Stroke thickness for the box outline.
+/// \@param middle-stroke Stroke thickness for the median bar.
+/// \@param alpha Box opacity in `[0, 1]`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Box from `lo` to `hi` with the median bar at `y`.
+/// \@examples Box from `lo` to `hi` with the median bar at `y`.
 /// ```
 /// #let d = range(1, 5).map(i => (
 ///   x: i,
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `fill` to a categorical column to colour the box per group.
+/// \@examples Map `fill` to a categorical column to colour the box per group.
 /// ```
 /// #let d = range(1, 5).map(i => (
 ///   x: i, y: i, lo: i - 0.6, hi: i + 0.6,
@@ -62,7 +62,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-errorbar, @geom-pointrange, @geom-boxplot
+/// \@see \@geom-errorbar, \@geom-pointrange, \@geom-boxplot
 #let geom-crossbar(
   mapping: none,
   data: none,

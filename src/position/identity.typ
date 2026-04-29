@@ -8,13 +8,13 @@
 /// Typically set on a layer as `position: "identity"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Position dictionary with `name: "identity"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "identity"`, consumed by \@plot.
 ///
-/// @examples Explicit identity position on a scatter, equivalent to the
+/// \@examples Explicit identity position on a scatter, equivalent to the
 /// default behaviour of most geoms.
 /// ```
 /// #let d = (
@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// @examples Use identity on @geom-col when you have pre-computed bar
+/// \@examples Use identity on \@geom-col when you have pre-computed bar
 /// heights you want drawn unchanged, even if a `fill` mapping is present.
 /// ```
 /// #let d = (
@@ -49,7 +49,7 @@
 /// )
 /// ```
 ///
-/// @see @position-stack, @position-dodge, @position-fill
+/// \@see \@position-stack, \@position-dodge, \@position-fill
 #let position-identity() = (kind: "position", name: "identity")
 
 #let apply(data, mapping, params: (:)) = (data: data, mapping: mapping)

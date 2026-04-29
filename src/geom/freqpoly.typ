@@ -1,29 +1,29 @@
 ///! Line connecting binned counts along x.
 ///!
-///! Equivalent to @geom-histogram but draws a polyline through bin
-///! midpoints rather than bars. Uses @stat-bin under the hood; choose
+///! Equivalent to \@geom-histogram but draws a polyline through bin
+///! midpoints rather than bars. Uses \@stat-bin under the hood; choose
 ///! either `bins` or `binwidth`.
 
 /// Frequency polygon: a line through per-bin counts of the x aesthetic.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param bins Target number of bins when `binwidth` is `none`.
-/// @param binwidth Fixed bin width. Overrides `bins` when set.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword. `auto` honours the linetype scale.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param bins Target number of bins when `binwidth` is `none`.
+/// \@param binwidth Fixed bin width. Overrides `bins` when set.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword. `auto` honours the linetype scale.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Twelve-bin frequency polygon over a noisy series.
+/// \@examples Twelve-bin frequency polygon over a noisy series.
 /// ```
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
@@ -37,7 +37,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `colour` to overlay frequency polygons per group on the
+/// \@examples Map `colour` to overlay frequency polygons per group on the
 /// same axes.
 /// ```
 /// #let d = ()
@@ -55,7 +55,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-histogram, @stat-bin, @geom-line
+/// \@see \@geom-histogram, \@stat-bin, \@geom-line
 #let geom-freqpoly(
   mapping: none,
   data: none,

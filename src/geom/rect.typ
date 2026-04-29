@@ -10,22 +10,22 @@
 /// Mapping must provide `xmin`, `xmax`, `ymin`, `ymax`. Fill resolves via
 /// the fill scale or a fixed `fill` parameter.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `xmin`, `xmax`, `ymin`, `ymax`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param fill Fixed fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param stroke Outline; `none` means no border.
-/// @param alpha Fill opacity in `[0, 1]`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `xmin`, `xmax`, `ymin`, `ymax`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param fill Fixed fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param stroke Outline; `none` means no border.
+/// \@param alpha Fill opacity in `[0, 1]`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Three categorical rectangles overlapping along x.
+/// \@examples Three categorical rectangles overlapping along x.
 /// ```
 /// #let d = (
 ///   (xmin: 0, xmax: 1, ymin: 0, ymax: 2, k: "a"),
@@ -41,7 +41,7 @@
 /// )
 /// ```
 ///
-/// @examples A unit-strip swatch lays out a discrete palette horizontally,
+/// \@examples A unit-strip swatch lays out a discrete palette horizontally,
 /// one rectangle per level.
 /// ```
 /// #let levels = ("a", "b", "c", "d", "e")
@@ -59,7 +59,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-tile, @geom-col
+/// \@see \@geom-tile, \@geom-col
 #let geom-rect(
   mapping: none,
   data: none,

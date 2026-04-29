@@ -1,6 +1,6 @@
 ///! Boxed text labels at `(x, y)` positions.
 ///!
-///! Like @geom-text but wraps the label in a rectangle with configurable
+///! Like \@geom-text but wraps the label in a rectangle with configurable
 ///! fill, stroke, inset, and corner radius.
 
 #import "../deps.typ": cetz
@@ -11,28 +11,28 @@
 /// One boxed text block is drawn per row at the mapped `(x, y)`. The box
 /// takes its own fill, stroke, inset, and corner radius.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, and `label`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param size Text size (a Typst length).
-/// @param colour Text colour. `auto` inherits the theme `ink`.
-/// @param fill Box fill colour. `auto` inherits the theme `paper`.
-/// @param stroke Box stroke (length + colour).
-/// @param inset Padding between text and box border (a Typst length).
-/// @param radius Corner radius of the box (a Typst length).
-/// @param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
-/// @param dx Horizontal offset in canvas units.
-/// @param dy Vertical offset in canvas units.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `label`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param size Text size (a Typst length).
+/// \@param colour Text colour. `auto` inherits the theme `ink`.
+/// \@param fill Box fill colour. `auto` inherits the theme `paper`.
+/// \@param stroke Box stroke (length + colour).
+/// \@param inset Padding between text and box border (a Typst length).
+/// \@param radius Corner radius of the box (a Typst length).
+/// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
+/// \@param dx Horizontal offset in canvas units.
+/// \@param dy Vertical offset in canvas units.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Default boxed labels nudged above their points.
+/// \@examples Default boxed labels nudged above their points.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, name: "a"),
@@ -51,7 +51,7 @@
 /// )
 /// ```
 ///
-/// @examples Customise `fill`, `stroke`, and `radius` to match a coloured
+/// \@examples Customise `fill`, `stroke`, and `radius` to match a coloured
 /// callout style.
 /// ```
 /// #let d = (
@@ -77,7 +77,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-text, @aes
+/// \@see \@geom-text, \@aes
 #let geom-label(
   mapping: none,
   data: none,

@@ -2,7 +2,7 @@
 ///!
 ///! Works only with a continuous x scale. `xintercept` accepts a single value
 ///! or an array for drawing multiple reference lines at once.
-///! Under @coord-flip the line is drawn as a horizontal reference at the
+///! Under \@coord-flip the line is drawn as a horizontal reference at the
 ///! same data value because the x axis becomes the rendered vertical axis.
 
 #import "../deps.typ": cetz
@@ -16,19 +16,19 @@
 /// `xintercept` can be a scalar or an array. The layer does not inherit the
 /// plot mapping by default; it draws purely from the `xintercept` parameter.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param xintercept Scalar or array of x values at which to draw vertical lines.
-/// @param colour Line colour. `auto` inherits the theme `ink`.
-/// @param stroke Line thickness (a Typst length).
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
+/// \@param xintercept Scalar or array of x values at which to draw vertical lines.
+/// \@param colour Line colour. `auto` inherits the theme `ink`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Two vertical reference lines at `x = 3` and `x = 6`.
+/// \@examples Two vertical reference lines at `x = 3` and `x = 6`.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -43,7 +43,7 @@
 /// )
 /// ```
 ///
-/// @examples A single dashed reference line at the data midpoint.
+/// \@examples A single dashed reference line at the data midpoint.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -58,7 +58,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-hline, @geom-abline
+/// \@see \@geom-hline, \@geom-abline
 #let geom-vline(
   xintercept: none,
   colour: auto,

@@ -126,6 +126,37 @@ describe("parser: doc block basics", function()
 ]])
     assert_throws(function() parser.parse_file(f) end, "unknown tag")
   end)
+
+  it("unescapes \\@ to @ in /// and ///! comment lines", function()
+    local f = tmpfile("escaped_at", [[
+///! Module summary mentioning \@aes and \@plot.
+
+/// Summary referencing \@aes inline.
+///
+/// Body that links \@geom-line and \@plot too.
+///
+/// @category Core
+/// \@param x The x value, see \@aes.
+/// @see \@geom-line, \@aes
+#let foo(x: 1) = none
+]])
+    local parsed = parser.parse_file(f)
+    local fn = parsed.functions[1]
+    assert_eq(fn.name, "foo")
+    assert_eq(fn.doc.summary, "Summary referencing @aes inline.")
+    assert_contains(fn.doc.description[1], "@geom-line")
+    assert_contains(fn.doc.description[1], "@plot")
+    assert_eq(#fn.doc.params, 1)
+    assert_eq(fn.doc.params[1].name, "x")
+    assert_contains(fn.doc.params[1].description, "@aes")
+    assert_eq(#fn.doc.see, 2)
+    assert_eq(fn.doc.see[1], "@geom-line")
+    assert_eq(fn.doc.see[2], "@aes")
+    assert_true(parsed.module ~= nil, "expected module block")
+    local mod = table.concat(parsed.module.lines, "\n")
+    assert_contains(mod, "@aes")
+    assert_contains(mod, "@plot")
+  end)
 end)
 
 -- -----------------------------------------------------------------------

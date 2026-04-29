@@ -12,22 +12,22 @@
 /// the first vertex. Use `group`, `colour`, `fill`, or `linetype` to
 /// split rows into separate polygons.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param fill Fixed fill colour. `auto` resolves via the fill scale.
-/// @param stroke Outline; `none` means no border.
-/// @param alpha Fill opacity in `[0, 1]`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param fill Fixed fill colour. `auto` resolves via the fill scale.
+/// \@param stroke Outline; `none` means no border.
+/// \@param alpha Fill opacity in `[0, 1]`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Two filled triangles, each defined by three vertex rows in a
+/// \@examples Two filled triangles, each defined by three vertex rows in a
 /// shared column.
 /// ```
 /// #let d = (
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples A regular pentagon constructed from sampled angles.
+/// \@examples A regular pentagon constructed from sampled angles.
 /// ```
 /// #let n = 5
 /// #let d = range(0, n).map(i => (
@@ -67,7 +67,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-rect, @geom-area
+/// \@see \@geom-rect, \@geom-area
 #let geom-polygon(
   mapping: none,
   data: none,

@@ -1,6 +1,6 @@
 ///! Linetype scale.
 ///!
-///! Maps discrete levels onto CeTZ dash keywords consumed by @geom-line
+///! Maps discrete levels onto CeTZ dash keywords consumed by \@geom-line
 ///! (`"solid"`, `"dashed"`, `"dotted"`, `"dash-dotted"`, etc.).
 
 #import "../utils/palette.typ": default-linetypes
@@ -10,18 +10,18 @@
 /// Pass a custom array of keywords via `palette` to override the default
 /// linetype set.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param palette Array of dash keywords, or `auto` for the library default.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param palette Array of dash keywords, or `auto` for the library default.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default linetype palette mapping two groups to distinct dash
+/// \@examples Default linetype palette mapping two groups to distinct dash
 /// patterns.
 /// ```
 /// #let d = (
@@ -42,7 +42,7 @@
 /// )
 /// ```
 ///
-/// @examples Override `palette` with a custom keyword cycle.
+/// \@examples Override `palette` with a custom keyword cycle.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
@@ -58,7 +58,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-linetype-manual, @geom-line
+/// \@see \@scale-linetype-manual, \@geom-line
 #let scale-linetype(name: none, palette: auto, limits: none, labels: auto) = (
   kind: "scale",
   aesthetic: "linetype",
@@ -74,18 +74,18 @@
 /// Keywords cycle through `values` in the order levels appear, unless
 /// `limits` fixes the level order.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of dash keywords, one per level.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param values Array of dash keywords, one per level.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Two-keyword cycle assigned in input order.
+/// \@examples Two-keyword cycle assigned in input order.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
@@ -103,7 +103,7 @@
 /// )
 /// ```
 ///
-/// @examples `limits` fixes the level order so the same dash maps to the
+/// \@examples `limits` fixes the level order so the same dash maps to the
 /// same group regardless of input order.
 /// ```
 /// #let d = (
@@ -123,7 +123,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-linetype, @geom-line
+/// \@see \@scale-linetype, \@geom-line
 #let scale-linetype-manual(
   values: (),
   name: none,
@@ -141,19 +141,19 @@
 
 /// Linetype scale that uses each row's value as the dash keyword directly.
 ///
-/// The mapped column must contain dash keywords accepted by @geom-line
+/// The mapped column must contain dash keywords accepted by \@geom-line
 /// (`"solid"`, `"dashed"`, `"dotted"`, `"dash-dotted"`,
 /// `"densely-dashed"`, `"loosely-dashed"`).
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Identity scales draw no legend.
+/// \@param name Legend title. Identity scales draw no legend.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Per-row dash keyword carried straight through to the line.
+/// \@examples Per-row dash keyword carried straight through to the line.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, dt: "solid"),  (x: 2, y: 3, dt: "solid"),
@@ -169,7 +169,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-linetype, @scale-linetype-manual, @geom-line
+/// \@see \@scale-linetype, \@scale-linetype-manual, \@geom-line
 #let scale-linetype-identity(name: none) = (
   kind: "scale",
   aesthetic: "linetype",

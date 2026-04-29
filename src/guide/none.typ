@@ -1,20 +1,20 @@
 ///! Suppress the legend for an aesthetic.
 ///!
-///! Bind to an aesthetic via @guides to skip drawing the corresponding
+///! Bind to an aesthetic via \@guides to skip drawing the corresponding
 ///! legend without affecting the underlying scale.
 
 /// Suppress the legend for an aesthetic.
 ///
-/// When bound to an aesthetic via @guides, the legend renderer skips that
+/// When bound to an aesthetic via \@guides, the legend renderer skips that
 /// aesthetic's guide entirely while leaving the scale and mapping intact.
 ///
-/// @category Guides
-/// @stability stable
-/// @since 0.0.1
+/// \@category Guides
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Marker dictionary tagged `kind: "guide"` with `suppress: true`.
+/// \@returns Marker dictionary tagged `kind: "guide"` with `suppress: true`.
 ///
-/// @examples Drop the colour legend without removing the colour mapping.
+/// \@examples Drop the colour legend without removing the colour mapping.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Suppress multiple legends at once when the encoding is
+/// \@examples Suppress multiple legends at once when the encoding is
 /// self-explanatory from context.
 /// ```
 /// #let d = (
@@ -48,5 +48,5 @@
 /// )
 /// ```
 ///
-/// @see @guides, @guide-legend, @plot
+/// \@see \@guides, \@guide-legend, \@plot
 #let guide-none() = (kind: "guide", suppress: true)

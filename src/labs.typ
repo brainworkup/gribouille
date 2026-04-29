@@ -1,36 +1,36 @@
 ///! Plot-level labels: title, subtitle, caption, and per-aesthetic names.
 ///!
-///! The result feeds @plot, which draws the title block and forwards axis names
+///! The result feeds \@plot, which draws the title block and forwards axis names
 ///! into the trained scales so axis and legend titles follow.
 
 /// Build a label dictionary for the plot title, subtitle, caption, and axes.
 ///
-/// Pass the result to @plot as the `labs` argument.
+/// Pass the result to \@plot as the `labs` argument.
 /// Axis names (x, y, colour, fill, ...) override the corresponding scale
 /// `name` at render time, so legends and axis titles pick them up.
 ///
-/// @category Labs
-/// @stability stable
-/// @since 0.0.1
+/// \@category Labs
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param title Plot title drawn above the panel.
-/// @param subtitle Smaller line drawn below the title.
-/// @param caption Caption line drawn below the panel.
-/// @param tag Optional tag (e.g. a figure number) drawn above the title.
-/// @param alt Alt text kept on the spec for accessibility tooling.
-/// @param x Title for the x axis.
-/// @param y Title for the y axis.
-/// @param colour Legend title for the colour aesthetic.
-/// @param fill Legend title for the fill aesthetic.
-/// @param size Legend title for the size aesthetic.
-/// @param alpha Legend title for the alpha aesthetic.
-/// @param linewidth Legend title for the linewidth aesthetic.
-/// @param shape Legend title for the shape aesthetic.
-/// @param linetype Legend title for the linetype aesthetic.
+/// \@param title Plot title drawn above the panel.
+/// \@param subtitle Smaller line drawn below the title.
+/// \@param caption Caption line drawn below the panel.
+/// \@param tag Optional tag (e.g. a figure number) drawn above the title.
+/// \@param alt Alt text kept on the spec for accessibility tooling.
+/// \@param x Title for the x axis.
+/// \@param y Title for the y axis.
+/// \@param colour Legend title for the colour aesthetic.
+/// \@param fill Legend title for the fill aesthetic.
+/// \@param size Legend title for the size aesthetic.
+/// \@param alpha Legend title for the alpha aesthetic.
+/// \@param linewidth Legend title for the linewidth aesthetic.
+/// \@param shape Legend title for the shape aesthetic.
+/// \@param linetype Legend title for the linetype aesthetic.
 ///
-/// @returns Dictionary tagged `kind: "labs"`, consumed by @plot.
+/// \@returns Dictionary tagged `kind: "labs"`, consumed by \@plot.
 ///
-/// @examples Title block plus axis titles passed via `labs`.
+/// \@examples Title block plus axis titles passed via `labs`.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2),
@@ -53,7 +53,7 @@
 /// )
 /// ```
 ///
-/// @examples Setting an aesthetic name (`colour`) overrides the legend
+/// \@examples Setting an aesthetic name (`colour`) overrides the legend
 /// title; alt text is stored on the spec for accessibility tooling.
 /// ```
 /// #let d = (
@@ -75,7 +75,7 @@
 /// )
 /// ```
 ///
-/// @see @plot
+/// \@see \@plot
 #let labs(
   title: none,
   subtitle: none,

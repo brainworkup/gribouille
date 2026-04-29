@@ -11,17 +11,17 @@
 ///
 /// This is the gribouille default theme.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ink Foreground colour (text, axis lines). Default: `black`.
-/// @param paper Background colour. Default: `white`.
-/// @param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ink Foreground colour (text, axis lines). Default: `black`.
+/// \@param paper Background colour. Default: `white`.
+/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Library default: light grey panel with white gridlines.
+/// \@examples Library default: light grey panel with white gridlines.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -34,7 +34,7 @@
 /// )
 /// ```
 ///
-/// @examples Override `ink` and `paper` for a tinted theme without
+/// \@examples Override `ink` and `paper` for a tinted theme without
 /// switching theme function.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -48,7 +48,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-minimal, @theme-classic, @theme-void, @theme
+/// \@see \@theme-minimal, \@theme-classic, \@theme-void, \@theme
 #let theme-grey(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "grey",

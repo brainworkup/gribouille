@@ -74,13 +74,13 @@
 /// layer parameters. The resulting layer always has `inherit-aes: false`
 /// so it does not pick up the plot-level mapping.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param geom Geom name to dispatch to. One of `"text"`, `"point"`,
+/// \@param geom Geom name to dispatch to. One of `"text"`, `"point"`,
 ///   `"label"`, `"segment"`, `"rect"`, `"vline"`, `"hline"`, `"abline"`.
-/// @param ..fields Named arguments split between aesthetics and layer
+/// \@param ..fields Named arguments split between aesthetics and layer
 ///   parameters. Aesthetic names are `x`, `y`, `xend`, `yend`, `xmin`,
 ///   `xmax`, `ymin`, `ymax`, `colour`, `fill`, `size`, `alpha`, `shape`,
 ///   `linetype`, `label`, `group`, `slope`, `intercept`. For `geom = "text"`
@@ -89,9 +89,9 @@
 ///   `stroke`, `fontsize`, `xintercept`, `yintercept`) is forwarded to the
 ///   geom constructor as a layer parameter.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Inline text plus a vertical reference line at the same x.
+/// \@examples Inline text plus a vertical reference line at the same x.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -107,7 +107,7 @@
 /// )
 /// ```
 ///
-/// @examples Highlight a region with a translucent rectangle and a boxed
+/// \@examples Highlight a region with a translucent rectangle and a boxed
 /// label callout.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -128,7 +128,7 @@
 /// )
 /// ```
 ///
-/// @see @aes, @geom-text, @geom-point, @geom-label, @geom-segment, @geom-rect, @geom-vline, @geom-hline, @geom-abline
+/// \@see \@aes, \@geom-text, \@geom-point, \@geom-label, \@geom-segment, \@geom-rect, \@geom-vline, \@geom-hline, \@geom-abline
 #let annotate(geom, ..fields) = {
   if geom not in _geom-table {
     let names = _geom-table.keys().join(", ")

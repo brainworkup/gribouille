@@ -1,32 +1,32 @@
 ///! Scatter with per-row jitter offset.
 ///!
-///! Thin wrapper around @geom-point that defaults `position` to `"jitter"`.
+///! Thin wrapper around \@geom-point that defaults `position` to `"jitter"`.
 
 #import "point.typ": geom-point
 
-/// Scatter layer with @position-jitter applied by default.
+/// Scatter layer with \@position-jitter applied by default.
 ///
-/// All other parameters mirror @geom-point.
+/// All other parameters mirror \@geom-point.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param size Marker size (a Typst length).
-/// @param stroke Marker outline thickness; `none` disables the outline and the `colour` aesthetic.
-/// @param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
-/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
-/// @param alpha Marker opacity in `[0, 1]`.
-/// @param shape Marker shape keyword.
-/// @param stat Statistical transform name.
-/// @param position Position adjustment name. Defaults to `"jitter"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param size Marker size (a Typst length).
+/// \@param stroke Marker outline thickness; `none` disables the outline and the `colour` aesthetic.
+/// \@param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
+/// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
+/// \@param alpha Marker opacity in `[0, 1]`.
+/// \@param shape Marker shape keyword.
+/// \@param stat Statistical transform name.
+/// \@param position Position adjustment name. Defaults to `"jitter"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Spread overlapping points with the default jitter amount.
+/// \@examples Spread overlapping points with the default jitter amount.
 /// ```
 /// #let d = ()
 /// #for x in (1, 2, 3) {
@@ -41,7 +41,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `fill` so each jittered cluster is visually distinct.
+/// \@examples Map `fill` so each jittered cluster is visually distinct.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -56,7 +56,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-point, @position-jitter
+/// \@see \@geom-point, \@position-jitter
 #let geom-jitter(
   mapping: none,
   data: none,

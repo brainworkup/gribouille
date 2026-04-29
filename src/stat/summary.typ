@@ -1,4 +1,4 @@
-///! Per-x summary statistic backing @geom-pointrange and friends.
+///! Per-x summary statistic backing \@geom-pointrange and friends.
 ///!
 ///! For every distinct x level in the input data, reduces the y values to a
 ///! single `(x, y, ymin, ymax)` row using one of the summary helpers in
@@ -13,17 +13,17 @@
 /// reduction is chosen by `fun`; supported names are `"mean-se"`,
 /// `"mean-cl-normal"`, `"mean-sd"`, and `"median-hilow"`.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param fun Name of the summary helper to apply to each bucket of y values.
-/// @param fun-args Keyword arguments forwarded to the helper, for example
+/// \@param fun Name of the summary helper to apply to each bucket of y values.
+/// \@param fun-args Keyword arguments forwarded to the helper, for example
 ///   `(mult: 2)` for `mean-se` or `(conf: 0.5)` for `median-hilow`.
 ///
-/// @returns Statistic object with `name: "summary"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "summary"`, consumed by geom layers.
 ///
-/// @examples Mean and standard-error summary per group, drawn as a line and
+/// \@examples Mean and standard-error summary per group, drawn as a line and
 /// ribbon stack.
 /// ```
 /// #let d = ()
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @examples Use the `median-hilow` reducer with @geom-pointrange to surface
+/// \@examples Use the `median-hilow` reducer with \@geom-pointrange to surface
 /// the median plus a customisable confidence band.
 /// ```
 /// #let d = ()
@@ -67,7 +67,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-summary-bin, @stat-boxplot
+/// \@see \@stat-summary-bin, \@stat-boxplot
 #let stat-summary(fun: "mean-se", fun-args: (:)) = (
   kind: "stat",
   name: "summary",

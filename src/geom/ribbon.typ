@@ -2,7 +2,7 @@
 ///!
 ///! Requires the aesthetic mapping to provide `x`, `ymin`, and `ymax`. Useful
 ///! for uncertainty envelopes and shaded ranges under a line.
-///! Under @coord-flip the band currently keeps its `ymin`/`ymax` semantics
+///! Under \@coord-flip the band currently keeps its `ymin`/`ymax` semantics
 ///! against the user's original y axis; the visual result may not match a
 ///! sideways ribbon and should be inspected per use.
 
@@ -16,22 +16,22 @@
 /// The mapping must provide `x`, `ymin`, and `ymax`. Rows are sorted by x
 /// and the polygon is closed between the lower and upper boundaries.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `ymin`, `ymax`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param fill Band fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param stroke Band outline; `none` means no border.
-/// @param alpha Band opacity in `[0, 1]`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `ymin`, `ymax`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param fill Band fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param stroke Band outline; `none` means no border.
+/// \@param alpha Band opacity in `[0, 1]`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Plain shaded band between `ymin` and `ymax`.
+/// \@examples Plain shaded band between `ymin` and `ymax`.
 /// ```
 /// #let d = range(0, 10).map(i => (
 ///   x: i,
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair the ribbon with @geom-line over a `y` mid-line for a
+/// \@examples Pair the ribbon with \@geom-line over a `y` mid-line for a
 /// classic uncertainty-around-trend visualisation.
 /// ```
 /// #let d = range(0, 10).map(i => (
@@ -65,7 +65,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-smooth, @geom-line
+/// \@see \@geom-smooth, \@geom-line
 #let geom-ribbon(
   mapping: none,
   data: none,

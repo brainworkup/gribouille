@@ -1,6 +1,6 @@
 ///! Cartesian coordinate system.
 ///!
-///! The default coordinate system used when no `coord` is passed to @plot.
+///! The default coordinate system used when no `coord` is passed to \@plot.
 ///! `xlim` and `ylim` clip the rendered panel without dropping rows, unlike
 ///! scale limits which remove rows outside the domain.
 
@@ -9,17 +9,17 @@
 /// Clipping via `xlim`/`ylim` preserves the trained scales; rows outside
 /// are still used for training but drawn off-panel.
 ///
-/// @category Coord
-/// @stability stable
-/// @since 0.0.1
+/// \@category Coord
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param xlim Pair `(lo, hi)` clipping the drawn x range, or `none`.
-/// @param ylim Pair `(lo, hi)` clipping the drawn y range, or `none`.
-/// @param expand Whether to add a small margin around the data range.
+/// \@param xlim Pair `(lo, hi)` clipping the drawn x range, or `none`.
+/// \@param ylim Pair `(lo, hi)` clipping the drawn y range, or `none`.
+/// \@param expand Whether to add a small margin around the data range.
 ///
-/// @returns Coordinate dictionary consumed by @plot.
+/// \@returns Coordinate dictionary consumed by \@plot.
 ///
-/// @examples Clip the drawn panel without dropping rows from training.
+/// \@examples Clip the drawn panel without dropping rows from training.
 /// ```
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -32,7 +32,7 @@
 /// )
 /// ```
 ///
-/// @examples Disabling `expand` removes the default margin so axis lines
+/// \@examples Disabling `expand` removes the default margin so axis lines
 /// hug the data range.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i))
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @see @plot, @scale-x-continuous
+/// \@see \@plot, \@scale-x-continuous
 #let coord-cartesian(xlim: none, ylim: none, expand: true) = (
   kind: "coord",
   coord: "cartesian",

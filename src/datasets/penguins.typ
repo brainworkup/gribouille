@@ -20,11 +20,11 @@
 /// - `sex` (string: `"male"`, `"female"`; may be `none`).
 /// - `year` (int: 2007, 2008, or 2009).
 ///
-/// @category Datasets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Datasets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @examples Flipper length vs body mass, coloured and shaped by species.
+/// \@examples Flipper length vs body mass, coloured and shaped by species.
 /// ```
 /// #plot(
 ///   data: penguins,

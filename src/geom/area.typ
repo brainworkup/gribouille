@@ -2,7 +2,7 @@
 ///!
 ///! Equivalent to a ribbon with `ymin = 0`. Rows are sorted by x within
 ///! each group and the polygon closes back along `y = 0`.
-///! Under @coord-flip the polygon still closes along the user's `y = 0`
+///! Under \@coord-flip the polygon still closes along the user's `y = 0`
 ///! line; check the rendered output if both axes are continuous.
 
 #import "../deps.typ": cetz
@@ -16,22 +16,22 @@
 /// Mapping must provide `x` and `y`. Discrete colour, fill, or `group`
 /// mappings split rows into separate filled polygons drawn back to front.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param fill Fixed fill colour. `auto` resolves via the fill scale, the colour scale, or a neutral default.
-/// @param stroke Outline; `none` means no border.
-/// @param alpha Fill opacity in `[0, 1]`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param fill Fixed fill colour. `auto` resolves via the fill scale, the colour scale, or a neutral default.
+/// \@param stroke Outline; `none` means no border.
+/// \@param alpha Fill opacity in `[0, 1]`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Single filled area between `y = 0` and a smooth curve.
+/// \@examples Single filled area between `y = 0` and a smooth curve.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.6) + 1.5))
 /// #plot(
@@ -43,7 +43,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `fill` to a discrete column to draw one polygon per group;
+/// \@examples Map `fill` to a discrete column to draw one polygon per group;
 /// `position: "stack"` accumulates them.
 /// ```
 /// #let d = ()
@@ -61,7 +61,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-ribbon, @geom-line
+/// \@see \@geom-ribbon, \@geom-line
 #let geom-area(
   mapping: none,
   data: none,

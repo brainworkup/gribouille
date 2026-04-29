@@ -2,8 +2,8 @@
 ///!
 ///! `theme` accepts per-element overrides via named arguments. Keys can be
 ///! either low-level fields (same names as the internal `default-theme`) or
-///! structured element records from @element-text, @element-line,
-///! @element-rect, and @element-blank.
+///! structured element records from \@element-text, \@element-line,
+///! \@element-rect, and \@element-blank.
 ///!
 ///! Base element keys (`text`, `line`, `rect`) set inherited parent fields:
 ///! specific child keys (e.g. `axis-text`) take priority at render time.
@@ -114,17 +114,17 @@
 /// Base element keys (`text`, `line`, `rect`) set inherited parent values
 /// for all descendant elements. Specific keys always take priority at render time.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ..fields Named per-element overrides. Keys may be structured
+/// \@param ..fields Named per-element overrides. Keys may be structured
 ///   (`text`, `line`, `rect`, `axis-title`, `panel-grid`, ...)
 ///   or flat (`axis-title-size`, `panel-fill`, ...).
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Custom panel and grid colours via structured element records.
+/// \@examples Custom panel and grid colours via structured element records.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -141,7 +141,7 @@
 /// )
 /// ```
 ///
-/// @examples Hide elements entirely with @element-blank, useful for very
+/// \@examples Hide elements entirely with \@element-blank, useful for very
 /// minimalist figures.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -158,7 +158,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-grey, @theme-minimal, @theme-classic, @theme-void, @element-text, @element-line, @element-rect, @element-blank
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, \@element-text, \@element-line, \@element-rect, \@element-blank
 #let theme(..fields) = {
   let out = (kind: "theme", name: "custom")
   for (k, v) in fields.named().pairs() {

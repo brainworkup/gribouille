@@ -2,7 +2,7 @@
 ///!
 ///! `expand-limits` folds extra values into the trained min/max so the final
 ///! domain spans both the data and the supplied points, without clipping.
-///! For clipping use @scale-x-continuous and @scale-y-continuous with their
+///! For clipping use \@scale-x-continuous and \@scale-y-continuous with their
 ///! `limits:` argument directly.
 
 #import "scale/continuous.typ": scale-x-continuous, scale-y-continuous
@@ -14,16 +14,16 @@
 /// points. Useful for forcing a baseline at zero or showing a target value
 /// alongside observed data.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param x Single value or array of values the x-axis must include, or `none`.
-/// @param y Single value or array of values the y-axis must include, or `none`.
+/// \@param x Single value or array of values the x-axis must include, or `none`.
+/// \@param y Single value or array of values the y-axis must include, or `none`.
 ///
-/// @returns Array of scale specs ready to splat into `scales:` on @plot.
+/// \@returns Array of scale specs ready to splat into `scales:` on \@plot.
 ///
-/// @examples Force a y baseline at zero so positive observations sit above
+/// \@examples Force a y baseline at zero so positive observations sit above
 /// the axis floor.
 /// ```
 /// #let d = range(1, 6).map(i => (x: i, y: i))
@@ -37,7 +37,7 @@
 /// )
 /// ```
 ///
-/// @examples Pass arrays to extend both axes towards multiple targets at
+/// \@examples Pass arrays to extend both axes towards multiple targets at
 /// once, useful for highlighting a reference value.
 /// ```
 /// #let d = range(1, 6).map(i => (x: i, y: i))
@@ -51,7 +51,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-continuous, @scale-y-continuous
+/// \@see \@scale-x-continuous, \@scale-y-continuous
 #let expand-limits(x: none, y: none) = {
   let _values(v) = if type(v) == array { v } else { (v,) }
   let out = ()

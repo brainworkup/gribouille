@@ -1,10 +1,10 @@
 ///! Reference line for a Q-Q plot.
 ///!
-///! Backing statistic for @geom-qq-line.
+///! Backing statistic for \@geom-qq-line.
 ///! Computes the slope and intercept that pass through the 25th and 75th
 ///! sample quantiles versus the corresponding theoretical quantiles of the
 ///! chosen reference distribution, then emits the two endpoints of that
-///! line across the theoretical range used by @stat-qq.
+///! line across the theoretical range used by \@stat-qq.
 
 #import "../utils/types.typ": parse-number
 #import "../utils/normal.typ": theoretical-quantile
@@ -26,18 +26,18 @@
 /// Slope is `(q3 - q1) / (t3 - t1)` from the sample's 25th and 75th type-7
 /// quantiles divided by the corresponding theoretical quantiles of the
 /// reference distribution, and intercept is `q1 - slope * t1`.
-/// Endpoints span the theoretical range that @stat-qq would emit for the
+/// Endpoints span the theoretical range that \@stat-qq would emit for the
 /// same `n` and reference distribution.
 /// Supported reference distributions are `"normal"` (default), `"uniform"`,
 /// and `"exponential"`.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "qq-line"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "qq-line"`, consumed by geom layers.
 ///
-/// @examples Reference line under @geom-qq for a normal Q-Q plot.
+/// \@examples Reference line under \@geom-qq for a normal Q-Q plot.
 /// ```
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
@@ -49,7 +49,7 @@
 /// )
 /// ```
 ///
-/// @examples Style the reference line distinctly so it stays legible over
+/// \@examples Style the reference line distinctly so it stays legible over
 /// the points.
 /// ```
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
@@ -65,7 +65,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-qq-line, @stat-qq
+/// \@see \@geom-qq-line, \@stat-qq
 #let stat-qq-line() = (kind: "stat", name: "qq-line")
 
 #let apply(data, mapping, params: (:)) = {

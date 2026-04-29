@@ -17,22 +17,22 @@
 /// an `x` mapping; left and right sides need a `y` mapping. Ticks honour a
 /// mapped colour aesthetic when present.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param sides String of edge codes among `b`, `t`, `l`, `r` indicating which axes receive ticks.
-/// @param length Tick length in CeTZ canvas units (1 unit equals 1 cm).
-/// @param stroke Tick thickness (a Typst length).
-/// @param colour Fixed tick colour. `auto` resolves via the colour scale or theme `ink`.
-/// @param alpha Tick opacity in `[0, 1]`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param sides String of edge codes among `b`, `t`, `l`, `r` indicating which axes receive ticks.
+/// \@param length Tick length in CeTZ canvas units (1 unit equals 1 cm).
+/// \@param stroke Tick thickness (a Typst length).
+/// \@param colour Fixed tick colour. `auto` resolves via the colour scale or theme `ink`.
+/// \@param alpha Tick opacity in `[0, 1]`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Bottom and left rug ticks marking each observation's position.
+/// \@examples Bottom and left rug ticks marking each observation's position.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.5)))
 /// #plot(
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples Rug on every side, coloured by a categorical column to expose
+/// \@examples Rug on every side, coloured by a categorical column to expose
 /// per-group density along both axes.
 /// ```
 /// #let d = ()
@@ -68,7 +68,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-blank, @geom-function, @geom-point
+/// \@see \@geom-blank, \@geom-function, \@geom-point
 #let geom-rug(
   mapping: none,
   data: none,

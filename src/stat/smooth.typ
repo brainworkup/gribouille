@@ -1,4 +1,4 @@
-///! Smoother statistic backing @geom-smooth.
+///! Smoother statistic backing \@geom-smooth.
 ///!
 ///! v1 supports `method: "lm"` only (closed-form OLS). Emits a dense grid of
 ///! `(x, y, ymin, ymax)` for the fitted line and pointwise confidence band.
@@ -10,17 +10,17 @@
 /// Returns a dense grid of `(x, y, ymin, ymax)` rows where `y` is the fitted
 /// value and `ymin`/`ymax` bound a pointwise confidence band.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param method Smoother method. `"lm"` is the only supported value in v1.
-/// @param se Whether to compute the confidence band. When `false`, `ymin == ymax == y`.
-/// @param level Confidence level for the band (e.g. `0.95`).
+/// \@param method Smoother method. `"lm"` is the only supported value in v1.
+/// \@param se Whether to compute the confidence band. When `false`, `ymin == ymax == y`.
+/// \@param level Confidence level for the band (e.g. `0.95`).
 ///
-/// @returns Statistic object with `name: "smooth"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "smooth"`, consumed by geom layers.
 ///
-/// @examples Linear fit with the default 95% confidence band.
+/// \@examples Linear fit with the default 95% confidence band.
 /// ```
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
@@ -38,7 +38,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `colour` to a categorical column so each group gets its
+/// \@examples Map `colour` to a categorical column so each group gets its
 /// own fit and band.
 /// ```
 /// #let d = ()
@@ -59,7 +59,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-smooth, @stat-identity
+/// \@see \@geom-smooth, \@stat-identity
 #let stat-smooth(method: "lm", se: true, level: 0.95) = (
   kind: "stat",
   name: "smooth",

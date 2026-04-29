@@ -11,25 +11,25 @@
 /// Mapping must provide `x`, `y`, `ymin`, `ymax`. `colour` paints the range
 /// line and the point outline; `fill` paints the point body.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, `ymin`, `ymax`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param size Point radius (a Typst length).
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed range-line colour. `auto` resolves via the colour scale.
-/// @param fill Fixed point body fill. `auto` resolves via the fill scale, falling back to the resolved range-line colour.
-/// @param alpha Opacity in `[0, 1]`.
-/// @param linetype Dash keyword for the range line. Defaults to `"solid"`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `ymin`, `ymax`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param size Point radius (a Typst length).
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed range-line colour. `auto` resolves via the colour scale.
+/// \@param fill Fixed point body fill. `auto` resolves via the fill scale, falling back to the resolved range-line colour.
+/// \@param alpha Opacity in `[0, 1]`.
+/// \@param linetype Dash keyword for the range line. Defaults to `"solid"`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Centred point with vertical range, drawn together for forest-plot
+/// \@examples Centred point with vertical range, drawn together for forest-plot
 /// style summaries.
 /// ```
 /// #let d = range(1, 6).map(i => (
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `colour` to a categorical column to colour both the point
+/// \@examples Map `colour` to a categorical column to colour both the point
 /// and its range per group.
 /// ```
 /// #let d = range(1, 6).map(i => (
@@ -63,7 +63,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-linerange, @geom-errorbar, @geom-crossbar
+/// \@see \@geom-linerange, \@geom-errorbar, \@geom-crossbar
 #let geom-pointrange(
   mapping: none,
   data: none,

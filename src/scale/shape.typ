@@ -1,6 +1,6 @@
 ///! Shape scale.
 ///!
-///! Maps discrete levels onto marker-shape keywords consumed by @geom-point
+///! Maps discrete levels onto marker-shape keywords consumed by \@geom-point
 ///! (`"circle"`, `"square"`, `"triangle"`, `"diamond"`, `"cross"`, `"x"`,
 ///! `"star"`, `"triangle-down"`).
 
@@ -11,18 +11,18 @@
 /// Pass a custom array of keywords via `palette` to override the default
 /// shape set.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param palette Array of shape keywords, or `auto` for the library default.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param palette Array of shape keywords, or `auto` for the library default.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default shape palette mapping three categories to distinct
+/// \@examples Default shape palette mapping three categories to distinct
 /// markers.
 /// ```
 /// #let d = (
@@ -40,7 +40,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair `shape` and `colour` mappings with the same column to
+/// \@examples Pair `shape` and `colour` mappings with the same column to
 /// reinforce the categorical encoding.
 /// ```
 /// #let d = (
@@ -57,7 +57,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-shape-manual, @geom-point
+/// \@see \@scale-shape-manual, \@geom-point
 #let scale-shape(name: none, palette: auto, limits: none, labels: auto) = (
   kind: "scale",
   aesthetic: "shape",
@@ -73,18 +73,18 @@
 /// Keywords cycle through `values` in the order levels appear, unless
 /// `limits` fixes the level order.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of shape keywords, one per level.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param values Array of shape keywords, one per level.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Custom three-shape cycle assigned in input order.
+/// \@examples Custom three-shape cycle assigned in input order.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -103,7 +103,7 @@
 /// )
 /// ```
 ///
-/// @examples `limits` pins the level order so the shape mapping stays
+/// \@examples `limits` pins the level order so the shape mapping stays
 /// stable across datasets.
 /// ```
 /// #let d = (
@@ -124,7 +124,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-shape, @geom-point
+/// \@see \@scale-shape, \@geom-point
 #let scale-shape-manual(values: (), name: none, limits: none, labels: auto) = (
   kind: "scale",
   aesthetic: "shape",
@@ -137,19 +137,19 @@
 
 /// Shape scale that uses each row's value as the marker keyword directly.
 ///
-/// The mapped column must contain shape keywords accepted by @geom-point
+/// The mapped column must contain shape keywords accepted by \@geom-point
 /// (`"circle"`, `"square"`, `"triangle"`, `"diamond"`, `"cross"`, `"x"`,
 /// `"star"`, `"triangle-down"`).
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Identity scales draw no legend.
+/// \@param name Legend title. Identity scales draw no legend.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Per-row shape keyword carried straight through to the marker.
+/// \@examples Per-row shape keyword carried straight through to the marker.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sh: "circle"),
@@ -166,7 +166,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-shape, @scale-shape-manual, @geom-point
+/// \@see \@scale-shape, \@scale-shape-manual, \@geom-point
 #let scale-shape-identity(name: none) = (
   kind: "scale",
   aesthetic: "shape",

@@ -91,24 +91,24 @@
 /// closed on the left so the minimum value is captured. The default labels
 /// are `"(lo,hi]"` strings using the bin boundaries.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric or `none` entries map to `none`.
-/// @param n Number of equal-width bins. Must be positive.
-/// @param labels Either `auto` for default boundary labels, or an array of
+/// \@param values Array of numbers; non-numeric or `none` entries map to `none`.
+/// \@param n Number of equal-width bins. Must be positive.
+/// \@param labels Either `auto` for default boundary labels, or an array of
 ///   length `n` providing explicit labels.
 ///
-/// @returns Array of bin labels with the same length as `values`.
+/// \@returns Array of bin labels with the same length as `values`.
 ///
-/// @examples-static Default labels show the boundary intervals.
+/// \@examples-static Default labels show the boundary intervals.
 /// ```
 /// #let bins = cut-interval((1, 2, 3, 4, 5, 6, 7, 8), n: 4)
 /// // ("(1,2.75]", "(1,2.75]", "(2.75,4.5]", "(2.75,4.5]", ...)
 /// ```
 ///
-/// @examples-static Provide explicit labels per bin for tidier display.
+/// \@examples-static Provide explicit labels per bin for tidier display.
 /// ```
 /// #let bins = cut-interval(
 ///   (1, 2, 3, 4, 5, 6, 7, 8),
@@ -147,24 +147,24 @@
 /// `src/stat/boxplot.typ`. Bins are right-open (`(lo, hi]`), with the
 /// leftmost bin closed on the left.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric or `none` entries map to `none`.
-/// @param n Number of bins. Must be positive.
-/// @param labels Either `auto` for default boundary labels, or an array of
+/// \@param values Array of numbers; non-numeric or `none` entries map to `none`.
+/// \@param n Number of bins. Must be positive.
+/// \@param labels Either `auto` for default boundary labels, or an array of
 ///   length `n` providing explicit labels.
 ///
-/// @returns Array of bin labels with the same length as `values`.
+/// \@returns Array of bin labels with the same length as `values`.
 ///
-/// @examples-static Quartile bins so each bin holds roughly the same
+/// \@examples-static Quartile bins so each bin holds roughly the same
 /// number of observations.
 /// ```
 /// #let bins = cut-number((1, 2, 3, 4, 5, 6, 7, 8), n: 4)
 /// ```
 ///
-/// @examples-static Tertile bins with custom labels.
+/// \@examples-static Tertile bins with custom labels.
 /// ```
 /// #let bins = cut-number(
 ///   (1, 2, 3, 4, 5, 6, 7, 8, 9),
@@ -203,24 +203,24 @@
 /// to multiples of `width` covering `[min, max]`. Bins are right-open
 /// (`(lo, hi]`), except the leftmost bin is closed on the left.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric or `none` entries map to `none`.
-/// @param width Positive bin width.
-/// @param center Optional number forcing a bin to be centred at this value.
-/// @param labels Either `auto` for default boundary labels, or an array of
+/// \@param values Array of numbers; non-numeric or `none` entries map to `none`.
+/// \@param width Positive bin width.
+/// \@param center Optional number forcing a bin to be centred at this value.
+/// \@param labels Either `auto` for default boundary labels, or an array of
 ///   length matching the number of bins.
 ///
-/// @returns Array of bin labels with the same length as `values`.
+/// \@returns Array of bin labels with the same length as `values`.
 ///
-/// @examples-static Bin widths of 2 align to multiples of two.
+/// \@examples-static Bin widths of 2 align to multiples of two.
 /// ```
 /// #let bins = cut-width((1, 2, 3, 4, 5, 6, 7, 8), width: 2)
 /// ```
 ///
-/// @examples-static Force a bin to be centred at zero by passing `center`.
+/// \@examples-static Force a bin to be centred at zero by passing `center`.
 /// ```
 /// #let bins = cut-width((-3, -1, 0, 1, 2, 4), width: 2, center: 0)
 /// ```

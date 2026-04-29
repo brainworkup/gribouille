@@ -3,22 +3,22 @@
 /// `amount` is the fraction of `col2` (0 = pure `col1`, 1 = pure `col2`).
 /// Mixing happens in sRGB so `col-mix(black, white, 0.92)` returns `grey92`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param col1 Base colour.
-/// @param col2 Colour to blend in.
-/// @param amount Fraction of `col2` in the result (0 to 1).
-/// @returns Blended colour.
+/// \@param col1 Base colour.
+/// \@param col2 Colour to blend in.
+/// \@param amount Fraction of `col2` in the result (0 to 1).
+/// \@returns Blended colour.
 ///
-/// @examples-static Inline blending: half-mix two brand colours.
+/// \@examples-static Inline blending: half-mix two brand colours.
 /// ```
 /// #let purple = col-mix(rgb("#1f77b4"), rgb("#d62728"), 0.5)
 /// ```
 ///
-/// @examples Sweeping `amount` from 0 to 1 produces a custom two-stop ramp,
-/// rendered as a swatch via @geom-rect.
+/// \@examples Sweeping `amount` from 0 to 1 produces a custom two-stop ramp,
+/// rendered as a swatch via \@geom-rect.
 /// ```
 /// #let stops = range(0, 9).map(i => col-mix(
 ///   rgb("#1f77b4"), rgb("#d62728"), i / 8,

@@ -18,11 +18,11 @@
 /// - `cty` (city miles per gallon).
 /// - `hwy` (highway miles per gallon).
 ///
-/// @category Datasets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Datasets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @examples Highway mpg vs engine displacement, coloured by vehicle class.
+/// \@examples Highway mpg vs engine displacement, coloured by vehicle class.
 /// ```
 /// #plot(
 ///   data: mpg,
@@ -33,7 +33,7 @@
 /// )
 /// ```
 ///
-/// @examples Facet by `class` and add a linear smoother per panel to
+/// \@examples Facet by `class` and add a linear smoother per panel to
 /// compare per-class trends.
 /// ```
 /// #plot(

@@ -11,26 +11,26 @@
 /// Panels are arranged into a grid of `ncol` columns (or `nrow` rows when
 /// `ncol` is `none`).
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param var Name of the discrete column whose levels drive the panels.
-/// @param ncol Number of columns in the panel grid, or `none` for automatic.
-/// @param nrow Number of rows in the panel grid, or `none` for automatic.
-/// @param scales Scale policy. One of `"fixed"` (default, every panel
+/// \@param var Name of the discrete column whose levels drive the panels.
+/// \@param ncol Number of columns in the panel grid, or `none` for automatic.
+/// \@param nrow Number of rows in the panel grid, or `none` for automatic.
+/// \@param scales Scale policy. One of `"fixed"` (default, every panel
 ///   shares both axes), `"free"` (each panel trains x and y on its own
 ///   subset), `"free_x"` (only x is per-panel), or `"free_y"` (only y is
 ///   per-panel). Non-positional scales (colour, fill, size, shape,
 ///   linetype) are always shared so legends stay consistent. An explicit
 ///   `coord-cartesian(xlim:, ylim:)` overrides the per-panel domain on
 ///   the corresponding axis, pinning every panel to the same range.
-/// @param labeller Labeller controlling strip text. Defaults to
+/// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
 ///
-/// @returns Facet dictionary consumed by @plot.
+/// \@returns Facet dictionary consumed by \@plot.
 ///
-/// @examples One panel per level of `sp`, three columns, with each panel
+/// \@examples One panel per level of `sp`, three columns, with each panel
 /// training y independently.
 /// ```
 /// #let d = ()
@@ -49,7 +49,7 @@
 /// )
 /// ```
 ///
-/// @examples Default `scales: "fixed"` shares both axes across panels;
+/// \@examples Default `scales: "fixed"` shares both axes across panels;
 /// useful when you want comparable scales side by side.
 /// ```
 /// #let d = ()
@@ -68,7 +68,7 @@
 /// )
 /// ```
 ///
-/// @see @facet-grid, @plot
+/// \@see \@facet-grid, \@plot
 #let facet-wrap(
   var,
   ncol: none,

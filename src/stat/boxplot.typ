@@ -1,4 +1,4 @@
-///! Five-number summary backing @geom-boxplot.
+///! Five-number summary backing \@geom-boxplot.
 ///!
 ///! For every distinct x level in the input data, reduces the rows to a
 ///! single summary row carrying `lower` (Q1), `middle` (median),
@@ -15,15 +15,15 @@
 /// still inside the 1.5 × IQR fence; values outside the fence land in
 /// `outliers`.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param coef Whisker length as a multiple of the inter-quartile range.
+/// \@param coef Whisker length as a multiple of the inter-quartile range.
 ///
-/// @returns Statistic object with `name: "boxplot"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "boxplot"`, consumed by geom layers.
 ///
-/// @examples Default 1.5 × IQR whisker rule on grouped raw observations.
+/// \@examples Default 1.5 × IQR whisker rule on grouped raw observations.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -40,7 +40,7 @@
 /// )
 /// ```
 ///
-/// @examples Tighten the whiskers (`coef: 1.0`) so more values surface as
+/// \@examples Tighten the whiskers (`coef: 1.0`) so more values surface as
 /// outliers; useful for spotting borderline points.
 /// ```
 /// #let d = ()
@@ -58,7 +58,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-boxplot, @stat-identity
+/// \@see \@geom-boxplot, \@stat-identity
 #let stat-boxplot(coef: 1.5) = (
   kind: "stat",
   name: "boxplot",

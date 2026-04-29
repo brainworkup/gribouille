@@ -283,15 +283,15 @@
 /// Returns the canonical colour array for the named palette.
 /// Panics with a clear message if the name is unknown.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param name Palette name, e.g. `"Set1"`, `"Spectral"`, `"Blues"`.
-/// @returns Array of `color` values.
+/// \@param name Palette name, e.g. `"Set1"`, `"Spectral"`, `"Blues"`.
+/// \@returns Array of `color` values.
 ///
-/// @examples Look up the Set1 palette and feed it into a manual fill scale
-/// rendered as swatches via @geom-rect.
+/// \@examples Look up the Set1 palette and feed it into a manual fill scale
+/// rendered as swatches via \@geom-rect.
 /// ```
 /// #let pal = brewer-palette("Set1")
 /// #let d = pal.enumerate().map(((i, _)) => (
@@ -308,7 +308,7 @@
 /// )
 /// ```
 ///
-/// @examples The diverging Spectral palette laid out as swatches; the same
+/// \@examples The diverging Spectral palette laid out as swatches; the same
 /// pattern works for any qualitative, sequential, or diverging name.
 /// ```
 /// #let pal = brewer-palette("Spectral")

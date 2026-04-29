@@ -14,22 +14,22 @@
 /// `n` samples are taken across that range. Sampled points where `fun`
 /// returns `none` are dropped silently.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param fun Callable taking a numeric x and returning a numeric y, or `none` to skip.
-/// @param n Number of samples taken uniformly across the x-range.
-/// @param xlim Optional `(lo, hi)` overriding the trained x-domain.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` falls back to the theme `ink`.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword. Defaults to `"solid"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
+/// \@param fun Callable taking a numeric x and returning a numeric y, or `none` to skip.
+/// \@param n Number of samples taken uniformly across the x-range.
+/// \@param xlim Optional `(lo, hi)` overriding the trained x-domain.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` falls back to the theme `ink`.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword. Defaults to `"solid"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Sine curve sampled across the trained x-domain.
+/// \@examples Sine curve sampled across the trained x-domain.
 /// ```
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @examples Pass `xlim` to override the domain when the training data does
+/// \@examples Pass `xlim` to override the domain when the training data does
 /// not match the function's natural range.
 /// ```
 /// #let frame = ((x: 0, y: 0), (x: 1, y: 1))
@@ -64,7 +64,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-blank, @geom-line, @geom-abline
+/// \@see \@geom-blank, \@geom-line, \@geom-abline
 #let geom-function(
   fun: none,
   n: 101,

@@ -10,19 +10,19 @@
 /// Either `rows` or `cols` may be `none`, but not both. Only shared scales
 /// are supported in v1.
 ///
-/// @category Facets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Facets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param rows Name of the discrete column driving panel rows, or `none`.
-/// @param cols Name of the discrete column driving panel columns, or `none`.
-/// @param scales Scale policy. Only `"fixed"` is supported in v1.
-/// @param labeller Labeller controlling strip text. Defaults to
+/// \@param rows Name of the discrete column driving panel rows, or `none`.
+/// \@param cols Name of the discrete column driving panel columns, or `none`.
+/// \@param scales Scale policy. Only `"fixed"` is supported in v1.
+/// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
 ///
-/// @returns Facet dictionary consumed by @plot.
+/// \@returns Facet dictionary consumed by \@plot.
 ///
-/// @examples Two discrete variables driving the row and column structure.
+/// \@examples Two discrete variables driving the row and column structure.
 /// ```
 /// #let d = ()
 /// #for sp in ("a", "b") {
@@ -42,7 +42,7 @@
 /// )
 /// ```
 ///
-/// @examples Pass only `rows:` (or only `cols:`) for a one-dimensional
+/// \@examples Pass only `rows:` (or only `cols:`) for a one-dimensional
 /// grid layout.
 /// ```
 /// #let d = ()
@@ -61,7 +61,7 @@
 /// )
 /// ```
 ///
-/// @see @facet-wrap, @plot
+/// \@see \@facet-wrap, \@plot
 #let facet-grid(
   rows: none,
   cols: none,

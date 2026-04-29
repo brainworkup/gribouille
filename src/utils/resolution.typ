@@ -18,24 +18,24 @@
 ///
 /// Returns `1` when `values` has fewer than two distinct numeric entries.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric and `none` entries are dropped.
-/// @param zero Whether to include zero when computing the resolution.
+/// \@param values Array of numbers; non-numeric and `none` entries are dropped.
+/// \@param zero Whether to include zero when computing the resolution.
 ///
-/// @returns The smallest positive difference between consecutive unique
+/// \@returns The smallest positive difference between consecutive unique
 ///   values, or `1` when no such difference exists.
 ///
-/// @examples-static Default behaviour folds in zero so the result reflects
+/// \@examples-static Default behaviour folds in zero so the result reflects
 /// the smallest distinct increment from the origin too.
 /// ```
 /// #let r = resolution((1, 2, 4, 7))
 /// // r == 1.0
 /// ```
 ///
-/// @examples-static Pass `zero: false` when the data does not naturally
+/// \@examples-static Pass `zero: false` when the data does not naturally
 /// include zero and you only want gaps between observed values.
 /// ```
 /// #let r = resolution((10, 12, 16, 22), zero: false)

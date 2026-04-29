@@ -7,21 +7,21 @@
 
 /// Set the global default theme for all subsequent plots.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.1.0
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param t Theme dictionary from @theme-grey, @theme-minimal, @theme-classic, @theme-void, or @theme.
+/// \@param t Theme dictionary from \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, or \@theme.
 ///
-/// @returns None.
+/// \@returns None.
 ///
-/// @examples-static Set the project default once so every plot inherits it.
+/// \@examples-static Set the project default once so every plot inherits it.
 /// ```
 /// #theme-set(theme-minimal())
 /// // All plots below use theme-minimal() by default.
 /// ```
 ///
-/// @examples-static Pin a custom theme as the project default.
+/// \@examples-static Pin a custom theme as the project default.
 /// ```
 /// #theme-set(theme(
 ///   panel-background: element-rect(fill: rgb("#fff7e6")),
@@ -29,24 +29,24 @@
 /// ))
 /// ```
 ///
-/// @see @theme-get, @theme
+/// \@see \@theme-get, \@theme
 #let theme-set(t) = _theme-state.update(t)
 
 /// Get the current global default theme.
 ///
 /// Returns `none` if no global theme has been set.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.1.0
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @returns The current global theme dictionary, or `none`.
+/// \@returns The current global theme dictionary, or `none`.
 ///
-/// @examples-static Read back the theme that subsequent plots will inherit.
+/// \@examples-static Read back the theme that subsequent plots will inherit.
 /// ```
 /// #theme-set(theme-minimal())
 /// #let active = theme-get()
 /// ```
 ///
-/// @see @theme-set
+/// \@see \@theme-set
 #let theme-get() = context _theme-state.get()

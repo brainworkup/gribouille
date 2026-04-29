@@ -1,6 +1,6 @@
 ///! Count observations per unique `(x, y)` pair.
 ///!
-///! Backing statistic for @geom-count. Groups rows by the `(x, y)` key from
+///! Backing statistic for \@geom-count. Groups rows by the `(x, y)` key from
 ///! the layer mapping and emits one row per unique pair carrying the count
 ///! and proportion as new aesthetics.
 
@@ -9,13 +9,13 @@
 /// Output rows preserve first-seen pair order. The stat re-maps `size` to the
 /// `"n"` column so geoms picking up the aesthetic see counts directly.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "sum"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "sum"`, consumed by geom layers.
 ///
-/// @examples Marker size grows with the count of duplicate `(x, y)` rows.
+/// \@examples Marker size grows with the count of duplicate `(x, y)` rows.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1),
@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair with @scale-size-area to make the count proportional to
+/// \@examples Pair with \@scale-size-area to make the count proportional to
 /// the marker area, easier to read for large frequency contrasts.
 /// ```
 /// #let d = (
@@ -49,7 +49,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-count, @stat-count, @stat-unique
+/// \@see \@geom-count, \@stat-count, \@stat-unique
 #let stat-sum() = (kind: "stat", name: "sum")
 
 #let apply(data, mapping, params: (:)) = {

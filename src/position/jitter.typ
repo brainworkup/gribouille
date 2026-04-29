@@ -16,17 +16,17 @@
 /// alone. Users wanting jitter over a discrete axis should map the column
 /// via `as-numeric` first.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param width Maximum absolute jitter applied to the x position.
-/// @param height Maximum absolute jitter applied to the y position.
-/// @param seed Integer seed for the deterministic pseudo-random offsets.
+/// \@param width Maximum absolute jitter applied to the x position.
+/// \@param height Maximum absolute jitter applied to the y position.
+/// \@param seed Integer seed for the deterministic pseudo-random offsets.
 ///
-/// @returns Position dictionary with `name: "jitter"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "jitter"`, consumed by \@plot.
 ///
-/// @examples Spread overplotted points with the default jitter amount.
+/// \@examples Spread overplotted points with the default jitter amount.
 /// ```
 /// #let d = ()
 /// #for x in (1, 2, 3) {
@@ -41,7 +41,7 @@
 /// )
 /// ```
 ///
-/// @examples Tighten `width` and zero `height` to keep jitter purely
+/// \@examples Tighten `width` and zero `height` to keep jitter purely
 /// horizontal; bump `seed` to draw a different reproducible cloud.
 /// ```
 /// #let d = ()
@@ -60,7 +60,7 @@
 /// )
 /// ```
 ///
-/// @see @position-nudge, @geom-jitter
+/// \@see \@position-nudge, \@geom-jitter
 #let position-jitter(width: 0.4, height: 0.4, seed: 0) = (
   kind: "position",
   name: "jitter",

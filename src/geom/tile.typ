@@ -10,26 +10,26 @@
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
 /// `width` and `height` default to 1 in data units; both may be mapped
-/// via @aes or fixed via the layer parameters.
+/// via \@aes or fixed via the layer parameters.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param width Default tile width in data units when not mapped.
-/// @param height Default tile height in data units when not mapped.
-/// @param fill Fixed fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param stroke Outline; `none` means no border.
-/// @param alpha Fill opacity in `[0, 1]`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param width Default tile width in data units when not mapped.
+/// \@param height Default tile height in data units when not mapped.
+/// \@param fill Fixed fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param stroke Outline; `none` means no border.
+/// \@param alpha Fill opacity in `[0, 1]`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Heatmap of `v` values across an integer grid.
+/// \@examples Heatmap of `v` values across an integer grid.
 /// ```
 /// #let d = ()
 /// #for x in range(0, 5) {
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair the heatmap with a viridis scale for a perceptually
+/// \@examples Pair the heatmap with a viridis scale for a perceptually
 /// uniform palette.
 /// ```
 /// #let d = ()
@@ -65,7 +65,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-rect
+/// \@see \@geom-rect
 #let geom-tile(
   mapping: none,
   data: none,

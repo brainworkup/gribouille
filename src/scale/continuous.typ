@@ -8,21 +8,21 @@
 ///
 /// `trans` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
-/// @param expand Expansion added to each side of the domain, or `auto`.
-/// @param secondary Secondary axis spec from @dup-axis or @sec-axis, or `none`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param secondary Secondary axis spec from \@dup-axis or \@sec-axis, or `none`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Override the axis title and pin the domain.
+/// \@examples Override the axis title and pin the domain.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: i * i))
 /// #plot(
@@ -35,7 +35,7 @@
 /// )
 /// ```
 ///
-/// @examples Switch `trans` to `"sqrt"` and supply explicit `breaks` for a
+/// \@examples Switch `trans` to `"sqrt"` and supply explicit `breaks` for a
 /// custom non-linear axis.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
@@ -53,7 +53,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-continuous, @scale-x-discrete, @coord-cartesian
+/// \@see \@scale-y-continuous, \@scale-x-discrete, \@coord-cartesian
 #let scale-x-continuous(
   name: none,
   limits: none,
@@ -79,21 +79,21 @@
 ///
 /// `trans` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// @param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
-/// @param expand Expansion added to each side of the domain, or `auto`.
-/// @param secondary Secondary axis spec from @dup-axis or @sec-axis, or `none`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param secondary Secondary axis spec from \@dup-axis or \@sec-axis, or `none`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Log-10 transform compresses an exponential growth curve into
+/// \@examples Log-10 transform compresses an exponential growth curve into
 /// a near-linear axis.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
@@ -107,7 +107,7 @@
 /// )
 /// ```
 ///
-/// @examples Reverse the y axis to put the largest values at the bottom,
+/// \@examples Reverse the y axis to put the largest values at the bottom,
 /// useful for ranks where lower numbers are better.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: 11 - i))
@@ -121,7 +121,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-continuous, @scale-y-discrete
+/// \@see \@scale-x-continuous, \@scale-y-discrete
 #let scale-y-continuous(
   name: none,
   limits: none,
@@ -145,21 +145,21 @@
 
 /// Continuous x scale on a base-10 log axis.
 ///
-/// Thin wrapper over @scale-x-continuous with `trans: "log10"`.
+/// Thin wrapper over \@scale-x-continuous with `trans: "log10"`.
 /// All x values must be strictly positive.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Log-10 axis with auto breaks across several decades of x.
+/// \@examples Log-10 axis with auto breaks across several decades of x.
 /// ```
 /// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
 /// #plot(
@@ -172,7 +172,7 @@
 /// )
 /// ```
 ///
-/// @examples Pin tick positions explicitly for tidier labelling on a known
+/// \@examples Pin tick positions explicitly for tidier labelling on a known
 /// log range.
 /// ```
 /// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
@@ -189,7 +189,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-continuous, @scale-y-log10
+/// \@see \@scale-x-continuous, \@scale-y-log10
 #let scale-x-log10(name: none, limits: none, breaks: auto, labels: auto) = (
   kind: "scale",
   aesthetic: "x",
@@ -204,21 +204,21 @@
 
 /// Continuous y scale on a base-10 log axis.
 ///
-/// Thin wrapper over @scale-y-continuous with `trans: "log10"`.
+/// Thin wrapper over \@scale-y-continuous with `trans: "log10"`.
 /// All y values must be strictly positive.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Log-10 y axis turns an exponential into a near-linear shape.
+/// \@examples Log-10 y axis turns an exponential into a near-linear shape.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
@@ -231,7 +231,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine `limits` and `breaks` to clip and label a specific
+/// \@examples Combine `limits` and `breaks` to clip and label a specific
 /// log range.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
@@ -249,7 +249,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-continuous, @scale-x-log10
+/// \@see \@scale-y-continuous, \@scale-x-log10
 #let scale-y-log10(name: none, limits: none, breaks: auto, labels: auto) = (
   kind: "scale",
   aesthetic: "y",
@@ -264,21 +264,21 @@
 
 /// Continuous x scale on a square-root axis.
 ///
-/// Thin wrapper over @scale-x-continuous with `trans: "sqrt"`.
+/// Thin wrapper over \@scale-x-continuous with `trans: "sqrt"`.
 /// All x values must be non-negative.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Square-root x axis spreads small values and compresses large
+/// \@examples Square-root x axis spreads small values and compresses large
 /// ones.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
@@ -292,7 +292,7 @@
 /// )
 /// ```
 ///
-/// @examples Pin breaks at perfect squares so the labels match the
+/// \@examples Pin breaks at perfect squares so the labels match the
 /// underlying data structure.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
@@ -309,7 +309,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-continuous, @scale-y-sqrt
+/// \@see \@scale-x-continuous, \@scale-y-sqrt
 #let scale-x-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
   kind: "scale",
   aesthetic: "x",
@@ -324,21 +324,21 @@
 
 /// Continuous y scale on a square-root axis.
 ///
-/// Thin wrapper over @scale-y-continuous with `trans: "sqrt"`.
+/// Thin wrapper over \@scale-y-continuous with `trans: "sqrt"`.
 /// All y values must be non-negative.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Square-root y axis straightens a quadratic relationship.
+/// \@examples Square-root y axis straightens a quadratic relationship.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
@@ -351,7 +351,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine with `limits` to highlight a specific range without
+/// \@examples Combine with `limits` to highlight a specific range without
 /// changing the underlying data.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
@@ -365,7 +365,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-continuous, @scale-x-sqrt
+/// \@see \@scale-y-continuous, \@scale-x-sqrt
 #let scale-y-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
   kind: "scale",
   aesthetic: "y",
@@ -380,21 +380,21 @@
 
 /// Continuous x scale flipped left-to-right.
 ///
-/// Thin wrapper over @scale-x-continuous with `trans: "reverse"`. Tick labels
+/// Thin wrapper over \@scale-x-continuous with `trans: "reverse"`. Tick labels
 /// stay in data units; only the axis direction reverses.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Reverse the x axis so values decrease left-to-right.
+/// \@examples Reverse the x axis so values decrease left-to-right.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
@@ -407,7 +407,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair with `limits` to clip a reversed timeline to a specific
+/// \@examples Pair with `limits` to clip a reversed timeline to a specific
 /// window.
 /// ```
 /// #let d = range(2000, 2025).map(y => (x: y, y: calc.sin(y / 4)))
@@ -421,7 +421,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-continuous, @scale-y-reverse
+/// \@see \@scale-x-continuous, \@scale-y-reverse
 #let scale-x-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
   kind: "scale",
   aesthetic: "x",
@@ -440,18 +440,18 @@
 /// numeric position, but places ticks at the midpoint of each equal-width
 /// bin to communicate the discretised reading of the axis.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param labels Array of tick labels aligned with the bin midpoints, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param labels Array of tick labels aligned with the bin midpoints, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Five equal-width bins along the x axis.
+/// \@examples Five equal-width bins along the x axis.
 /// ```
 /// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
 /// #plot(
@@ -464,7 +464,7 @@
 /// )
 /// ```
 ///
-/// @examples Bump `n-breaks` for a finer grid; pair with `limits` to focus
+/// \@examples Bump `n-breaks` for a finer grid; pair with `limits` to focus
 /// on a sub-range.
 /// ```
 /// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
@@ -478,7 +478,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-binned, @scale-x-continuous
+/// \@see \@scale-y-binned, \@scale-x-continuous
 #let scale-x-binned(
   name: none,
   limits: none,
@@ -500,20 +500,20 @@
 
 /// Binned continuous y scale: quantises a numeric axis into `n-breaks` bins.
 ///
-/// Counterpart of @scale-x-binned for the y axis.
+/// Counterpart of \@scale-x-binned for the y axis.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param labels Array of tick labels aligned with the bin midpoints, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param labels Array of tick labels aligned with the bin midpoints, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Five equal-width bins along the y axis.
+/// \@examples Five equal-width bins along the y axis.
 /// ```
 /// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
 /// #plot(
@@ -526,7 +526,7 @@
 /// )
 /// ```
 ///
-/// @examples A finer ten-bin partition with `limits` clipping the lower
+/// \@examples A finer ten-bin partition with `limits` clipping the lower
 /// tail.
 /// ```
 /// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
@@ -540,7 +540,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-x-binned, @scale-y-continuous
+/// \@see \@scale-x-binned, \@scale-y-continuous
 #let scale-y-binned(
   name: none,
   limits: none,
@@ -562,21 +562,21 @@
 
 /// Continuous y scale flipped bottom-to-top.
 ///
-/// Thin wrapper over @scale-y-continuous with `trans: "reverse"`. Tick labels
+/// Thin wrapper over \@scale-y-continuous with `trans: "reverse"`. Tick labels
 /// stay in data units; only the axis direction reverses.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Axis title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
-/// @param breaks Array of break values, or `auto` for automatic tick selection.
-/// @param labels Array of tick labels aligned with `breaks`, or `auto`.
+/// \@param name Axis title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param breaks Array of break values, or `auto` for automatic tick selection.
+/// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Reverse the y axis so larger values sit at the bottom.
+/// \@examples Reverse the y axis so larger values sit at the bottom.
 /// ```
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
@@ -589,7 +589,7 @@
 /// )
 /// ```
 ///
-/// @examples Useful for ranking displays where rank 1 should sit at the top.
+/// \@examples Useful for ranking displays where rank 1 should sit at the top.
 /// ```
 /// #let d = (
 ///   (team: "A", rank: 1),
@@ -607,7 +607,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-y-continuous, @scale-x-reverse
+/// \@see \@scale-y-continuous, \@scale-x-reverse
 #let scale-y-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
   kind: "scale",
   aesthetic: "y",

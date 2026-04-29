@@ -1,6 +1,6 @@
 ///! Vertical bars taking heights directly from the y aesthetic.
 ///!
-///! Use `geom-col` for pre-aggregated data; use @geom-bar when you want the
+///! Use `geom-col` for pre-aggregated data; use \@geom-bar when you want the
 ///! layer to count observations for you. The layer honours `position: "stack"`,
 ///! `"dodge"`, and `"fill"` via the matching position adjustments.
 
@@ -11,27 +11,27 @@
 
 /// Bar layer with heights taken from the y aesthetic.
 ///
-/// Each row becomes one bar centred at its x value. Use @geom-bar (stat-count)
+/// Each row becomes one bar centred at its x value. Use \@geom-bar (stat-count)
 /// when you want automatic counting; `geom-col` expects pre-aggregated y.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param width Bar width as a fraction of the category width (0 to 1).
-/// @param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
-/// @param stroke Bar outline; `none` means no border.
-/// @param alpha Bar opacity in `[0, 1]`.
-/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment: `"identity"`, `"stack"`, `"dodge"`, or `"fill"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param width Bar width as a fraction of the category width (0 to 1).
+/// \@param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
+/// \@param stroke Bar outline; `none` means no border.
+/// \@param alpha Bar opacity in `[0, 1]`.
+/// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment: `"identity"`, `"stack"`, `"dodge"`, or `"fill"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Pre-aggregated heights drawn one bar per row.
+/// \@examples Pre-aggregated heights drawn one bar per row.
 /// ```
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
@@ -48,7 +48,7 @@
 /// )
 /// ```
 ///
-/// @examples Adding a `fill` mapping with `position: "stack"` (default for
+/// \@examples Adding a `fill` mapping with `position: "stack"` (default for
 /// stacked) accumulates contributions per category.
 /// ```
 /// #let d = (
@@ -68,7 +68,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-bar, @position-stack, @position-dodge, @position-fill
+/// \@see \@geom-bar, \@position-stack, \@position-dodge, \@position-fill
 #let geom-col(
   mapping: none,
   data: none,

@@ -5,19 +5,19 @@
 
 /// Continuous linewidth scale mapping a numeric column to stroke thickness.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param range Pair of Typst lengths `(min, max)` bounding the output thickness.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param range Pair of Typst lengths `(min, max)` bounding the output thickness.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Linewidth grows with `w`, with one segment per row driven by
+/// \@examples Linewidth grows with `w`, with one segment per row driven by
 /// the `group` mapping.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair `colour` and `linewidth` with the same column to encode
+/// \@examples Pair `colour` and `linewidth` with the same column to encode
 /// magnitude through both channels.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
@@ -45,7 +45,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-linewidth-identity, @scale-size-continuous
+/// \@see \@scale-linewidth-identity, \@scale-size-continuous
 #let scale-linewidth-continuous(
   name: none,
   range: (0.4pt, 1.4pt),
@@ -68,15 +68,15 @@
 /// Values must be Typst lengths. No legend is drawn because the column
 /// carries the visual outcome verbatim.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param name Legend title. Identity scales draw no legend.
+/// \@param name Legend title. Identity scales draw no legend.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Per-row Typst lengths carried straight through to the line
+/// \@examples Per-row Typst lengths carried straight through to the line
 /// strokes; no legend is drawn.
 /// ```
 /// #let d = (
@@ -95,7 +95,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-linewidth-continuous
+/// \@see \@scale-linewidth-continuous
 #let scale-linewidth-identity(name: none) = (
   kind: "scale",
   aesthetic: "linewidth",

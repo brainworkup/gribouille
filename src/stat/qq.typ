@@ -1,6 +1,6 @@
 ///! Quantile-quantile statistic against a reference distribution.
 ///!
-///! Backing statistic for @geom-qq.
+///! Backing statistic for \@geom-qq.
 ///! Sorts numeric values from the `sample` aesthetic and pairs them with
 ///! theoretical quantiles of the chosen reference distribution at the
 ///! plotting positions `(i + 0.5) / n`.
@@ -18,13 +18,13 @@
 /// Supported reference distributions are `"normal"` (default), `"uniform"`,
 /// and `"exponential"`.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "qq"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "qq"`, consumed by geom layers.
 ///
-/// @examples Q-Q points against a normal reference, mapping `y` only.
+/// \@examples Q-Q points against a normal reference, mapping `y` only.
 /// ```
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
@@ -36,7 +36,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine with @geom-qq-line to overlay the IQR reference line.
+/// \@examples Combine with \@geom-qq-line to overlay the IQR reference line.
 /// ```
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
 /// #plot(
@@ -48,7 +48,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-qq, @stat-qq-line
+/// \@see \@geom-qq, \@stat-qq-line
 #let stat-qq() = (kind: "stat", name: "qq")
 
 #let apply(data, mapping, params: (:)) = {

@@ -14,24 +14,24 @@
 /// cap span in x data units for continuous x, and as a fraction of the
 /// per-category slot width for discrete x.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `ymin`, `ymax`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param width Cap span. A Typst length sets the cap span directly in panel units; a number is interpreted as x data units for continuous x and a fraction of the slot width for discrete x.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword. Defaults to `"solid"`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `ymin`, `ymax`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param width Cap span. A Typst length sets the cap span directly in panel units; a number is interpreted as x data units for continuous x and a fraction of the slot width for discrete x.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword. Defaults to `"solid"`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Vertical error bars with default cap span.
+/// \@examples Vertical error bars with default cap span.
 /// ```
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine with @geom-point at the central estimate to convey the
+/// \@examples Combine with \@geom-point at the central estimate to convey the
 /// uncertainty around it.
 /// ```
 /// #let d = range(1, 6).map(i => (
@@ -65,7 +65,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-linerange, @geom-pointrange, @geom-crossbar
+/// \@see \@geom-linerange, \@geom-pointrange, \@geom-crossbar
 #let geom-errorbar(
   mapping: none,
   data: none,

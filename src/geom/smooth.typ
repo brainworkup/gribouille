@@ -1,7 +1,7 @@
 ///! Smoothed trend line with optional confidence ribbon.
 ///!
 ///! v1 supports `method: "lm"` only (ordinary least squares, closed-form). The
-///! underlying fit is computed by @stat-smooth, which also returns the
+///! underlying fit is computed by \@stat-smooth, which also returns the
 ///! pointwise confidence band drawn when `se: true`.
 
 #import "../deps.typ": cetz
@@ -17,24 +17,24 @@
 /// Fits a smoother to `(x, y)` and draws the prediction as a line. When
 /// `se` is `true`, the pointwise band is drawn underneath the line.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param method Smoother method. `"lm"` is the only supported value in v1.
-/// @param se Whether to draw the confidence ribbon around the fit.
-/// @param level Confidence level for the ribbon (e.g. `0.95`).
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` picks a neutral default.
-/// @param fill Fixed ribbon fill. `auto` reuses the line colour.
-/// @param alpha Ribbon opacity in `[0, 1]`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param method Smoother method. `"lm"` is the only supported value in v1.
+/// \@param se Whether to draw the confidence ribbon around the fit.
+/// \@param level Confidence level for the ribbon (e.g. `0.95`).
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` picks a neutral default.
+/// \@param fill Fixed ribbon fill. `auto` reuses the line colour.
+/// \@param alpha Ribbon opacity in `[0, 1]`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Linear fit through points with the default 95% confidence band.
+/// \@examples Linear fit through points with the default 95% confidence band.
 /// ```
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
@@ -52,7 +52,7 @@
 /// )
 /// ```
 ///
-/// @examples Disable the ribbon with `se: false` for a cleaner trend overlay.
+/// \@examples Disable the ribbon with `se: false` for a cleaner trend overlay.
 /// ```
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
@@ -70,7 +70,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-smooth, @geom-line, @geom-ribbon
+/// \@see \@stat-smooth, \@geom-line, \@geom-ribbon
 #let geom-smooth(
   mapping: none,
   data: none,

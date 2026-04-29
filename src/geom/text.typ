@@ -1,7 +1,7 @@
 ///! Text labels at `(x, y)` positions.
 ///!
 ///! The label string comes from the `label` aesthetic. For a boxed variant
-///! with a fill and border, use @geom-label.
+///! with a fill and border, use \@geom-label.
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
@@ -11,24 +11,24 @@
 /// One text block is drawn per row at the mapped `(x, y)` with an optional
 /// pixel offset via `dx` and `dy`.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, and `label`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param size Text size (a Typst length).
-/// @param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
-/// @param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
-/// @param dx Horizontal offset in canvas units.
-/// @param dy Vertical offset in canvas units.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `label`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param size Text size (a Typst length).
+/// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
+/// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
+/// \@param dx Horizontal offset in canvas units.
+/// \@param dy Vertical offset in canvas units.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Labels nudged above their points via `dy`.
+/// \@examples Labels nudged above their points via `dy`.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, name: "a"),
@@ -47,7 +47,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `colour` and use `anchor: "west"` to flow labels to the right
+/// \@examples Map `colour` and use `anchor: "west"` to flow labels to the right
 /// of each point.
 /// ```
 /// #let d = (
@@ -67,7 +67,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-label, @aes
+/// \@see \@geom-label, \@aes
 #let geom-text(
   mapping: none,
   data: none,

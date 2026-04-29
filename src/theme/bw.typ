@@ -7,17 +7,17 @@
 
 /// Black-and-white theme: white panel, black axes, light grey grid.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ink Foreground colour (axis lines, text). Default: `black`.
-/// @param paper Background colour. Default: `white`.
-/// @param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ink Foreground colour (axis lines, text). Default: `black`.
+/// \@param paper Background colour. Default: `white`.
+/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Default black-on-white theme with a thin panel border.
+/// \@examples Default black-on-white theme with a thin panel border.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Override `accent` to recolour data ink and key glyphs while
+/// \@examples Override `accent` to recolour data ink and key glyphs while
 /// keeping the high-contrast panel.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-grey, @theme-minimal, @theme-classic, @theme-void, @theme
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, \@theme
 #let theme-bw(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "bw",

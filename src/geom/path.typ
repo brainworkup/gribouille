@@ -1,6 +1,6 @@
 ///! Polyline preserving row order.
 ///!
-///! Identical to @geom-line except rows are joined in their input order
+///! Identical to \@geom-line except rows are joined in their input order
 ///! rather than sorted by x. Useful for trajectories, time-series with
 ///! out-of-order timestamps, and any path where order is meaningful.
 
@@ -13,26 +13,26 @@
 /// Path layer connecting observations in row order, one path per group.
 ///
 /// Grouping is implicit on discrete aesthetics (colour, fill, linetype) or
-/// the explicit `group` mapping, just like @geom-line.
+/// the explicit `group` mapping, just like \@geom-line.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
-/// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
+/// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Connect rows in input order (deliberately not sorted by x).
+/// \@examples Connect rows in input order (deliberately not sorted by x).
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1), (x: 3, y: 4), (x: 2, y: 2), (x: 4, y: 5),
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @examples Trajectory of a moving point parameterised by `t`, drawn in
+/// \@examples Trajectory of a moving point parameterised by `t`, drawn in
 /// time order with a coloured fade.
 /// ```
 /// #let d = range(0, 24).map(t => (
@@ -61,7 +61,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-line, @geom-step, @geom-segment
+/// \@see \@geom-line, \@geom-step, \@geom-segment
 #let geom-path(
   mapping: none,
   data: none,

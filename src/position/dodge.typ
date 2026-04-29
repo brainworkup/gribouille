@@ -20,16 +20,16 @@
 /// mark uses its own width as its slot, with `padding` between slots and a
 /// shrink-to-fit if total slot use would exceed the bucket.
 ///
-/// @category Positions
-/// @stability stable
-/// @since 0.0.1
+/// \@category Positions
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param width Total width reserved for the dodged group, as a fraction of the category width.
-/// @param padding Gap between adjacent dodge slots in mixed-width mode, as a fraction of the bucket.
+/// \@param width Total width reserved for the dodged group, as a fraction of the category width.
+/// \@param padding Gap between adjacent dodge slots in mixed-width mode, as a fraction of the bucket.
 ///
-/// @returns Position dictionary with `name: "dodge"`, consumed by @plot.
+/// \@returns Position dictionary with `name: "dodge"`, consumed by \@plot.
 ///
-/// @examples Bars dodged side by side per `fill` group within each x slot.
+/// \@examples Bars dodged side by side per `fill` group within each x slot.
 /// ```
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// @examples Increase `padding` to widen the gap between dodged bars.
+/// \@examples Increase `padding` to widen the gap between dodged bars.
 /// ```
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
@@ -63,7 +63,7 @@
 /// )
 /// ```
 ///
-/// @see @position-stack, @position-fill, @position-identity, @position-jitter
+/// \@see \@position-stack, \@position-fill, \@position-identity, \@position-jitter
 #let position-dodge(width: 0.9, padding: 0.1) = (
   kind: "position",
   name: "dodge",

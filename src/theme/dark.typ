@@ -7,17 +7,17 @@
 
 /// Dark theme: dark grey panel, white grid, dark axis text.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ink Foreground colour (text). Default: `black`.
-/// @param paper Background colour. Default: `white`.
-/// @param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ink Foreground colour (text). Default: `black`.
+/// \@param paper Background colour. Default: `white`.
+/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Dark grey panel with light gridlines for high-contrast slides.
+/// \@examples Dark grey panel with light gridlines for high-contrast slides.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Pair the dark theme with a non-default `accent` for branded
+/// \@examples Pair the dark theme with a non-default `accent` for branded
 /// slides.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-grey, @theme-minimal, @theme-classic, @theme-light, @theme-void, @theme
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-light, \@theme-void, \@theme
 #let theme-dark(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "dark",

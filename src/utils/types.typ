@@ -24,14 +24,14 @@
 /// - `"datetime"`: `YYYY-MM-DDTHH:MM[:SS]` or `YYYY-MM-DD HH:MM[:SS]`.
 /// - `"time"`: `HH:MM[:SS]`.
 ///
-/// @category Utilities
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Utilities
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @param value Raw cell value: numeric, string, or `none`.
-/// @param kind One of `"date"`, `"datetime"`, `"time"`.
+/// \@param value Raw cell value: numeric, string, or `none`.
+/// \@param kind One of `"date"`, `"datetime"`, `"time"`.
 ///
-/// @returns Numeric epoch value, or `none` if `value` cannot be parsed.
+/// \@returns Numeric epoch value, or `none` if `value` cannot be parsed.
 #let parse-temporal(value, kind) = {
   if value == none { return none }
   if type(value) == int { return float(value) }

@@ -10,19 +10,19 @@
 
 /// Continuous colour scale mapping a numeric column to stroke colours.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param palette Colour source: a gradient, an array of colours, or `auto`.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param palette Colour source: a gradient, an array of colours, or `auto`.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default ramp interpolating between the library's low and high
+/// \@examples Default ramp interpolating between the library's low and high
 /// blue stops.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -36,7 +36,7 @@
 /// )
 /// ```
 ///
-/// @examples Pin `limits` to clip the trained domain and render extremes at
+/// \@examples Pin `limits` to clip the trained domain and render extremes at
 /// the palette endpoints.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -50,7 +50,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-viridis-c, @scale-colour-discrete, @scale-fill-continuous
+/// \@see \@scale-colour-viridis-c, \@scale-colour-discrete, \@scale-fill-continuous
 #let scale-colour-continuous(
   name: none,
   palette: auto,
@@ -70,18 +70,18 @@
 
 /// Discrete colour scale mapping categorical levels to stroke colours.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param palette Colour source: an array of colours, or `auto`.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param palette Colour source: an array of colours, or `auto`.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default palette mapping three categories to the library's eight
+/// \@examples Default palette mapping three categories to the library's eight
 /// reserved discrete colours.
 /// ```
 /// #let d = (
@@ -99,7 +99,7 @@
 /// )
 /// ```
 ///
-/// @examples Override `palette` with an explicit colour array to hand-pick
+/// \@examples Override `palette` with an explicit colour array to hand-pick
 /// the mapping order.
 /// ```
 /// #let d = (
@@ -119,7 +119,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-manual, @scale-colour-viridis-d, @scale-fill-discrete
+/// \@see \@scale-colour-manual, \@scale-colour-viridis-d, \@scale-fill-discrete
 #let scale-colour-discrete(
   name: none,
   palette: auto,
@@ -137,19 +137,19 @@
 
 /// Continuous fill scale mapping a numeric column to fill colours.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param palette Colour source: a gradient, an array of colours, or `auto`.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param palette Colour source: a gradient, an array of colours, or `auto`.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default ramp filling bars by their numeric value.
+/// \@examples Default ramp filling bars by their numeric value.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -166,7 +166,7 @@
 /// )
 /// ```
 ///
-/// @examples The default ramp shown as a continuous swatch via @geom-rect
+/// \@examples The default ramp shown as a continuous swatch via \@geom-rect
 /// over a sampled gradient.
 /// ```
 /// #let d = range(0, 16).map(i => (
@@ -183,7 +183,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-viridis-c, @scale-fill-discrete, @scale-colour-continuous
+/// \@see \@scale-fill-viridis-c, \@scale-fill-discrete, \@scale-colour-continuous
 #let scale-fill-continuous(
   name: none,
   palette: auto,
@@ -203,18 +203,18 @@
 
 /// Discrete fill scale mapping categorical levels to fill colours.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param palette Colour source: an array of colours, or `auto`.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param palette Colour source: an array of colours, or `auto`.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default palette filling three bars from the library's reserved
+/// \@examples Default palette filling three bars from the library's reserved
 /// discrete colours.
 /// ```
 /// #let d = (
@@ -232,7 +232,7 @@
 /// )
 /// ```
 ///
-/// @examples The palette laid out as a swatch strip via @geom-rect, one
+/// \@examples The palette laid out as a swatch strip via \@geom-rect, one
 /// rectangle per level.
 /// ```
 /// #let levels = ("a", "b", "c", "d", "e", "f", "g", "h")
@@ -250,7 +250,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-manual, @scale-fill-viridis-d, @scale-colour-discrete
+/// \@see \@scale-fill-manual, \@scale-fill-viridis-d, \@scale-colour-discrete
 #let scale-fill-discrete(
   name: none,
   palette: auto,
@@ -271,18 +271,18 @@
 /// Colours cycle through `values` in the order levels appear, unless
 /// `limits` fixes the level order.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of colours, one per level.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param values Array of colours, one per level.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Hand-picked colour array applied to three categorical levels.
+/// \@examples Hand-picked colour array applied to three categorical levels.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -301,7 +301,7 @@
 /// )
 /// ```
 ///
-/// @examples `limits` fixes the level order independently of how rows appear
+/// \@examples `limits` fixes the level order independently of how rows appear
 /// in the data, useful for stable legends across datasets.
 /// ```
 /// #let d = (
@@ -322,7 +322,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-discrete, @scale-fill-manual
+/// \@see \@scale-colour-discrete, \@scale-fill-manual
 #let scale-colour-manual(values: (), name: none, limits: none, labels: auto) = (
   kind: "scale",
   aesthetic: "colour",
@@ -338,18 +338,18 @@
 /// Colours cycle through `values` in the order levels appear, unless
 /// `limits` fixes the level order.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of colours, one per level.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param values Array of colours, one per level.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Hand-picked colour array applied to three categorical levels.
+/// \@examples Hand-picked colour array applied to three categorical levels.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -368,7 +368,7 @@
 /// )
 /// ```
 ///
-/// @examples The same array shown as a swatch strip via @geom-rect.
+/// \@examples The same array shown as a swatch strip via \@geom-rect.
 /// ```
 /// #let pal = (rgb("#66c2a5"), rgb("#fc8d62"), rgb("#8da0cb"))
 /// #let d = pal.enumerate().map(((i, _)) => (
@@ -385,7 +385,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-discrete, @scale-colour-manual
+/// \@see \@scale-fill-discrete, \@scale-colour-manual
 #let scale-fill-manual(values: (), name: none, limits: none, labels: auto) = (
   kind: "scale",
   aesthetic: "fill",
@@ -401,18 +401,18 @@
 /// `option` selects between `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`,
 /// and `"cividis"`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Plasma option of the viridis family applied to four categories.
+/// \@examples Plasma option of the viridis family applied to four categories.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -430,7 +430,7 @@
 /// )
 /// ```
 ///
-/// @examples Switching `option` to `"cividis"` selects the colour-blind safe
+/// \@examples Switching `option` to `"cividis"` selects the colour-blind safe
 /// alternative.
 /// ```
 /// #let d = (
@@ -449,7 +449,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-viridis-c, @scale-colour-viridis-b, @scale-fill-viridis-d
+/// \@see \@scale-colour-viridis-c, \@scale-colour-viridis-b, \@scale-fill-viridis-d
 #let scale-colour-viridis-d(
   option: "viridis",
   name: none,
@@ -470,19 +470,19 @@
 /// `option` selects between `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`,
 /// and `"cividis"`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Magma option applied to a continuous numeric column.
+/// \@examples Magma option applied to a continuous numeric column.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -495,7 +495,7 @@
 /// )
 /// ```
 ///
-/// @examples Default `"viridis"` ramp with `limits` clipping the lower tail.
+/// \@examples Default `"viridis"` ramp with `limits` clipping the lower tail.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -508,7 +508,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-viridis-d, @scale-colour-viridis-b, @scale-fill-viridis-c
+/// \@see \@scale-colour-viridis-d, \@scale-colour-viridis-b, \@scale-fill-viridis-c
 #let scale-colour-viridis-c(
   option: "viridis",
   name: none,
@@ -531,19 +531,19 @@
 /// Partitions the continuous domain into `n-breaks` equal segments, each
 /// coloured from the chosen viridis palette.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Four equal-width bins coloured from the default viridis ramp.
+/// \@examples Four equal-width bins coloured from the default viridis ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -556,7 +556,7 @@
 /// )
 /// ```
 ///
-/// @examples Bumping `n-breaks` and switching to the inferno option produces
+/// \@examples Bumping `n-breaks` and switching to the inferno option produces
 /// a finer-grained banded scale.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -570,7 +570,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-viridis-c, @scale-colour-viridis-d, @scale-fill-viridis-b
+/// \@see \@scale-colour-viridis-c, \@scale-colour-viridis-d, \@scale-fill-viridis-b
 #let scale-colour-viridis-b(
   option: "viridis",
   n-breaks: 5,
@@ -594,18 +594,18 @@
 /// `option` selects between `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`,
 /// and `"cividis"`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Cividis option filling four categorical bars.
+/// \@examples Cividis option filling four categorical bars.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -623,7 +623,7 @@
 /// )
 /// ```
 ///
-/// @examples Each viridis option laid out as a swatch strip via @geom-rect.
+/// \@examples Each viridis option laid out as a swatch strip via \@geom-rect.
 /// ```
 /// #let opts = ("viridis", "magma", "plasma", "inferno", "cividis")
 /// #let d = opts.enumerate().map(((i, k)) => (
@@ -640,7 +640,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-viridis-c, @scale-fill-viridis-b, @scale-colour-viridis-d
+/// \@see \@scale-fill-viridis-c, \@scale-fill-viridis-b, \@scale-colour-viridis-d
 #let scale-fill-viridis-d(
   option: "viridis",
   name: none,
@@ -661,19 +661,19 @@
 /// `option` selects between `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`,
 /// and `"cividis"`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default viridis ramp filling bars by their numeric value.
+/// \@examples Default viridis ramp filling bars by their numeric value.
 /// ```
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
@@ -686,7 +686,7 @@
 /// )
 /// ```
 ///
-/// @examples The viridis ramp shown as a continuous swatch via @geom-rect.
+/// \@examples The viridis ramp shown as a continuous swatch via \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -702,7 +702,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-viridis-d, @scale-fill-viridis-b, @scale-colour-viridis-c
+/// \@see \@scale-fill-viridis-d, \@scale-fill-viridis-b, \@scale-colour-viridis-c
 #let scale-fill-viridis-c(
   option: "viridis",
   name: none,
@@ -726,16 +726,16 @@
 /// (e.g. `"#ff0000"`) or already be `color` values. No legend is drawn
 /// because the column carries the visual outcome verbatim.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Identity scales draw no legend, but the title is
+/// \@param name Legend title. Identity scales draw no legend, but the title is
 ///   carried for downstream consumers that may surface it.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Hex strings carried straight through to point strokes; no
+/// \@examples Hex strings carried straight through to point strokes; no
 /// legend is drawn.
 /// ```
 /// #let d = (
@@ -753,7 +753,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-manual, @scale-fill-identity
+/// \@see \@scale-colour-manual, \@scale-fill-identity
 #let scale-colour-identity(name: none) = (
   kind: "scale",
   aesthetic: "colour",
@@ -763,17 +763,17 @@
 
 /// Fill scale that uses each row's value as the fill colour directly.
 ///
-/// Values must be hex strings or `color` values; see @scale-colour-identity.
+/// Values must be hex strings or `color` values; see \@scale-colour-identity.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Legend title. Identity scales draw no legend.
+/// \@param name Legend title. Identity scales draw no legend.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Per-row hex strings used as fills, with @geom-rect drawing a
+/// \@examples Per-row hex strings used as fills, with \@geom-rect drawing a
 /// custom swatch from arbitrary colours.
 /// ```
 /// #let d = (
@@ -791,7 +791,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-manual, @scale-colour-identity
+/// \@see \@scale-fill-manual, \@scale-colour-identity
 #let scale-fill-identity(name: none) = (
   kind: "scale",
   aesthetic: "fill",
@@ -804,19 +804,19 @@
 /// Partitions the continuous domain into `n-breaks` equal segments, each
 /// coloured from the chosen viridis palette.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.0.1
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default viridis ramp quantised into four bins for a banded fill.
+/// \@examples Default viridis ramp quantised into four bins for a banded fill.
 /// ```
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
@@ -829,7 +829,7 @@
 /// )
 /// ```
 ///
-/// @examples The same ramp shown as a banded swatch via @geom-rect.
+/// \@examples The same ramp shown as a banded swatch via \@geom-rect.
 /// ```
 /// #let d = range(0, 12).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -845,7 +845,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-viridis-c, @scale-fill-viridis-d, @scale-colour-viridis-b
+/// \@see \@scale-fill-viridis-c, \@scale-fill-viridis-d, \@scale-colour-viridis-b
 #let scale-fill-viridis-b(
   option: "viridis",
   n-breaks: 5,
@@ -870,18 +870,18 @@
 /// `"Dark2"`, or `"Spectral"`. Categorical levels are mapped to colours
 /// in the order they first appear in the data.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param palette ColorBrewer palette name (qualitative, sequential, or diverging).
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param palette ColorBrewer palette name (qualitative, sequential, or diverging).
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Set1 palette mapping three categorical levels to bold qualitative
+/// \@examples Set1 palette mapping three categorical levels to bold qualitative
 /// hues.
 /// ```
 /// #let d = (
@@ -899,7 +899,7 @@
 /// )
 /// ```
 ///
-/// @examples Switching to the diverging Spectral palette suits ordered
+/// \@examples Switching to the diverging Spectral palette suits ordered
 /// categories with a meaningful midpoint.
 /// ```
 /// #let d = (
@@ -920,7 +920,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-brewer, @scale-colour-discrete
+/// \@see \@scale-fill-brewer, \@scale-colour-discrete
 #let scale-colour-brewer(
   palette: "Set1",
   name: none,
@@ -938,20 +938,20 @@
 
 /// Discrete ColorBrewer fill scale.
 ///
-/// Fill counterpart of @scale-colour-brewer. Same palette names apply.
+/// Fill counterpart of \@scale-colour-brewer. Same palette names apply.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param palette ColorBrewer palette name (qualitative, sequential, or diverging).
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param palette ColorBrewer palette name (qualitative, sequential, or diverging).
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Set1 palette filling categorical bars.
+/// \@examples Set1 palette filling categorical bars.
 /// ```
 /// #let d = (
 ///   (grp: "a", y: 1),
@@ -968,7 +968,7 @@
 /// )
 /// ```
 ///
-/// @examples The Spectral palette laid out as a swatch strip via @geom-rect.
+/// \@examples The Spectral palette laid out as a swatch strip via \@geom-rect.
 /// ```
 /// #let levels = ("a", "b", "c", "d", "e", "f", "g")
 /// #let d = levels.enumerate().map(((i, k)) => (
@@ -985,7 +985,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-brewer, @scale-fill-discrete
+/// \@see \@scale-colour-brewer, \@scale-fill-discrete
 #let scale-fill-brewer(
   palette: "Set1",
   name: none,
@@ -1006,20 +1006,20 @@
 /// Linearly interpolates between `low` and `high` across the trained domain.
 /// Defaults to a blue ramp.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param low Colour for the low end of the domain.
-/// @param high Colour for the high end of the domain.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param low Colour for the low end of the domain.
+/// \@param high Colour for the high end of the domain.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default low-to-high blue ramp.
+/// \@examples Default low-to-high blue ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1032,7 +1032,7 @@
 /// )
 /// ```
 ///
-/// @examples Custom two-stop ramp passing explicit `low` and `high` colours.
+/// \@examples Custom two-stop ramp passing explicit `low` and `high` colours.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1048,7 +1048,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-gradient2, @scale-colour-gradientn, @scale-fill-gradient
+/// \@see \@scale-colour-gradient2, \@scale-colour-gradientn, \@scale-fill-gradient
 #let scale-colour-gradient(
   low: rgb("#132B43"),
   high: rgb("#56B1F7"),
@@ -1072,22 +1072,22 @@
 /// Interpolates `low` to `mid` for values at or below `midpoint`, and
 /// `mid` to `high` for values at or above it.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param low Colour for values far below `midpoint`.
-/// @param mid Colour at `midpoint`.
-/// @param high Colour for values far above `midpoint`.
-/// @param midpoint Value at which the palette transitions through `mid`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param low Colour for values far below `midpoint`.
+/// \@param mid Colour at `midpoint`.
+/// \@param high Colour for values far above `midpoint`.
+/// \@param midpoint Value at which the palette transitions through `mid`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default diverging ramp pivoting at zero, useful for signed
+/// \@examples Default diverging ramp pivoting at zero, useful for signed
 /// numeric values.
 /// ```
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
@@ -1101,7 +1101,7 @@
 /// )
 /// ```
 ///
-/// @examples Shift `midpoint` to centre the ramp around a non-zero baseline.
+/// \@examples Shift `midpoint` to centre the ramp around a non-zero baseline.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i, z: i))
 /// #plot(
@@ -1119,7 +1119,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-gradient, @scale-colour-gradientn, @scale-fill-gradient2
+/// \@see \@scale-colour-gradient, \@scale-colour-gradientn, \@scale-fill-gradient2
 #let scale-colour-gradient2(
   low: rgb("#1F77B4"),
   mid: rgb("#FFFFFF"),
@@ -1147,19 +1147,19 @@
 /// adjacent stops. Useful for ramps that require more than two anchor
 /// colours (for example a ColorBrewer palette used as a continuous ramp).
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param colours Array of two or more colours.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param colours Array of two or more colours.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Three-stop ramp interpolating green-yellow-red across the domain.
+/// \@examples Three-stop ramp interpolating green-yellow-red across the domain.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1174,7 +1174,7 @@
 /// )
 /// ```
 ///
-/// @examples Feeding a brewer palette into `scale-colour-gradientn` lifts a
+/// \@examples Feeding a brewer palette into `scale-colour-gradientn` lifts a
 /// discrete palette into a continuous ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -1190,7 +1190,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-gradient, @scale-colour-gradient2, @scale-fill-gradientn
+/// \@see \@scale-colour-gradient, \@scale-colour-gradient2, \@scale-fill-gradientn
 #let scale-colour-gradientn(
   colours: (),
   name: none,
@@ -1210,22 +1210,22 @@
 
 /// Continuous two-stop fill gradient.
 ///
-/// Fill counterpart of @scale-colour-gradient.
+/// Fill counterpart of \@scale-colour-gradient.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param low Colour for the low end of the domain.
-/// @param high Colour for the high end of the domain.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param low Colour for the low end of the domain.
+/// \@param high Colour for the high end of the domain.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Custom two-stop ramp shown as a continuous swatch via @geom-rect.
+/// \@examples Custom two-stop ramp shown as a continuous swatch via \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -1244,7 +1244,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-gradient, @scale-fill-gradient2, @scale-fill-gradientn
+/// \@see \@scale-colour-gradient, \@scale-fill-gradient2, \@scale-fill-gradientn
 #let scale-fill-gradient(
   low: rgb("#132B43"),
   high: rgb("#56B1F7"),
@@ -1265,25 +1265,25 @@
 
 /// Continuous diverging fill gradient through a midpoint.
 ///
-/// Fill counterpart of @scale-colour-gradient2.
+/// Fill counterpart of \@scale-colour-gradient2.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param low Colour for values far below `midpoint`.
-/// @param mid Colour at `midpoint`.
-/// @param high Colour for values far above `midpoint`.
-/// @param midpoint Value at which the palette transitions through `mid`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param low Colour for values far below `midpoint`.
+/// \@param mid Colour at `midpoint`.
+/// \@param high Colour for values far above `midpoint`.
+/// \@param midpoint Value at which the palette transitions through `mid`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Diverging ramp pivoting at zero, shown as a swatch via
-/// @geom-rect.
+/// \@examples Diverging ramp pivoting at zero, shown as a swatch via
+/// \@geom-rect.
 /// ```
 /// #let d = range(-7, 8).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -1299,7 +1299,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-gradient2, @scale-fill-gradient, @scale-fill-gradientn
+/// \@see \@scale-colour-gradient2, \@scale-fill-gradient, \@scale-fill-gradientn
 #let scale-fill-gradient2(
   low: rgb("#1F77B4"),
   mid: rgb("#FFFFFF"),
@@ -1323,21 +1323,21 @@
 
 /// Continuous n-stop fill gradient.
 ///
-/// Fill counterpart of @scale-colour-gradientn.
+/// Fill counterpart of \@scale-colour-gradientn.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.1.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.1.0
 ///
-/// @param colours Array of two or more colours.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param colours Array of two or more colours.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Three-stop ramp shown as a continuous swatch via @geom-rect.
+/// \@examples Three-stop ramp shown as a continuous swatch via \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -1355,7 +1355,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-gradientn, @scale-fill-gradient, @scale-fill-gradient2
+/// \@see \@scale-colour-gradientn, \@scale-fill-gradient, \@scale-fill-gradient2
 #let scale-fill-gradientn(
   colours: (),
   name: none,
@@ -1378,19 +1378,19 @@
 /// Generates `n` evenly-spaced `luma` colours from `start` (darker) to `end`
 /// (lighter), each in `[0, 1]` where 0 is black and 1 is white.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param start Luminance for the first level, in `[0, 1]`.
-/// @param end Luminance for the last level, in `[0, 1]`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param start Luminance for the first level, in `[0, 1]`.
+/// \@param end Luminance for the last level, in `[0, 1]`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default grey ramp from dark to light spread across three levels.
+/// \@examples Default grey ramp from dark to light spread across three levels.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -1407,7 +1407,7 @@
 /// )
 /// ```
 ///
-/// @examples Narrowing `start` and `end` constrains the ramp to a darker
+/// \@examples Narrowing `start` and `end` constrains the ramp to a darker
 /// range for tighter contrast.
 /// ```
 /// #let d = (
@@ -1425,7 +1425,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-grey, @scale-colour-discrete
+/// \@see \@scale-fill-grey, \@scale-colour-discrete
 #let scale-colour-grey(
   start: 0.2,
   end: 0.8,
@@ -1444,21 +1444,21 @@
 
 /// Discrete grey fill scale.
 ///
-/// Fill counterpart of @scale-colour-grey.
+/// Fill counterpart of \@scale-colour-grey.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param start Luminance for the first level, in `[0, 1]`.
-/// @param end Luminance for the last level, in `[0, 1]`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param start Luminance for the first level, in `[0, 1]`.
+/// \@param end Luminance for the last level, in `[0, 1]`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default grey ramp shown as a swatch strip via @geom-rect.
+/// \@examples Default grey ramp shown as a swatch strip via \@geom-rect.
 /// ```
 /// #let levels = ("a", "b", "c", "d", "e", "f")
 /// #let d = levels.enumerate().map(((i, k)) => (
@@ -1475,7 +1475,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-grey, @scale-fill-discrete
+/// \@see \@scale-colour-grey, \@scale-fill-discrete
 #let scale-fill-grey(
   start: 0.2,
   end: 0.8,
@@ -1504,20 +1504,20 @@
 /// excluded and the wheel never duplicates a hue when `start` and `end`
 /// differ by a full turn.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param h Pair `(start, end)` of hue angles.
-/// @param c Chroma in `[0, 100]`.
-/// @param l Luminance in `[0, 100]`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param h Pair `(start, end)` of hue angles.
+/// \@param c Chroma in `[0, 100]`.
+/// \@param l Luminance in `[0, 100]`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default hue wheel mapping four levels to evenly-spaced colours.
+/// \@examples Default hue wheel mapping four levels to evenly-spaced colours.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
@@ -1535,7 +1535,7 @@
 /// )
 /// ```
 ///
-/// @examples Lower `c` (chroma) and `l` (luminance) yield a muted, pastel-like
+/// \@examples Lower `c` (chroma) and `l` (luminance) yield a muted, pastel-like
 /// palette.
 /// ```
 /// #let d = (
@@ -1554,7 +1554,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-hue, @scale-colour-discrete
+/// \@see \@scale-fill-hue, \@scale-colour-discrete
 #let scale-colour-hue(
   h: (15deg, 375deg),
   c: 100,
@@ -1574,22 +1574,22 @@
 
 /// Discrete equally-spaced hue fill scale.
 ///
-/// Fill counterpart of @scale-colour-hue.
+/// Fill counterpart of \@scale-colour-hue.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param h Pair `(start, end)` of hue angles.
-/// @param c Chroma in `[0, 100]`.
-/// @param l Luminance in `[0, 100]`.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Array of level names controlling order and inclusion, or `none`.
-/// @param labels Array of legend labels aligned with `limits`, or `auto`.
+/// \@param h Pair `(start, end)` of hue angles.
+/// \@param c Chroma in `[0, 100]`.
+/// \@param l Luminance in `[0, 100]`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Default hue wheel shown as a swatch strip via @geom-rect.
+/// \@examples Default hue wheel shown as a swatch strip via \@geom-rect.
 /// ```
 /// #let levels = ("a", "b", "c", "d", "e", "f", "g", "h")
 /// #let d = levels.enumerate().map(((i, k)) => (
@@ -1606,7 +1606,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-hue, @scale-fill-discrete
+/// \@see \@scale-colour-hue, \@scale-fill-discrete
 #let scale-fill-hue(
   h: (15deg, 375deg),
   c: 100,
@@ -1630,20 +1630,20 @@
 /// stops as a continuous ramp. `direction` flips the palette: `1` keeps the
 /// canonical order, `-1` reverses it.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param palette ColorBrewer palette name (sequential or diverging works best).
-/// @param direction `1` for canonical order, `-1` for reversed.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param palette ColorBrewer palette name (sequential or diverging works best).
+/// \@param direction `1` for canonical order, `-1` for reversed.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Spectral palette interpolated as a continuous ramp.
+/// \@examples Spectral palette interpolated as a continuous ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -1656,7 +1656,7 @@
 /// )
 /// ```
 ///
-/// @examples Set `direction: -1` to reverse the palette so high values map
+/// \@examples Set `direction: -1` to reverse the palette so high values map
 /// to the canonical low end.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -1670,7 +1670,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-fill-distiller, @scale-colour-gradientn, @scale-colour-brewer
+/// \@see \@scale-fill-distiller, \@scale-colour-gradientn, \@scale-colour-brewer
 #let scale-colour-distiller(
   palette: "Spectral",
   direction: 1,
@@ -1695,19 +1695,19 @@
 
 /// Continuous alpha (opacity) scale mapping a numeric column to opacities.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param range Pair `(lo, hi)` bounding the output opacity, each in `[0, 1]`.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param range Pair `(lo, hi)` bounding the output opacity, each in `[0, 1]`.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Linear opacity mapping with a wide `range` to fade points from
+/// \@examples Linear opacity mapping with a wide `range` to fade points from
 /// near-transparent to fully opaque.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
@@ -1721,7 +1721,7 @@
 /// )
 /// ```
 ///
-/// @examples A narrower `range` keeps every point visible while still
+/// \@examples A narrower `range` keeps every point visible while still
 /// encoding magnitude.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
@@ -1735,7 +1735,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-alpha-identity, @scale-colour-continuous
+/// \@see \@scale-alpha-identity, \@scale-colour-continuous
 #let scale-alpha-continuous(
   name: none,
   range: (0.1, 1),
@@ -1758,15 +1758,15 @@
 /// Values are clamped to `[0, 1]` before being applied to the colour.
 /// No legend is drawn because the column carries the visual outcome verbatim.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param name Legend title. Identity scales draw no legend.
+/// \@param name Legend title. Identity scales draw no legend.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Per-row opacity carried straight through to the point fills.
+/// \@examples Per-row opacity carried straight through to the point fills.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 2, w: 0.2),
@@ -1784,7 +1784,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-alpha-continuous, @scale-colour-identity
+/// \@see \@scale-alpha-continuous, \@scale-colour-identity
 #let scale-alpha-identity(name: none) = (
   kind: "scale",
   aesthetic: "alpha",
@@ -1794,23 +1794,23 @@
 
 /// Continuous ColorBrewer fill scale.
 ///
-/// Fill counterpart of @scale-colour-distiller.
+/// Fill counterpart of \@scale-colour-distiller.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.2.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.2.0
 ///
-/// @param palette ColorBrewer palette name (sequential or diverging works best).
-/// @param direction `1` for canonical order, `-1` for reversed.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param breaks Array of break values for the legend, or `auto`.
-/// @param labels Array of legend labels aligned with `breaks`, or `auto`.
+/// \@param palette ColorBrewer palette name (sequential or diverging works best).
+/// \@param direction `1` for canonical order, `-1` for reversed.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Spectral palette interpolated across a continuous swatch via
-/// @geom-rect.
+/// \@examples Spectral palette interpolated across a continuous swatch via
+/// \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -1826,7 +1826,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-distiller, @scale-fill-gradientn, @scale-fill-brewer
+/// \@see \@scale-colour-distiller, \@scale-fill-gradientn, \@scale-fill-brewer
 #let scale-fill-distiller(
   palette: "Spectral",
   direction: 1,
@@ -1855,20 +1855,20 @@
 /// and fills each bin with a single colour drawn from the `low` to `high`
 /// ramp. Defaults to a blue ramp.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param low Colour for the low end of the domain.
-/// @param high Colour for the high end of the domain.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param low Colour for the low end of the domain.
+/// \@param high Colour for the high end of the domain.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Five-bin discretisation of the default low-to-high blue ramp.
+/// \@examples Five-bin discretisation of the default low-to-high blue ramp.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
 /// #plot(
@@ -1881,7 +1881,7 @@
 /// )
 /// ```
 ///
-/// @examples Custom `low`/`high` colours discretised into eight bins.
+/// \@examples Custom `low`/`high` colours discretised into eight bins.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
 /// #plot(
@@ -1898,7 +1898,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-steps2, @scale-colour-stepsn, @scale-fill-steps
+/// \@see \@scale-colour-steps2, \@scale-colour-stepsn, \@scale-fill-steps
 #let scale-colour-steps(
   low: rgb("#132B43"),
   high: rgb("#56B1F7"),
@@ -1923,22 +1923,22 @@
 /// Quantises the trained continuous domain into `n-breaks` equal-width bins
 /// using a three-stop palette that pivots through `mid` at `midpoint`.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param low Colour for values far below `midpoint`.
-/// @param mid Colour at `midpoint`.
-/// @param high Colour for values far above `midpoint`.
-/// @param midpoint Value at which the palette transitions through `mid`.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param low Colour for values far below `midpoint`.
+/// \@param mid Colour at `midpoint`.
+/// \@param high Colour for values far above `midpoint`.
+/// \@param midpoint Value at which the palette transitions through `mid`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Six-bin diverging discretisation pivoting at zero.
+/// \@examples Six-bin diverging discretisation pivoting at zero.
 /// ```
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
 /// #plot(
@@ -1951,7 +1951,7 @@
 /// )
 /// ```
 ///
-/// @examples Shift `midpoint` and adjust the three stops to highlight a
+/// \@examples Shift `midpoint` and adjust the three stops to highlight a
 /// non-zero pivot.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i, y: i, z: i))
@@ -1971,7 +1971,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-steps, @scale-colour-stepsn, @scale-fill-steps2
+/// \@see \@scale-colour-steps, \@scale-colour-stepsn, \@scale-fill-steps2
 #let scale-colour-steps2(
   low: rgb("#005A32"),
   mid: white,
@@ -1999,19 +1999,19 @@
 /// Walks `colours` as a sequence of stops and quantises the lookup into
 /// `n-breaks` equal-width bins.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param colours Array of two or more colours.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param colours Array of two or more colours.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Three-stop ramp discretised into six bins.
+/// \@examples Three-stop ramp discretised into six bins.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -2026,7 +2026,7 @@
 /// )
 /// ```
 ///
-/// @examples Reuse a brewer palette as the stop list to fold a discrete
+/// \@examples Reuse a brewer palette as the stop list to fold a discrete
 /// palette into a banded continuous scale.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -2043,7 +2043,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-steps, @scale-colour-steps2, @scale-fill-stepsn
+/// \@see \@scale-colour-steps, \@scale-colour-steps2, \@scale-fill-stepsn
 #let scale-colour-stepsn(
   colours: (),
   n-breaks: 5,
@@ -2068,20 +2068,20 @@
 /// quantises the lookup into `n-breaks` equal-width bins. `direction` flips
 /// the palette: `1` keeps the canonical order, `-1` reverses it.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param palette ColorBrewer palette name (sequential or diverging works best).
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param direction `1` for canonical order, `-1` for reversed.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param palette ColorBrewer palette name (sequential or diverging works best).
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param direction `1` for canonical order, `-1` for reversed.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Spectral palette quantised into five bins.
+/// \@examples Spectral palette quantised into five bins.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
@@ -2094,7 +2094,7 @@
 /// )
 /// ```
 ///
-/// @examples Sequential blues palette reversed via `direction: -1` for an
+/// \@examples Sequential blues palette reversed via `direction: -1` for an
 /// inverted banding.
 /// ```
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
@@ -2112,7 +2112,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-distiller, @scale-fill-fermenter
+/// \@see \@scale-colour-distiller, \@scale-fill-fermenter
 #let scale-colour-fermenter(
   palette: "Spectral",
   n-breaks: 5,
@@ -2138,22 +2138,22 @@
 
 /// Binned two-stop fill gradient.
 ///
-/// Fill counterpart of @scale-colour-steps.
+/// Fill counterpart of \@scale-colour-steps.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param low Colour for the low end of the domain.
-/// @param high Colour for the high end of the domain.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param low Colour for the low end of the domain.
+/// \@param high Colour for the high end of the domain.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Five-bin discretised fill ramp shown as a swatch via @geom-rect.
+/// \@examples Five-bin discretised fill ramp shown as a swatch via \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -2169,7 +2169,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-steps, @scale-fill-steps2, @scale-fill-stepsn
+/// \@see \@scale-colour-steps, \@scale-fill-steps2, \@scale-fill-stepsn
 #let scale-fill-steps(
   low: rgb("#132B43"),
   high: rgb("#56B1F7"),
@@ -2191,24 +2191,24 @@
 
 /// Binned diverging fill gradient through a midpoint.
 ///
-/// Fill counterpart of @scale-colour-steps2.
+/// Fill counterpart of \@scale-colour-steps2.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param low Colour for values far below `midpoint`.
-/// @param mid Colour at `midpoint`.
-/// @param high Colour for values far above `midpoint`.
-/// @param midpoint Value at which the palette transitions through `mid`.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param low Colour for values far below `midpoint`.
+/// \@param mid Colour at `midpoint`.
+/// \@param high Colour for values far above `midpoint`.
+/// \@param midpoint Value at which the palette transitions through `mid`.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Six-bin diverging swatch pivoting at zero.
+/// \@examples Six-bin diverging swatch pivoting at zero.
 /// ```
 /// #let d = range(-7, 8).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -2224,7 +2224,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-steps2, @scale-fill-steps, @scale-fill-stepsn
+/// \@see \@scale-colour-steps2, \@scale-fill-steps, \@scale-fill-stepsn
 #let scale-fill-steps2(
   low: rgb("#005A32"),
   mid: white,
@@ -2249,22 +2249,22 @@
 
 /// Binned n-stop fill gradient.
 ///
-/// Fill counterpart of @scale-colour-stepsn.
+/// Fill counterpart of \@scale-colour-stepsn.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param colours Array of two or more colours.
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param colours Array of two or more colours.
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Three-stop ramp discretised into six bins, shown as a swatch
-/// via @geom-rect.
+/// \@examples Three-stop ramp discretised into six bins, shown as a swatch
+/// via \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -2282,7 +2282,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-stepsn, @scale-fill-steps, @scale-fill-steps2
+/// \@see \@scale-colour-stepsn, \@scale-fill-steps, \@scale-fill-steps2
 #let scale-fill-stepsn(
   colours: (),
   n-breaks: 5,
@@ -2303,23 +2303,23 @@
 
 /// Binned ColorBrewer fill scale.
 ///
-/// Fill counterpart of @scale-colour-fermenter.
+/// Fill counterpart of \@scale-colour-fermenter.
 ///
-/// @category Scales
-/// @stability stable
-/// @since 0.3.0
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.3.0
 ///
-/// @param palette ColorBrewer palette name (sequential or diverging works best).
-/// @param n-breaks Number of bins to partition the domain into.
-/// @param direction `1` for canonical order, `-1` for reversed.
-/// @param name Legend title. Overrides any name set via @labs when both are present.
-/// @param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
-/// @param labels Array of legend labels aligned with the bins, or `auto`.
+/// \@param palette ColorBrewer palette name (sequential or diverging works best).
+/// \@param n-breaks Number of bins to partition the domain into.
+/// \@param direction `1` for canonical order, `-1` for reversed.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
-/// @returns Scale object consumed by @plot.
+/// \@returns Scale object consumed by \@plot.
 ///
-/// @examples Spectral palette quantised into five bins, shown as a swatch
-/// via @geom-rect.
+/// \@examples Spectral palette quantised into five bins, shown as a swatch
+/// via \@geom-rect.
 /// ```
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
@@ -2335,7 +2335,7 @@
 /// )
 /// ```
 ///
-/// @see @scale-colour-fermenter, @scale-fill-distiller
+/// \@see \@scale-colour-fermenter, \@scale-fill-distiller
 #let scale-fill-fermenter(
   palette: "Spectral",
   n-breaks: 5,

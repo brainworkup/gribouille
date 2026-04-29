@@ -20,11 +20,11 @@
 /// - `uempmed` (median duration of unemployment, weeks).
 /// - `unemploy` (number of unemployed, thousands).
 ///
-/// @category Datasets
-/// @stability stable
-/// @since 0.0.1
+/// \@category Datasets
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @examples Plot the unemployment series over time, treating `date` as a
+/// \@examples Plot the unemployment series over time, treating `date` as a
 /// continuous date axis.
 /// ```
 /// #plot(
@@ -37,7 +37,7 @@
 /// )
 /// ```
 ///
-/// @examples Stack two layers with their own y mappings to compare two
+/// \@examples Stack two layers with their own y mappings to compare two
 /// series on the same panel.
 /// ```
 /// #plot(

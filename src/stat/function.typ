@@ -1,6 +1,6 @@
 ///! Sample a callable across a range to produce `(x, fun(x))` rows.
 ///!
-///! Stat-flavoured counterpart to @geom-function. The framework runs stats
+///! Stat-flavoured counterpart to \@geom-function. The framework runs stats
 ///! before training, so the sampling range comes from `xlim` rather than the
 ///! trained x-domain. The output rows can feed any geom that consumes `x`
 ///! and `y` (point, line, path, step).
@@ -14,18 +14,18 @@
 /// used as sampling bounds. If neither `xlim` nor numeric data is available
 /// the stat panics with a helpful message.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param fun Callable taking a numeric x and returning a numeric y.
-/// @param n Number of samples taken uniformly across the range.
-/// @param xlim Pair `(lo, hi)` bounding the sampling range, or `none` to derive from data.
-/// @param args Reserved for forwarding extra arguments to `fun`. Currently unused.
+/// \@param fun Callable taking a numeric x and returning a numeric y.
+/// \@param n Number of samples taken uniformly across the range.
+/// \@param xlim Pair `(lo, hi)` bounding the sampling range, or `none` to derive from data.
+/// \@param args Reserved for forwarding extra arguments to `fun`. Currently unused.
 ///
-/// @returns Statistic object with `name: "function"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "function"`, consumed by geom layers.
 ///
-/// @examples Sine sampled across `xlim` and rendered as a line.
+/// \@examples Sine sampled across `xlim` and rendered as a line.
 /// ```
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
@@ -43,7 +43,7 @@
 /// )
 /// ```
 ///
-/// @examples Combine with @geom-point to overlay sampled markers on the
+/// \@examples Combine with \@geom-point to overlay sampled markers on the
 /// curve; bumping `n` smooths the line further.
 /// ```
 /// #let frame = ((x: 0, y: 0), (x: 6.28, y: 1))
@@ -63,7 +63,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-function, @stat-smooth
+/// \@see \@geom-function, \@stat-smooth
 #let stat-function(fun: x => x, n: 101, xlim: (0, 1), args: (:)) = (
   kind: "stat",
   name: "function",

@@ -16,20 +16,20 @@
 /// The line runs across the full trained x domain. Requires continuous x
 /// and y scales; discrete scales are skipped silently.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param slope Line slope.
-/// @param intercept Line y intercept.
-/// @param colour Line colour. `auto` inherits the theme `ink`.
-/// @param stroke Line thickness (a Typst length).
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
+/// \@param slope Line slope.
+/// \@param intercept Line y intercept.
+/// \@param colour Line colour. `auto` inherits the theme `ink`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples The `y = x` identity reference line over a noisy point cloud.
+/// \@examples The `y = x` identity reference line over a noisy point cloud.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i + calc.rem(i, 2)))
 /// #plot(
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @examples Adjust `slope` and `intercept` to anchor a custom regression
+/// \@examples Adjust `slope` and `intercept` to anchor a custom regression
 /// reference.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: 0.7 * i + 1 + calc.sin(i)))
@@ -60,7 +60,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-hline, @geom-vline, @geom-smooth
+/// \@see \@geom-hline, \@geom-vline, \@geom-smooth
 #let geom-abline(
   slope: 1,
   intercept: 0,

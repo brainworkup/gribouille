@@ -13,13 +13,13 @@
 /// `geom-line`, `geom-path`, `geom-step`, `geom-segment`) work via the same
 /// swap with no per-geom changes.
 ///
-/// @category Coord
-/// @stability experimental
-/// @since 0.0.1
+/// \@category Coord
+/// \@stability experimental
+/// \@since 0.0.1
 ///
-/// @returns Coordinate dictionary consumed by @plot.
+/// \@returns Coordinate dictionary consumed by \@plot.
 ///
-/// @examples Flip a vertical bar chart into a horizontal one without
+/// \@examples Flip a vertical bar chart into a horizontal one without
 /// rewriting the mapping.
 /// ```
 /// #let d = (
@@ -38,7 +38,7 @@
 /// )
 /// ```
 ///
-/// @examples Reference lines follow the flip: a `yintercept` becomes a
+/// \@examples Reference lines follow the flip: a `yintercept` becomes a
 /// vertical reference once the axes swap.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -55,7 +55,7 @@
 /// )
 /// ```
 ///
-/// @see @plot, @coord-cartesian, @geom-col
+/// \@see \@plot, \@coord-cartesian, \@geom-col
 #let coord-flip() = (
   kind: "coord",
   coord: "flip",

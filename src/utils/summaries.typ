@@ -52,22 +52,22 @@
 /// `se = sd / sqrt(n)` using the sample standard deviation. Returns
 /// `(y: <mean>, ymin: <mean - mult * se>, ymax: <mean + mult * se>)`.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric entries are dropped.
-/// @param mult Multiplier on the standard error.
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param mult Multiplier on the standard error.
 ///
-/// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+/// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
-/// @examples-static One-σ band around the sample mean.
+/// \@examples-static One-σ band around the sample mean.
 /// ```
 /// #let s = mean-se((2, 3, 4, 5, 6))
 /// // s.y == 4, s.ymin ≈ 3.29, s.ymax ≈ 4.71
 /// ```
 ///
-/// @examples-static Bump `mult` to 2 for an approximate 95% interval
+/// \@examples-static Bump `mult` to 2 for an approximate 95% interval
 /// (assuming a roughly normal sampling distribution).
 /// ```
 /// #let s = mean-se((2, 3, 4, 5, 6), mult: 2)
@@ -87,21 +87,21 @@
 /// Acklam's inverse-normal approximation, so any `conf` in the open interval
 /// `(0, 1)` is supported.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric entries are dropped.
-/// @param conf Confidence level in the open interval `(0, 1)`.
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param conf Confidence level in the open interval `(0, 1)`.
 ///
-/// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+/// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
-/// @examples-static Standard 95% normal-approximation interval.
+/// \@examples-static Standard 95% normal-approximation interval.
 /// ```
 /// #let s = mean-cl-normal((2, 3, 4, 5, 6))
 /// ```
 ///
-/// @examples-static Tighten to a 50% interval to highlight the central
+/// \@examples-static Tighten to a 50% interval to highlight the central
 /// location.
 /// ```
 /// #let s = mean-cl-normal((2, 3, 4, 5, 6), conf: 0.5)
@@ -121,21 +121,21 @@
 
 /// Mean and standard-deviation band: `mean ± mult * sd`.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric entries are dropped.
-/// @param mult Multiplier on the sample standard deviation.
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param mult Multiplier on the sample standard deviation.
 ///
-/// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+/// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
-/// @examples-static Default ±1 σ band.
+/// \@examples-static Default ±1 σ band.
 /// ```
 /// #let s = mean-sd((2, 3, 4, 5, 6))
 /// ```
 ///
-/// @examples-static Widen to ±2 σ for a two-deviation spread.
+/// \@examples-static Widen to ±2 σ for a two-deviation spread.
 /// ```
 /// #let s = mean-sd((2, 3, 4, 5, 6), mult: 2)
 /// ```
@@ -153,21 +153,21 @@
 /// same convention as `src/stat/boxplot.typ`. The default `conf: 0.5`
 /// returns the median with the IQR (25th to 75th percentile).
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric entries are dropped.
-/// @param conf Proportion of the data covered by the interval, in `(0, 1)`.
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param conf Proportion of the data covered by the interval, in `(0, 1)`.
 ///
-/// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+/// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
-/// @examples-static Default 50% interval returns the median plus the IQR.
+/// \@examples-static Default 50% interval returns the median plus the IQR.
 /// ```
 /// #let s = median-hilow((1, 2, 3, 4, 5, 6, 7, 8))
 /// ```
 ///
-/// @examples-static A 90% interval covers the bulk of the data while still
+/// \@examples-static A 90% interval covers the bulk of the data while still
 /// trimming the tails.
 /// ```
 /// #let s = median-hilow((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), conf: 0.9)
@@ -203,23 +203,23 @@
 /// deterministic noise sequence seeded by `seed`, so identical inputs always
 /// produce identical bounds.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param values Array of numbers; non-numeric entries are dropped.
-/// @param conf Confidence level in the open interval `(0, 1)`.
-/// @param n-boot Number of bootstrap resamples.
-/// @param seed Integer seed for the deterministic resampling sequence.
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param conf Confidence level in the open interval `(0, 1)`.
+/// \@param n-boot Number of bootstrap resamples.
+/// \@param seed Integer seed for the deterministic resampling sequence.
 ///
-/// @returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+/// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
-/// @examples-static Default 95% bootstrap interval with 1000 resamples.
+/// \@examples-static Default 95% bootstrap interval with 1000 resamples.
 /// ```
 /// #let s = mean-cl-boot((2, 3, 4, 5, 6, 7))
 /// ```
 ///
-/// @examples-static Bump `n-boot` for a smoother bound and pin `seed` to
+/// \@examples-static Bump `n-boot` for a smoother bound and pin `seed` to
 /// keep results reproducible across renders.
 /// ```
 /// #let s = mean-cl-boot((2, 3, 4, 5, 6, 7), n-boot: 5000, seed: 42)
@@ -259,23 +259,23 @@
 /// Names use the kebab form (`"mean-se"`, `"mean-cl-normal"`, `"mean-cl-boot"`,
 /// `"mean-sd"`, `"median-hilow"`). Unknown names panic.
 ///
-/// @category Helpers
-/// @stability stable
-/// @since 0.0.1
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param name Summary helper name.
-/// @param values Array of numbers; non-numeric entries are dropped.
-/// @param fun-args Keyword arguments forwarded to the helper.
+/// \@param name Summary helper name.
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param fun-args Keyword arguments forwarded to the helper.
 ///
-/// @returns Dict `(y, ymin, ymax)`.
+/// \@returns Dict `(y, ymin, ymax)`.
 ///
-/// @examples-static Dispatch by name; equivalent to calling @mean-se
+/// \@examples-static Dispatch by name; equivalent to calling \@mean-se
 /// directly.
 /// ```
 /// #let s = summarise("mean-se", (2, 3, 4, 5, 6))
 /// ```
 ///
-/// @examples-static Pass keyword arguments via `fun-args` to forward
+/// \@examples-static Pass keyword arguments via `fun-args` to forward
 /// helper-specific parameters.
 /// ```
 /// #let s = summarise(

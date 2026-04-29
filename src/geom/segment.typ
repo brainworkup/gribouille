@@ -10,23 +10,23 @@
 /// Mapping must provide `x`, `y`, `xend`, `yend`. Colour and linetype may
 /// be mapped or set as fixed layer parameters.
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Must map `x`, `y`, `xend`, `yend`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword. Defaults to `"solid"`.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `xend`, `yend`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword. Defaults to `"solid"`.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Three crossing segments specified by their two endpoints.
+/// \@examples Three crossing segments specified by their two endpoints.
 /// ```
 /// #let d = (
 ///   (x: 0, y: 0, xend: 4, yend: 3),
@@ -42,7 +42,7 @@
 /// )
 /// ```
 ///
-/// @examples Map `colour` and `linetype` to colour-coded categorical
+/// \@examples Map `colour` and `linetype` to colour-coded categorical
 /// segments.
 /// ```
 /// #let d = (
@@ -59,7 +59,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-line, @geom-path
+/// \@see \@geom-line, \@geom-path
 #let geom-segment(
   mapping: none,
   data: none,

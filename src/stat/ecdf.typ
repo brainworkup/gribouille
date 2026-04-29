@@ -12,13 +12,13 @@
 /// the 1-indexed position of `v`'s first occurrence divided by `n`. Output
 /// rows are sorted by x ascending.
 ///
-/// @category Stats
-/// @stability stable
-/// @since 0.0.1
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @returns Statistic object with `name: "ecdf"`, consumed by geom layers.
+/// \@returns Statistic object with `name: "ecdf"`, consumed by geom layers.
 ///
-/// @examples ECDF curve over a tiny sample, drawn as a polyline.
+/// \@examples ECDF curve over a tiny sample, drawn as a polyline.
 /// ```
 /// #let d = (3, 1, 2, 1).map(v => (x: v))
 /// #plot(
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Use @geom-step instead of @geom-line to render the ECDF as a
+/// \@examples Use \@geom-step instead of \@geom-line to render the ECDF as a
 /// staircase, which is the conventional shape for empirical CDFs.
 /// ```
 /// #let d = range(0, 30).map(i => (x: calc.sin(i) + i / 10))
@@ -43,7 +43,7 @@
 /// )
 /// ```
 ///
-/// @see @stat-bin, @stat-count
+/// \@see \@stat-bin, \@stat-count
 #let stat-ecdf() = (kind: "stat", name: "ecdf")
 
 #let apply(data, mapping, params: (:)) = {

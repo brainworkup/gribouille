@@ -7,17 +7,17 @@
 
 /// Light theme: light grey panel, white grid, soft grey axes.
 ///
-/// @category Themes
-/// @stability stable
-/// @since 0.0.1
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param ink Foreground colour (text). Default: `black`.
-/// @param paper Background colour. Default: `white`.
-/// @param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ink Foreground colour (text). Default: `black`.
+/// \@param paper Background colour. Default: `white`.
+/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
 ///
-/// @returns Theme dictionary consumed by @plot.
+/// \@returns Theme dictionary consumed by \@plot.
 ///
-/// @examples Soft grey axes on a tinted panel.
+/// \@examples Soft grey axes on a tinted panel.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -30,7 +30,7 @@
 /// )
 /// ```
 ///
-/// @examples Override `accent` to give the data ink a custom highlight
+/// \@examples Override `accent` to give the data ink a custom highlight
 /// colour without losing the soft panel.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -44,7 +44,7 @@
 /// )
 /// ```
 ///
-/// @see @theme-grey, @theme-minimal, @theme-classic, @theme-dark, @theme-void, @theme
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-dark, \@theme-void, \@theme
 #let theme-light(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
   kind: "theme",
   name: "light",

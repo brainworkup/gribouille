@@ -1,6 +1,6 @@
 ///! Step function between consecutive observations.
 ///!
-///! Like @geom-line but each segment between two points is drawn as a
+///! Like \@geom-line but each segment between two points is drawn as a
 ///! stair-step: a horizontal then vertical move (`direction: "hv"`,
 ///! default) or vertical then horizontal (`direction: "vh"`).
 
@@ -16,24 +16,24 @@
 /// `direction` chooses between `"hv"` (horizontal first, then vertical)
 /// and `"vh"` (vertical first, then horizontal).
 ///
-/// @category Geoms
-/// @stability stable
-/// @since 0.0.1
+/// \@category Geoms
+/// \@stability stable
+/// \@since 0.0.1
 ///
-/// @param mapping Layer-specific aesthetic mapping built with @aes. Falls back to the plot mapping when `none`.
-/// @param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// @param direction Step direction: `"hv"` (default) or `"vh"`.
-/// @param stroke Line thickness (a Typst length).
-/// @param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
-/// @param alpha Line opacity in `[0, 1]`.
-/// @param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
-/// @param stat Statistical transform name. Usually `"identity"`.
-/// @param position Position adjustment name. Usually `"identity"`.
-/// @param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param direction Step direction: `"hv"` (default) or `"vh"`.
+/// \@param stroke Line thickness (a Typst length).
+/// \@param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
+/// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
+/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
-/// @returns Layer dictionary consumed by @plot.
+/// \@returns Layer dictionary consumed by \@plot.
 ///
-/// @examples Default `"hv"` step path moving right then up between points.
+/// \@examples Default `"hv"` step path moving right then up between points.
 /// ```
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
 /// #plot(
@@ -45,7 +45,7 @@
 /// )
 /// ```
 ///
-/// @examples `"vh"` direction reverses the corner placement, useful when
+/// \@examples `"vh"` direction reverses the corner placement, useful when
 /// the change is best read as happening at the previous timestamp.
 /// ```
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
@@ -58,7 +58,7 @@
 /// )
 /// ```
 ///
-/// @see @geom-line, @geom-path
+/// \@see \@geom-line, \@geom-path
 #let geom-step(
   mapping: none,
   data: none,
