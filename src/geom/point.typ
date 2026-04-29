@@ -12,6 +12,7 @@
   apply-alpha, resolve-alpha, resolve-size, resolve-stroke-colour,
 )
 #import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../guide/draw-marker.typ": draw-marker
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
 ///
@@ -107,81 +108,6 @@
   inherit-aes: inherit-aes,
 )
 
-// Draw a single shape at `pos`. `size` is the radius.
-// Circles can take a length directly (CeTZ accepts pt for `radius:`) but for
-// polygonal shapes we work in canvas units (1 unit = 1 cm) and must convert
-// any Typst length to that unit system.
-#let _size-to-units(size) = {
-  if type(size) == length { size / 1cm } else { float(size) }
-}
-
-#let _draw-shape(pos, kind, size, paint, stroke-spec) = {
-  let (cx, cy) = pos
-  if kind == "circle" {
-    cetz.draw.circle((cx, cy), radius: size, fill: paint, stroke: stroke-spec)
-    return
-  }
-  let r = _size-to-units(size)
-  if kind == "square" {
-    cetz.draw.rect(
-      (cx - r, cy - r),
-      (cx + r, cy + r),
-      fill: paint,
-      stroke: stroke-spec,
-    )
-  } else if kind == "triangle" {
-    cetz.draw.line(
-      (cx - r, cy - r),
-      (cx + r, cy - r),
-      (cx, cy + r),
-      close: true,
-      fill: paint,
-      stroke: stroke-spec,
-    )
-  } else if kind == "triangle-down" {
-    cetz.draw.line(
-      (cx - r, cy + r),
-      (cx + r, cy + r),
-      (cx, cy - r),
-      close: true,
-      fill: paint,
-      stroke: stroke-spec,
-    )
-  } else if kind == "diamond" {
-    cetz.draw.line(
-      (cx, cy + r),
-      (cx + r, cy),
-      (cx, cy - r),
-      (cx - r, cy),
-      close: true,
-      fill: paint,
-      stroke: stroke-spec,
-    )
-  } else if kind == "cross" {
-    let s = if stroke-spec == none {
-      (paint: paint, thickness: r / 2 * 1cm)
-    } else { stroke-spec }
-    cetz.draw.line((cx - r, cy), (cx + r, cy), stroke: s)
-    cetz.draw.line((cx, cy - r), (cx, cy + r), stroke: s)
-  } else if kind == "x" {
-    let s = if stroke-spec == none {
-      (paint: paint, thickness: r / 2 * 1cm)
-    } else { stroke-spec }
-    cetz.draw.line((cx - r, cy - r), (cx + r, cy + r), stroke: s)
-    cetz.draw.line((cx - r, cy + r), (cx + r, cy - r), stroke: s)
-  } else if kind == "star" {
-    let s = if stroke-spec == none {
-      (paint: paint, thickness: r / 2.5 * 1cm)
-    } else { stroke-spec }
-    cetz.draw.line((cx - r, cy), (cx + r, cy), stroke: s)
-    cetz.draw.line((cx, cy - r), (cx, cy + r), stroke: s)
-    cetz.draw.line((cx - r, cy - r), (cx + r, cy + r), stroke: s)
-    cetz.draw.line((cx - r, cy + r), (cx + r, cy - r), stroke: s)
-  } else {
-    cetz.draw.circle((cx, cy), radius: r, fill: paint, stroke: stroke-spec)
-  }
-}
-
 #let _palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
 
 // Build a CeTZ stroke dictionary by injecting `paint` into a thickness-only
@@ -257,6 +183,6 @@
         }
       }
     } else { default-shape-kind }
-    _draw-shape((cx, cy), shape-kind, size, body-fill, stroke-spec)
+    draw-marker((cx, cy), shape-kind, size, body-fill, stroke-spec)
   }
 }

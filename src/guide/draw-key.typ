@@ -5,6 +5,8 @@
 ///! filled shapes draw small rectangles. Override per layer with `key:`.
 
 #import "../deps.typ": cetz
+#import "../utils/colour-resolve.typ": apply-alpha
+#import "./draw-marker.typ": draw-marker
 
 /// Draw-key returning a small filled circle.
 ///
@@ -280,56 +282,119 @@
   "rect"
 }
 
-// Draw a small key glyph centred at (cx, cy) of the given half-extent `r`,
-// using `colour` for fill (point/rect) or stroke (line/path). When the swatch
-// represents the `colour` aesthetic on a point glyph, the marker renders as a
-// stroked ring (no body fill) so that colour and fill swatches stay visually
-// distinct.
-#let draw-glyph(key, cx, cy, r, colour, aesthetic: "fill") = {
+// Draw a small key glyph centred at (cx, cy) of the given half-extent `r`.
+//
+// `bundle` is a dictionary of resolved aesthetic values for the level being
+// drawn. Recognised fields (any may be missing):
+//
+//   colour    : a colour for stroke (line/path) or ring (point) or outline (rect).
+//   fill      : a colour for the filled body of point/rect glyphs.
+//   shape     : a marker keyword (only consumed when `key == "point"`).
+//   linetype  : a CeTZ dash keyword (only consumed when `key` ∈ {"line","path"}).
+//   linewidth : a stroke thickness length.
+//   size      : a marker radius length (only consumed when `key == "point"`).
+//   alpha     : opacity in [0, 1] applied to whichever paints the glyph carries.
+//
+// `ink` is the fallback colour when neither `colour` nor `fill` is supplied.
+//
+// When `key == "point"` and only `colour` is supplied (no `fill`), the marker
+// renders as a stroked ring so colour-only and fill-only swatches stay
+// visually distinct, matching the convention from the previous single-paint
+// API.
+#let draw-glyph(key, cx, cy, r, bundle, ink: black) = {
   if key == "blank" { return }
+  let alpha = bundle.at("alpha", default: 1)
+  let colour = bundle.at("colour", default: none)
+  let fill = bundle.at("fill", default: none)
+  let lw = bundle.at("linewidth", default: 1pt)
+  let dash = bundle.at("linetype", default: "solid")
+
+  let stroke-paint = if colour != none { apply-alpha(colour, alpha) } else {
+    none
+  }
+  let fill-paint = if fill != none { apply-alpha(fill, alpha) } else { none }
+
   if key == "point" {
-    if aesthetic == "colour" {
-      cetz.draw.circle(
+    let kind = bundle.at("shape", default: "circle")
+    let size = bundle.at("size", default: r)
+    if fill-paint != none {
+      let stroke = if stroke-paint != none {
+        (paint: stroke-paint, thickness: lw)
+      } else { none }
+      draw-marker((cx, cy), kind, size, fill-paint, stroke)
+    } else if stroke-paint != none {
+      draw-marker(
         (cx, cy),
-        radius: r,
-        fill: none,
-        stroke: (paint: colour, thickness: 1pt),
+        kind,
+        size,
+        none,
+        (paint: stroke-paint, thickness: lw),
       )
     } else {
-      cetz.draw.circle(
-        (cx, cy),
-        radius: r,
-        fill: colour,
-        stroke: none,
-      )
+      draw-marker((cx, cy), kind, size, ink, none)
     }
-  } else if key == "rect" {
+    return
+  }
+
+  if key == "rect" {
+    let body = if fill-paint != none {
+      fill-paint
+    } else if stroke-paint != none {
+      stroke-paint
+    } else { ink }
+    let outline = if (
+      fill-paint != none and stroke-paint != none and stroke-paint != fill-paint
+    ) {
+      (paint: stroke-paint, thickness: lw)
+    } else { none }
     cetz.draw.rect(
       (cx - r, cy - r),
       (cx + r, cy + r),
-      fill: colour,
-      stroke: none,
+      fill: body,
+      stroke: outline,
     )
-  } else if key == "line" {
+    return
+  }
+
+  if key == "line" {
+    let paint = if stroke-paint != none {
+      stroke-paint
+    } else if fill-paint != none {
+      fill-paint
+    } else { ink }
     cetz.draw.line(
       (cx - r * 1.4, cy),
       (cx + r * 1.4, cy),
-      stroke: (paint: colour, thickness: 1pt),
+      stroke: (paint: paint, thickness: lw, dash: dash),
     )
-  } else if key == "path" {
+    return
+  }
+
+  if key == "path" {
+    let paint = if stroke-paint != none {
+      stroke-paint
+    } else if fill-paint != none {
+      fill-paint
+    } else { ink }
     cetz.draw.line(
       (cx - r * 1.4, cy - r * 0.6),
       (cx - r * 0.4, cy + r * 0.6),
       (cx + r * 0.4, cy - r * 0.4),
       (cx + r * 1.4, cy + r * 0.5),
-      stroke: (paint: colour, thickness: 1pt),
+      stroke: (paint: paint, thickness: lw, dash: dash),
     )
-  } else {
-    cetz.draw.rect(
-      (cx - r, cy - r),
-      (cx + r, cy + r),
-      fill: colour,
-      stroke: none,
-    )
+    return
   }
+
+  let body = if fill-paint != none {
+    fill-paint
+  } else if stroke-paint != none {
+    stroke-paint
+  } else { ink }
+  cetz.draw.rect(
+    (cx - r, cy - r),
+    (cx + r, cy + r),
+    fill: body,
+    stroke: none,
+  )
 }

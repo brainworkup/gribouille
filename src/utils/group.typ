@@ -9,6 +9,7 @@
 #import "../scale/train.typ": mapping-ref-col, mapping-ref-type
 
 /// Canonical set of aesthetics that may create groups, in priority order.
+///
 /// \@internal
 #let group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
 

@@ -1,13 +1,30 @@
 // Guide extraction and legend drawing.
-// Supports discrete colour/fill (swatch legend) and continuous colour/fill
-// (colourbar), rendered to the right of the panel.
+//
+// Per-aesthetic candidates are built first, then grouped: candidates that
+// describe the same underlying scale (same column, type, levels/domain,
+// labels and title) collapse into a single guide whose key glyph carries
+// every merged aesthetic. Renders to the right of the panel.
 
 #import "deps.typ": cetz
 #import "utils/pretty.typ": pretty
 #import "utils/colour.typ": resolve-continuous-colour
+#import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour, resolve-field
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-ref-col
+
+// Aesthetic emission order. `x` and `y` train but never produce a guide; the
+// rest are emitted in this fixed order so merged guides land at the position
+// of their earliest member.
+#let _aesthetic-order = (
+  "colour",
+  "fill",
+  "size",
+  "alpha",
+  "linewidth",
+  "shape",
+  "linetype",
+)
 
 #let _guide-title(t, spec, aes-name) = {
   if (
@@ -36,9 +53,9 @@
   }
 }
 
-// Priority used when several layers contribute to the same legend. Points
-// dominate lines, lines dominate rects, so the swatch reflects the most
-// distinctive mark drawn for that aesthetic.
+// Geom-driven fallback priority: when no aesthetic-driven rule applies,
+// points dominate paths dominate lines dominate rects, so the swatch
+// reflects the most distinctive mark drawn for the merged group.
 #let _key-priority(key) = {
   if key == "point" { return 4 }
   if key == "path" { return 3 }
@@ -66,146 +83,291 @@
   "label",
 ).contains(geom)
 
-// True when the layer pins the aesthetic to a fixed value, suppressing the
-// scale resolution at draw time. Pinned layers should not contribute to the
-// aesthetic's guide.
+// Aesthetics that only render meaningfully on certain geoms. `none` means no
+// structural restriction (the layer contributes if it maps the aesthetic).
+#let _geom-uses-aesthetic(geom, aes-name) = {
+  if aes-name == "fill" { return _geom-uses-fill(geom) }
+  if aes-name == "shape" { return geom == "point" or geom == "jitter" }
+  if aes-name == "linetype" or aes-name == "linewidth" {
+    return not (
+      "col",
+      "bar",
+      "histogram",
+      "rect",
+      "tile",
+      "area",
+      "ribbon",
+      "polygon",
+      "label",
+    ).contains(geom)
+  }
+  true
+}
+
 #let _layer-pins(layer, aes-name) = {
   let v = layer.params.at(aes-name, default: auto)
   v != auto and v != none
 }
 
-// Layers that effectively contribute to the guide for `aes-name`: those whose
-// merged mapping consumes the aesthetic, that match the structural eligibility
-// (e.g. `_geom-uses-fill` for fill), and that do not pin the aesthetic to a
-// fixed value through their layer parameters.
+#let _resolve-merged-mapping(layer, plot-mapping) = {
+  let mapping = layer.at("mapping", default: none)
+  let inherits = layer.at("inherit-aes", default: true)
+  if inherits and plot-mapping != none {
+    let m = plot-mapping
+    if mapping != none {
+      for (k, v) in mapping.pairs() {
+        if v != none { m.insert(k, v) }
+      }
+    }
+    return m
+  }
+  if mapping != none { return mapping }
+  plot-mapping
+}
+
+// Layers that contribute to the guide for `aes-name`: those whose merged
+// mapping consumes the aesthetic, that match the structural eligibility for
+// the geom, and that do not pin the aesthetic locally.
 #let _mapped-contributors(spec, aes-name) = {
   let layers = spec.at("layers", default: ())
   let plot-mapping = spec.at("mapping", default: none)
   let out = ()
   for layer in layers {
-    let mapping = layer.at("mapping", default: none)
-    let inherits = layer.at("inherit-aes", default: true)
-    let merged = if inherits and plot-mapping != none {
-      let m = plot-mapping
-      if mapping != none {
-        for (k, v) in mapping.pairs() {
-          if v != none { m.insert(k, v) }
-        }
-      }
-      m
-    } else if mapping != none { mapping } else { plot-mapping }
+    let merged = _resolve-merged-mapping(layer, plot-mapping)
     if merged == none { continue }
     if merged.at(aes-name, default: none) == none { continue }
     let geom = layer.at("geom", default: "")
-    if aes-name == "fill" and not _geom-uses-fill(geom) { continue }
+    if not _geom-uses-aesthetic(geom, aes-name) { continue }
     if _layer-pins(layer, aes-name) { continue }
     out.push(layer)
   }
   out
 }
 
-// Resolve the key kind for a swatch driven by `aes-name`. Considers every
-// contributing layer (see `_mapped-contributors`) and picks the highest-priority
-// key kind. Layers may pin a kind via `key: draw-key-*()`; otherwise the kind
-// is inferred from the geom name.
-#let _key-kind-for(spec, aes-name) = {
+// Resolve the column name driving an aesthetic: read from any contributor's
+// merged mapping; they all agree because the scale was trained from them.
+#let _column-for(spec, aes-name) = {
+  let plot-mapping = spec.at("mapping", default: none)
+  for layer in spec.at("layers", default: ()) {
+    let merged = _resolve-merged-mapping(layer, plot-mapping)
+    if merged == none { continue }
+    let raw = merged.at(aes-name, default: none)
+    if raw != none { return mapping-ref-col(raw) }
+  }
+  none
+}
+
+// True when both candidates describe the same underlying scale and so should
+// collapse into a single merged guide. See plan §1 for the predicate.
+#let _can-merge(a, b) = {
+  if a.column != b.column { return false }
+  if a.column == none { return false }
+  if a.t.type != b.t.type { return false }
+  if a.title != b.title { return false }
+  if a.nrow != b.nrow { return false }
+  if a.ncol != b.ncol { return false }
+  if a.reverse != b.reverse { return false }
+  if a.t.type == "discrete" {
+    if a.levels != b.levels { return false }
+    if a.labels != b.labels { return false }
+    return true
+  }
+  if a.domain != b.domain { return false }
+  if a.trans != b.trans { return false }
+  if a.temporal != b.temporal { return false }
+  true
+}
+
+// Pass-A precedence: aesthetic-driven first, geom fallback last. See plan §2.
+#let _key-kind-for-group(members) = {
+  let aesthetics = members.map(c => c.aes)
+  let has = aes-name => aesthetics.contains(aes-name)
+
+  let prefers-path = members.any(c => c.contributors.any(layer => {
+    let key-override = layer.at("key", default: auto)
+    key-override != auto and key-override != none and key-override.key == "path"
+  }))
+
+  if has("shape") { return "point" }
+  if has("linetype") {
+    return if prefers-path { "path" } else { "line" }
+  }
+  if has("linewidth") {
+    return if prefers-path { "path" } else { "line" }
+  }
+  if has("size") { return "point" }
+
   let best = "rect"
   let best-prio = 0
-  for layer in _mapped-contributors(spec, aes-name) {
-    let geom = layer.at("geom", default: "")
-    let key-override = layer.at("key", default: auto)
-    let candidate = if key-override != auto and key-override != none {
-      key-override.key
-    } else {
-      default-key-for(geom)
-    }
-    let prio = _key-priority(candidate)
-    if prio > best-prio {
-      best = candidate
-      best-prio = prio
+  for c in members {
+    for layer in c.contributors {
+      let geom = layer.at("geom", default: "")
+      let key-override = layer.at("key", default: auto)
+      let candidate = if key-override != auto and key-override != none {
+        key-override.key
+      } else {
+        default-key-for(geom)
+      }
+      let prio = _key-priority(candidate)
+      if prio > best-prio {
+        best = candidate
+        best-prio = prio
+      }
     }
   }
   best
 }
 
+#let _candidate(spec, trained, overrides, aes-name) = {
+  let t = trained.at(aes-name, default: none)
+  if t == none { return none }
+  if t.type == "identity" { return none }
+  let override = overrides.at(aes-name, default: none)
+  if override != none and override.at("suppress", default: false) {
+    return none
+  }
+  let contributors = _mapped-contributors(spec, aes-name)
+  if contributors.len() == 0 { return none }
+
+  let title = _guide-title(t, spec, aes-name)
+  if override != none and override.at("title", default: none) != none {
+    title = override.title
+  }
+  let nrow = if override != none { override.at("nrow", default: none) } else {
+    none
+  }
+  let ncol = if override != none { override.at("ncol", default: none) } else {
+    none
+  }
+  let reverse = if override != none {
+    override.at("reverse", default: false)
+  } else { false }
+
+  let cand = (
+    aes: aes-name,
+    t: t,
+    title: title,
+    nrow: nrow,
+    ncol: ncol,
+    reverse: reverse,
+    contributors: contributors,
+    column: _column-for(spec, aes-name),
+  )
+
+  if t.type == "discrete" {
+    let levels = t.domain
+    let user-limits = (
+      t.at("spec", default: none) != none
+        and t.spec.at("limits", default: none) != none
+    )
+    if not user-limits { levels = levels.sorted() }
+    let labels = if (
+      t.at("spec", default: none) != none
+    ) { t.spec.at("labels", default: auto) } else { auto }
+    cand.insert("levels", levels)
+    cand.insert("labels", labels)
+  } else {
+    cand.insert("domain", t.domain)
+    cand.insert("trans", t.at("trans", default: "identity"))
+    cand.insert("temporal", t.at("temporal", default: none))
+  }
+  cand
+}
+
 #let guides-for(spec, trained) = {
   let overrides = spec.at("guides", default: (:))
+
+  let candidates = ()
+  for aes-name in _aesthetic-order {
+    let cand = _candidate(spec, trained, overrides, aes-name)
+    if cand != none { candidates.push(cand) }
+  }
+
+  let groups = ()
+  for cand in candidates {
+    let placed = false
+    let i = 0
+    while i < groups.len() and not placed {
+      let grp = groups.at(i)
+      if _can-merge(cand, grp.members.first()) {
+        grp.members.push(cand)
+        groups.at(i) = grp
+        placed = true
+      }
+      i += 1
+    }
+    if not placed { groups.push((members: (cand,))) }
+  }
+
   let guides = ()
-  for aes-name in ("colour", "fill") {
-    let t = trained.at(aes-name, default: none)
-    if t == none { continue }
-    if t.type == "identity" { continue }
-    let override = overrides.at(aes-name, default: none)
-    if override != none and override.at("suppress", default: false) {
-      continue
-    }
-    if _mapped-contributors(spec, aes-name).len() == 0 { continue }
-    let title = _guide-title(t, spec, aes-name)
-    if override != none and override.at("title", default: none) != none {
-      title = override.title
-    }
-    if t.type == "discrete" {
-      let levels = t.domain
-      let user-limits = (
-        t.at("spec", default: none) != none
-          and t.spec.at("limits", default: none) != none
-      )
-      if not user-limits { levels = levels.sorted() }
-      let reverse = if override != none {
-        override.at("reverse", default: false)
-      } else { false }
-      if reverse { levels = levels.rev() }
-      let nrow = if override != none {
-        override.at("nrow", default: none)
-      } else { none }
-      let ncol = if override != none {
-        override.at("ncol", default: none)
-      } else { none }
+  for grp in groups {
+    let members = grp.members
+    let first = members.first()
+    let aesthetics = members.map(c => c.aes)
+    let key-kind = _key-kind-for-group(members)
+
+    if first.t.type == "discrete" {
+      let levels = first.levels
+      if first.reverse { levels = levels.rev() }
       guides.push((
         kind: "swatch",
-        aesthetic: aes-name,
-        title: title,
+        aesthetics: aesthetics,
+        title: first.title,
         levels: levels,
-        nrow: nrow,
-        ncol: ncol,
-        key: _key-kind-for(spec, aes-name),
+        labels: first.labels,
+        nrow: first.nrow,
+        ncol: first.ncol,
+        key: key-kind,
       ))
-    } else if t.type == "continuous" {
+    } else if aesthetics.contains("colour") or aesthetics.contains("fill") {
+      // A colour/fill continuous member governs rendering; any size/alpha
+      // members in the same group are intentionally dropped from the bar
+      // because compositing them on a smooth gradient is awkward and rare.
       guides.push((
         kind: "colourbar",
-        aesthetic: aes-name,
-        title: title,
-        domain: t.domain,
+        aesthetics: aesthetics,
+        title: first.title,
+        domain: first.domain,
+      ))
+    } else {
+      let breaks = pretty(first.domain.first(), first.domain.last(), n: 5)
+      guides.push((
+        kind: "size-ladder",
+        aesthetics: aesthetics,
+        title: first.title,
+        domain: first.domain,
+        breaks: breaks,
+        key: key-kind,
       ))
     }
   }
   guides
 }
 
-#let _palette-for(trained, fallback) = {
-  let spec = trained.at("spec", default: none)
-  if spec == none { return fallback }
-  let p = spec.at("palette", default: auto)
-  if p == auto or p == none { fallback } else { p }
-}
-
-#let _resolve-colour-simple(trained, value, palette, ink) = {
-  if trained == none or value == none { return ink }
-  let pal = _palette-for(trained, palette)
-  if trained.type == "discrete" {
-    let s = str(value)
-    let idx = trained.domain.position(v => v == s)
-    if idx == none { return ink }
-    pal.at(calc.rem(idx, pal.len()))
-  } else {
-    resolve-continuous-colour(trained, value, pal, ink)
-  }
-}
-
 #let _format-break(n) = {
   if type(n) == int { return str(n) }
   if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
   str(calc.round(n, digits: 3))
+}
+
+// Compose an aesthetic bundle for one level/value across every member of the
+// merged group. Returns a dict consumable by `draw-glyph`.
+#let _bundle-for(value, aesthetics, ctx, ink) = {
+  let bundle = (:)
+  for aes-name in aesthetics {
+    let trained = ctx.trained.at(aes-name, default: none)
+    if trained == none { continue }
+    let v = resolve-level(
+      aes-name,
+      trained,
+      value,
+      palette: ctx.palette,
+      ink: ink,
+    )
+    if v == none { continue }
+    bundle.insert(aes-name, v)
+  }
+  bundle
 }
 
 #let estimate-width(guides) = {
@@ -224,6 +386,15 @@
       let col-gap = calc.max(0.15, 0.1 * col-w)
       let grid-w = col-w * shape.cols + col-gap * (shape.cols - 1)
       max-width = calc.max(max-width, calc.max(title-w, grid-w))
+    } else if g.kind == "size-ladder" {
+      let title-chars = g.title.len()
+      let label-chars = 0
+      for b in g.breaks {
+        label-chars = calc.max(label-chars, _format-break(b).len())
+      }
+      let col-w = calc.min(2.5, 0.6 + label-chars * 0.18)
+      let title-w = calc.min(2.5, 0.6 + title-chars * 0.18)
+      max-width = calc.max(max-width, calc.max(title-w, col-w))
     } else if g.kind == "colourbar" {
       let (lo, hi) = g.domain
       let breaks = pretty(lo, hi, n: 5)
@@ -231,7 +402,6 @@
       for b in breaks {
         max-chars = calc.max(max-chars, _format-break(b).len())
       }
-      // Colourbar strip width + padding + tick labels.
       max-width = calc.max(max-width, 0.45 + 0.2 + max-chars * 0.18)
     }
   }
@@ -245,27 +415,22 @@
   title-h + line-h * shape.rows + 0.2
 }
 
+#let _size-ladder-height(guide) = {
+  let title-h = 0.45
+  let line-h = 0.45
+  title-h + line-h * guide.breaks.len() + 0.2
+}
+
 #let _colourbar-height() = {
   let title-h = 0.45
   let bar-h = 3.0
   title-h + bar-h + 0.3
 }
 
-#let _draw-swatch(guide, ctx, ox, cursor, theme) = {
-  let title-h = 0.45
-  let line-h = 0.4
-  let glyph-size = 0.12
-  let trained = ctx.trained.at(guide.aesthetic)
-  let ink = resolve-colour(theme, "ink")
+#let _draw-title(ox, cursor, theme, title) = {
   let title-colour = resolve-colour(
     theme,
     "legend-title-colour",
-    "text-colour",
-    "ink",
-  )
-  let text-colour = resolve-colour(
-    theme,
-    "legend-text-colour",
     "text-colour",
     "ink",
   )
@@ -276,16 +441,27 @@
     fallback: "medium",
   )
   let title-size = theme.at("legend-title-size", default: 8pt)
-  let text-size = theme.at("legend-text-size", default: 8pt)
   cetz.draw.content(
     (ox, cursor),
-    text(
-      size: title-size,
-      fill: title-colour,
-      weight: title-weight,
-    )[#guide.title],
+    text(size: title-size, fill: title-colour, weight: title-weight)[#title],
     anchor: "north-west",
   )
+}
+
+#let _draw-swatch(guide, ctx, ox, cursor, theme) = {
+  let title-h = 0.45
+  let line-h = 0.4
+  let glyph-size = 0.12
+  let ink = resolve-colour(theme, "ink")
+  let text-colour = resolve-colour(
+    theme,
+    "legend-text-colour",
+    "text-colour",
+    "ink",
+  )
+  let text-size = theme.at("legend-text-size", default: 8pt)
+
+  _draw-title(ox, cursor, theme, guide.title)
   let top = cursor - title-h
   let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
   let level-chars = 0
@@ -295,26 +471,78 @@
   let col-w = calc.min(2.5, 0.6 + level-chars * 0.18)
   let col-gap = calc.max(0.15, 0.1 * col-w)
   let key-kind = guide.at("key", default: "rect")
+  let labels = guide.at("labels", default: auto)
   for (i, level) in guide.levels.enumerate() {
     let col = calc.quo(i, shape.rows)
     let row = calc.rem(i, shape.rows)
     let cx = ox + col * (col-w + col-gap)
     let cy = top - row * line-h
-    let colour = _resolve-colour-simple(trained, level, ctx.palette, ink)
+    let bundle = _bundle-for(level, guide.aesthetics, ctx, ink)
     draw-glyph(
       key-kind,
       cx + glyph-size,
       cy - glyph-size,
       glyph-size,
-      colour,
-      aesthetic: guide.aesthetic,
+      bundle,
+      ink: ink,
     )
+    let label-text = if (
+      type(labels) == array and i < labels.len()
+    ) { labels.at(i) } else { level }
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
-      text(size: text-size, fill: text-colour)[#level],
+      text(size: text-size, fill: text-colour)[#label-text],
       anchor: "west",
     )
   }
+}
+
+#let _draw-size-ladder(guide, ctx, ox, cursor, theme) = {
+  let title-h = 0.45
+  let line-h = 0.45
+  let glyph-size = 0.16
+  let ink = resolve-colour(theme, "ink")
+  let text-colour = resolve-colour(
+    theme,
+    "legend-text-colour",
+    "text-colour",
+    "ink",
+  )
+  let text-size = theme.at("legend-text-size", default: 8pt)
+
+  _draw-title(ox, cursor, theme, guide.title)
+  let top = cursor - title-h
+  let key-kind = guide.at("key", default: "point")
+  for (i, value) in guide.breaks.enumerate() {
+    let cy = top - i * line-h
+    let bundle = _bundle-for(value, guide.aesthetics, ctx, ink)
+    draw-glyph(
+      key-kind,
+      ox + glyph-size,
+      cy - glyph-size,
+      glyph-size,
+      bundle,
+      ink: ink,
+    )
+    cetz.draw.content(
+      (ox + glyph-size * 2 + 0.15, cy - glyph-size),
+      text(size: text-size, fill: text-colour)[#_format-break(value)],
+      anchor: "west",
+    )
+  }
+}
+
+#let _palette-for(trained, fallback) = {
+  let spec = trained.at("spec", default: none)
+  if spec == none { return fallback }
+  let p = spec.at("palette", default: auto)
+  if p == auto or p == none { fallback } else { p }
+}
+
+#let _resolve-bar-colour(trained, value, palette, ink) = {
+  if trained == none or value == none { return ink }
+  let pal = _palette-for(trained, palette)
+  resolve-continuous-colour(trained, value, pal, ink)
 }
 
 #let _draw-colourbar(guide, ctx, ox, cursor, theme) = {
@@ -322,38 +550,21 @@
   let bar-w = 0.35
   let bar-h = 3.0
   let tick-gap = 0.08
-  let trained = ctx.trained.at(guide.aesthetic)
+  let bar-aes = if guide.aesthetics.contains("colour") {
+    "colour"
+  } else { "fill" }
+  let trained = ctx.trained.at(bar-aes)
   let ink = resolve-colour(theme, "ink")
-  let title-colour = resolve-colour(
-    theme,
-    "legend-title-colour",
-    "text-colour",
-    "ink",
-  )
   let text-colour = resolve-colour(
     theme,
     "legend-text-colour",
     "text-colour",
     "ink",
   )
-  let title-weight = resolve-field(
-    theme,
-    "legend-title-weight",
-    "text-weight",
-    fallback: "medium",
-  )
-  let title-size = theme.at("legend-title-size", default: 8pt)
   let text-size = theme.at("legend-text-size", default: 8pt)
   let (lo, hi) = guide.domain
-  cetz.draw.content(
-    (ox, cursor),
-    text(
-      size: title-size,
-      fill: title-colour,
-      weight: title-weight,
-    )[#guide.title],
-    anchor: "north-west",
-  )
+
+  _draw-title(ox, cursor, theme, guide.title)
   let bar-top = cursor - title-h
   let bar-bottom = bar-top - bar-h
   let steps = 40
@@ -361,7 +572,7 @@
   for i in range(steps) {
     let t = (i + 0.5) / steps
     let value = lo + t * (hi - lo)
-    let colour = _resolve-colour-simple(trained, value, ctx.palette, ink)
+    let colour = _resolve-bar-colour(trained, value, ctx.palette, ink)
     let y-lo = bar-bottom + i * step-h
     let y-hi = y-lo + step-h
     cetz.draw.rect(
@@ -404,6 +615,9 @@
     if g.kind == "swatch" {
       _draw-swatch(g, ctx, ox, cursor, theme)
       cursor -= _swatch-height(g)
+    } else if g.kind == "size-ladder" {
+      _draw-size-ladder(g, ctx, ox, cursor, theme)
+      cursor -= _size-ladder-height(g)
     } else if g.kind == "colourbar" {
       _draw-colourbar(g, ctx, ox, cursor, theme)
       cursor -= _colourbar-height()
