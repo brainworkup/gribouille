@@ -63,7 +63,7 @@
   binwidth: none,
   stroke: 0.8pt,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   linetype: auto,
   position: "identity",
   inherit-aes: true,

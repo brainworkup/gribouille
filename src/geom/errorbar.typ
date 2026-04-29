@@ -72,7 +72,7 @@
   width: 0.4,
   stroke: 0.8pt,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   linetype: "solid",
   stat: "identity",
   position: "identity",
@@ -106,11 +106,12 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
+  let colour-pinned = (
+    layer.params.colour != auto and layer.params.colour != none
+  )
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
-  let default-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+  let ink = ctx.theme.at("ink", default: black)
 
   // `width` accepts a Typst length (cap span in panel units) or a number (cap
   // span in x data units for continuous x, fraction of slot for discrete x).
@@ -136,13 +137,15 @@
       if band == none { (cx, cx) } else { band }
     }
 
-    let colour = if colour-col != none and colour-trained != none {
+    let colour = if colour-pinned {
+      layer.params.colour
+    } else if colour-col != none and colour-trained != none {
       (ctx.resolve-colour)(
         colour-trained,
         row.at(colour-col, default: none),
         ctx.palette,
       )
-    } else { default-colour }
+    } else { ink }
     let alpha = resolve-alpha(layer, mapping, ctx, row)
     let final-colour = apply-alpha(colour, alpha)
     let thickness = resolve-linewidth(

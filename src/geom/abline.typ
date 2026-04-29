@@ -66,7 +66,7 @@
   intercept: 0,
   colour: auto,
   stroke: 0.6pt,
-  alpha: 1,
+  alpha: auto,
   inherit-aes: false,
 ) = (
   kind: "layer",

@@ -72,7 +72,7 @@
   stroke: none,
   fill: auto,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   shape: auto,
   stat: "sum",
   position: "identity",

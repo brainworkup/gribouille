@@ -66,15 +66,22 @@
   "label",
 ).contains(geom)
 
-// Resolve the key kind for a swatch driven by `aes-name`. Considers every
-// layer that maps the aesthetic and picks the highest-priority key kind.
-// Layers may pin a kind via `key: draw-key-*()`; otherwise the kind is
-// inferred from the geom name.
-#let _key-kind-for(spec, aes-name) = {
+// True when the layer pins the aesthetic to a fixed value, suppressing the
+// scale resolution at draw time. Pinned layers should not contribute to the
+// aesthetic's guide.
+#let _layer-pins(layer, aes-name) = {
+  let v = layer.params.at(aes-name, default: auto)
+  v != auto and v != none
+}
+
+// Layers that effectively contribute to the guide for `aes-name`: those whose
+// merged mapping consumes the aesthetic, that match the structural eligibility
+// (e.g. `_geom-uses-fill` for fill), and that do not pin the aesthetic to a
+// fixed value through their layer parameters.
+#let _mapped-contributors(spec, aes-name) = {
   let layers = spec.at("layers", default: ())
   let plot-mapping = spec.at("mapping", default: none)
-  let best = "rect"
-  let best-prio = 0
+  let out = ()
   for layer in layers {
     let mapping = layer.at("mapping", default: none)
     let inherits = layer.at("inherit-aes", default: true)
@@ -91,8 +98,25 @@
     if merged.at(aes-name, default: none) == none { continue }
     let geom = layer.at("geom", default: "")
     if aes-name == "fill" and not _geom-uses-fill(geom) { continue }
-    let pinned = layer.at("key", default: auto)
-    let candidate = if pinned != auto and pinned != none { pinned.key } else {
+    if _layer-pins(layer, aes-name) { continue }
+    out.push(layer)
+  }
+  out
+}
+
+// Resolve the key kind for a swatch driven by `aes-name`. Considers every
+// contributing layer (see `_mapped-contributors`) and picks the highest-priority
+// key kind. Layers may pin a kind via `key: draw-key-*()`; otherwise the kind
+// is inferred from the geom name.
+#let _key-kind-for(spec, aes-name) = {
+  let best = "rect"
+  let best-prio = 0
+  for layer in _mapped-contributors(spec, aes-name) {
+    let geom = layer.at("geom", default: "")
+    let key-override = layer.at("key", default: auto)
+    let candidate = if key-override != auto and key-override != none {
+      key-override.key
+    } else {
       default-key-for(geom)
     }
     let prio = _key-priority(candidate)
@@ -115,6 +139,7 @@
     if override != none and override.at("suppress", default: false) {
       continue
     }
+    if _mapped-contributors(spec, aes-name).len() == 0 { continue }
     let title = _guide-title(t, spec, aes-name)
     if override != none and override.at("title", default: none) != none {
       title = override.title

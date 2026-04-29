@@ -67,7 +67,7 @@
   data: none,
   fill: auto,
   stroke: none,
-  alpha: 0.4,
+  alpha: auto,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -125,6 +125,7 @@
       rows.first(),
       neutral-fill,
       colour-fallback: false,
+      default-alpha: 0.4,
     )
 
     cetz.draw.line(

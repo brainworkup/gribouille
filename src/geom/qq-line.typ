@@ -59,7 +59,7 @@
   data: none,
   stroke: 0.8pt,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   linetype: auto,
   distribution: "normal",
   position: "identity",

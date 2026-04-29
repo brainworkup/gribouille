@@ -71,7 +71,7 @@
   stroke: 0.8pt,
   colour: auto,
   fill: auto,
-  alpha: 1,
+  alpha: auto,
   linetype: "solid",
   stat: "identity",
   position: "identity",
@@ -109,9 +109,7 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let default-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+  let ink = ctx.theme.at("ink", default: black)
 
   for row in data {
     let cx = map-position(x-trained, row.at(x-col, default: none), ctx.px-range)
@@ -124,13 +122,7 @@
     let cy-hi = map-position(y-trained, hi, ctx.py-range)
     if cy-mid == none or cy-lo == none or cy-hi == none { continue }
 
-    let final-colour = resolve-stroke-colour(
-      layer,
-      mapping,
-      ctx,
-      row,
-      default-colour,
-    )
+    let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
     let final-fill = resolve-fill-colour(
       layer,
       mapping,

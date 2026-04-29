@@ -83,7 +83,7 @@
   fill: auto,
   colour: auto,
   stroke: 0.6pt,
-  alpha: 1,
+  alpha: auto,
   outlier-size: 1.8pt,
   outlier-colour: auto,
   whisker-cap: 0.5,

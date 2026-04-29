@@ -65,7 +65,7 @@
   data: none,
   stroke: 0.8pt,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   linetype: "solid",
   stat: "identity",
   position: "identity",
@@ -96,9 +96,7 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let default-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+  let ink = ctx.theme.at("ink", default: black)
 
   for row in data {
     let x0 = parse-number(row.at(x-col, default: none))
@@ -112,13 +110,7 @@
     let cy1 = map-position(y-trained, y1, ctx.py-range)
     if cx0 == none or cy0 == none or cx1 == none or cy1 == none { continue }
 
-    let final-colour = resolve-stroke-colour(
-      layer,
-      mapping,
-      ctx,
-      row,
-      default-colour,
-    )
+    let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
 
     let thickness = resolve-linewidth(
       layer,

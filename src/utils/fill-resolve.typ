@@ -27,6 +27,7 @@
   default-fill,
   fill-mapping: true,
   colour-fallback: false,
+  default-alpha: 1,
 ) = {
   let fill-param = layer.params.at("fill", default: auto)
   let resolved = if fill-param != auto and fill-param != none {
@@ -56,6 +57,12 @@
       } else { default-fill }
     } else { default-fill }
   }
-  let alpha = resolve-alpha(layer, mapping, ctx, sample-row)
+  let alpha = resolve-alpha(
+    layer,
+    mapping,
+    ctx,
+    sample-row,
+    default-alpha: default-alpha,
+  )
   apply-alpha(resolved, alpha)
 }

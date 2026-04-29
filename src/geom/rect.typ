@@ -65,7 +65,7 @@
   data: none,
   fill: auto,
   stroke: none,
-  alpha: 1,
+  alpha: auto,
   stat: "identity",
   position: "identity",
   inherit-aes: true,

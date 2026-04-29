@@ -67,7 +67,7 @@
   data: none,
   stroke: 0.8pt,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   linetype: auto,
   key: auto,
   stat: "identity",
@@ -93,10 +93,10 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let default-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+  let ink = ctx.theme.at("ink", default: black)
 
+  let linetype-param = layer.params.linetype
+  let linetype-pinned = linetype-param != auto and linetype-param != none
   let linetype-col = mapping.at("linetype", default: none)
   let linetype-trained = ctx.trained.at("linetype", default: none)
   let linetype-palette = if linetype-trained != none {
@@ -104,9 +104,7 @@
       linetype-trained.spec.at("palette", default: default-linetypes)
     } else { default-linetypes }
   } else { default-linetypes }
-  let default-linetype = if (
-    layer.params.linetype != auto and layer.params.linetype != none
-  ) { layer.params.linetype } else { "solid" }
+  let default-linetype = if linetype-pinned { linetype-param } else { "solid" }
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
@@ -132,10 +130,12 @@
       mapping,
       ctx,
       rows.first(),
-      default-colour,
+      ink,
     )
 
-    let dash = if linetype-col != none and linetype-trained != none {
+    let dash = if linetype-pinned {
+      linetype-param
+    } else if linetype-col != none and linetype-trained != none {
       let sample = rows.first().at(linetype-col, default: none)
       if linetype-trained.type == "identity" {
         if sample == none or sample == "" { default-linetype } else {

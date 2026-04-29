@@ -80,7 +80,7 @@
   stroke: 1pt,
   colour: auto,
   fill: auto,
-  alpha: 0.2,
+  alpha: auto,
   inherit-aes: true,
 ) = (
   kind: "layer",
@@ -117,11 +117,13 @@
   let colour-trained = ctx.trained.at("colour", default: none)
   let fill-trained = ctx.trained.at("fill", default: none)
 
-  let default-colour = if (
+  let colour-pinned = (
     layer.params.colour != auto and layer.params.colour != none
-  ) {
-    layer.params.colour
-  } else {
+  )
+  let fill-pinned = (
+    layer.params.fill != auto and layer.params.fill != none
+  )
+  let default-colour = if colour-pinned { layer.params.colour } else {
     rgb("#3b5998")
   }
 
@@ -146,16 +148,18 @@
 
     if sorted.len() < 2 { continue }
 
-    let line-colour = if colour-col != none and colour-trained != none {
+    let line-colour = if colour-pinned {
+      layer.params.colour
+    } else if colour-col != none and colour-trained != none {
       let sample = rows.first().at(colour-col, default: none)
       (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
     } else { default-colour }
 
-    let ribbon-colour = if fill-col != none and fill-trained != none {
+    let ribbon-colour = if fill-pinned {
+      layer.params.fill
+    } else if fill-col != none and fill-trained != none {
       let sample = rows.first().at(fill-col, default: none)
       (ctx.resolve-colour)(fill-trained, sample, ctx.palette)
-    } else if layer.params.fill != auto and layer.params.fill != none {
-      layer.params.fill
     } else { line-colour }
 
     // Confidence ribbon first, so the line draws on top.
@@ -175,7 +179,13 @@
         ))
       let pts = upper + lower
       if pts.all(p => p.at(0) != none and p.at(1) != none) {
-        let alpha = resolve-alpha(layer, mapping, ctx, rows.first())
+        let alpha = resolve-alpha(
+          layer,
+          mapping,
+          ctx,
+          rows.first(),
+          default-alpha: 0.2,
+        )
         let band = apply-alpha(ribbon-colour, alpha)
         cetz.draw.line(..pts, close: true, fill: band, stroke: none)
       }

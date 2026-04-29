@@ -46,3 +46,8 @@
   width: 11cm,
   height: 7cm,
 )
+
+#place(
+  bottom + right,
+  image("../docs/assets/images/logo-stacked.svg", height: 1cm),
+)

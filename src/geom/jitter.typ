@@ -17,7 +17,7 @@
 /// @param size Marker size (a Typst length).
 /// @param stroke Marker outline thickness; `none` disables the outline and the `colour` aesthetic.
 /// @param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
-/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
+/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword.
 /// @param stat Statistical transform name.
@@ -60,11 +60,11 @@
 #let geom-jitter(
   mapping: none,
   data: none,
-  size: 1.5pt,
-  stroke: none,
+  size: auto,
+  stroke: 0.5pt,
   fill: auto,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   shape: auto,
   stat: "identity",
   position: "jitter",

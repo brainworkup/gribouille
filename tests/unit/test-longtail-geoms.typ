@@ -21,7 +21,7 @@
 #assert.eq(rg.position, "identity")
 #assert.eq(rg.params.sides, "bl")
 #assert.eq(rg.params.length, 0.15)
-#assert.eq(rg.params.alpha, 1)
+#assert.eq(rg.params.alpha, auto)
 
 #let rg2 = geom-rug(sides: "tr", length: 0.25, colour: red, alpha: 0.5)
 #assert.eq(rg2.params.sides, "tr")

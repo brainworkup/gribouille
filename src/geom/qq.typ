@@ -57,11 +57,11 @@
 #let geom-qq(
   mapping: none,
   data: none,
-  size: 1.5pt,
+  size: auto,
   stroke: none,
   fill: auto,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   shape: auto,
   distribution: "normal",
   position: "identity",

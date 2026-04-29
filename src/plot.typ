@@ -13,14 +13,14 @@
 /// @since 0.0.1
 ///
 /// @param data Array of row dictionaries. Each row is a `(column: value, ...)` dict.
-/// @param mapping Aesthetic mapping built with @aes. Maps column names to visual channels.
-/// @param layers Array of geom layers (e.g. @geom-point, @geom-line). Drawn in order.
-/// @param scales Array of scale objects overriding defaults (@scale-x-continuous, @scale-colour-viridis-d, etc.).
-/// @param coord Coordinate system. Defaults to @coord-cartesian when `none`.
-/// @param facet Faceting specification built with @facet-wrap or @facet-grid.
-/// @param theme Theme object (e.g. @theme-grey, @theme-minimal, @theme-classic). Controls non-data ink.
-/// @param labs Labels dictionary built with @labs (title, subtitle, caption, axis titles).
-/// @param guides Per-aesthetic guide overrides built with @guides (e.g. `guides(colour: guide-legend(reverse: true))`).
+/// @param mapping Aesthetic mapping built with@aes. Maps column names to visual channels.
+/// @param layers Array of geom layers (e.g.@geom-point,@geom-line). Drawn in order.
+/// @param scales Array of scale objects overriding defaults @scale-x-continuous,@scale-colour-viridis-d, etc.).
+/// @param coord Coordinate system. Defaults to@coord-cartesian when `none`.
+/// @param facet Faceting specification built with@facet-wrap or@facet-grid.
+/// @param theme Theme object (e.g.@theme-grey,@theme-minimal,@theme-classic). Controls non-data ink.
+/// @param labs Labels dictionary built with@labs (title, subtitle, caption, axis titles).
+/// @param guides Per-aesthetic guide overrides built with@guides (e.g. `guides(colour: guide-legend(reverse: true))`).
 /// @param width Total plot width, including axes and legends.
 /// @param height Total plot height, including axes and legends.
 /// @param alt Alt text describing the figure for accessibility tooling. Stored on the spec; not rendered.
@@ -70,7 +70,7 @@
 /// )
 /// ```
 ///
-/// @see @aes, @geom-point, @coord-cartesian, @facet-wrap, @theme-grey, @labs
+/// @see@aes,@geom-point,@coord-cartesian,@facet-wrap,@theme-grey,@labs
 #let plot(
   data: none,
   mapping: none,
@@ -111,7 +111,7 @@
 
 /// Read the alt text stored on a plot spec.
 ///
-/// Returns whatever was passed to @plot via `alt:`, or `none` if the
+/// Returns whatever was passed to@plot via `alt:`, or `none` if the
 /// spec was built without one. This lets renderers and accessibility
 /// tooling pull the description out without parsing the rendered
 /// figure.
@@ -120,7 +120,7 @@
 /// @stability stable
 /// @since 0.0.1
 ///
-/// @param spec Plot spec dictionary (the dict @plot builds internally).
+/// @param spec Plot spec dictionary (the dict@plot builds internally).
 ///
 /// @returns The alt string, or `none` if absent.
 ///

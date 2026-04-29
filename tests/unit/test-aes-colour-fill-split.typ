@@ -1,8 +1,11 @@
 // Verify the colour/fill aesthetic split: `resolve-fill-colour` no longer
 // falls back to the colour scale by default, and `geom-point`'s stroke
 // builder injects the colour-scale paint only when `stroke` is non-zero.
+// Also verifies the precedence rule: pinned `params.colour` wins over the
+// trained colour scale.
 
 #import "../../src/utils/fill-resolve.typ": resolve-fill-colour
+#import "../../src/utils/colour-resolve.typ": resolve-stroke-colour
 #import "../../src/geom/point.typ": _build-stroke
 
 #let fake-trained = (type: "discrete", domain: ("a", "b"))
@@ -99,5 +102,57 @@
 )
 #assert.eq(stroke-from-dict.paint, rgb("#222222"))
 #assert.eq(stroke-from-dict.thickness, 0.4pt)
+
+// 8. Mapped colour wins when `params.colour == auto`: `resolve-stroke-colour`
+// consults the trained colour scale and returns the colour-scale paint.
+#assert.eq(
+  resolve-stroke-colour(
+    (geom: "point", params: (colour: auto, alpha: 1)),
+    (colour: "k"),
+    ctx-colour,
+    (k: "a"),
+    rgb("#cccccc"),
+  ),
+  rgb("#ff0000"),
+)
+
+// 9. A fixed `params.colour` overrides the trained colour scale: the pinned
+// value wins and the colour-scale paint is ignored.
+#assert.eq(
+  resolve-stroke-colour(
+    (geom: "point", params: (colour: rgb("#abcdef"), alpha: 1)),
+    (colour: "k"),
+    ctx-colour,
+    (k: "a"),
+    rgb("#cccccc"),
+  ),
+  rgb("#abcdef"),
+)
+
+// 10. `params.colour: none` falls through to the mapping (mirrors the
+// `resolve-fill-colour` semantics for `params.fill: none`).
+#assert.eq(
+  resolve-stroke-colour(
+    (geom: "point", params: (colour: none, alpha: 1)),
+    (colour: "k"),
+    ctx-colour,
+    (k: "a"),
+    rgb("#cccccc"),
+  ),
+  rgb("#ff0000"),
+)
+
+// 11. Per-row alpha is applied on top of the resolved colour. With alpha 0.5,
+// the resulting paint must match the explicitly transparentised colour.
+#assert.eq(
+  resolve-stroke-colour(
+    (geom: "point", params: (colour: rgb("#abcdef"), alpha: 0.5)),
+    (colour: "k"),
+    ctx-colour,
+    (k: "a"),
+    rgb("#cccccc"),
+  ),
+  rgb("#abcdef").transparentize(50%),
+)
 
 aesthetic colour/fill split tests passed.

@@ -71,7 +71,7 @@
   colour: auto,
   stroke: 0.6pt,
   middle-stroke: 1.2pt,
-  alpha: 1,
+  alpha: auto,
   stat: "identity",
   position: "identity",
   inherit-aes: true,

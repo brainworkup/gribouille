@@ -64,7 +64,7 @@
   width: 1.0,
   fill: auto,
   stroke: none,
-  alpha: 1,
+  alpha: auto,
   position: "identity",
   inherit-aes: true,
 ) = (

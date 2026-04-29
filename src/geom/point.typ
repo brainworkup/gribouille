@@ -1,24 +1,24 @@
 ///! Scatterplot markers.
 ///!
 ///! Draws one shape per row at the `(x, y)` position from the aesthetic
-///! mapping. `fill` paints the marker body; `colour` paints the outline and
-///! only takes effect when `stroke` is non-zero. Size, shape, and alpha can
-///! each be mapped or set as fixed layer parameters.
+///! mapping. `fill` paints the marker body; `colour` paints the outline.
+///! Size, shape, and alpha can each be mapped or set as fixed layer
+///! parameters.
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-discrete, map-position
 #import "../utils/palette.typ": default-shapes
 #import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-stroke-colour,
+  apply-alpha, resolve-alpha, resolve-size, resolve-stroke-colour,
 )
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
 ///
 /// Default `stat` is `"identity"` and default `position` is `"identity"`.
-/// `fill` paints the marker body; `colour` paints the outline and only takes
-/// effect when `stroke` is non-zero. Shape and alpha can be mapped via @aes
-/// or set to fixed values through the layer parameters below.
+/// `fill` paints the marker body; `colour` paints the outline. Shape and
+/// alpha can be mapped via @aes or set to fixed values through the layer
+/// parameters below.
 ///
 /// @category Geoms
 /// @stability stable
@@ -29,7 +29,7 @@
 /// @param size Marker size (a Typst length).
 /// @param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
 /// @param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
-/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
+/// @param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
 /// @param alpha Marker opacity in `[0, 1]`.
 /// @param shape Marker shape keyword (e.g. `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
 /// @param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
@@ -78,11 +78,11 @@
 #let geom-point(
   mapping: none,
   data: none,
-  size: 1.5pt,
-  stroke: none,
+  size: auto,
+  stroke: 0.5pt,
   fill: auto,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   shape: auto,
   key: auto,
   stat: "identity",
@@ -210,7 +210,6 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let size = layer.params.size
   let ink = ctx.theme.at("ink", default: black)
 
   let shape-param = layer.params.shape
@@ -237,6 +236,7 @@
       ctx.py-range,
     )
     if cx == none or cy == none { continue }
+    let size = resolve-size(layer, mapping, ctx, row, 1.5pt)
     let body-fill = resolve-fill-colour(layer, mapping, ctx, row, ink)
     let stroke-spec = if layer.params.stroke == none { none } else {
       let stroke-paint = resolve-stroke-colour(layer, mapping, ctx, row, ink)

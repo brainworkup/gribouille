@@ -76,7 +76,7 @@
   length: 0.15,
   stroke: 0.4pt,
   colour: auto,
-  alpha: 1,
+  alpha: auto,
   inherit-aes: true,
 ) = (
   kind: "layer",
@@ -107,11 +107,12 @@
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
 
+  let colour-pinned = (
+    layer.params.colour != auto and layer.params.colour != none
+  )
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
-  let default-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+  let ink = ctx.theme.at("ink", default: black)
 
   let (px-lo, px-hi) = ctx.px-range
   let (py-lo, py-hi) = ctx.py-range
@@ -123,10 +124,12 @@
   let want-right = sides.contains("r")
 
   for row in data {
-    let colour = if colour-col != none and colour-trained != none {
+    let colour = if colour-pinned {
+      layer.params.colour
+    } else if colour-col != none and colour-trained != none {
       let sample = row.at(colour-col, default: none)
       (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
-    } else { default-colour }
+    } else { ink }
     let alpha = resolve-alpha(layer, mapping, ctx, row)
     let final-colour = apply-alpha(colour, alpha)
     let thickness = resolve-linewidth(

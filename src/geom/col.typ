@@ -75,7 +75,7 @@
   width: 0.9,
   fill: auto,
   stroke: none,
-  alpha: 1,
+  alpha: auto,
   key: auto,
   stat: "identity",
   position: "identity",
