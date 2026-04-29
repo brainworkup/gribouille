@@ -212,10 +212,9 @@
 
   let size = layer.params.size
   let ink = ctx.theme.at("ink", default: black)
-  let default-stroke-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ink }
 
+  let shape-param = layer.params.shape
+  let shape-pinned = shape-param != auto and shape-param != none
   let shape-col = mapping.at("shape", default: none)
   let shape-trained = ctx.trained.at("shape", default: none)
   let shape-palette = if shape-trained != none {
@@ -224,11 +223,7 @@
     } else { default-shapes }
     p
   } else { default-shapes }
-  let default-shape-kind = if (
-    layer.params.shape != auto and layer.params.shape != none
-  ) {
-    layer.params.shape
-  } else { "circle" }
+  let default-shape-kind = if shape-pinned { shape-param } else { "circle" }
 
   for row in data {
     let cx = map-position(
@@ -244,16 +239,12 @@
     if cx == none or cy == none { continue }
     let body-fill = resolve-fill-colour(layer, mapping, ctx, row, ink)
     let stroke-spec = if layer.params.stroke == none { none } else {
-      let stroke-paint = resolve-stroke-colour(
-        layer,
-        mapping,
-        ctx,
-        row,
-        default-stroke-colour,
-      )
+      let stroke-paint = resolve-stroke-colour(layer, mapping, ctx, row, ink)
       _build-stroke(layer.params.stroke, stroke-paint)
     }
-    let shape-kind = if shape-col != none and shape-trained != none {
+    let shape-kind = if shape-pinned {
+      shape-param
+    } else if shape-col != none and shape-trained != none {
       if shape-trained.type == "identity" {
         let v = row.at(shape-col, default: none)
         if v == none or v == "" { default-shape-kind } else { str(v) }

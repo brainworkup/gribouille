@@ -9,28 +9,15 @@
   mapping: aes(
     x: "flipper-len",
     y: "body-mass",
+    colour: "species",
     fill: "species",
     shape: "species",
   ),
   layers: (
     geom-point(size: 2pt, alpha: 0.25, stroke: 0.5pt, colour: rgb("#ffffff")),
-    geom-smooth(
-      mapping: aes(colour: "species"),
-      method: "lm",
-      se: true,
-      alpha: 0.2,
-    ),
-    geom-errorbar(
-      mapping: aes(colour: "species"),
-      stat: stat-summary(fun: "mean-sd"),
-      width: 5pt,
-    ),
-    geom-errorbarh(
-      mapping: aes(colour: "species"),
-      stat: stat-summary(fun: "mean-sd"),
-      height: 5pt,
-    ),
-    // geom-point(stat: stat-summary(fun: "mean-se"), size: 3pt),
+    geom-smooth(method: "lm", se: true, alpha: 0.2),
+    geom-errorbar(stat: stat-summary(fun: "mean-sd"), width: 5pt),
+    geom-errorbarh(stat: stat-summary(fun: "mean-sd"), height: 5pt),
   ),
   scales: (
     scale-x-continuous(),
