@@ -5,11 +5,22 @@
       <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4" result="turb"/>
       <feDisplacementMap in="SourceGraphic" in2="turb" scale="2.6"/>
     </filter>
+    <filter id="rough-e-fine" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4" result="turb"/>
+      <feDisplacementMap in="SourceGraphic" in2="turb" scale="1.8"/>
+    </filter>
   </defs>
   <g filter="url(#rough-e)">
-    <rect x="6" y="36" width="12" height="22" fill="#C74F2E" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/>
-    <rect x="26" y="20" width="12" height="38" fill="#2B4A7F" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/>
-    <rect x="46" y="6" width="12" height="52" fill="#D9A021" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/>
-    <line x1="3" y1="61" x2="61" y2="61" stroke="#2B2B2B" stroke-width="2.2" stroke-linecap="round"/>
+    <rect x="6" y="29" width="12" height="19" fill="#C74F2E" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="26" y="15" width="12" height="33" fill="#2B4A7F" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="46" y="3" width="12" height="45" fill="#D9A021" stroke="#2B2B2B" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="3" y1="50.5" x2="61" y2="50.5" stroke="#2B2B2B" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+  <g filter="url(#rough-e-fine)">
+    <polygon points="8,56 12,53.5 12,61 8,58.5" fill="#E8C99B" stroke="#2B2B2B" stroke-width="0.8" stroke-linejoin="round"/>
+    <rect x="12" y="53.5" width="48" height="2.5" fill="#C74F2E" stroke="#2B2B2B" stroke-width="0.8" stroke-linejoin="round"/>
+    <rect x="12" y="56" width="48" height="2.5" fill="#2B4A7F" stroke="#2B2B2B" stroke-width="0.8" stroke-linejoin="round"/>
+    <rect x="12" y="58.5" width="48" height="2.5" fill="#D9A021" stroke="#2B2B2B" stroke-width="0.8" stroke-linejoin="round"/>
+    <polygon points="3,57.25 8,56 8,58.5" fill="#2B2B2B" stroke="#2B2B2B" stroke-width="0.8" stroke-linejoin="round"/>
   </g>
 </svg>
