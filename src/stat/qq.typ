@@ -36,13 +36,14 @@
 /// )
 /// ```
 ///
-/// \@examples Combine with \@geom-qq-line to overlay the IQR reference line.
+/// \@examples Constructor form: `stat: stat-qq()` is equivalent to
+/// `stat: "qq"` with defaults.
 /// ```
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(y: "v"),
-///   layers: (geom-qq(size: 2pt), geom-qq-line(stroke: 1pt)),
+///   layers: (geom-point(stat: stat-qq(), size: 2pt), geom-qq-line(stroke: 1pt)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

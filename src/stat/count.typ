@@ -32,8 +32,8 @@
 /// )
 /// ```
 ///
-/// \@examples Map `fill` to a second column to break the count down by
-/// subgroup (stacked by default).
+/// \@examples Constructor form: `stat: stat-count()` is equivalent to
+/// `stat: "count"` with defaults. Both forms honour `fill` grouping identically.
 /// ```
 /// #let d = (
 ///   (grp: "a", k: "x"),
@@ -45,7 +45,7 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "grp", fill: "k"),
-///   layers: (geom-bar(),),
+///   layers: (geom-col(stat: stat-count()),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

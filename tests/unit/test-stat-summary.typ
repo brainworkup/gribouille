@@ -3,7 +3,8 @@
 #import "../../src/stat/apply.typ": apply-stat
 #import "../../src/utils/normal.typ": qnorm
 #import "../../src/utils/summaries.typ": (
-  mean-cl-normal, mean-sd, mean-se, median-hilow, summarise,
+  mean, mean-cl-normal, mean-sd, mean-se, median, median-hilow, quantile,
+  quantiles, summarise,
 )
 
 // --- qnorm: Acklam's inverse-normal -----------------------------------------
@@ -137,5 +138,201 @@
 // First bin holds 0..4 with mean 2; second bin holds 5..9 with mean 7.
 #assert.eq(r-bin.data.at(0).y, 2.0)
 #assert.eq(r-bin.data.at(1).y, 7.0)
+
+// --- mean / median / quantile / quantiles helpers -------------------------
+
+#let r-mean = mean((1, 2, 3, 4, 5))
+#assert.eq(r-mean.y, 3.0)
+#assert.eq(r-mean.ymin, 3.0)
+#assert.eq(r-mean.ymax, 3.0)
+
+#let r-median = median((1, 2, 3, 4))
+#assert.eq(r-median.y, 2.5)
+#assert.eq(r-median.ymin, 2.5)
+#assert.eq(r-median.ymax, 2.5)
+
+#let r-q25 = quantile((1, 2, 3, 4), q: 0.25)
+#assert.eq(r-q25.y, 1.75)
+#assert.eq(r-q25.ymin, 1.75)
+#assert.eq(r-q25.ymax, 1.75)
+
+#let r-qs = quantiles(range(1, 10), probs: (0.25, 0.5, 0.75))
+#assert.eq(r-qs.ymin, 3.0)
+#assert.eq(r-qs.y, 5.0)
+#assert.eq(r-qs.ymax, 7.0)
+
+// Empty input collapses for each helper.
+#assert.eq(mean(()).y, none)
+#assert.eq(median(()).y, none)
+#assert.eq(quantile(()).y, none)
+#assert.eq(quantiles(()).y, none)
+
+// --- summarise dispatcher: new string names -------------------------------
+
+#assert.eq(summarise("mean", (1, 2, 3)).y, 2.0)
+#assert.eq(summarise("median", (1, 2, 3, 4)).y, 2.5)
+#assert.eq(
+  summarise("quantile", (1, 2, 3, 4), fun-args: (q: 0.25)).y,
+  1.75,
+)
+#let r-qs-disp = summarise(
+  "quantiles",
+  range(1, 11),
+  fun-args: (probs: (0.1, 0.5, 0.9)),
+)
+#assert.eq(r-qs-disp.y, 5.5)
+
+// --- summarise dispatcher: callable form ----------------------------------
+
+#let r-fn = summarise(v => (y: 0, ymin: -1, ymax: 1), (1, 2, 3))
+#assert.eq(r-fn.y, 0)
+#assert.eq(r-fn.ymin, -1)
+#assert.eq(r-fn.ymax, 1)
+
+// Callable consumes a fun-arg passed via the dispatcher.
+#let r-fn-args = summarise(
+  (v, k: 1) => (y: v.sum() * k, ymin: 0, ymax: 0),
+  (1, 2, 3),
+  fun-args: (k: 2),
+)
+#assert.eq(r-fn-args.y, 12)
+
+// --- stat-summary: axis = "y" keeps today's per-x bucket shape -------------
+
+#let r-y = apply-stat(
+  "summary",
+  df,
+  (x: "g", y: "y"),
+  (fun: "mean-se", "fun-args": (:), axis: "y"),
+)
+#assert.eq(r-y.data.len(), 2)
+#assert("xmin" not in r-y.data.at(0))
+#assert("xmax" not in r-y.data.at(0))
+#assert.eq(r-y.data.at(0).y, 3.0)
+
+// --- stat-summary: axis = "x" transposes (one row per distinct y) ----------
+
+#let df-x = (
+  (g: "a", x: 1),
+  (g: "a", x: 2),
+  (g: "a", x: 3),
+  (g: "b", x: 10),
+  (g: "b", x: 11),
+)
+#let r-x = apply-stat(
+  "summary",
+  df-x,
+  (x: "x", y: "g"),
+  (fun: "mean-se", "fun-args": (:), axis: "x"),
+)
+#assert.eq(r-x.data.len(), 2)
+#assert.eq(r-x.data.at(0).y, "a")
+#assert.eq(r-x.data.at(0).x, 2.0)
+#assert("xmin" in r-x.data.at(0))
+#assert("xmax" in r-x.data.at(0))
+#assert.eq(r-x.data.at(1).y, "b")
+#assert.eq(r-x.data.at(1).x, 10.5)
+
+// --- stat-summary: axis = "both" with discrete x emits degenerate xband ----
+
+#let r-both = apply-stat(
+  "summary",
+  df,
+  (x: "g", y: "y"),
+  (fun: "mean-se", "fun-args": (:), axis: "both"),
+)
+// Discrete x ("a", "b") → no xmin/xmax; bucket path runs but parsed-x is none.
+#assert("xmin" not in r-both.data.at(0))
+#assert("xmax" not in r-both.data.at(0))
+#assert.eq(r-both.data.at(0).y, 3.0)
+
+// Numeric discrete x → degenerate xmin == xmax == parsed-x.
+#let df-num-x = (
+  (x: 1, y: 1),
+  (x: 1, y: 2),
+  (x: 1, y: 3),
+  (x: 2, y: 10),
+  (x: 2, y: 11),
+)
+#let r-both-num = apply-stat(
+  "summary",
+  df-num-x,
+  (x: "x", y: "y"),
+  (fun: "mean-se", "fun-args": (:), axis: "both"),
+)
+#assert.eq(r-both-num.data.at(0).x, 1.0)
+#assert.eq(r-both-num.data.at(0).xmin, 1.0)
+#assert.eq(r-both-num.data.at(0).xmax, 1.0)
+#assert.eq(r-both-num.data.at(1).x, 2.0)
+#assert.eq(r-both-num.data.at(1).xmin, 2.0)
+
+// --- stat-summary: penguins regression (grouping + continuous x) -----------
+
+#let df-pen = (
+  (sp: "a", fl: 180.0, bm: 3500.0),
+  (sp: "a", fl: 185.0, bm: 3700.0),
+  (sp: "a", fl: 190.0, bm: 3900.0),
+)
+#let r-pen = apply-stat(
+  "summary",
+  df-pen,
+  (x: "fl", y: "bm", colour: "sp"),
+  (fun: "mean-se", "fun-args": (:), axis: "both"),
+)
+// Grouping + continuous x → bivariate collapse: a single row carrying both
+// axes' uncertainty (penguins use case).
+#assert.eq(r-pen.data.len(), 1)
+#assert("xmin" in r-pen.data.at(0))
+#assert("xmax" in r-pen.data.at(0))
+#assert("ymin" in r-pen.data.at(0))
+#assert("ymax" in r-pen.data.at(0))
+#assert.eq(r-pen.data.at(0).x, 185.0)
+#assert.eq(r-pen.data.at(0).y, 3700.0)
+#assert.eq(r-pen.mapping.colour, "sp")
+
+// label aesthetic is preserved through the bivariate-collapse path.
+#let r-pen-label = apply-stat(
+  "summary",
+  df-pen,
+  (x: "fl", y: "bm", colour: "sp", label: "sp"),
+  (fun: "mean", "fun-args": (:), axis: "both"),
+)
+#assert.eq(r-pen-label.data.len(), 1)
+#assert.eq(r-pen-label.data.at(0).x, 185.0)
+#assert.eq(r-pen-label.data.at(0).y, 3700.0)
+#assert.eq(r-pen-label.mapping.label, "sp")
+
+// label is preserved through the per-x bucket path (axis = "y").
+#let r-label-bucket = apply-stat(
+  "summary",
+  df,
+  (x: "g", y: "y", label: "g"),
+  (fun: "mean", "fun-args": (:), axis: "y"),
+)
+#assert.eq(r-label-bucket.mapping.at("label", default: none), "g")
+
+// label is preserved through the axis = "x" transposed path.
+#let r-label-x = apply-stat(
+  "summary",
+  df-x,
+  (x: "x", y: "g", label: "g"),
+  (fun: "mean", "fun-args": (:), axis: "x"),
+)
+#assert.eq(r-label-x.mapping.at("label", default: none), "g")
+
+// --- stat-summary: callable as fun ----------------------------------------
+
+#let r-callable = apply-stat(
+  "summary",
+  df,
+  (x: "g", y: "y"),
+  (
+    fun: (vs, ..args) => (y: vs.sum(), ymin: 0, ymax: 0),
+    "fun-args": (:),
+    axis: "y",
+  ),
+)
+#assert.eq(r-callable.data.at(0).y, 15)
+#assert.eq(r-callable.data.at(1).y, 36)
 
 Stat summary tests passed.

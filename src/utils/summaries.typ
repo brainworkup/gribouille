@@ -47,6 +47,128 @@
   sorted.at(lo) * (1 - frac) + sorted.at(hi) * frac
 }
 
+/// Mean as a degenerate summary `(y, ymin: y, ymax: y)`.
+///
+/// Useful as a callable building block when only a central value is needed,
+/// or as `fun: "mean"` to draw a plain point summary with no band.
+///
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
+///
+/// \@param values Array of numbers; non-numeric entries are dropped.
+///
+/// \@returns Dict `(y, ymin, ymax)` with `ymin == ymax == y`; all-`none` if
+///   `values` has no numerics.
+///
+/// \@examples-static Plain mean of a small sample.
+/// ```
+/// #let s = mean((2, 3, 4, 5, 6))
+/// // s.y == 4, s.ymin == 4, s.ymax == 4
+/// ```
+#let mean(values) = {
+  let xs = _to-numeric(values)
+  if xs.len() == 0 { return _empty-summary }
+  let m = _mean(xs)
+  (y: m, ymin: m, ymax: m)
+}
+
+/// Median as a degenerate summary `(y, ymin: y, ymax: y)`.
+///
+/// Uses the same type-7 linear-interpolation rule as `_quantile`, kept
+/// consistent with `src/stat/boxplot.typ` and `median-hilow`.
+///
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
+///
+/// \@param values Array of numbers; non-numeric entries are dropped.
+///
+/// \@returns Dict `(y, ymin, ymax)` with `ymin == ymax == y`; all-`none` if
+///   `values` has no numerics.
+///
+/// \@examples-static Median of a small sample.
+/// ```
+/// #let s = median((1, 2, 3, 4))
+/// // s.y == 2.5
+/// ```
+#let median(values) = {
+  let xs = _to-numeric(values)
+  if xs.len() == 0 { return _empty-summary }
+  let m = _quantile(xs.sorted(), 0.5)
+  (y: m, ymin: m, ymax: m)
+}
+
+/// Single quantile as a degenerate summary `(y, ymin: y, ymax: y)`.
+///
+/// Quantiles use the type-7 / numpy default linear interpolation rule, the
+/// same convention as `median-hilow` and `src/stat/boxplot.typ`.
+///
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
+///
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param q Probability in the closed interval `[0, 1]`.
+///
+/// \@returns Dict `(y, ymin, ymax)` with `ymin == ymax == y`; all-`none` if
+///   `values` has no numerics.
+///
+/// \@examples-static Lower quartile.
+/// ```
+/// #let s = quantile((1, 2, 3, 4), q: 0.25)
+/// ```
+#let quantile(values, q: 0.5) = {
+  if q < 0 or q > 1 {
+    panic("quantile: q must be in [0, 1]; got " + repr(q))
+  }
+  let xs = _to-numeric(values)
+  if xs.len() == 0 { return _empty-summary }
+  let v = _quantile(xs.sorted(), q)
+  (y: v, ymin: v, ymax: v)
+}
+
+/// Three quantiles packed into the standard summary shape.
+///
+/// Returns `(y: <mid>, ymin: <lo>, ymax: <hi>)` where each component is the
+/// type-7 quantile at the matching probability in `probs`. Probabilities are
+/// not reordered: pass them in `(low, central, high)` order.
+///
+/// \@category Helpers
+/// \@stability stable
+/// \@since 0.0.1
+///
+/// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param probs Three probabilities in `[0, 1]`, ordered low-mid-high.
+///
+/// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
+///
+/// \@examples-static Median plus the IQR via explicit probabilities.
+/// ```
+/// #let s = quantiles(range(1, 10), probs: (0.25, 0.5, 0.75))
+/// ```
+#let quantiles(values, probs: (0.25, 0.5, 0.75)) = {
+  if type(probs) != array or probs.len() != 3 {
+    panic(
+      "quantiles: probs must be an array of three probabilities; got "
+        + repr(probs),
+    )
+  }
+  for p in probs {
+    if p < 0 or p > 1 {
+      panic("quantiles: every prob must be in [0, 1]; got " + repr(p))
+    }
+  }
+  let xs = _to-numeric(values)
+  if xs.len() == 0 { return _empty-summary }
+  let sorted = xs.sorted()
+  (
+    y: _quantile(sorted, probs.at(1)),
+    ymin: _quantile(sorted, probs.at(0)),
+    ymax: _quantile(sorted, probs.at(2)),
+  )
+}
+
 /// Mean and standard-error band: `mean ± mult * se`.
 ///
 /// `se = sd / sqrt(n)` using the sample standard deviation. Returns
@@ -254,18 +376,22 @@
   )
 }
 
-/// Look up a summary helper by name.
+/// Look up a summary helper by name, or invoke a user-supplied callable.
 ///
-/// Names use the kebab form (`"mean-se"`, `"mean-cl-normal"`, `"mean-cl-boot"`,
-/// `"mean-sd"`, `"median-hilow"`). Unknown names panic.
+/// String names use the kebab form (`"mean-se"`, `"mean-cl-normal"`,
+/// `"mean-cl-boot"`, `"mean-sd"`, `"median-hilow"`, `"mean"`, `"median"`,
+/// `"quantile"`, `"quantiles"`). When `name` is a function, it is called as
+/// `name(values, ..fun-args)` and must return a dict `(y, ymin, ymax)`;
+/// custom callables can take a sink (`..args`) to ignore extras. Unknown
+/// string names panic.
 ///
 /// \@category Helpers
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param name Summary helper name.
+/// \@param name Summary helper name, or a callable returning `(y, ymin, ymax)`.
 /// \@param values Array of numbers; non-numeric entries are dropped.
-/// \@param fun-args Keyword arguments forwarded to the helper.
+/// \@param fun-args Keyword arguments forwarded to the helper or callable.
 ///
 /// \@returns Dict `(y, ymin, ymax)`.
 ///
@@ -284,7 +410,16 @@
 ///   fun-args: (conf: 0.9),
 /// )
 /// ```
+///
+/// \@examples-static Pass a callable to compute an arbitrary summary.
+/// ```
+/// #let s = summarise(
+///   (xs, ..args) => (y: xs.sum() / xs.len(), ymin: xs.first(), ymax: xs.last()),
+///   (1, 2, 3, 4, 5),
+/// )
+/// ```
 #let summarise(name, values, fun-args: (:)) = {
+  if type(name) == function { return name(values, ..fun-args) }
   if name == "mean-se" {
     let mult = fun-args.at("mult", default: 1)
     return mean-se(values, mult: mult)
@@ -302,11 +437,22 @@
   } else if name == "median-hilow" {
     let conf = fun-args.at("conf", default: 0.5)
     return median-hilow(values, conf: conf)
+  } else if name == "mean" {
+    return mean(values)
+  } else if name == "median" {
+    return median(values)
+  } else if name == "quantile" {
+    let q = fun-args.at("q", default: 0.5)
+    return quantile(values, q: q)
+  } else if name == "quantiles" {
+    let probs = fun-args.at("probs", default: (0.25, 0.5, 0.75))
+    return quantiles(values, probs: probs)
   }
   panic(
     "summarise: unknown summary function "
       + repr(name)
-      + "; expected one of mean-se, mean-cl-normal, mean-cl-boot, "
-      + "mean-sd, median-hilow.",
+      + "; expected a callable or one of mean-se, mean-cl-normal, "
+      + "mean-cl-boot, mean-sd, median-hilow, mean, median, quantile, "
+      + "quantiles.",
   )
 }

@@ -9,7 +9,7 @@
 /// Text label layer reading strings from the `label` aesthetic.
 ///
 /// One text block is drawn per row at the mapped `(x, y)` with an optional
-/// pixel offset via `dx` and `dy`.
+/// offset via `dx` and `dy`.
 ///
 /// \@category Geoms
 /// \@stability stable
@@ -20,8 +20,8 @@
 /// \@param size Text size (a Typst length).
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
-/// \@param dx Horizontal offset in canvas units.
-/// \@param dy Vertical offset in canvas units.
+/// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
+/// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -133,8 +133,14 @@
     } else if layer.params.colour == auto {
       ctx.theme.at("ink", default: black)
     } else { layer.params.colour }
+    let dx = if type(layer.params.dx) == length {
+      layer.params.dx / 1cm
+    } else { layer.params.dx }
+    let dy = if type(layer.params.dy) == length {
+      layer.params.dy / 1cm
+    } else { layer.params.dy }
     cetz.draw.content(
-      (cx + layer.params.dx, cy + layer.params.dy),
+      (cx + dx, cy + dy),
       text(size: layer.params.size, fill: colour)[#label],
       anchor: layer.params.anchor,
     )

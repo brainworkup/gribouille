@@ -5,7 +5,7 @@
 #import "scale/train.typ": (
   map-axis, map-continuous, map-position, mapping-ref-col, train,
 )
-#import "stat/apply.typ": apply-stat
+#import "stat/apply.typ": apply-stat, stat-default-params
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
@@ -112,7 +112,9 @@
   let stat-name = if type(stat-spec) == str {
     stat-spec
   } else { stat-spec.at("name", default: "identity") }
-  let stat-params = if type(stat-spec) == str { params } else {
+  let stat-params = if type(stat-spec) == str {
+    stat-default-params(stat-name)
+  } else {
     stat-spec.at("params", default: (:))
   }
   let stripped = _strip-mapping-refs(mapping)

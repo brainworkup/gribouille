@@ -30,14 +30,20 @@
 /// )
 /// ```
 ///
-/// \@examples Use \@geom-step instead of \@geom-line to render the ECDF as a
-/// staircase, which is the conventional shape for empirical CDFs.
+/// \@examples Constructor form: `stat: stat-ecdf()` is equivalent to
+/// `stat: "ecdf"` with defaults. Mapping `colour` to a group column produces
+/// one ECDF per group; both syntax forms honour aesthetic grouping identically.
 /// ```
-/// #let d = range(0, 30).map(i => (x: calc.sin(i) + i / 10))
+/// #let d = ()
+/// #for grp in ("a", "b") {
+///   for i in range(0, 15) {
+///     d.push((x: i + (if grp == "b" { 3 } else { 0 }), grp: grp))
+///   }
+/// }
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x"),
-///   layers: (geom-step(stat: "ecdf", stroke: 1pt),),
+///   mapping: aes(x: "x", colour: "grp"),
+///   layers: (geom-line(stat: stat-ecdf(), stroke: 1pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

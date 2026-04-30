@@ -1,3 +1,5 @@
+#import "../stat/bin.typ": stat-bin
+
 ///! Histogram of a continuous variable.
 ///!
 ///! Uses \@stat-bin to partition x into uniform-width bins and draws bars of
@@ -77,10 +79,8 @@
     stroke: stroke,
     alpha: alpha,
     width: width,
-    bins: bins,
-    binwidth: binwidth,
   ),
-  stat: "bin",
+  stat: stat-bin(bins: bins, binwidth: binwidth),
   position: position,
   inherit-aes: inherit-aes,
 )

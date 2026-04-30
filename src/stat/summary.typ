@@ -7,19 +7,34 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": summarise
 
-/// Per-x reduction to a central value and an uncertainty band.
+/// Per-axis reduction to a central value and an uncertainty band.
 ///
-/// One output row per distinct x value with keys `(x, y, ymin, ymax)`. The
-/// reduction is chosen by `fun`; supported names are `"mean-se"`,
-/// `"mean-cl-normal"`, `"mean-sd"`, and `"median-hilow"`.
+/// The output shape is controlled by `axis`:
+/// - `"y"` — bucket rows by their raw `x` value and emit one
+///   `(x, y, ymin, ymax)` row per bucket.
+/// - `"x"` — transpose: bucket rows by their raw `y` value and emit one
+///   `(x, xmin, xmax, y)` row per bucket.
+/// - `"both"` (default) — when a grouping aesthetic is set with a continuous
+///   `x` (the data has been pre-partitioned upstream and bucketing would
+///   yield one row per observation), collapse the partition to a single
+///   bivariate row `(x, y, xmin, xmax, ymin, ymax)`. Otherwise the per-x
+///   bucket path is used and `xmin = xmax` is set to the bucket's parsed
+///   `x` whenever it is numeric, so horizontal-error geoms still find valid
+///   keys.
+///
+/// `fun` accepts a string name dispatched through \@summarise (`"mean-se"`,
+/// `"mean-cl-normal"`, `"mean-cl-boot"`, `"mean-sd"`, `"median-hilow"`,
+/// `"mean"`, `"median"`, `"quantile"`, `"quantiles"`) or a Typst callable of
+/// the form `(values, ..fun-args) -> (y, ymin, ymax)`.
 ///
 /// \@category Stats
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param fun Name of the summary helper to apply to each bucket of y values.
-/// \@param fun-args Keyword arguments forwarded to the helper, for example
-///   `(mult: 2)` for `mean-se` or `(conf: 0.5)` for `median-hilow`.
+/// \@param fun Summary helper name or callable returning `(y, ymin, ymax)`.
+/// \@param fun-args Keyword arguments forwarded to the helper or callable, for
+///   example `(mult: 2)` for `mean-se` or `(conf: 0.5)` for `median-hilow`.
+/// \@param axis Output axis: `"both"` (default), `"x"`, or `"y"`.
 ///
 /// \@returns Statistic object with `name: "summary"`, consumed by geom layers.
 ///
@@ -44,8 +59,9 @@
 /// )
 /// ```
 ///
-/// \@examples Use the `median-hilow` reducer with \@geom-pointrange to surface
-/// the median plus a customisable confidence band.
+/// \@examples `stat: "summary"` is equivalent to `stat: stat-summary()` with
+/// defaults (`fun: "mean-se"`). Use the constructor to choose a different
+/// reducer or pass `fun-args`.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
@@ -68,13 +84,67 @@
 /// ```
 ///
 /// \@see \@stat-summary-bin, \@stat-boxplot
-#let stat-summary(fun: "mean-se", fun-args: (:)) = (
+#let stat-summary(fun: "mean-se", fun-args: (:), axis: "both") = (
   kind: "stat",
   name: "summary",
-  params: (fun: fun, "fun-args": fun-args),
+  params: (fun: fun, "fun-args": fun-args, axis: axis),
 )
 
 #let _group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
+#let _pass-aesthetics = _group-aesthetics + ("label",)
+
+#let _bivariate-row(data, x-col, y-col, fun, fun-args, mapping) = {
+  let xs = data.map(r => r.at(x-col, default: none))
+  let ys = data.map(r => r.at(y-col, default: none))
+  let sx = summarise(fun, xs, fun-args: fun-args)
+  let sy = summarise(fun, ys, fun-args: fun-args)
+  if sx.y == none or sy.y == none {
+    return (data: (), mapping: (x: "x", y: "y", ymin: "ymin", ymax: "ymax"))
+  }
+  let bmap = (
+    x: "x",
+    y: "y",
+    xmin: "xmin",
+    xmax: "xmax",
+    ymin: "ymin",
+    ymax: "ymax",
+  )
+  for aes in _pass-aesthetics {
+    let col = mapping.at(aes, default: none)
+    if col != none { bmap.insert(aes, col) }
+  }
+  (
+    data: (
+      (
+        x: sx.y,
+        y: sy.y,
+        xmin: sx.ymin,
+        xmax: sx.ymax,
+        ymin: sy.ymin,
+        ymax: sy.ymax,
+      ),
+    ),
+    mapping: bmap,
+  )
+}
+
+#let _bucket-by(data, key-col) = {
+  let buckets = (:)
+  let order = ()
+  for row in data {
+    let key = str(row.at(key-col, default: ""))
+    if key == "" { continue }
+    if key in buckets {
+      let bucket = buckets.at(key)
+      bucket.push(row)
+      buckets.insert(key, bucket)
+    } else {
+      buckets.insert(key, (row,))
+      order.push(key)
+    }
+  }
+  (buckets: buckets, order: order)
+}
 
 #let apply(data, mapping, params: (:)) = {
   let base-mapping = (x: "x", y: "y", ymin: "ymin", ymax: "ymax")
@@ -88,75 +158,74 @@
 
   let fun = params.at("fun", default: "mean-se")
   let fun-args = params.at("fun-args", default: (:))
+  let axis = params.at("axis", default: "both")
+  if not ("both", "x", "y").contains(axis) {
+    panic(
+      "stat-summary: axis must be \"both\", \"x\", or \"y\"; got " + repr(axis),
+    )
+  }
 
-  // Bivariate path: when a grouping aesthetic (colour, shape …) is set, the
-  // data has already been pre-partitioned upstream so each call sees one
-  // group's rows. If x is continuous within that group, sub-bucketing by x
-  // would produce one row per individual observation; instead emit a single
-  // bivariate summary covering both x- and y-direction uncertainty.
   let has-grouping = _group-aesthetics.any(a => (
     mapping.at(a, default: none) != none
   ))
-  let x-nonnull = data
-    .map(r => r.at(x-col, default: none))
-    .filter(v => v != none)
-  let x-continuous = (
-    x-nonnull.len() > 0 and x-nonnull.all(v => parse-number(v) != none)
-  )
-  if has-grouping and x-continuous {
-    let xs = data.map(r => r.at(x-col, default: none))
-    let ys = data.map(r => r.at(y-col, default: none))
-    let sx = summarise(fun, xs, fun-args: fun-args)
-    let sy = summarise(fun, ys, fun-args: fun-args)
-    if sx.y == none or sy.y == none { return (data: (), mapping: base-mapping) }
-    let bmap = (
-      x: "x",
-      y: "y",
-      xmin: "xmin",
-      xmax: "xmax",
-      ymin: "ymin",
-      ymax: "ymax",
+
+  // Bivariate collapse: under axis "both" with a grouping aesthetic and
+  // continuous x, the data is pre-partitioned upstream so per-x bucketing
+  // would yield one row per observation. Emit a single bivariate row instead.
+  if axis == "both" and has-grouping {
+    let x-nonnull = data
+      .map(r => r.at(x-col, default: none))
+      .filter(v => v != none)
+    let x-continuous = (
+      x-nonnull.len() > 0 and x-nonnull.all(v => parse-number(v) != none)
     )
-    for aes in _group-aesthetics {
-      let col = mapping.at(aes, default: none)
-      if col != none { bmap.insert(aes, col) }
+    if x-continuous {
+      return _bivariate-row(data, x-col, y-col, fun, fun-args, mapping)
     }
-    return (
-      data: (
-        (
-          x: sx.y,
-          y: sy.y,
-          xmin: sx.ymin,
-          xmax: sx.ymax,
-          ymin: sy.ymin,
-          ymax: sy.ymax,
-        ),
-      ),
-      mapping: bmap,
-    )
   }
 
-  // Discrete x: bucket rows by their raw x value; emit one summary row per
-  // bucket in first-appearance order so the downstream x scale keeps the same
-  // level ordering as the input.
-  for aes in _group-aesthetics {
+  if axis == "x" {
+    let xmap = (x: "x", y: "y", xmin: "xmin", xmax: "xmax")
+    for aes in _pass-aesthetics {
+      let col = mapping.at(aes, default: none)
+      if col != none { xmap.insert(aes, col) }
+    }
+    let bucketed = _bucket-by(data, y-col)
+    let out = ()
+    for key in bucketed.order {
+      let rows = bucketed.buckets.at(key)
+      let xs = rows.map(r => r.at(x-col, default: none))
+      let summary = summarise(fun, xs, fun-args: fun-args)
+      if summary.y == none { continue }
+      let raw-y = rows.first().at(y-col, default: none)
+      let parsed-y = parse-number(raw-y)
+      let y-value = if parsed-y != none { parsed-y } else { raw-y }
+      out.push((
+        x: summary.y,
+        xmin: summary.ymin,
+        xmax: summary.ymax,
+        y: y-value,
+      ))
+    }
+    return (data: out, mapping: xmap)
+  }
+
+  // Per-x bucket path. Buckets are emitted in first-appearance order so the
+  // downstream x scale keeps the input's level ordering.
+  let out-mapping = base-mapping
+  for aes in _pass-aesthetics {
     let col = mapping.at(aes, default: none)
-    if col != none { base-mapping.insert(aes, col) }
+    if col != none { out-mapping.insert(aes, col) }
   }
-  let buckets = (:)
-  let order = ()
-  for row in data {
-    let key = str(row.at(x-col, default: ""))
-    if key == "" { continue }
-    let bucket = buckets.at(key, default: ())
-    bucket.push(row)
-    buckets.insert(key, bucket)
-    if not order.contains(key) { order.push(key) }
+  let emit-x-band = axis == "both"
+  if emit-x-band {
+    out-mapping.insert("xmin", "xmin")
+    out-mapping.insert("xmax", "xmax")
   }
-
+  let bucketed = _bucket-by(data, x-col)
   let out = ()
-  for key in order {
-    let rows = buckets.at(key)
+  for key in bucketed.order {
+    let rows = bucketed.buckets.at(key)
     let ys = rows.map(r => r.at(y-col, default: none))
     let summary = summarise(fun, ys, fun-args: fun-args)
     if summary.y == none { continue }
@@ -165,13 +234,18 @@
     let parsed-x = parse-number(raw-x)
     let x-value = if parsed-x != none { parsed-x } else { raw-x }
 
-    out.push((
+    let row = (
       x: x-value,
       y: summary.y,
       ymin: summary.ymin,
       ymax: summary.ymax,
-    ))
+    )
+    if emit-x-band and parsed-x != none {
+      row.insert("xmin", parsed-x)
+      row.insert("xmax", parsed-x)
+    }
+    out.push(row)
   }
 
-  (data: out, mapping: base-mapping)
+  (data: out, mapping: out-mapping)
 }

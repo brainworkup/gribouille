@@ -31,27 +31,24 @@
 /// )
 /// ```
 ///
-/// \@examples Compare the same data with \@stat-sum to keep duplicates and
-/// encode the count in marker size.
+/// \@examples Constructor form: `stat: stat-unique()` is equivalent to
+/// `stat: "unique"` with defaults.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),
-///   (x: 1, y: 1),
 ///   (x: 2, y: 2),
-///   (x: 3, y: 3),
-///   (x: 3, y: 3),
 /// )
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-count(),),
+///   layers: (geom-point(stat: stat-unique(), size: 3pt),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
 /// ```
 ///
-/// \@see \@stat-identity
+/// \@see \@stat-identity, \@stat-sum
 #let stat-unique() = (kind: "stat", name: "unique")
 
 #let apply(data, mapping, params: (:)) = {

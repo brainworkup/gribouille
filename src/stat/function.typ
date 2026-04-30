@@ -43,8 +43,9 @@
 /// )
 /// ```
 ///
-/// \@examples Combine with \@geom-point to overlay sampled markers on the
-/// curve; bumping `n` smooths the line further.
+/// \@examples The string form `stat: "function"` resolves to the constructor
+/// defaults (`fun: x => x`, `n: 101`, `xlim: (0, 1)`). In practice the
+/// constructor form is always required because `fun` must be supplied.
 /// ```
 /// #let frame = ((x: 0, y: 0), (x: 6.28, y: 1))
 /// #plot(

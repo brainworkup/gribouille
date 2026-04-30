@@ -31,14 +31,15 @@
 /// )
 /// ```
 ///
-/// \@examples Pin `binwidth` to align bin edges to integer boundaries when
-/// the data range is known.
+/// \@examples Constructor form: `stat: stat-bin()` is equivalent to
+/// `stat: "bin"` with defaults (`bins: 30`). Use the constructor to customise
+/// the partition on any geom, not just \@geom-histogram.
 /// ```
 /// #let d = range(0, 40).map(i => (x: i * 0.25))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x"),
-///   layers: (geom-histogram(binwidth: 1),),
+///   layers: (geom-col(stat: stat-bin(bins: 8)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

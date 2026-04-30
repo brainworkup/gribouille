@@ -15,6 +15,20 @@
 #import "qq-line.typ" as qq-line-stat
 #import "function.typ" as function-stat
 
+#let _stat-constructors = (
+  bin: bin-stat.stat-bin,
+  smooth: smooth-stat.stat-smooth,
+  boxplot: boxplot-stat.stat-boxplot,
+  summary: summary-stat.stat-summary,
+  summary_bin: summary-bin-stat.stat-summary-bin,
+  function: function-stat.stat-function,
+)
+
+#let stat-default-params(name) = {
+  let ctor = _stat-constructors.at(name, default: none)
+  if ctor == none { (:) } else { ctor().at("params", default: (:)) }
+}
+
 #let apply-stat(name, data, mapping, params) = {
   if name == none or name == "identity" {
     (data: data, mapping: mapping)

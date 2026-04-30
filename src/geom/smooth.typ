@@ -5,6 +5,7 @@
 ///! pointwise confidence band drawn when `se: true`.
 
 #import "../deps.typ": cetz
+#import "../stat/smooth.typ": stat-smooth
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
@@ -97,7 +98,7 @@
     fill: fill,
     alpha: alpha,
   ),
-  stat: "smooth",
+  stat: stat-smooth(method: method, se: se, level: level),
   position: "identity",
   inherit-aes: inherit-aes,
 )

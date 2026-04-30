@@ -38,8 +38,9 @@
 /// )
 /// ```
 ///
-/// \@examples Map `colour` to a categorical column so each group gets its
-/// own fit and band.
+/// \@examples Constructor form: `stat: stat-smooth()` is equivalent to
+/// `stat: "smooth"` with defaults. Use the constructor on any geom and to
+/// customise `method`, `se`, or `level`. Both forms honour `colour` grouping.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b") {
@@ -52,7 +53,7 @@
 ///   mapping: aes(x: "x", y: "y", colour: "grp"),
 ///   layers: (
 ///     geom-point(size: 2pt),
-///     geom-smooth(method: "lm"),
+///     geom-line(stat: stat-smooth(method: "lm", se: false)),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

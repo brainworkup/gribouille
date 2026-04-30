@@ -31,8 +31,8 @@
 /// )
 /// ```
 ///
-/// \@examples Pair with \@scale-size-area to make the count proportional to
-/// the marker area, easier to read for large frequency contrasts.
+/// \@examples Constructor form: `stat: stat-sum()` is equivalent to
+/// `stat: "sum"` with defaults.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1), (x: 1, y: 1), (x: 1, y: 1),
@@ -42,7 +42,7 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-count(),),
+///   layers: (geom-point(stat: stat-sum(), size: 3pt),),
 ///   scales: (scale-size-area(range: (2pt, 14pt)),),
 ///   width: 10cm,
 ///   height: 6cm,

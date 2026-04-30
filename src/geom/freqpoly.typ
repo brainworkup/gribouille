@@ -1,3 +1,5 @@
+#import "../stat/bin.typ": stat-bin
+
 ///! Line connecting binned counts along x.
 ///!
 ///! Equivalent to \@geom-histogram but draws a polyline through bin
@@ -77,10 +79,8 @@
     colour: colour,
     alpha: alpha,
     linetype: linetype,
-    bins: bins,
-    binwidth: binwidth,
   ),
-  stat: "bin",
+  stat: stat-bin(bins: bins, binwidth: binwidth),
   position: position,
   inherit-aes: inherit-aes,
 )

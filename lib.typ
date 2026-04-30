@@ -77,7 +77,8 @@
 #import "src/plot.typ": get-alt-text
 #import "src/data.typ": as-factor, as-numeric
 #import "src/utils/summaries.typ": (
-  mean-cl-boot, mean-cl-normal, mean-sd, mean-se, median-hilow, summarise,
+  mean, mean-cl-boot, mean-cl-normal, mean-sd, mean-se, median, median-hilow,
+  quantile, quantiles, summarise,
 )
 #import "src/utils/cut.typ": cut-interval, cut-number, cut-width
 #import "src/utils/resolution.typ": resolution

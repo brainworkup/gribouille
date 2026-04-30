@@ -28,8 +28,8 @@
 /// \@param inset Padding between text and box border (a Typst length).
 /// \@param radius Corner radius of the box (a Typst length).
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
-/// \@param dx Horizontal offset in canvas units.
-/// \@param dy Vertical offset in canvas units.
+/// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
+/// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -181,8 +181,14 @@
       radius: layer.params.radius,
       text(size: layer.params.size, fill: text-paint)[#label],
     )
+    let dx = if type(layer.params.dx) == length {
+      layer.params.dx / 1cm
+    } else { layer.params.dx }
+    let dy = if type(layer.params.dy) == length {
+      layer.params.dy / 1cm
+    } else { layer.params.dy }
     cetz.draw.content(
-      (cx + layer.params.dx, cy + layer.params.dy),
+      (cx + dx, cy + dy),
       body,
       anchor: layer.params.anchor,
     )

@@ -49,8 +49,8 @@
 /// )
 /// ```
 ///
-/// \@examples Style the reference line distinctly so it stays legible over
-/// the points.
+/// \@examples Constructor form: `stat: stat-qq-line()` is equivalent to
+/// `stat: "qq-line"` with defaults.
 /// ```
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
 /// #plot(
@@ -58,7 +58,7 @@
 ///   mapping: aes(y: "v"),
 ///   layers: (
 ///     geom-qq(size: 2pt),
-///     geom-qq-line(stroke: 1pt, colour: rgb("#cc0000"), linetype: "dashed"),
+///     geom-line(stat: stat-qq-line(), stroke: 1pt, colour: rgb("#cc0000")),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

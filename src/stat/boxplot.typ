@@ -40,8 +40,10 @@
 /// )
 /// ```
 ///
-/// \@examples Tighten the whiskers (`coef: 1.0`) so more values surface as
-/// outliers; useful for spotting borderline points.
+/// \@examples `stat: "boxplot"` is equivalent to `stat: stat-boxplot()` with
+/// the default `coef: 1.5`. Use the constructor to customise the whisker
+/// length, e.g. `stat: stat-boxplot(coef: 1.0)` tightens the fence so more
+/// values surface as outliers.
 /// ```
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {

@@ -18,6 +18,12 @@
     geom-smooth(method: "lm", se: true, alpha: 0.2),
     geom-errorbar(stat: stat-summary(fun: "mean-sd"), width: 5pt),
     geom-errorbarh(stat: stat-summary(fun: "mean-sd"), height: 5pt),
+    geom-label(
+      stat: stat-summary(fun: "mean"),
+      mapping: aes(label: "species"),
+      colour: rgb("#ffffff"),
+      size: 8pt,
+    ),
   ),
   scales: (
     scale-x-continuous(),
@@ -39,6 +45,7 @@
     caption: "Data from Palmer Archipelago (Antarctica) penguin dataset",
     colour: "Species",
     fill: "Species",
+    shape: "Species",
     x: "Flipper length (mm)",
     y: "Body mass (g)",
   ),

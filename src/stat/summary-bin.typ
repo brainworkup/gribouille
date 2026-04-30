@@ -43,8 +43,9 @@
 /// )
 /// ```
 ///
-/// \@examples Pair `geom-pointrange` with a median-low-high reduction to
-/// surface the spread per bin.
+/// \@examples `stat: "summary_bin"` is equivalent to `stat: stat-summary-bin()`
+/// with defaults (`fun: "mean-se"`, `bins: 30`). Use the constructor to
+/// customise the reduction or partition.
 /// ```
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
 /// #plot(
