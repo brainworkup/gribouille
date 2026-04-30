@@ -343,8 +343,8 @@
       .at("data", default: ())
       .map(r => parse-number(r.at(col-name, default: none)))
       .filter(v => v != none)
-    if xs.len() < 2 { continue }
     let sorted = xs.dedup().sorted()
+    if sorted.len() < 2 { continue }
     let gaps = range(sorted.len() - 1).map(i => (
       sorted.at(i + 1) - sorted.at(i)
     ))
