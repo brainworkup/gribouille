@@ -9,6 +9,7 @@
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": build-stroke
+#import "../utils/typst-markup.typ": eval-as-markup
 
 /// Boxed text label layer reading strings from the `label` aesthetic.
 ///
@@ -137,6 +138,9 @@
     ink,
     paper,
   )
+  let label-typst = layer
+    .at("typst-marks", default: (:))
+    .at("label", default: false)
 
   for row in data {
     let cx = map-position(
@@ -152,6 +156,7 @@
     if cx == none or cy == none { continue }
     let label = row.at(label-col, default: none)
     if label == none { continue }
+    if label-typst { label = eval-as-markup(label) }
     // Text must remain visible regardless of the exclusive-default rule, so
     // resolve with `ink` as the unconditional fallback; the box outline
     // follows `default-colour` and is suppressed when only `fill` is set.

@@ -76,6 +76,11 @@
 // Helpers.
 #import "src/plot.typ": get-alt-text
 #import "src/data.typ": as-factor, as-numeric
+#import "src/utils/typst-markup.typ": typst
+#import "src/utils/format.typ": (
+  label-comma, label-currency, label-lower, label-number, label-percent,
+  label-scientific, label-title, label-upper, label-wrap,
+)
 #import "src/utils/summaries.typ": (
   mean, mean-cl-boot, mean-cl-normal, mean-sd, mean-se, median, median-hilow,
   quantile, quantiles, summarise,

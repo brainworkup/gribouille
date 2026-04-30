@@ -13,6 +13,10 @@
 #import "utils/palette.typ": default-discrete
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
+#import "utils/typst-markup.typ": eval-as-markup, is-typst-markup, resolve-prose
+#import "utils/aes-resolve.typ": (
+  resolve-aes-value, resolve-break-display, unwrap-mapping-refs,
+)
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
 #import "geom/path.typ" as path-geom
@@ -44,8 +48,10 @@
 #import "scale/secondary.typ" as secondary-mod
 
 // Flatten a merged aesthetic mapping so geoms receive plain column-name
-// strings. Mapping-ref annotations produced by `as-factor("col")` have
-// already been consumed by scale training by the time geoms draw.
+// strings. Both `mapping-ref` annotations (`as-factor`/`as-numeric`) and
+// `typst-markup` annotations (`typst()`) are collapsed; the typst intent
+// is captured separately by `_typst-marks-of` so display surfaces can
+// honour it.
 #let _strip-mapping-refs(mapping) = {
   if mapping == none { return none }
   let out = mapping
@@ -55,6 +61,20 @@
     if col != v { out.insert(k, col) }
   }
   out
+}
+
+// Build a dictionary of `(aes-name: true)` entries for every aesthetic
+// whose mapping value carries a `typst-markup` tag (at any nesting depth
+// inside `mapping-ref` wrappers). Returns an empty dict when nothing is
+// typst-tagged.
+#let _typst-marks-of(mapping) = {
+  let marks = (:)
+  if mapping == none { return marks }
+  for (k, v) in mapping.pairs() {
+    if v == none { continue }
+    if is-typst-markup(v) { marks.insert(k, true) }
+  }
+  marks
 }
 
 #let _merge-mapping(layer, plot-mapping) = {
@@ -187,6 +207,7 @@
   new.data = pos-data
   new.mapping = pos-mapping
   new.inherit-aes = false
+  new.typst-marks = _typst-marks-of(mapping)
   if not stat-identity { new.stat = "identity" }
   new
 }
@@ -535,6 +556,31 @@
     )
   }
 
+  let _x-typst = if x-trained != none {
+    x-trained.at("typst-mark", default: false)
+  } else { false }
+  let _y-typst = if y-trained != none {
+    y-trained.at("typst-mark", default: false)
+  } else { false }
+  let _x-labels = if (
+    x-trained != none and x-trained.at("spec", default: none) != none
+  ) {
+    x-trained.spec.at("labels", default: auto)
+  } else { auto }
+  let _y-labels = if (
+    y-trained != none and y-trained.at("spec", default: none) != none
+  ) {
+    y-trained.spec.at("labels", default: auto)
+  } else { auto }
+  let _apply-labels(labels, value, idx, fallback) = {
+    if type(labels) == function { return labels(value) }
+    if type(labels) == array and idx < labels.len() { return labels.at(idx) }
+    fallback
+  }
+  let _maybe-typst(value, mark) = {
+    if mark and type(value) == str { eval-as-markup(value) } else { value }
+  }
+
   if x-trained != none and x-trained.type == "continuous" {
     let breaks = _axis-breaks(x-trained)
     for (idx, b) in breaks.enumerate() {
@@ -545,7 +591,8 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      _draw-x-label(cx, _axis-label(x-trained, b), idx)
+      let txt = _apply-labels(_x-labels, b, idx, _axis-label(x-trained, b))
+      _draw-x-label(cx, _maybe-typst(txt, _x-typst), idx)
     }
   } else if x-trained != none and x-trained.type == "discrete" {
     let n = x-trained.domain.len()
@@ -554,13 +601,14 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      _draw-x-label(cx, level, idx)
+      let txt = _apply-labels(_x-labels, level, idx, level)
+      _draw-x-label(cx, _maybe-typst(txt, _x-typst), idx)
     }
   }
 
   if y-trained != none and y-trained.type == "continuous" {
     let breaks = _axis-breaks(y-trained)
-    for b in breaks {
+    for (idx, b) in breaks.enumerate() {
       let cy = map-axis(y-trained, b, py-range)
       if grid-stroke != none {
         line((px-lo, cy), (px-hi, cy), stroke: grid-stroke)
@@ -569,13 +617,14 @@
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
+        let txt = _apply-labels(_y-labels, b, idx, _axis-label(y-trained, b))
         content(
           (px-lo - 0.2, cy),
           text(
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#_axis-label(y-trained, b)],
+          )[#_maybe-typst(txt, _y-typst)],
           anchor: "east",
         )
       }
@@ -588,13 +637,14 @@
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
+        let txt = _apply-labels(_y-labels, level, idx, level)
         content(
           (px-lo - 0.2, cy),
           text(
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#level],
+          )[#_maybe-typst(txt, _y-typst)],
           anchor: "east",
         )
       }
@@ -641,7 +691,7 @@
           size: theme.axis-title-size,
           fill: _ax-title-colour,
           weight: _ax-title-weight,
-        )[#_x-sec.name],
+        )[#resolve-prose(_x-sec.name)],
         anchor: "south",
       )
     }
@@ -686,7 +736,7 @@
           size: theme.axis-title-size,
           fill: _ax-title-colour,
           weight: _ax-title-weight,
-        )[#_y-sec.name],
+        )[#resolve-prose(_y-sec.name)],
         angle: 90deg,
       )
     }
@@ -782,7 +832,7 @@
         size: theme.axis-title-size,
         fill: _ax-title-colour,
         weight: _ax-title-weight,
-      )[#x-title],
+      )[#resolve-prose(x-title)],
       anchor: "south",
     )
   }
@@ -793,7 +843,7 @@
         size: theme.axis-title-size,
         fill: _ax-title-colour,
         weight: _ax-title-weight,
-      )[#y-title],
+      )[#resolve-prose(y-title)],
       angle: 90deg,
     )
   }
@@ -1224,7 +1274,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#x-title],
+          )[#resolve-prose(x-title)],
           anchor: "south",
         )
       }
@@ -1235,7 +1285,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#y-title],
+          )[#resolve-prose(y-title)],
           angle: 90deg,
         )
       }
@@ -1405,7 +1455,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#x-title],
+          )[#resolve-prose(x-title)],
           anchor: "south",
         )
       }
@@ -1416,7 +1466,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#y-title],
+          )[#resolve-prose(y-title)],
           angle: 90deg,
         )
       }
@@ -1473,20 +1523,20 @@
         fallback: "bold",
       ),
       fill: resolve-colour(theme, "plot-title-colour", "text-colour", "ink"),
-    )[#labs.title]
+    )[#resolve-prose(labs.title)]
   } else { none }
   let subtitle-block = if labs.subtitle != none {
     text(
       size: theme.at("plot-subtitle-size", default: 9pt),
       fill: resolve-colour(theme, "plot-subtitle-colour", "text-colour", "ink"),
-    )[#labs.subtitle]
+    )[#resolve-prose(labs.subtitle)]
   } else { none }
   let caption-block = if labs.caption != none {
     text(
       size: theme.at("plot-caption-size", default: 8pt),
       fill: resolve-colour(theme, "plot-caption-colour", "text-colour", "ink"),
       style: "italic",
-    )[#labs.caption]
+    )[#resolve-prose(labs.caption)]
   } else { none }
 
   let parts = ()

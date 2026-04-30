@@ -12,6 +12,7 @@
 #import "theme/defaults.typ": resolve-colour, resolve-field
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-ref-col
+#import "utils/typst-markup.typ": eval-as-markup, resolve-prose
 
 // Aesthetic emission order. `x` and `y` train but never produce a guide; the
 // rest are emitted in this fixed order so merged guides land at the position
@@ -252,6 +253,7 @@
     reverse: reverse,
     contributors: contributors,
     column: _column-for(spec, aes-name),
+    typst-mark: t.at("typst-mark", default: false),
   )
 
   if t.type == "discrete" {
@@ -306,6 +308,7 @@
     let aesthetics = members.map(c => c.aes)
     let key-kind = _key-kind-for-group(members)
 
+    let typst-mark = members.any(m => m.at("typst-mark", default: false))
     if first.t.type == "discrete" {
       let levels = first.levels
       if first.reverse { levels = levels.rev() }
@@ -318,26 +321,37 @@
         nrow: first.nrow,
         ncol: first.ncol,
         key: key-kind,
+        typst-mark: typst-mark,
       ))
     } else if aesthetics.contains("colour") or aesthetics.contains("fill") {
       // A colour/fill continuous member governs rendering; any size/alpha
       // members in the same group are intentionally dropped from the bar
       // because compositing them on a smooth gradient is awkward and rare.
+      let user-labels = if (
+        first.t.at("spec", default: none) != none
+      ) { first.t.spec.at("labels", default: auto) } else { auto }
       guides.push((
         kind: "colourbar",
         aesthetics: aesthetics,
         title: first.title,
         domain: first.domain,
+        labels: user-labels,
+        typst-mark: typst-mark,
       ))
     } else {
       let breaks = pretty(first.domain.first(), first.domain.last(), n: 5)
+      let user-labels = if (
+        first.t.at("spec", default: none) != none
+      ) { first.t.spec.at("labels", default: auto) } else { auto }
       guides.push((
         kind: "size-ladder",
         aesthetics: aesthetics,
         title: first.title,
         domain: first.domain,
         breaks: breaks,
+        labels: user-labels,
         key: key-kind,
+        typst-mark: typst-mark,
       ))
     }
   }
@@ -443,7 +457,11 @@
   let title-size = theme.at("legend-title-size", default: 8pt)
   cetz.draw.content(
     (ox, cursor),
-    text(size: title-size, fill: title-colour, weight: title-weight)[#title],
+    text(
+      size: title-size,
+      fill: title-colour,
+      weight: title-weight,
+    )[#resolve-prose(title)],
     anchor: "north-west",
   )
 }
@@ -486,9 +504,14 @@
       bundle,
       ink: ink,
     )
-    let label-text = if (
-      type(labels) == array and i < labels.len()
-    ) { labels.at(i) } else { level }
+    let label-text = if type(labels) == function {
+      labels(level)
+    } else if type(labels) == array and i < labels.len() {
+      labels.at(i)
+    } else { level }
+    if guide.at("typst-mark", default: false) and type(label-text) == str {
+      label-text = eval-as-markup(label-text)
+    }
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
       text(size: text-size, fill: text-colour)[#label-text],
@@ -524,9 +547,18 @@
       bundle,
       ink: ink,
     )
+    let labels = guide.at("labels", default: auto)
+    let break-text = if type(labels) == function {
+      labels(value)
+    } else if type(labels) == array and i < labels.len() {
+      labels.at(i)
+    } else { _format-break(value) }
+    if guide.at("typst-mark", default: false) and type(break-text) == str {
+      break-text = eval-as-markup(break-text)
+    }
     cetz.draw.content(
       (ox + glyph-size * 2 + 0.15, cy - glyph-size),
-      text(size: text-size, fill: text-colour)[#_format-break(value)],
+      text(size: text-size, fill: text-colour)[#break-text],
       anchor: "west",
     )
   }
@@ -599,9 +631,16 @@
       (ox + bar-w + 0.1, cy),
       stroke: (paint: luma(33%), thickness: 0.3pt),
     )
+    let labels = guide.at("labels", default: auto)
+    let tick-text = if type(labels) == function {
+      labels(b)
+    } else { _format-break(b) }
+    if guide.at("typst-mark", default: false) and type(tick-text) == str {
+      tick-text = eval-as-markup(tick-text)
+    }
     cetz.draw.content(
       (ox + bar-w + tick-gap + 0.1, cy),
-      text(size: text-size, fill: text-colour)[#_format-break(b)],
+      text(size: text-size, fill: text-colour)[#tick-text],
       anchor: "west",
     )
   }

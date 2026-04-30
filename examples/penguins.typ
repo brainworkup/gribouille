@@ -27,7 +27,7 @@
   ),
   scales: (
     scale-x-continuous(),
-    scale-y-continuous(),
+    scale-y-continuous(labels: label-comma()),
     scale-colour-discrete(palette: (
       rgb("#ff8c00"),
       rgb("#800080"),
@@ -40,14 +40,19 @@
     )),
   ),
   labs: labs(
-    title: "Penguins Dataset",
-    subtitle: "Flipper length vs body mass by species",
-    caption: "Data from Palmer Archipelago (Antarctica) penguin dataset",
+    title: typst("Penguins *Dataset*"),
+    subtitle: typst([
+      Flipper length vs body mass by species:
+      #text(fill: rgb("#ff8c00"), weight: "bold")[Adelie],
+      #text(fill: rgb("#008B8B"), weight: "bold")[Chinstrap],
+      #text(fill: rgb("#800080"), weight: "bold")[Gentoo]
+    ]),
+    caption: "Data from Palmer Archipelago (Antarctica) penguin dataset.",
     colour: "Species",
     fill: "Species",
     shape: "Species",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
   ),
   theme: theme-minimal(),
   width: 11cm,

@@ -8,6 +8,7 @@
 
 #import "../data.typ": column
 #import "../utils/types.typ": infer-column-type, parse-number
+#import "../utils/typst-markup.typ": is-typst-markup
 
 #let _resolve-mapping(layer, plot-mapping) = {
   if layer.at("inherit-aes", default: true) and plot-mapping != none {
@@ -29,30 +30,33 @@
   if layer.data != none { layer.data } else { plot-data }
 }
 
-// A mapping value is either a plain string (column name) or a mapping-ref
-// annotation dict produced by `as-factor("col")` / `as-numeric("col")`.
-// Return the column name either way.
+// A mapping value is either a plain string (column name), a `mapping-ref`
+// annotation produced by `as-factor("col")` / `as-numeric("col")`, or a
+// `typst-markup` annotation produced by `typst("col")`. The two tag
+// kinds compose. Return the column name either way.
 #let mapping-ref-col(value) = {
-  if (
-    type(value) == dictionary
-      and value.at("kind", default: none) == "mapping-ref"
-  ) {
-    value.var
-  } else {
-    value
+  if type(value) != dictionary { return value }
+  let kind = value.at("kind", default: none)
+  if kind == "mapping-ref" {
+    return mapping-ref-col(value.at("var", default: none))
   }
+  if kind == "typst-markup" {
+    return mapping-ref-col(value.at("source", default: none))
+  }
+  value
 }
 
-// Return the forced type from a mapping-ref or `none` if not annotated.
+// Return the forced type from a `mapping-ref` (`as-factor` /
+// `as-numeric`), looking through `typst-markup` wrappers. Returns `none`
+// when no `mapping-ref` is present.
 #let mapping-ref-type(value) = {
-  if (
-    type(value) == dictionary
-      and value.at("kind", default: none) == "mapping-ref"
-  ) {
-    value.type
-  } else {
-    none
+  if type(value) != dictionary { return none }
+  let kind = value.at("kind", default: none)
+  if kind == "mapping-ref" { return value.type }
+  if kind == "typst-markup" {
+    return mapping-ref-type(value.at("source", default: none))
   }
+  none
 }
 
 // Two-arg `as-factor(data, col)` stamps each row with `_gribouille-factors`
@@ -162,6 +166,10 @@
       m != none and m.at(a, default: none) != none
     })
     if not mapped and user-scale == none { continue }
+    let typst-mark = layers.any(layer => {
+      let m = _resolve-mapping(layer, mapping)
+      m != none and is-typst-markup(m.at(a, default: none))
+    })
     let scale-type = if user-scale != none {
       user-scale.type
     } else {
@@ -208,6 +216,7 @@
       domain: domain,
       spec: user-scale,
       trans: trans,
+      typst-mark: typst-mark,
     )
     if user-scale != none and user-scale.at("temporal", default: none) != none {
       entry.insert("temporal", user-scale.temporal)
@@ -252,6 +261,9 @@
       domain: (lo, hi),
       spec: spec,
       trans: trans,
+      typst-mark: if target != none {
+        target.at("typst-mark", default: false)
+      } else { false },
     )
     let temporal = if target != none {
       target.at("temporal", default: none)

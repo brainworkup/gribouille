@@ -5,6 +5,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
+#import "../utils/typst-markup.typ": eval-as-markup
 
 /// Text label layer reading strings from the `label` aesthetic.
 ///
@@ -109,6 +110,9 @@
 
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
+  let label-typst = layer
+    .at("typst-marks", default: (:))
+    .at("label", default: false)
 
   for row in data {
     let cx = map-position(
@@ -124,6 +128,7 @@
     if cx == none or cy == none { continue }
     let label = row.at(label-col, default: none)
     if label == none { continue }
+    if label-typst { label = eval-as-markup(label) }
     let colour = if colour-col != none and colour-trained != none {
       (ctx.resolve-colour)(
         colour-trained,
