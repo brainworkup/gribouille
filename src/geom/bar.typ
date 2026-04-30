@@ -19,8 +19,9 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param width Bar width as a fraction of the category width (0 to 1).
+/// \@param colour Bar outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 /// \@param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
-/// \@param stroke Bar outline; `none` means no border.
+/// \@param stroke Bar outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
 /// \@param alpha Bar opacity in `[0, 1]`.
 /// \@param position Position adjustment: `"stack"` (default), `"dodge"`, `"fill"`, or `"identity"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -71,6 +72,7 @@
   mapping: none,
   data: none,
   width: 0.9,
+  colour: auto,
   fill: auto,
   stroke: none,
   alpha: auto,
@@ -80,6 +82,7 @@
   mapping: mapping,
   data: data,
   width: width,
+  colour: colour,
   fill: fill,
   stroke: stroke,
   alpha: alpha,

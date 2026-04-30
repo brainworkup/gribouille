@@ -7,7 +7,9 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-continuous, map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
+#import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Bar layer with heights taken from the y aesthetic.
 ///
@@ -21,8 +23,9 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param width Bar width as a fraction of the category width (0 to 1).
+/// \@param colour Bar outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 /// \@param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
-/// \@param stroke Bar outline; `none` means no border.
+/// \@param stroke Bar outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
 /// \@param alpha Bar opacity in `[0, 1]`.
 /// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
 /// \@param stat Statistical transform name. Usually `"identity"`.
@@ -73,6 +76,7 @@
   mapping: none,
   data: none,
   width: 0.9,
+  colour: auto,
   fill: auto,
   stroke: none,
   alpha: auto,
@@ -85,7 +89,13 @@
   geom: "col",
   mapping: mapping,
   data: data,
-  params: (width: width, fill: fill, stroke: stroke, alpha: alpha),
+  params: (
+    width: width,
+    colour: colour,
+    fill: fill,
+    stroke: stroke,
+    alpha: alpha,
+  ),
   key: key,
   stat: stat,
   position: position,
@@ -134,15 +144,14 @@
       and vmax-col != none
   )
 
-  let fill-col = mapping.at("fill", default: none)
-  let fill-trained = ctx.trained.at("fill", default: none)
-  let default-fill = if (
-    layer.params.fill != auto and layer.params.fill != none
-  ) {
-    layer.params.fill
-  } else {
-    rgb("#4c78a8")
-  }
+  let neutral-fill = rgb("#4c78a8")
+  let ink = ctx.theme.at("ink", default: black)
+  let (default-colour, default-fill) = resolve-pair-defaults(
+    layer,
+    mapping,
+    ink,
+    neutral-fill,
+  )
 
   let baseline-vc = map-continuous(
     calc.max(0.0, value-trained.domain.at(0)),
@@ -207,15 +216,20 @@
       bar-half = (category-span * bar-width-fraction / n) / 2
     }
 
-    let colour = if fill-col != none and fill-trained != none {
-      (ctx.resolve-colour)(
-        fill-trained,
-        row.at(fill-col, default: none),
-        ctx.palette,
-      )
-    } else { default-fill }
-    let alpha = resolve-alpha(layer, mapping, ctx, row)
-    let final-fill = apply-alpha(colour, alpha)
+    let final-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-fill,
+    )
+    let stroke-spec = resolve-stroke-spec(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
+    )
 
     let (a, b) = if flipped {
       ((v-lo-c, centre - bar-half), (v-hi-c, centre + bar-half))
@@ -227,9 +241,7 @@
       a,
       b,
       fill: final-fill,
-      stroke: if layer.params.stroke == none { none } else {
-        layer.params.stroke
-      },
+      stroke: stroke-spec,
     )
   }
 }

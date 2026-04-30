@@ -11,6 +11,7 @@
 #import "../utils/colour-resolve.typ": (
   apply-alpha, resolve-alpha, resolve-linewidth,
 )
+#import "../utils/aes-pair.typ": aes-set
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -123,6 +124,10 @@
   let fill-pinned = (
     layer.params.fill != auto and layer.params.fill != none
   )
+  // Exclusive-default rule: when only `fill` is set, the line is suppressed.
+  let suppress-line = (
+    aes-set(layer, mapping, "fill") and not aes-set(layer, mapping, "colour")
+  )
   let default-colour = if colour-pinned { layer.params.colour } else {
     rgb("#3b5998")
   }
@@ -197,7 +202,7 @@
         map-position(y-trained, p.y, ctx.py-range),
       ))
       .filter(p => p.at(0) != none and p.at(1) != none)
-    if line-pts.len() >= 2 {
+    if line-pts.len() >= 2 and not suppress-line {
       let thickness = resolve-linewidth(
         layer,
         mapping,

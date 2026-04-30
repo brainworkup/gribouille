@@ -6,7 +6,8 @@
 
 #import "../../src/utils/fill-resolve.typ": resolve-fill-colour
 #import "../../src/utils/colour-resolve.typ": resolve-stroke-colour
-#import "../../src/geom/point.typ": _build-stroke
+#import "../../src/utils/stroke.typ": build-stroke
+#import "../../src/utils/aes-pair.typ": aes-set, resolve-pair-defaults
 
 #let fake-trained = (type: "discrete", domain: ("a", "b"))
 #let marker-resolve(trained, value, palette) = {
@@ -82,21 +83,21 @@
   rgb("#abcdef"),
 )
 
-// 5. `_build-stroke` returns `none` when the layer disables stroke entirely
+// 5. `build-stroke` returns `none` when the layer disables stroke entirely
 // or sets it to a zero length, so the `colour` aesthetic has no effect on a
 // stroke-less point.
-#assert.eq(_build-stroke(none, rgb("#ff0000")), none)
-#assert.eq(_build-stroke(0pt, rgb("#ff0000")), none)
+#assert.eq(build-stroke(none, rgb("#ff0000")), none)
+#assert.eq(build-stroke(0pt, rgb("#ff0000")), none)
 
 // 6. A length stroke is wrapped into a CeTZ stroke dict with the resolved
 // colour-scale paint injected.
-#let stroke-from-length = _build-stroke(0.5pt, rgb("#ff0000"))
+#let stroke-from-length = build-stroke(0.5pt, rgb("#ff0000"))
 #assert.eq(stroke-from-length.thickness, 0.5pt)
 #assert.eq(stroke-from-length.paint, rgb("#ff0000"))
 
 // 7. A user-supplied stroke dict keeps its explicit `paint` and only fills in
 // missing fields, so fixed-stroke layers ignore the resolved colour scale.
-#let stroke-from-dict = _build-stroke(
+#let stroke-from-dict = build-stroke(
   (paint: rgb("#222222"), thickness: 0.4pt),
   rgb("#ff0000"),
 )
@@ -154,5 +155,98 @@
   ),
   rgb("#abcdef").transparentize(50%),
 )
+
+// 12. Suppress-default sentinel: passing `none` as the default makes
+// `resolve-fill-colour` return `none` when neither pin nor mapping applies,
+// instead of a neutral fallback. This lets dual-aesthetic geoms skip injecting
+// a fill default when the user has only set `colour`.
+#assert.eq(
+  resolve-fill-colour(layer(), (:), make-ctx((:)), (:), none),
+  none,
+)
+#assert.eq(
+  resolve-stroke-colour(
+    (geom: "point", params: (colour: auto, alpha: 1)),
+    (:),
+    make-ctx((:)),
+    (:),
+    none,
+  ),
+  none,
+)
+
+// 13. `aes-set` distinguishes pinned, mapped, and unset states.
+#let make-layer(params) = (geom: "x", params: params)
+#assert.eq(aes-set(make-layer((colour: auto)), (:), "colour"), false)
+#assert.eq(aes-set(make-layer((colour: none)), (:), "colour"), false)
+#assert.eq(
+  aes-set(make-layer((colour: rgb("#ff0000"))), (:), "colour"),
+  true,
+)
+#assert.eq(
+  aes-set(make-layer((colour: auto)), (colour: "k"), "colour"),
+  true,
+)
+
+// 14. `resolve-pair-defaults` encodes the exclusive rule:
+//   - both unset -> both defaults preserved
+//   - only colour set -> fill default suppressed
+//   - only fill set -> colour default suppressed
+//   - both set -> both defaults preserved (caller decides)
+#let dc = rgb("#000000")
+#let df = rgb("#cccccc")
+#assert.eq(
+  resolve-pair-defaults(make-layer((colour: auto, fill: auto)), (:), dc, df),
+  (dc, df),
+)
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: rgb("#ff0000"), fill: auto)),
+    (:),
+    dc,
+    df,
+  ),
+  (dc, none),
+)
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: auto, fill: auto)),
+    (colour: "k"),
+    dc,
+    df,
+  ),
+  (dc, none),
+)
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: auto, fill: rgb("#00ff00"))),
+    (:),
+    dc,
+    df,
+  ),
+  (none, df),
+)
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: auto, fill: auto)),
+    (fill: "k"),
+    dc,
+    df,
+  ),
+  (none, df),
+)
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: rgb("#ff0000"), fill: rgb("#00ff00"))),
+    (:),
+    dc,
+    df,
+  ),
+  (dc, df),
+)
+
+// 15. `build-stroke` returns `none` when the resolved paint is `none`, so
+// suppressing the colour default propagates through to "no outline drawn".
+#assert.eq(build-stroke(0.5pt, none), none)
 
 aesthetic colour/fill split tests passed.

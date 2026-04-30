@@ -5,6 +5,10 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
+#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/stroke.typ": build-stroke
 
 /// Boxed text label layer reading strings from the `label` aesthetic.
 ///
@@ -18,9 +22,9 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `label`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param size Text size (a Typst length).
-/// \@param colour Text colour. `auto` inherits the theme `ink`.
-/// \@param fill Box fill colour. `auto` inherits the theme `paper`.
-/// \@param stroke Box stroke (length + colour).
+/// \@param colour Paint applied to both the box outline and the label text. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
+/// \@param fill Box fill colour. `auto` resolves via the fill scale, falling back to the theme `paper` only when neither `colour` nor `fill` is set.
+/// \@param stroke Box outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
 /// \@param inset Padding between text and box border (a Typst length).
 /// \@param radius Corner radius of the box (a Typst length).
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
@@ -84,7 +88,7 @@
   size: 8pt,
   colour: auto,
   fill: auto,
-  stroke: 0.4pt + rgb("#888888"),
+  stroke: 0.4pt,
   inset: 2pt,
   radius: 1pt,
   anchor: "center",
@@ -125,6 +129,15 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
+  let ink = ctx.theme.at("ink", default: black)
+  let paper = ctx.theme.at("paper", default: white)
+  let (default-colour, default-fill) = resolve-pair-defaults(
+    layer,
+    mapping,
+    ink,
+    paper,
+  )
+
   for row in data {
     let cx = map-position(
       x-trained,
@@ -139,18 +152,34 @@
     if cx == none or cy == none { continue }
     let label = row.at(label-col, default: none)
     if label == none { continue }
-    let _colour = if layer.params.colour == auto {
-      ctx.theme.at("ink", default: black)
-    } else { layer.params.colour }
-    let _fill = if layer.params.fill == auto {
-      ctx.theme.at("paper", default: white)
-    } else { layer.params.fill }
+    // Text must remain visible regardless of the exclusive-default rule, so
+    // resolve with `ink` as the unconditional fallback; the box outline
+    // follows `default-colour` and is suppressed when only `fill` is set.
+    let text-paint = resolve-stroke-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      ink,
+    )
+    let box-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-fill,
+    )
+    let stroke-spec = if default-colour == none {
+      none
+    } else {
+      build-stroke(layer.params.stroke, text-paint)
+    }
     let body = box(
-      fill: _fill,
-      stroke: layer.params.stroke,
+      fill: box-fill,
+      stroke: stroke-spec,
       inset: layer.params.inset,
       radius: layer.params.radius,
-      text(size: layer.params.size, fill: _colour)[#label],
+      text(size: layer.params.size, fill: text-paint)[#label],
     )
     cetz.draw.content(
       (cx + layer.params.dx, cy + layer.params.dy),

@@ -8,10 +8,10 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-discrete, map-position
 #import "../utils/palette.typ": default-shapes
-#import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-size, resolve-stroke-colour,
-)
+#import "../utils/colour-resolve.typ": resolve-size
 #import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/stroke.typ": resolve-stroke-spec
 #import "../guide/draw-marker.typ": draw-marker
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
@@ -28,9 +28,9 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param size Marker size (a Typst length).
-/// \@param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
+/// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 /// \@param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
-/// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`.
+/// \@param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
 /// \@param alpha Marker opacity in `[0, 1]`.
 /// \@param shape Marker shape keyword (e.g. `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
 /// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
@@ -80,9 +80,9 @@
   mapping: none,
   data: none,
   size: auto,
-  stroke: 0.5pt,
-  fill: auto,
   colour: auto,
+  fill: auto,
+  stroke: 0.5pt,
   alpha: auto,
   shape: auto,
   key: auto,
@@ -96,9 +96,9 @@
   data: data,
   params: (
     size: size,
-    stroke: stroke,
-    fill: fill,
     colour: colour,
+    fill: fill,
+    stroke: stroke,
     alpha: alpha,
     shape: shape,
   ),
@@ -110,24 +110,6 @@
 
 #let _palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
 
-// Build a CeTZ stroke dictionary by injecting `paint` into a thickness-only
-// stroke spec. Returns `none` when the layer disabled the stroke.
-#let _build-stroke(stroke-param, stroke-paint) = {
-  if stroke-param == none { return none }
-  if type(stroke-param) == length {
-    if stroke-param == 0pt { return none }
-    return (paint: stroke-paint, thickness: stroke-param)
-  }
-  if type(stroke-param) == dictionary {
-    let merged = stroke-param
-    if merged.at("paint", default: none) == none {
-      merged.insert("paint", stroke-paint)
-    }
-    return merged
-  }
-  stroke-param
-}
-
 #let draw(layer, ctx) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
@@ -137,6 +119,12 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  let (default-colour, default-fill) = resolve-pair-defaults(
+    layer,
+    mapping,
+    ink,
+    ink,
+  )
 
   let shape-param = layer.params.shape
   let shape-pinned = shape-param != auto and shape-param != none
@@ -163,11 +151,20 @@
     )
     if cx == none or cy == none { continue }
     let size = resolve-size(layer, mapping, ctx, row, 1.5pt)
-    let body-fill = resolve-fill-colour(layer, mapping, ctx, row, ink)
-    let stroke-spec = if layer.params.stroke == none { none } else {
-      let stroke-paint = resolve-stroke-colour(layer, mapping, ctx, row, ink)
-      _build-stroke(layer.params.stroke, stroke-paint)
-    }
+    let body-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-fill,
+    )
+    let stroke-spec = resolve-stroke-spec(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
+    )
     let shape-kind = if shape-pinned {
       shape-param
     } else if shape-col != none and shape-trained != none {

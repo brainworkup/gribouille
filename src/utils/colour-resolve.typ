@@ -11,6 +11,7 @@
 /// \@param alpha Opacity in `[0, 1]`.
 /// \@returns The colour with alpha applied.
 #let apply-alpha(colour, alpha) = {
+  if colour == none { return none }
   if alpha < 1 { colour.transparentize((1 - alpha) * 100%) } else { colour }
 }
 

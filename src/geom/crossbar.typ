@@ -4,7 +4,10 @@
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
+#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/stroke.typ": build-stroke
 
 /// Crossbar layer: a box from `ymin` to `ymax` with a horizontal bar at `y`.
 ///
@@ -19,8 +22,8 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `ymin`, `ymax`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param width Box width. In x data units for continuous x; a fraction of the slot width for discrete x.
+/// \@param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink only when neither `colour` nor `fill` is set.
 /// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
-/// \@param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink.
 /// \@param stroke Stroke thickness for the box outline.
 /// \@param middle-stroke Stroke thickness for the median bar.
 /// \@param alpha Box opacity in `[0, 1]`.
@@ -67,8 +70,8 @@
   mapping: none,
   data: none,
   width: 0.6,
-  fill: auto,
   colour: auto,
+  fill: auto,
   stroke: 0.6pt,
   middle-stroke: 1.2pt,
   alpha: auto,
@@ -82,8 +85,8 @@
   data: data,
   params: (
     width: width,
-    fill: fill,
     colour: colour,
+    fill: fill,
     stroke: stroke,
     middle-stroke: middle-stroke,
     alpha: alpha,
@@ -108,18 +111,14 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let fill-col = mapping.at("fill", default: none)
-  let fill-trained = ctx.trained.at("fill", default: none)
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
   let neutral-fill = rgb("#cccccc")
   let ink = ctx.theme.at("ink", default: black)
-  let default-fill = if (
-    layer.params.fill != auto and layer.params.fill != none
-  ) { layer.params.fill } else { neutral-fill }
-  let default-stroke-colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ink }
+  let (default-colour, default-fill) = resolve-pair-defaults(
+    layer,
+    mapping,
+    ink,
+    neutral-fill,
+  )
 
   let half-width = layer.params.width / 2
 
@@ -138,33 +137,24 @@
     let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
     let (cx-lo, cx-hi) = if band == none { (cx, cx) } else { band }
 
-    let resolved-fill = if (
-      fill-col != none and fill-trained != none and layer.params.fill == auto
-    ) {
-      (ctx.resolve-colour)(
-        fill-trained,
-        row.at(fill-col, default: none),
-        ctx.palette,
-      )
-    } else { default-fill }
-    let resolved-stroke = if (
-      colour-col != none
-        and colour-trained != none
-        and layer.params.colour == auto
-    ) {
-      (ctx.resolve-colour)(
-        colour-trained,
-        row.at(colour-col, default: none),
-        ctx.palette,
-      )
-    } else { default-stroke-colour }
-
-    let alpha = resolve-alpha(layer, mapping, ctx, row)
-    let final-fill = apply-alpha(resolved-fill, alpha)
-    let stroke-spec = (paint: resolved-stroke, thickness: layer.params.stroke)
-    let middle-stroke-spec = (
-      paint: resolved-stroke,
-      thickness: layer.params.middle-stroke,
+    let final-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-fill,
+    )
+    let resolved-stroke = resolve-stroke-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
+    )
+    let stroke-spec = build-stroke(layer.params.stroke, resolved-stroke)
+    let middle-stroke-spec = build-stroke(
+      layer.params.middle-stroke,
+      resolved-stroke,
     )
 
     cetz.draw.rect(
