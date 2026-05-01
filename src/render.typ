@@ -1103,6 +1103,43 @@
   })
 }
 
+#let _render-canvas-single(
+  spec,
+  theme,
+  trained,
+  prepared,
+  coord,
+  guides,
+  legend-gap,
+  margin,
+  width-units,
+  height-units,
+) = {
+  let px-lo = margin.left
+  let px-hi = width-units - margin.right
+  let py-lo = margin.bottom
+  let py-hi = height-units - margin.top
+
+  let box-w = px-hi - px-lo
+  let box-h = py-hi - py-lo
+  let (inner-w, inner-h) = _fixed-inner-size(coord, trained, box-w, box-h)
+
+  cetz.canvas(length: 1cm, {
+    _draw-axis-and-layers(
+      prepared,
+      trained,
+      theme,
+      spec,
+      (px-lo, py-lo),
+      (inner-w, inner-h),
+      guides: guides,
+      legend-origin: (px-lo + inner-w + legend-gap, py-lo),
+      legend-height: inner-h,
+      flipped: _is-flipped(coord),
+    )
+  })
+}
+
 #let _render-decorate(canvas, labs, theme) = {
   if labs == none { return canvas }
   let title-block = if labs.title != none {
@@ -1587,29 +1624,18 @@
       }
     })
   } else {
-    let px-lo = margin.left
-    let px-hi = width-units - margin.right
-    let py-lo = margin.bottom
-    let py-hi = height-units - margin.top
-
-    let box-w = px-hi - px-lo
-    let box-h = py-hi - py-lo
-    let (inner-w, inner-h) = _fixed-inner-size(coord, trained, box-w, box-h)
-
-    cetz.canvas(length: 1cm, {
-      _draw-axis-and-layers(
-        prepared,
-        trained,
-        theme,
-        spec,
-        (px-lo, py-lo),
-        (inner-w, inner-h),
-        guides: guides,
-        legend-origin: (px-lo + inner-w + legend-gap, py-lo),
-        legend-height: inner-h,
-        flipped: _is-flipped(coord),
-      )
-    })
+    _render-canvas-single(
+      spec,
+      theme,
+      trained,
+      prepared,
+      coord,
+      guides,
+      legend-gap,
+      margin,
+      width-units,
+      height-units,
+    )
   }
 
   _render-decorate(canvas, labs, theme)
