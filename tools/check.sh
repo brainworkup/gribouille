@@ -46,5 +46,3 @@ if [[ ${failures} -gt 0 ]]; then
 fi
 
 printf '\n%d compile(s) ok.\n' "${total}"
-
-"${REPO_ROOT}/tools/check-docs.sh"

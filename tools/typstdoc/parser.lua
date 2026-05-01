@@ -228,7 +228,7 @@ local function parse_doc_block(doc_lines, file, start_line)
 
   local function flush_para()
     if #para > 0 then
-      local text = util.trim(table.concat(para, "\n"))
+      local text = util.trim(table.concat(para, " "))
       if mode == "summary" then
         doc.summary = text
         mode = "description"
