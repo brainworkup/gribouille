@@ -288,7 +288,7 @@ Items outside the ggplot2 surface: ggforce ports and gribouille-native convenien
 | ------------------------------------ | --------------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ggforce::geom_ellipse()`            | `geom-ellipse` (planned).   | ⬜     | P2       | Standalone ellipse from `(x0, y0, a, b, angle)` parameters; reuses polygon sampling plus a 2D rotation.                                                                |
 | `ggforce::geom_mark_*()` family      | `geom-mark` (planned).      | ⬜     | P3       | Unified annotation geom with `method: "circle" / "ellipse" / "hull" / "rect"` covering `_circle`/`_ellipse`/`_hull`/`_rect`. `method` avoids clash with `shape` aesthetic. |
-| native (no upstream)                 | `geom-typst` (planned).     | ⬜     | P2       | Sibling of `geom-text`; the geom always evaluates the `label` aesthetic as Typst markup via `eval-as-markup`. No call-site `typst()` tag needed. Must support `annotate("typst", ...)` parity with `geom-text`. |
+| native (no upstream)                 | `geom-typst` (planned).     | ⬜     | P2       | Sibling of `geom-text`; the geom always evaluates the `label` aesthetic as Typst markup via `eval-as-markup`. No call-site `typst()` tag needed. Must support `annotate("typst", ...)` and `annotate("text", label: typst(...))` (existing tag must survive `annotate`'s per-row dataset and be honoured by `geom-text`). |
 
 ## Coverage at a glance
 
