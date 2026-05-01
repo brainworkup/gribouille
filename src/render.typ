@@ -1079,6 +1079,30 @@
   )
 }
 
+#let _train-panels(spec, panels, trained, coord, labs, free-x, free-y) = {
+  if not (free-x or free-y) { return () }
+  panels.map(p => {
+    let pt = train(
+      scales: spec.scales,
+      layers: p.layers,
+      mapping: spec.mapping,
+      data: spec.data,
+    )
+    pt = _apply-labs(pt, labs)
+    pt = _post-train(pt, p.layers)
+    pt = _apply-coord(pt, coord)
+    pt = _apply-flip(pt, coord)
+    let merged = trained
+    if free-x and pt.at("x", default: none) != none {
+      merged.insert("x", pt.x)
+    }
+    if free-y and pt.at("y", default: none) != none {
+      merged.insert("y", pt.y)
+    }
+    merged
+  })
+}
+
 #let _render-decorate(canvas, labs, theme) = {
   if labs == none { return canvas }
   let title-block = if labs.title != none {
@@ -1202,30 +1226,27 @@
   // scales (colour, fill, size, shape, linetype) stay shared so legends do
   // not fragment.
   let wrap-scales = if facet-wrap-mode { spec.facet.scales } else { "fixed" }
-  let free-x = wrap-scales == "free" or wrap-scales == "free_x"
-  let free-y = wrap-scales == "free" or wrap-scales == "free_y"
-  let panel-trained-list = if facet-wrap-mode and (free-x or free-y) {
-    panels.map(p => {
-      let pt = train(
-        scales: spec.scales,
-        layers: p.layers,
-        mapping: spec.mapping,
-        data: spec.data,
+  let free-x = (
+    facet-wrap-mode
+      and (
+        wrap-scales == "free" or wrap-scales == "free_x"
       )
-      pt = _apply-labs(pt, labs)
-      pt = _post-train(pt, p.layers)
-      pt = _apply-coord(pt, coord)
-      pt = _apply-flip(pt, coord)
-      let merged = trained
-      if free-x and pt.at("x", default: none) != none {
-        merged.insert("x", pt.x)
-      }
-      if free-y and pt.at("y", default: none) != none {
-        merged.insert("y", pt.y)
-      }
-      merged
-    })
-  } else { () }
+  )
+  let free-y = (
+    facet-wrap-mode
+      and (
+        wrap-scales == "free" or wrap-scales == "free_y"
+      )
+  )
+  let panel-trained-list = _train-panels(
+    spec,
+    panels,
+    trained,
+    coord,
+    labs,
+    free-x,
+    free-y,
+  )
 
   let width-units = spec.width / 1cm
   let height-units = spec.height / 1cm
