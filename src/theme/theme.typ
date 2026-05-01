@@ -77,7 +77,7 @@
 /// \@internal
 /// \@param theme Merged theme dictionary.
 /// \@param surface Text surface key, e.g. `"axis-text"`.
-/// \@returns Dict with `size`, `fill`, `weight`, `family`, `angle`, `typst`.
+/// \@returns Dict with `size`, `fill`, `weight`, `typst`.
 #let _text-style(theme, surface) = {
   let el = resolve-element(theme, surface)
   let colour = el.at("colour", default: none)
@@ -86,8 +86,6 @@
     size: el.at("size", default: 9pt),
     fill: if colour != none { colour } else { theme.ink },
     weight: if weight != none { weight } else { "regular" },
-    family: el.at("family", default: none),
-    angle: el.at("angle", default: 0deg),
     typst: el.at("kind", default: none) == "element-typst",
   )
 }
