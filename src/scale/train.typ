@@ -161,15 +161,17 @@
   )
   for a in aesthetics {
     let user-scale = _find-user-scale(scales, a)
-    let mapped = layers.any(layer => {
+    let mapped = false
+    let typst-mark = false
+    for layer in layers {
       let m = _resolve-mapping(layer, mapping)
-      m != none and m.at(a, default: none) != none
-    })
+      if m == none { continue }
+      let v = m.at(a, default: none)
+      if v == none { continue }
+      mapped = true
+      if is-typst-markup(v) { typst-mark = true }
+    }
     if not mapped and user-scale == none { continue }
-    let typst-mark = layers.any(layer => {
-      let m = _resolve-mapping(layer, mapping)
-      m != none and is-typst-markup(m.at(a, default: none))
-    })
     let scale-type = if user-scale != none {
       user-scale.type
     } else {

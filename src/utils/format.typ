@@ -206,46 +206,29 @@
   typst("$" + m-str + " times 10^(" + str(exp) + ")$")
 }
 
-#let _ascii-upper = (
-  ("a", "A"),
-  ("b", "B"),
-  ("c", "C"),
-  ("d", "D"),
-  ("e", "E"),
-  ("f", "F"),
-  ("g", "G"),
-  ("h", "H"),
-  ("i", "I"),
-  ("j", "J"),
-  ("k", "K"),
-  ("l", "L"),
-  ("m", "M"),
-  ("n", "N"),
-  ("o", "O"),
-  ("p", "P"),
-  ("q", "Q"),
-  ("r", "R"),
-  ("s", "S"),
-  ("t", "T"),
-  ("u", "U"),
-  ("v", "V"),
-  ("w", "W"),
-  ("x", "X"),
-  ("y", "Y"),
-  ("z", "Z"),
+#let _lower-clusters = "abcdefghijklmnopqrstuvwxyz".clusters()
+#let _upper-clusters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".clusters()
+#let _to-upper-map = {
+  let m = (:)
+  for (i, c) in _lower-clusters.enumerate() {
+    m.insert(c, _upper-clusters.at(i))
+  }
+  m
+}
+#let _to-lower-map = {
+  let m = (:)
+  for (i, c) in _upper-clusters.enumerate() {
+    m.insert(c, _lower-clusters.at(i))
+  }
+  m
+}
+
+#let _to-upper(s) = (
+  s.clusters().map(c => _to-upper-map.at(c, default: c)).join()
 )
-
-#let _to-upper(s) = {
-  let out = s
-  for (lo, hi) in _ascii-upper { out = out.replace(lo, hi) }
-  out
-}
-
-#let _to-lower(s) = {
-  let out = s
-  for (lo, hi) in _ascii-upper { out = out.replace(hi, lo) }
-  out
-}
+#let _to-lower(s) = (
+  s.clusters().map(c => _to-lower-map.at(c, default: c)).join()
+)
 
 /// Title-case a string break: capitalise the first letter of each
 /// space-separated word.

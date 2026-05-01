@@ -13,10 +13,8 @@
 #import "utils/palette.typ": default-discrete
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
-#import "utils/typst-markup.typ": eval-as-markup, is-typst-markup, resolve-prose
-#import "utils/aes-resolve.typ": (
-  resolve-aes-value, resolve-break-display, unwrap-mapping-refs,
-)
+#import "utils/typst-markup.typ": is-typst-markup, resolve-prose
+#import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
 #import "geom/path.typ" as path-geom
@@ -556,30 +554,16 @@
     )
   }
 
-  let _x-typst = if x-trained != none {
-    x-trained.at("typst-mark", default: false)
-  } else { false }
-  let _y-typst = if y-trained != none {
-    y-trained.at("typst-mark", default: false)
-  } else { false }
-  let _x-labels = if (
-    x-trained != none and x-trained.at("spec", default: none) != none
-  ) {
-    x-trained.spec.at("labels", default: auto)
-  } else { auto }
-  let _y-labels = if (
-    y-trained != none and y-trained.at("spec", default: none) != none
-  ) {
-    y-trained.spec.at("labels", default: auto)
-  } else { auto }
-  let _apply-labels(labels, value, idx, fallback) = {
-    if type(labels) == function { return labels(value) }
-    if type(labels) == array and idx < labels.len() { return labels.at(idx) }
-    fallback
-  }
-  let _maybe-typst(value, mark) = {
-    if mark and type(value) == str { eval-as-markup(value) } else { value }
-  }
+  let _axis-display(trained) = (
+    typst-mark: if trained != none {
+      trained.at("typst-mark", default: false)
+    } else { false },
+    labels: if trained != none and trained.at("spec", default: none) != none {
+      trained.spec.at("labels", default: auto)
+    } else { auto },
+  )
+  let _x-disp = _axis-display(x-trained)
+  let _y-disp = _axis-display(y-trained)
 
   if x-trained != none and x-trained.type == "continuous" {
     let breaks = _axis-breaks(x-trained)
@@ -591,8 +575,17 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      let txt = _apply-labels(_x-labels, b, idx, _axis-label(x-trained, b))
-      _draw-x-label(cx, _maybe-typst(txt, _x-typst), idx)
+      _draw-x-label(
+        cx,
+        resolve-label(
+          _x-disp.labels,
+          b,
+          idx,
+          _axis-label(x-trained, b),
+          typst-mark: _x-disp.typst-mark,
+        ),
+        idx,
+      )
     }
   } else if x-trained != none and x-trained.type == "discrete" {
     let n = x-trained.domain.len()
@@ -601,8 +594,17 @@
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
-      let txt = _apply-labels(_x-labels, level, idx, level)
-      _draw-x-label(cx, _maybe-typst(txt, _x-typst), idx)
+      _draw-x-label(
+        cx,
+        resolve-label(
+          _x-disp.labels,
+          level,
+          idx,
+          level,
+          typst-mark: _x-disp.typst-mark,
+        ),
+        idx,
+      )
     }
   }
 
@@ -617,14 +619,20 @@
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
-        let txt = _apply-labels(_y-labels, b, idx, _axis-label(y-trained, b))
+        let txt = resolve-label(
+          _y-disp.labels,
+          b,
+          idx,
+          _axis-label(y-trained, b),
+          typst-mark: _y-disp.typst-mark,
+        )
         content(
           (px-lo - 0.2, cy),
           text(
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#_maybe-typst(txt, _y-typst)],
+          )[#txt],
           anchor: "east",
         )
       }
@@ -637,14 +645,20 @@
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
-        let txt = _apply-labels(_y-labels, level, idx, level)
+        let txt = resolve-label(
+          _y-disp.labels,
+          level,
+          idx,
+          level,
+          typst-mark: _y-disp.typst-mark,
+        )
         content(
           (px-lo - 0.2, cy),
           text(
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#_maybe-typst(txt, _y-typst)],
+          )[#txt],
           anchor: "east",
         )
       }

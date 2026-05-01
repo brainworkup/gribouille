@@ -12,7 +12,8 @@
 #import "theme/defaults.typ": resolve-colour, resolve-field
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-ref-col
-#import "utils/typst-markup.typ": eval-as-markup, resolve-prose
+#import "utils/typst-markup.typ": resolve-prose
+#import "utils/aes-resolve.typ": resolve-label
 
 // Aesthetic emission order. `x` and `y` train but never produce a guide; the
 // rest are emitted in this fixed order so merged guides land at the position
@@ -504,14 +505,13 @@
       bundle,
       ink: ink,
     )
-    let label-text = if type(labels) == function {
-      labels(level)
-    } else if type(labels) == array and i < labels.len() {
-      labels.at(i)
-    } else { level }
-    if guide.at("typst-mark", default: false) and type(label-text) == str {
-      label-text = eval-as-markup(label-text)
-    }
+    let label-text = resolve-label(
+      labels,
+      level,
+      i,
+      level,
+      typst-mark: guide.at("typst-mark", default: false),
+    )
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
       text(size: text-size, fill: text-colour)[#label-text],
@@ -548,14 +548,13 @@
       ink: ink,
     )
     let labels = guide.at("labels", default: auto)
-    let break-text = if type(labels) == function {
-      labels(value)
-    } else if type(labels) == array and i < labels.len() {
-      labels.at(i)
-    } else { _format-break(value) }
-    if guide.at("typst-mark", default: false) and type(break-text) == str {
-      break-text = eval-as-markup(break-text)
-    }
+    let break-text = resolve-label(
+      labels,
+      value,
+      i,
+      _format-break(value),
+      typst-mark: guide.at("typst-mark", default: false),
+    )
     cetz.draw.content(
       (ox + glyph-size * 2 + 0.15, cy - glyph-size),
       text(size: text-size, fill: text-colour)[#break-text],
@@ -621,7 +620,9 @@
     stroke: (paint: luma(53%), thickness: 0.2pt),
   )
   let breaks = pretty(lo, hi, n: 5)
-  for b in breaks {
+  let labels = guide.at("labels", default: auto)
+  let typst-mark = guide.at("typst-mark", default: false)
+  for (i, b) in breaks.enumerate() {
     if hi == lo { continue }
     let t = (b - lo) / (hi - lo)
     if t < 0 or t > 1 { continue }
@@ -631,13 +632,13 @@
       (ox + bar-w + 0.1, cy),
       stroke: (paint: luma(33%), thickness: 0.3pt),
     )
-    let labels = guide.at("labels", default: auto)
-    let tick-text = if type(labels) == function {
-      labels(b)
-    } else { _format-break(b) }
-    if guide.at("typst-mark", default: false) and type(tick-text) == str {
-      tick-text = eval-as-markup(tick-text)
-    }
+    let tick-text = resolve-label(
+      labels,
+      b,
+      i,
+      _format-break(b),
+      typst-mark: typst-mark,
+    )
     cetz.draw.content(
       (ox + bar-w + tick-gap + 0.1, cy),
       text(size: text-size, fill: text-colour)[#tick-text],

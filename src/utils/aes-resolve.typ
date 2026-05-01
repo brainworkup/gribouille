@@ -32,13 +32,15 @@
     return unwrap-mapping-refs(spec.at("var", default: none))
   }
   if kind == "typst-markup" {
-    let inner = unwrap-mapping-refs(spec.at("source", default: none))
+    let source = spec.at("source", default: none)
+    let inner = unwrap-mapping-refs(source)
     if (
       type(inner) == dictionary
         and inner.at("kind", default: none) == "typst-markup"
     ) {
       return inner
     }
+    if inner == source { return spec }
     return (kind: "typst-markup", source: inner)
   }
   spec
@@ -112,4 +114,33 @@
   if value == none { return none }
   if is-typst-markup(spec) { return eval-as-markup(value) }
   value
+}
+
+/// Resolve a break-display label by combining the scale's `labels:`
+/// override (function or array) and a typst-mark eval pass.
+///
+/// Resolution order:
+///
+/// - When `labels` is a function: call `labels(value)`.
+/// - When `labels` is an array and `idx` is in range: index it.
+/// - Otherwise: use `fallback`.
+///
+/// If the resolved label is a string and `typst-mark` is `true`, the
+/// string is evaluated as Typst markup. Content and other types pass
+/// through.
+///
+/// \@internal
+/// \@param labels A function, array, `auto`, or `none`.
+/// \@param value The break value (passed to a function callback).
+/// \@param idx Zero-based index of the break in its enumeration.
+/// \@param fallback Default label when neither callback nor array applies.
+/// \@param typst-mark Whether the originating aesthetic is typst-tagged.
+/// \@returns The resolved label, possibly evaluated as Typst markup.
+#let resolve-label(labels, value, idx, fallback, typst-mark: false) = {
+  let txt = if type(labels) == function {
+    labels(value)
+  } else if type(labels) == array and idx < labels.len() {
+    labels.at(idx)
+  } else { fallback }
+  if typst-mark and type(txt) == str { eval-as-markup(txt) } else { txt }
 }
