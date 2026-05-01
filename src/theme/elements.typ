@@ -53,7 +53,7 @@
 /// )
 /// ```
 ///
-/// \@see \@theme, \@element-line, \@element-rect, \@element-blank
+/// \@see \@theme, \@element-line, \@element-rect, \@element-blank, \@element-typst
 #let element-text(
   size: none,
   weight: none,
@@ -62,6 +62,76 @@
   family: none,
 ) = (
   kind: "element-text",
+  size: size,
+  weight: weight,
+  colour: colour,
+  angle: angle,
+  family: family,
+)
+
+/// Typst-markup text element: same fields as \@element-text plus
+/// automatic Typst-markup evaluation for plain strings reaching this
+/// surface.
+///
+/// Drop-in replacement for \@element-text on any text key. Strings
+/// supplied via \@labs, scale names, or scale `labels:` callbacks are
+/// evaluated as Typst markup before rendering, so users do not need to
+/// wrap each value with \@typst. Per-call \@typst() and content (`[…]`)
+/// values still pass through unchanged.
+///
+/// \@category Themes
+/// \@stability stable
+/// \@since 0.1.0
+///
+/// \@param size Text size (a Typst length), or `none` to inherit.
+/// \@param weight Font weight (e.g. `"regular"`, `"bold"`), or `none`.
+/// \@param colour Text colour, or `none` to inherit.
+/// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
+/// \@param family Font family, or `none` to inherit.
+///
+/// \@returns Element dictionary consumed by \@theme.
+///
+/// \@examples Enable Typst markup for every plot title in a session by
+/// setting `plot-title: element-typst()` on the theme.
+/// ```
+/// #let d = ((x: 1, y: 1), (x: 2, y: 4), (x: 3, y: 9))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   labs: labs(title: "Mean $bar(x)$ over time"),
+///   theme: theme(plot-title: element-typst(size: 14pt, weight: "bold")),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples Mix typst and non-typst surfaces in the same theme:
+/// ```
+/// #let d = ((x: 1, y: 1), (x: 2, y: 4), (x: 3, y: 9))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   labs: labs(title: "Mean $bar(x)$", x: "Time (s)"),
+///   theme: theme(
+///     plot-title: element-typst(),
+///     axis-title: element-text(),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@theme, \@element-text, \@typst
+#let element-typst(
+  size: none,
+  weight: none,
+  colour: none,
+  angle: none,
+  family: none,
+) = (
+  kind: "element-typst",
   size: size,
   weight: weight,
   colour: colour,

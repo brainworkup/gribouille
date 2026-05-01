@@ -4,6 +4,7 @@
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "theme.typ": _apply-overrides
 
 /// Linedraw theme: white panel, strong black axes, very faint grid.
 ///
@@ -14,6 +15,7 @@
 /// \@param ink Foreground colour (axis lines, text). Default: `black`.
 /// \@param paper Background colour. Default: `white`.
 /// \@param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.
 ///
@@ -44,17 +46,38 @@
 /// )
 /// ```
 ///
+/// \@examples Rotate axis tick labels on top of the linedraw preset.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-linedraw(axis-text: element-text(angle: 30deg)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-bw, \@theme-void, \@theme
-#let theme-linedraw(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
-  kind: "theme",
-  name: "linedraw",
-  ink: ink,
-  paper: paper,
-  accent: accent,
-  panel-fill: paper,
-  grid-colour: col-mix(ink, paper, 0.9412),
-  grid-thickness: 0.3pt,
-  axis-colour: ink,
-  axis-thickness: 0.8pt,
-  axis-text-colour: ink,
-)
+#let theme-linedraw(
+  ink: _tr-ink,
+  paper: _tr-paper,
+  accent: rgb("#3366FF"),
+  ..fields,
+) = {
+  let base = (
+    kind: "theme",
+    name: "linedraw",
+    ink: ink,
+    paper: paper,
+    accent: accent,
+    panel-fill: paper,
+    grid-colour: col-mix(ink, paper, 0.9412),
+    grid-thickness: 0.3pt,
+    axis-colour: ink,
+    axis-thickness: 0.8pt,
+    axis-text-colour: ink,
+  )
+  _apply-overrides(base, fields)
+}

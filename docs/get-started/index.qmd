@@ -93,9 +93,11 @@ Drop the following into a `.typ` file alongside a CSV and render with `typst com
 ## The grammar in four parts
 
 Data
-: A list of dictionaries.
-Columns are dictionary keys; rows are entries.
-CSV files opened with `csv("file.csv", row-type: dictionary)` work out of the box.
+: One of two equivalent shapes, picked for whichever reads more naturally at the call site.
+Row-store: an array of dictionaries, one per observation, e.g. `((wt: 2.62, mpg: 21.0), (wt: 2.88, mpg: 21.0))`.
+Column-store: a dictionary of equal-length arrays, one per variable, e.g. `(wt: (2.62, 2.88), mpg: (21.0, 21.0))`.
+[`plot`](../reference/core/plot.qmd) and the per-layer `data:` parameter accept either; column-store input is normalised to row-store internally.
+CSV files opened with `csv("file.csv", row-type: dictionary)` produce row-store and work out of the box.
 
 Aesthetic mapping
 : [`aes`](../reference/core/aes.qmd) binds column names to visual channels: x, y, colour, fill, size, group, and so on.

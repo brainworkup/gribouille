@@ -19,7 +19,12 @@
     geom-errorbar(stat: stat-summary(fun: "mean-sd"), width: 5pt),
     geom-errorbarh(stat: stat-summary(fun: "mean-sd"), height: 5pt),
     geom-label(
-      stat: stat-summary(fun: "mean"),
+      data: (
+        "flipper-len": (180, 210, 205),
+        "body-mass": (4250, 3250, 5750),
+        "species": ("Adelie", "Chinstrap", "Gentoo"),
+      ),
+      // stat: stat-summary(fun: "mean"),
       mapping: aes(label: "species"),
       colour: rgb("#ffffff"),
       size: 8pt,

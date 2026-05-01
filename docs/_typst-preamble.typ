@@ -12,6 +12,7 @@
   ink: auto,
   paper: auto,
   accent: rgb("#3366FF"),
+  ..fields,
 ) = {
   let args = (accent: accent)
   if ink != auto {
@@ -24,52 +25,26 @@
   } else if _typst_render_background != none {
     args.insert("paper", _typst_render_background)
   }
-  theme_fn(..args)
+  theme_fn(..args, ..fields)
 }
 
-#let theme-grey(
+#let _wrap-theme(theme_fn) = (
   ink: auto,
   paper: auto,
   accent: rgb("#3366FF"),
-) = _theme_with_document_colours(
-  _theme_grey,
+  ..fields,
+) => _theme_with_document_colours(
+  theme_fn,
   ink: ink,
   paper: paper,
   accent: accent,
+  ..fields,
 )
 
-#let theme-minimal(
-  ink: auto,
-  paper: auto,
-  accent: rgb("#3366FF"),
-) = _theme_with_document_colours(
-  _theme_minimal,
-  ink: ink,
-  paper: paper,
-  accent: accent,
-)
-
-#let theme-classic(
-  ink: auto,
-  paper: auto,
-  accent: rgb("#3366FF"),
-) = _theme_with_document_colours(
-  _theme_classic,
-  ink: ink,
-  paper: paper,
-  accent: accent,
-)
-
-#let theme-void(
-  ink: auto,
-  paper: auto,
-  accent: rgb("#3366FF"),
-) = _theme_with_document_colours(
-  _theme_void,
-  ink: ink,
-  paper: paper,
-  accent: accent,
-)
+#let theme-grey = _wrap-theme(_theme_grey)
+#let theme-minimal = _wrap-theme(_theme_minimal)
+#let theme-classic = _wrap-theme(_theme_classic)
+#let theme-void = _wrap-theme(_theme_void)
 
 #let theme(..fields) = {
   let named = fields.named()

@@ -3,6 +3,7 @@
 ///! White panel with thin light grey gridlines, no axis lines, no tick marks.
 
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "theme.typ": _apply-overrides
 
 /// Minimal theme: white panel, light grey gridlines, no axis lines.
 ///
@@ -15,6 +16,7 @@
 /// \@param ink Foreground colour (text). Default: `black`.
 /// \@param paper Background colour. Default: `white`.
 /// \@param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.
 ///
@@ -45,17 +47,39 @@
 /// )
 /// ```
 ///
+/// \@examples Spot-override individual elements without rebuilding the
+/// theme from scratch.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-minimal(axis-title: element-text(size: 14pt)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-grey, \@theme-classic, \@theme-void, \@theme
-#let theme-minimal(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
-  kind: "theme",
-  name: "minimal",
-  ink: ink,
-  paper: paper,
-  accent: accent,
-  panel-fill: none,
-  grid-colour: rgb("#ebebeb"),
-  grid-thickness: 0.4pt,
-  axis-colour: none,
-  axis-thickness: 0pt,
-  tick-length: 0,
-)
+#let theme-minimal(
+  ink: _tr-ink,
+  paper: _tr-paper,
+  accent: rgb("#3366FF"),
+  ..fields,
+) = {
+  let base = (
+    kind: "theme",
+    name: "minimal",
+    ink: ink,
+    paper: paper,
+    accent: accent,
+    panel-fill: none,
+    grid-colour: rgb("#ebebeb"),
+    grid-thickness: 0.4pt,
+    axis-colour: none,
+    axis-thickness: 0pt,
+    tick-length: 0,
+  )
+  _apply-overrides(base, fields)
+}

@@ -14,6 +14,9 @@
   if value.weight != none { out.insert(prefix + "-weight", value.weight) }
   if value.angle != none { out.insert(prefix + "-angle", value.angle) }
   if value.family != none { out.insert(prefix + "-family", value.family) }
+  if value.at("kind", default: none) == "element-typst" {
+    out.insert(prefix + "-typst", true)
+  }
   out
 }
 
@@ -46,28 +49,30 @@
 
   // ── Specific text element keys ─────────────────────────────────────────────
 
-  if key == "axis-text" and el-kind == "element-text" {
+  let _is-text-element = el-kind == "element-text" or el-kind == "element-typst"
+
+  if key == "axis-text" and _is-text-element {
     return _apply-text(out, "axis-text", value)
   }
-  if key == "axis-title" and el-kind == "element-text" {
+  if key == "axis-title" and _is-text-element {
     return _apply-text(out, "axis-title", value)
   }
-  if key == "legend-text" and el-kind == "element-text" {
+  if key == "legend-text" and _is-text-element {
     return _apply-text(out, "legend-text", value)
   }
-  if key == "legend-title" and el-kind == "element-text" {
+  if key == "legend-title" and _is-text-element {
     return _apply-text(out, "legend-title", value)
   }
-  if key == "strip-text" and el-kind == "element-text" {
+  if key == "strip-text" and _is-text-element {
     return _apply-text(out, "strip-text", value)
   }
-  if key == "plot-title" and el-kind == "element-text" {
+  if key == "plot-title" and _is-text-element {
     return _apply-text(out, "plot-title", value)
   }
-  if key == "plot-subtitle" and el-kind == "element-text" {
+  if key == "plot-subtitle" and _is-text-element {
     return _apply-text(out, "plot-subtitle", value)
   }
-  if key == "plot-caption" and el-kind == "element-text" {
+  if key == "plot-caption" and _is-text-element {
     return _apply-text(out, "plot-caption", value)
   }
 
@@ -105,22 +110,50 @@
   out
 }
 
+#let _apply-overrides(out, fields) = {
+  for (k, v) in fields.named().pairs() {
+    out = _apply-element(out, k, v)
+  }
+  out
+}
+
 /// Build a custom theme from per-element overrides.
 ///
-/// Pass named arguments like `axis-title: element-text(size: 12pt)` or
-/// low-level keys like `panel-fill: rgb("#f7f0e7")`. Structured element
-/// records are translated into the flat theme fields consumed internally.
+/// Pass named arguments like `axis-title: element-text(size: 12pt)` or low-level keys like `panel-fill: rgb("#f7f0e7")`.
+/// Structured element records are translated into the flat theme fields consumed internally.
 ///
-/// Base element keys (`text`, `line`, `rect`) set inherited parent values
-/// for all descendant elements. Specific keys always take priority at render time.
+/// Base element keys (`text`, `line`, `rect`) set inherited parent values for all descendant elements.
+/// Specific keys always take priority at render time.
+///
+/// Structured element keys translate \@element-text, \@element-line, \@element-rect, \@element-blank, and \@element-typst records into the flat fields the renderer consumes:
+///
+/// - Base elements: `text`, `line`, `rect`. These set inherited parents that descendants fall back to.
+/// - Text elements: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`.
+/// - Rect elements: `panel-background`.
+/// - Line elements: `panel-grid`, `axis-line`. Both also accept `element-blank()` to hide them entirely.
+///
+/// Flat fields override individual values directly and mirror the keys of the internal default theme:
+///
+/// - Base colours: `ink`, `paper`, `accent`.
+/// - Panel, grid, axis: `panel-fill`, `grid-colour`, `grid-thickness`, `axis-colour`, `axis-thickness`, `tick-length`, `tick-labels`.
+/// - Line base: `line-colour`, `line-thickness`.
+/// - Rect base: `rect-fill`.
+/// - Text base: `text-colour`, `text-size`, `text-weight`, `text-family`.
+/// - Axis text: `axis-text-size`, `axis-text-colour`, `axis-text-weight`, `axis-text-family`, `axis-text-angle`.
+/// - Axis title: `axis-title-size`, `axis-title-colour`, `axis-title-weight`, `axis-title-family`.
+/// - Legend text: `legend-text-size`, `legend-text-colour`, `legend-text-weight`.
+/// - Legend title: `legend-title-size`, `legend-title-colour`, `legend-title-weight`.
+/// - Strip (facet labels): `strip-fill`, `strip-text-size`, `strip-text-colour`, `strip-text-weight`, `strip-text-family`.
+/// - Plot title: `plot-title-size`, `plot-title-colour`, `plot-title-weight`.
+/// - Plot subtitle: `plot-subtitle-size`, `plot-subtitle-colour`.
+/// - Plot caption: `plot-caption-size`, `plot-caption-colour`.
+/// - Typst-markup passthrough (boolean, normally set via `element-typst()`): `axis-text-typst`, `axis-title-typst`, `legend-text-typst`, `legend-title-typst`, `strip-text-typst`, `plot-title-typst`, `plot-subtitle-typst`, `plot-caption-typst`.
 ///
 /// \@category Themes
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param ..fields Named per-element overrides. Keys may be structured
-///   (`text`, `line`, `rect`, `axis-title`, `panel-grid`, ...)
-///   or flat (`axis-title-size`, `panel-fill`, ...).
+/// \@param ..fields Named per-element overrides; see the description above for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.
 ///
@@ -161,8 +194,5 @@
 /// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, \@element-text, \@element-line, \@element-rect, \@element-blank
 #let theme(..fields) = {
   let out = (kind: "theme", name: "custom")
-  for (k, v) in fields.named().pairs() {
-    out = _apply-element(out, k, v)
-  }
-  out
+  _apply-overrides(out, fields)
 }

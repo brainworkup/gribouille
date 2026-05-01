@@ -165,7 +165,7 @@
 #import "src/facet/wrap.typ": facet-wrap
 #import "src/facet/grid.typ": facet-grid
 #import "src/facet/labellers.typ": (
-  label-both, label-context, label-value, label-wrap, labeller,
+  label-both, label-context, label-value, label-wrap-gen, labeller,
 )
 
 // Themes.
@@ -180,6 +180,6 @@
 #import "src/theme/test.typ": theme-test
 #import "src/theme/theme.typ": theme
 #import "src/theme/elements.typ": (
-  element-blank, element-line, element-rect, element-text,
+  element-blank, element-line, element-rect, element-text, element-typst,
 )
 #import "src/theme/current.typ": theme-get, theme-set

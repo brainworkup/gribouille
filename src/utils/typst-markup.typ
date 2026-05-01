@@ -49,7 +49,7 @@
 ///   ),
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(),),
-///   labels: labs(title: typst("Mean $bar(x)$ over time")),
+///   labs: labs(title: typst("Mean $bar(x)$ over time")),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -64,7 +64,7 @@
 ///     (x: 3, y: 3, lab: "$gamma$"),
 ///   ),
 ///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-text(aes(label: typst("lab"))),),
+///   layers: (geom-text(mapping: aes(label: typst("lab"))),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -113,7 +113,11 @@
 /// Resolve a static-prose value to Typst content.
 ///
 /// - `none` returns `none`.
-/// - String or content: returned unchanged. (Typst's content interpolation
+/// - String: returned as-is unless `eval-strings` is `true`, in which
+///   case it is evaluated as Typst markup. The flag lets callers honour
+///   a theme-driven `element-typst()` setting at the call site without
+///   a wrapper helper.
+/// - Content: returned unchanged. (Typst's content interpolation
 ///   already renders strings literally and content as content.)
 /// - `typst-markup` tagged dictionary whose `source` is a string: the
 ///   string is eval'd as markup.
@@ -122,8 +126,11 @@
 ///
 /// \@internal
 /// \@param x A user-supplied prose value.
+/// \@param eval-strings When `true`, plain strings are evaluated as
+///   Typst markup; defaults to `false` so unmarked surfaces render
+///   strings literally.
 /// \@returns A renderable value (string, content, or `none`).
-#let resolve-prose(x) = {
+#let resolve-prose(x, eval-strings: false) = {
   if x == none { return none }
   if type(x) == dictionary and x.at("kind", default: none) == "typst-markup" {
     let src = x.source
@@ -141,5 +148,6 @@
         + "typst() on aesthetic mappings to wrap column references.",
     )
   }
+  if eval-strings and type(x) == str { return eval(x, mode: "markup") }
   x
 }

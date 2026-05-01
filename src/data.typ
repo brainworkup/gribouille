@@ -12,6 +12,70 @@
   data.map(row => row.at(name, default: none))
 }
 
+// Coerce a `data` argument into the canonical row-store shape.
+//
+// Accepts either:
+//   - row-store: an array of dictionaries (one per row), or
+//   - column-store: a dictionary of equal-length arrays (one per column).
+//
+// `none` passes through unchanged so optional per-layer overrides keep their
+// "inherit plot data" semantics. Idempotent on already-normalised input.
+#let _normalise-data(data) = {
+  if data == none { return none }
+  if type(data) == array {
+    for (i, row) in data.enumerate() {
+      if type(row) != dictionary {
+        panic(
+          "data: row-store array must contain dictionaries; got "
+            + str(type(row))
+            + " at index "
+            + str(i),
+        )
+      }
+    }
+    return data
+  }
+  if type(data) == dictionary {
+    let pairs = data.pairs()
+    if pairs.len() == 0 { return () }
+    let len = none
+    for (k, vs) in pairs {
+      if type(vs) != array {
+        panic(
+          "data: column-store value for \""
+            + k
+            + "\" must be an array; got "
+            + str(type(vs)),
+        )
+      }
+      if len == none {
+        len = vs.len()
+      } else if vs.len() != len {
+        let first-key = pairs.first().at(0)
+        panic(
+          "data: column-store columns must share the same length; got \""
+            + first-key
+            + "\"="
+            + str(len)
+            + ", \""
+            + k
+            + "\"="
+            + str(vs.len()),
+        )
+      }
+    }
+    return range(len).map(i => {
+      let row = (:)
+      for (k, vs) in pairs { row.insert(k, vs.at(i)) }
+      row
+    })
+  }
+  panic(
+    "data: must be an array of dicts or a dict of arrays; got "
+      + str(type(data)),
+  )
+}
+
 #let _mapping-ref(col, type) = (
   kind: "mapping-ref",
   var: col,

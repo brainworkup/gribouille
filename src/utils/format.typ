@@ -57,8 +57,7 @@
   sign + with-sep + frac-str
 }
 
-/// Format a numeric break with optional thousands separator and fixed
-/// decimals.
+/// Format a numeric break with optional thousands separator and decimals.
 ///
 /// Returns a closure suitable for `scale-*(labels: ...)`. Non-numeric
 /// values pass through `str()`.
@@ -108,6 +107,12 @@
 /// \@category Helpers
 /// \@stability stable
 /// \@since 0.1.0
+///
+/// \@param digits Decimal digits to keep, or `auto` to drop trailing zeros.
+/// \@param prefix String prepended to every formatted value.
+/// \@param suffix String appended to every formatted value.
+///
+/// \@returns A closure `value => string`.
 #let label-comma(digits: auto, prefix: "", suffix: "") = label-number(
   big-mark: ",",
   decimal-mark: ".",
@@ -130,6 +135,8 @@
 /// \@param big-mark Thousands separator.
 /// \@param decimal-mark Decimal separator.
 /// \@param digits Decimal digits to keep.
+///
+/// \@returns A closure `value => string`.
 #let label-percent(
   scale: 100,
   suffix: "%",
@@ -163,6 +170,8 @@
 /// \@param big-mark Thousands separator.
 /// \@param decimal-mark Decimal separator.
 /// \@param digits Decimal digits to keep.
+///
+/// \@returns A closure `value => string`.
 #let label-currency(
   symbol: "$",
   big-mark: ",",
@@ -190,6 +199,8 @@
 /// \@since 0.1.0
 ///
 /// \@param digits Significant decimal digits in the mantissa.
+///
+/// \@returns A closure `value => content`.
 #let label-scientific(digits: 2) = value => {
   if value == none { return none }
   let v = if type(value) == str { parse-number(value) } else { value }
@@ -236,6 +247,8 @@
 /// \@category Helpers
 /// \@stability stable
 /// \@since 0.1.0
+///
+/// \@returns A closure `value => string`.
 #let label-title() = value => {
   if value == none { return none }
   let s = str(value)
@@ -255,6 +268,8 @@
 /// \@category Helpers
 /// \@stability stable
 /// \@since 0.1.0
+///
+/// \@returns A closure `value => string`.
 #let label-upper() = value => {
   if value == none { return none }
   _to-upper(str(value))
@@ -265,19 +280,22 @@
 /// \@category Helpers
 /// \@stability stable
 /// \@since 0.1.0
+///
+/// \@returns A closure `value => string`.
 #let label-lower() = value => {
   if value == none { return none }
   _to-lower(str(value))
 }
 
-/// Soft-wrap a long string break by inserting a newline every `width`
-/// characters at word boundaries.
+/// Soft-wrap a long string by inserting a newline at word boundaries.
 ///
 /// \@category Helpers
 /// \@stability stable
 /// \@since 0.1.0
 ///
 /// \@param width Maximum line width in characters.
+///
+/// \@returns A closure `value => string`.
 #let label-wrap(width: 20) = value => {
   if value == none { return none }
   let s = str(value)

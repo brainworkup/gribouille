@@ -31,7 +31,7 @@
 /// )
 /// ```
 ///
-/// \@see \@label-both, \@label-context, \@label-wrap, \@labeller
+/// \@see \@label-both, \@label-context, \@label-wrap-gen, \@labeller
 #let label-value() = (
   kind: "labeller",
   labeller: "value",
@@ -155,7 +155,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   facet: facet-wrap("sp", labeller: label-wrap(width: 10)),
+///   facet: facet-wrap("sp", labeller: label-wrap-gen(width: 10)),
 ///   width: 10cm,
 ///   height: 5cm,
 /// )
@@ -173,14 +173,14 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   facet: facet-wrap("sp", labeller: label-wrap(width: 14, inner: label-both())),
+///   facet: facet-wrap("sp", labeller: label-wrap-gen(width: 14, inner: label-both())),
 ///   width: 10cm,
 ///   height: 5cm,
 /// )
 /// ```
 ///
 /// \@see \@label-value, \@label-both, \@labeller
-#let label-wrap(width: 20, inner: none) = (
+#let label-wrap-gen(width: 20, inner: none) = (
   kind: "labeller",
   labeller: "wrap",
   width: width,

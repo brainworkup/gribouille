@@ -80,6 +80,17 @@
   plot-subtitle-colour: none,
   plot-caption-size: 8pt,
   plot-caption-colour: none,
+
+  // Per-surface Typst-markup passthrough flags (set via element-typst()).
+  // When true, plain strings reaching that surface are eval'd as Typst markup.
+  axis-text-typst: false,
+  axis-title-typst: false,
+  legend-text-typst: false,
+  legend-title-typst: false,
+  strip-text-typst: false,
+  plot-title-typst: false,
+  plot-subtitle-typst: false,
+  plot-caption-typst: false,
 )
 
 #let merge-theme(user) = {
@@ -115,3 +126,4 @@
   }
   fallback
 }
+

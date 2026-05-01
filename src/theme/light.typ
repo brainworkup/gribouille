@@ -4,6 +4,7 @@
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "theme.typ": _apply-overrides
 
 /// Light theme: light grey panel, white grid, soft grey axes.
 ///
@@ -14,6 +15,7 @@
 /// \@param ink Foreground colour (text). Default: `black`.
 /// \@param paper Background colour. Default: `white`.
 /// \@param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.
 ///
@@ -44,17 +46,38 @@
 /// )
 /// ```
 ///
+/// \@examples Tinted panel background on top of the soft preset.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-light(panel-background: element-rect(fill: rgb("#fff7e6"))),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-dark, \@theme-void, \@theme
-#let theme-light(ink: _tr-ink, paper: _tr-paper, accent: rgb("#3366FF")) = (
-  kind: "theme",
-  name: "light",
-  ink: ink,
-  paper: paper,
-  accent: accent,
-  panel-fill: col-mix(ink, paper, 0.9216),
-  grid-colour: paper,
-  grid-thickness: 0.5pt,
-  axis-colour: col-mix(ink, paper, 0.8),
-  axis-thickness: 0.5pt,
-  axis-text-colour: col-mix(ink, paper, 0.302),
-)
+#let theme-light(
+  ink: _tr-ink,
+  paper: _tr-paper,
+  accent: rgb("#3366FF"),
+  ..fields,
+) = {
+  let base = (
+    kind: "theme",
+    name: "light",
+    ink: ink,
+    paper: paper,
+    accent: accent,
+    panel-fill: col-mix(ink, paper, 0.9216),
+    grid-colour: paper,
+    grid-thickness: 0.5pt,
+    axis-colour: col-mix(ink, paper, 0.8),
+    axis-thickness: 0.5pt,
+    axis-text-colour: col-mix(ink, paper, 0.302),
+  )
+  _apply-overrides(base, fields)
+}

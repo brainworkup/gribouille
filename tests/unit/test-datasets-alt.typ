@@ -4,13 +4,19 @@
 #import "../../src/datasets/economics.typ": economics
 #import "../../src/datasets/mpg.typ": mpg
 #import "../../src/datasets/penguins.typ": penguins
+#import "../../src/data.typ": _normalise-data
 #import "../../src/plot.typ": get-alt-text, plot
 #import "../../src/aes.typ": aes
 #import "../../src/geom/point.typ": geom-point
 
+// Bundled datasets ship as column-store literals; assert the shape and the
+// row count after normalisation so the schema check matches what consumers
+// (every geom and stat) see after `plot()` resolves the data.
 #let assert-schema(data, count, columns) = {
-  assert.eq(data.len(), count)
-  let missing = columns.filter(col => not data.at(0).keys().contains(col))
+  assert.eq(type(data), dictionary, message: "expected column-store literal")
+  let rows = _normalise-data(data)
+  assert.eq(rows.len(), count)
+  let missing = columns.filter(col => not rows.at(0).keys().contains(col))
   assert.eq(missing, (), message: "Missing columns: " + repr(missing))
 }
 
@@ -22,7 +28,7 @@
   "uempmed",
   "unemploy",
 ))
-#assert.eq(economics.at(0).date, "2008-01-01")
+#assert.eq(economics.at("date").at(0), "2008-01-01")
 
 #assert-schema(mpg, 30, (
   "manufacturer",
@@ -44,7 +50,7 @@
   "sex",
   "year",
 ))
-#assert.eq(penguins.at(0).species, "Adelie")
+#assert.eq(penguins.at("species").at(0), "Adelie")
 
 // `plot()` returns rendered content, so exercise the spec contract via
 // the accessor on a hand-built spec dict mirroring what `plot()` stores.

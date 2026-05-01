@@ -385,12 +385,14 @@
   bundle
 }
 
+#let _title-chars(g) = if g.title == none { 0 } else { g.title.len() }
+
 #let estimate-width(guides) = {
   if guides.len() == 0 { return 0.0 }
   let max-width = 0.0
   for g in guides {
     if g.kind == "swatch" {
-      let title-chars = g.title.len()
+      let title-chars = _title-chars(g)
       let level-chars = 0
       for level in g.levels {
         level-chars = calc.max(level-chars, level.len())
@@ -402,7 +404,7 @@
       let grid-w = col-w * shape.cols + col-gap * (shape.cols - 1)
       max-width = calc.max(max-width, calc.max(title-w, grid-w))
     } else if g.kind == "size-ladder" {
-      let title-chars = g.title.len()
+      let title-chars = _title-chars(g)
       let label-chars = 0
       for b in g.breaks {
         label-chars = calc.max(label-chars, _format-break(b).len())
@@ -413,7 +415,7 @@
     } else if g.kind == "colourbar" {
       let (lo, hi) = g.domain
       let breaks = pretty(lo, hi, n: 5)
-      let max-chars = g.title.len()
+      let max-chars = _title-chars(g)
       for b in breaks {
         max-chars = calc.max(max-chars, _format-break(b).len())
       }
@@ -462,7 +464,7 @@
       size: title-size,
       fill: title-colour,
       weight: title-weight,
-    )[#resolve-prose(title)],
+    )[#resolve-prose(title, eval-strings: theme.legend-title-typst)],
     anchor: "north-west",
   )
 }
@@ -505,12 +507,15 @@
       bundle,
       ink: ink,
     )
-    let label-text = resolve-label(
-      labels,
-      level,
-      i,
-      level,
-      typst-mark: guide.at("typst-mark", default: false),
+    let label-text = resolve-prose(
+      resolve-label(
+        labels,
+        level,
+        i,
+        level,
+        typst-mark: guide.at("typst-mark", default: false),
+      ),
+      eval-strings: theme.legend-text-typst,
     )
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
@@ -548,12 +553,15 @@
       ink: ink,
     )
     let labels = guide.at("labels", default: auto)
-    let break-text = resolve-label(
-      labels,
-      value,
-      i,
-      _format-break(value),
-      typst-mark: guide.at("typst-mark", default: false),
+    let break-text = resolve-prose(
+      resolve-label(
+        labels,
+        value,
+        i,
+        _format-break(value),
+        typst-mark: guide.at("typst-mark", default: false),
+      ),
+      eval-strings: theme.legend-text-typst,
     )
     cetz.draw.content(
       (ox + glyph-size * 2 + 0.15, cy - glyph-size),
@@ -632,12 +640,15 @@
       (ox + bar-w + 0.1, cy),
       stroke: (paint: luma(33%), thickness: 0.3pt),
     )
-    let tick-text = resolve-label(
-      labels,
-      b,
-      i,
-      _format-break(b),
-      typst-mark: typst-mark,
+    let tick-text = resolve-prose(
+      resolve-label(
+        labels,
+        b,
+        i,
+        _format-break(b),
+        typst-mark: typst-mark,
+      ),
+      eval-strings: theme.legend-text-typst,
     )
     cetz.draw.content(
       (ox + bar-w + tick-gap + 0.1, cy),

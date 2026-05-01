@@ -1,5 +1,6 @@
 #import "render.typ": render-plot
 #import "theme/current.typ": _theme-state
+#import "data.typ": _normalise-data
 
 /// Compose a layered plot from data, aesthetics, and geom layers.
 ///
@@ -12,7 +13,7 @@
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param data Array of row dictionaries. Each row is a `(column: value, ...)` dict.
+/// \@param data Either an array of row dictionaries (one row per observation, e.g. `((x: 1, y: 2), (x: 3, y: 4))`) or a dictionary of equal-length column arrays (e.g. `(x: (1, 3), y: (2, 4))`). Column-store input is normalised to row-store internally.
 /// \@param mapping Aesthetic mapping built with\@aes. Maps column names to visual channels.
 /// \@param layers Array of geom layers (e.g.\@geom-point,\@geom-line). Drawn in order.
 /// \@param scales Array of scale objects overriding defaults \@scale-x-continuous,\@scale-colour-viridis-d, etc.).
@@ -92,7 +93,7 @@
       _theme-state.get()
     }
     let spec = (
-      data: data,
+      data: _normalise-data(data),
       mapping: mapping,
       layers: layers,
       scales: scales,

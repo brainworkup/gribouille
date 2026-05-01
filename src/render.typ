@@ -15,6 +15,7 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
+#import "data.typ": _normalise-data
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
 #import "geom/path.typ" as path-geom
@@ -96,7 +97,7 @@
 }
 
 #let _resolve-data(layer, plot-data) = {
-  if layer.data != none { layer.data } else { plot-data }
+  if layer.data != none { _normalise-data(layer.data) } else { plot-data }
 }
 
 // Collect unique levels of a column from the raw (pre-stat) data across all
@@ -577,12 +578,15 @@
       }
       _draw-x-label(
         cx,
-        resolve-label(
-          _x-disp.labels,
-          b,
-          idx,
-          _axis-label(x-trained, b),
-          typst-mark: _x-disp.typst-mark,
+        resolve-prose(
+          resolve-label(
+            _x-disp.labels,
+            b,
+            idx,
+            _axis-label(x-trained, b),
+            typst-mark: _x-disp.typst-mark,
+          ),
+          eval-strings: theme.axis-text-typst,
         ),
         idx,
       )
@@ -596,12 +600,15 @@
       }
       _draw-x-label(
         cx,
-        resolve-label(
-          _x-disp.labels,
-          level,
-          idx,
-          level,
-          typst-mark: _x-disp.typst-mark,
+        resolve-prose(
+          resolve-label(
+            _x-disp.labels,
+            level,
+            idx,
+            level,
+            typst-mark: _x-disp.typst-mark,
+          ),
+          eval-strings: theme.axis-text-typst,
         ),
         idx,
       )
@@ -619,12 +626,15 @@
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
-        let txt = resolve-label(
-          _y-disp.labels,
-          b,
-          idx,
-          _axis-label(y-trained, b),
-          typst-mark: _y-disp.typst-mark,
+        let txt = resolve-prose(
+          resolve-label(
+            _y-disp.labels,
+            b,
+            idx,
+            _axis-label(y-trained, b),
+            typst-mark: _y-disp.typst-mark,
+          ),
+          eval-strings: theme.axis-text-typst,
         )
         content(
           (px-lo - 0.2, cy),
@@ -645,12 +655,15 @@
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
       if show-y-labels and theme.tick-labels {
-        let txt = resolve-label(
-          _y-disp.labels,
-          level,
-          idx,
-          level,
-          typst-mark: _y-disp.typst-mark,
+        let txt = resolve-prose(
+          resolve-label(
+            _y-disp.labels,
+            level,
+            idx,
+            level,
+            typst-mark: _y-disp.typst-mark,
+          ),
+          eval-strings: theme.axis-text-typst,
         )
         content(
           (px-lo - 0.2, cy),
@@ -690,7 +703,10 @@
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#_format-break(mapped)],
+          )[#resolve-prose(
+            _format-break(mapped),
+            eval-strings: theme.axis-text-typst,
+          )],
           anchor: "south",
         )
       }
@@ -705,7 +721,7 @@
           size: theme.axis-title-size,
           fill: _ax-title-colour,
           weight: _ax-title-weight,
-        )[#resolve-prose(_x-sec.name)],
+        )[#resolve-prose(_x-sec.name, eval-strings: theme.axis-title-typst)],
         anchor: "south",
       )
     }
@@ -735,7 +751,10 @@
             size: theme.axis-text-size,
             fill: _ax-text-colour,
             weight: _ax-text-weight,
-          )[#_format-break(mapped)],
+          )[#resolve-prose(
+            _format-break(mapped),
+            eval-strings: theme.axis-text-typst,
+          )],
           anchor: "west",
         )
       }
@@ -750,7 +769,7 @@
           size: theme.axis-title-size,
           fill: _ax-title-colour,
           weight: _ax-title-weight,
-        )[#resolve-prose(_y-sec.name)],
+        )[#resolve-prose(_y-sec.name, eval-strings: theme.axis-title-typst)],
         angle: 90deg,
       )
     }
@@ -846,7 +865,7 @@
         size: theme.axis-title-size,
         fill: _ax-title-colour,
         weight: _ax-title-weight,
-      )[#resolve-prose(x-title)],
+      )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
       anchor: "south",
     )
   }
@@ -857,7 +876,7 @@
         size: theme.axis-title-size,
         fill: _ax-title-colour,
         weight: _ax-title-weight,
-      )[#resolve-prose(y-title)],
+      )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
       angle: 90deg,
     )
   }
@@ -1231,7 +1250,7 @@
             size: _strip-text-size,
             fill: _strip-text-colour,
             weight: _strip-text-weight,
-          )[#strip-text],
+          )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
         )
         let panel-trained = if panel-trained-list.len() == 0 {
           trained
@@ -1288,7 +1307,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#resolve-prose(x-title)],
+          )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
           anchor: "south",
         )
       }
@@ -1299,7 +1318,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#resolve-prose(y-title)],
+          )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
           angle: 90deg,
         )
       }
@@ -1409,7 +1428,7 @@
               size: _strip-text-size,
               fill: _strip-text-colour,
               weight: _strip-text-weight,
-            )[#strip-text],
+            )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
           )
         }
       }
@@ -1437,7 +1456,7 @@
               size: _strip-text-size,
               fill: _strip-text-colour,
               weight: _strip-text-weight,
-            )[#strip-text],
+            )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
             angle: -90deg,
           )
         }
@@ -1469,7 +1488,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#resolve-prose(x-title)],
+          )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
           anchor: "south",
         )
       }
@@ -1480,7 +1499,7 @@
             size: theme.axis-title-size,
             fill: _ax-title-colour,
             weight: _ax-title-weight,
-          )[#resolve-prose(y-title)],
+          )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
           angle: 90deg,
         )
       }
@@ -1537,20 +1556,20 @@
         fallback: "bold",
       ),
       fill: resolve-colour(theme, "plot-title-colour", "text-colour", "ink"),
-    )[#resolve-prose(labs.title)]
+    )[#resolve-prose(labs.title, eval-strings: theme.plot-title-typst)]
   } else { none }
   let subtitle-block = if labs.subtitle != none {
     text(
       size: theme.at("plot-subtitle-size", default: 9pt),
       fill: resolve-colour(theme, "plot-subtitle-colour", "text-colour", "ink"),
-    )[#resolve-prose(labs.subtitle)]
+    )[#resolve-prose(labs.subtitle, eval-strings: theme.plot-subtitle-typst)]
   } else { none }
   let caption-block = if labs.caption != none {
     text(
       size: theme.at("plot-caption-size", default: 8pt),
       fill: resolve-colour(theme, "plot-caption-colour", "text-colour", "ink"),
       style: "italic",
-    )[#resolve-prose(labs.caption)]
+    )[#resolve-prose(labs.caption, eval-strings: theme.plot-caption-typst)]
   } else { none }
 
   let parts = ()
