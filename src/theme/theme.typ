@@ -8,6 +8,64 @@
 ///! Base element keys (`text`, `line`, `rect`) set inherited parent fields:
 ///! specific child keys (e.g. `axis-text`) take priority at render time.
 
+#let _surface-parent = (
+  "axis-text": "text",
+  "axis-title": "text",
+  "legend-text": "text",
+  "legend-title": "text",
+  "strip-text": "text",
+  "plot-title": "text",
+  "plot-subtitle": "text",
+  "plot-caption": "text",
+  "panel-grid": "line",
+  "axis-line": "line",
+  "panel-background": "rect",
+  "strip-background": "rect",
+)
+
+#let _merge-element(base, top) = {
+  let out = base
+  for (k, v) in top.pairs() {
+    if k == "kind" { continue }
+    if v == none { continue }
+    out.insert(k, v)
+  }
+  if top.at("kind", default: none) != none {
+    out.insert("kind", top.kind)
+  }
+  out
+}
+
+/// Resolve a surface's element record by merging surface → parent → empty.
+///
+/// Returns a dict shaped like the underlying element constructor, with `kind`
+/// set to the most specific element kind in the cascade. Fields not set
+/// anywhere remain `none`; the renderer is responsible for hardcoded
+/// fallbacks (e.g. colour → `theme.ink`).
+///
+/// \@internal
+#let resolve-element(theme, surface) = {
+  let parent-key = _surface-parent.at(surface, default: none)
+  let surface-record = theme.at(surface, default: none)
+  let parent-record = if parent-key != none {
+    theme.at(parent-key, default: none)
+  } else { none }
+
+  let merged = if parent-record != none { parent-record } else { (:) }
+  if surface-record != none {
+    merged = _merge-element(merged, surface-record)
+  }
+  merged
+}
+
+/// Whether a text surface is configured to evaluate strings as Typst markup.
+///
+/// \@internal
+#let is-typst(theme, surface) = {
+  let el = resolve-element(theme, surface)
+  el.at("kind", default: none) == "element-typst"
+}
+
 #let _apply-text(out, prefix, value) = {
   if value.size != none { out.insert(prefix + "-size", value.size) }
   if value.colour != none { out.insert(prefix + "-colour", value.colour) }
