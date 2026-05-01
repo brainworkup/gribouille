@@ -280,6 +280,16 @@ Legend for **Priority** (used to order future work):
 | `mpg`, `economics`                                                                                                                   | `mpg` (30 rows), `economics` (24 rows). | ✅     | —        | Small subsets bundled for examples; values plausible but not exact. |
 | Other datasets (`diamonds`, `economics_long`, `faithfuld`, `midwest`, `msleep`, `presidential`, `seals`, `txhousing`, `luv_colours`) | —                                       | ⬜     | P4       | Ship if a real example asks for them.                               |
 
+### Extensions and native
+
+Items outside the ggplot2 surface: ggforce ports and gribouille-native conveniences.
+
+| Source                               | gribouille symbol           | Status | Priority | Notes                                                                                                                                                                  |
+| ------------------------------------ | --------------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ggforce::geom_ellipse()`            | `geom-ellipse` (planned).   | ⬜     | P2       | Standalone ellipse from `(x0, y0, a, b, angle)` parameters; reuses polygon sampling plus a 2D rotation.                                                                |
+| `ggforce::geom_mark_*()` family      | `geom-mark` (planned).      | ⬜     | P3       | Unified annotation geom with `method: "circle" / "ellipse" / "hull" / "rect"` covering `_circle`/`_ellipse`/`_hull`/`_rect`. `method` avoids clash with `shape` aesthetic. |
+| native (no upstream)                 | `geom-typst` (planned).     | ⬜     | P2       | Sibling of `geom-text`; the geom always evaluates the `label` aesthetic as Typst markup via `eval-as-markup`. No call-site `typst()` tag needed. Must support `annotate("typst", ...)` parity with `geom-text`. |
+
 ## Coverage at a glance
 
 - **Plot basics**: `plot()` and `aes()` covering `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`.
