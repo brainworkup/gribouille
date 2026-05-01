@@ -1261,6 +1261,200 @@
   })
 }
 
+#let _render-canvas-grid(ctx) = {
+  let spec = ctx.spec
+  let theme = ctx.theme
+  let coord = ctx.coord
+  let trained = ctx.trained
+  let panels = ctx.panels
+  let grid-row-levels = ctx.grid-row-levels
+  let grid-col-levels = ctx.grid-col-levels
+  let guides = ctx.guides
+  let legend-gap = ctx.legend-gap
+  let margin = ctx.margin
+  let width-units = ctx.width-units
+  let height-units = ctx.height-units
+  let style = ctx.style
+
+  let row-var = spec.facet.rows
+  let col-var = spec.facet.cols
+  let row-levels = grid-row-levels
+  let col-levels = grid-col-levels
+  let n-rows = calc.max(1, row-levels.len())
+  let n-cols = calc.max(1, col-levels.len())
+  let strip-h = 0.45
+  let strip-w = 0.55
+  let gutter-x = 0.3
+  let gutter-y = 0.3
+  let top-strip = if col-var != none { strip-h } else { 0.0 }
+  let right-strip = if row-var != none { strip-w } else { 0.0 }
+  let inner-right = margin.right + right-strip
+  let grid-w = width-units - margin.left - inner-right
+  let grid-h = height-units - margin.bottom - margin.top - top-strip
+  let panel-w = (grid-w - gutter-x * (n-cols - 1)) / n-cols
+  let panel-h = (grid-h - gutter-y * (n-rows - 1)) / n-rows
+
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    for (r, row-lv) in row-levels.enumerate() {
+      for (c, col-lv) in col-levels.enumerate() {
+        let x0 = margin.left + c * (panel-w + gutter-x)
+        let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
+        let panel-layers = panels.at(r * n-cols + c).layers
+        let (inner-w, inner-h) = _fixed-inner-size(
+          coord,
+          trained,
+          panel-w,
+          panel-h,
+        )
+        let inner-y0 = y0 + (panel-h - inner-h)
+        _draw-axis-and-layers(
+          panel-layers,
+          trained,
+          theme,
+          spec,
+          (x0, inner-y0),
+          (inner-w, inner-h),
+          show-x-labels: r == n-rows - 1,
+          show-y-labels: c == 0,
+          show-x-title: false,
+          show-y-title: false,
+          show-x-sec: r == 0,
+          show-y-sec: c == n-cols - 1,
+          flipped: _is-flipped(coord),
+        )
+      }
+    }
+
+    let _grid-labeller = spec.facet.at("labeller", default: none)
+    let _col-count(c) = {
+      let n = 0
+      for r in range(n-rows) {
+        n += _panel-row-count(panels.at(r * n-cols + c).layers)
+      }
+      n
+    }
+    let _row-count(r) = {
+      let n = 0
+      for c in range(n-cols) {
+        n += _panel-row-count(panels.at(r * n-cols + c).layers)
+      }
+      n
+    }
+
+    if col-var != none {
+      let strip-y = margin.bottom + grid-h
+      for (c, col-lv) in col-levels.enumerate() {
+        let x0 = margin.left + c * (panel-w + gutter-x)
+        rect(
+          (x0, strip-y),
+          (x0 + panel-w, strip-y + top-strip),
+          fill: style.strip-fill,
+          stroke: none,
+        )
+        let strip-text = labellers.format(
+          _grid-labeller,
+          col-var,
+          col-lv,
+          count: _col-count(c),
+        )
+        content(
+          (x0 + panel-w / 2, strip-y + top-strip / 2),
+          text(
+            size: style.strip-text-size,
+            fill: style.strip-text-colour,
+            weight: style.strip-text-weight,
+          )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
+        )
+      }
+    }
+
+    if row-var != none {
+      let strip-x = margin.left + grid-w
+      for (r, row-lv) in row-levels.enumerate() {
+        let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
+        rect(
+          (strip-x, y0),
+          (strip-x + right-strip, y0 + panel-h),
+          fill: style.strip-fill,
+          stroke: none,
+        )
+        let strip-text = labellers.format(
+          _grid-labeller,
+          row-var,
+          row-lv,
+          count: _row-count(r),
+        )
+        content(
+          (strip-x + right-strip / 2, y0 + panel-h / 2),
+          text(
+            size: style.strip-text-size,
+            fill: style.strip-text-colour,
+            weight: style.strip-text-weight,
+          )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
+          angle: -90deg,
+        )
+      }
+    }
+
+    let x-trained = trained.at("x", default: none)
+    let y-trained = trained.at("y", default: none)
+    let x-title = {
+      let from-scale = if x-trained != none and x-trained.spec != none {
+        x-trained.spec.name
+      } else { none }
+      if from-scale != none { from-scale } else if spec.mapping != none {
+        mapping-ref-col(spec.mapping.at("x", default: none))
+      } else { none }
+    }
+    let y-title = {
+      let from-scale = if y-trained != none and y-trained.spec != none {
+        y-trained.spec.name
+      } else { none }
+      if from-scale != none { from-scale } else if spec.mapping != none {
+        mapping-ref-col(spec.mapping.at("y", default: none))
+      } else { none }
+    }
+    if x-title != none and theme.axis-title-size > 0pt {
+      content(
+        (margin.left + grid-w / 2, 0.1),
+        text(
+          size: theme.axis-title-size,
+          fill: style.ax-title-colour,
+          weight: style.ax-title-weight,
+        )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
+        anchor: "south",
+      )
+    }
+    if y-title != none and theme.axis-title-size > 0pt {
+      content(
+        (0.2, margin.bottom + grid-h / 2),
+        text(
+          size: theme.axis-title-size,
+          fill: style.ax-title-colour,
+          weight: style.ax-title-weight,
+        )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
+        angle: 90deg,
+      )
+    }
+
+    if guides.len() > 0 {
+      let lctx = (
+        trained: trained,
+        palette: default-discrete,
+        theme: theme,
+      )
+      legend-mod.draw(
+        guides,
+        lctx,
+        (margin.left + grid-w + right-strip + legend-gap, margin.bottom),
+        grid-h,
+        theme,
+      )
+    }
+  })
+}
+
 #let _render-canvas-single(
   spec,
   theme,
@@ -1484,186 +1678,21 @@
       style: style,
     ))
   } else if facet-grid-mode {
-    let row-var = spec.facet.rows
-    let col-var = spec.facet.cols
-    let row-levels = grid-row-levels
-    let col-levels = grid-col-levels
-    let n-rows = calc.max(1, row-levels.len())
-    let n-cols = calc.max(1, col-levels.len())
-    let strip-h = 0.45
-    let strip-w = 0.55
-    let gutter-x = 0.3
-    let gutter-y = 0.3
-    let top-strip = if col-var != none { strip-h } else { 0.0 }
-    let right-strip = if row-var != none { strip-w } else { 0.0 }
-    let inner-right = margin.right + right-strip
-    let grid-w = width-units - margin.left - inner-right
-    let grid-h = height-units - margin.bottom - margin.top - top-strip
-    let panel-w = (grid-w - gutter-x * (n-cols - 1)) / n-cols
-    let panel-h = (grid-h - gutter-y * (n-rows - 1)) / n-rows
-
-    cetz.canvas(length: 1cm, {
-      import cetz.draw: *
-      for (r, row-lv) in row-levels.enumerate() {
-        for (c, col-lv) in col-levels.enumerate() {
-          let x0 = margin.left + c * (panel-w + gutter-x)
-          let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
-          let panel-layers = panels.at(r * n-cols + c).layers
-          let (inner-w, inner-h) = _fixed-inner-size(
-            coord,
-            trained,
-            panel-w,
-            panel-h,
-          )
-          let inner-y0 = y0 + (panel-h - inner-h)
-          _draw-axis-and-layers(
-            panel-layers,
-            trained,
-            theme,
-            spec,
-            (x0, inner-y0),
-            (inner-w, inner-h),
-            show-x-labels: r == n-rows - 1,
-            show-y-labels: c == 0,
-            show-x-title: false,
-            show-y-title: false,
-            show-x-sec: r == 0,
-            show-y-sec: c == n-cols - 1,
-            flipped: _is-flipped(coord),
-          )
-        }
-      }
-
-      let _grid-labeller = spec.facet.at("labeller", default: none)
-      let _col-count(c) = {
-        let n = 0
-        for r in range(n-rows) {
-          n += _panel-row-count(panels.at(r * n-cols + c).layers)
-        }
-        n
-      }
-      let _row-count(r) = {
-        let n = 0
-        for c in range(n-cols) {
-          n += _panel-row-count(panels.at(r * n-cols + c).layers)
-        }
-        n
-      }
-
-      // Column strips on top.
-      if col-var != none {
-        let strip-y = margin.bottom + grid-h
-        for (c, col-lv) in col-levels.enumerate() {
-          let x0 = margin.left + c * (panel-w + gutter-x)
-          rect(
-            (x0, strip-y),
-            (x0 + panel-w, strip-y + top-strip),
-            fill: _strip-fill,
-            stroke: none,
-          )
-          let strip-text = labellers.format(
-            _grid-labeller,
-            col-var,
-            col-lv,
-            count: _col-count(c),
-          )
-          content(
-            (x0 + panel-w / 2, strip-y + top-strip / 2),
-            text(
-              size: _strip-text-size,
-              fill: _strip-text-colour,
-              weight: _strip-text-weight,
-            )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
-          )
-        }
-      }
-
-      // Row strips on the right.
-      if row-var != none {
-        let strip-x = margin.left + grid-w
-        for (r, row-lv) in row-levels.enumerate() {
-          let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
-          rect(
-            (strip-x, y0),
-            (strip-x + right-strip, y0 + panel-h),
-            fill: _strip-fill,
-            stroke: none,
-          )
-          let strip-text = labellers.format(
-            _grid-labeller,
-            row-var,
-            row-lv,
-            count: _row-count(r),
-          )
-          content(
-            (strip-x + right-strip / 2, y0 + panel-h / 2),
-            text(
-              size: _strip-text-size,
-              fill: _strip-text-colour,
-              weight: _strip-text-weight,
-            )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
-            angle: -90deg,
-          )
-        }
-      }
-
-      // Overall titles.
-      let x-trained = trained.at("x", default: none)
-      let y-trained = trained.at("y", default: none)
-      let x-title = {
-        let from-scale = if x-trained != none and x-trained.spec != none {
-          x-trained.spec.name
-        } else { none }
-        if from-scale != none { from-scale } else if spec.mapping != none {
-          mapping-ref-col(spec.mapping.at("x", default: none))
-        } else { none }
-      }
-      let y-title = {
-        let from-scale = if y-trained != none and y-trained.spec != none {
-          y-trained.spec.name
-        } else { none }
-        if from-scale != none { from-scale } else if spec.mapping != none {
-          mapping-ref-col(spec.mapping.at("y", default: none))
-        } else { none }
-      }
-      if x-title != none and theme.axis-title-size > 0pt {
-        content(
-          (margin.left + grid-w / 2, 0.1),
-          text(
-            size: theme.axis-title-size,
-            fill: _ax-title-colour,
-            weight: _ax-title-weight,
-          )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
-          anchor: "south",
-        )
-      }
-      if y-title != none and theme.axis-title-size > 0pt {
-        content(
-          (0.2, margin.bottom + grid-h / 2),
-          text(
-            size: theme.axis-title-size,
-            fill: _ax-title-colour,
-            weight: _ax-title-weight,
-          )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
-          angle: 90deg,
-        )
-      }
-
-      if guides.len() > 0 {
-        let ctx = (
-          trained: trained,
-          palette: default-discrete,
-          theme: theme,
-        )
-        legend-mod.draw(
-          guides,
-          ctx,
-          (margin.left + grid-w + right-strip + legend-gap, margin.bottom),
-          grid-h,
-          theme,
-        )
-      }
-    })
+    _render-canvas-grid((
+      spec: spec,
+      theme: theme,
+      coord: coord,
+      trained: trained,
+      panels: panels,
+      grid-row-levels: grid-row-levels,
+      grid-col-levels: grid-col-levels,
+      guides: guides,
+      legend-gap: legend-gap,
+      margin: margin,
+      width-units: width-units,
+      height-units: height-units,
+      style: style,
+    ))
   } else {
     _render-canvas-single(
       spec,
