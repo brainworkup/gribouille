@@ -4,11 +4,7 @@
 ///! rather than sorted by x. Useful for trajectories, time-series with
 ///! out-of-order timestamps, and any path where order is meaningful.
 
-#import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
-#import "../utils/palette.typ": default-linetypes
-#import "../utils/group.typ": partition-by-group
-#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
+#import "grouped-path.typ": draw-grouped-paths, rows-to-points
 
 /// Path layer connecting observations in row order, one path per group.
 ///
@@ -85,80 +81,8 @@
   inherit-aes: inherit-aes,
 )
 
-#let draw(layer, ctx) = {
-  let mapping = (ctx.resolve-mapping)(layer)
-  let data = (ctx.resolve-data)(layer)
-  if mapping == none or mapping.x == none or mapping.y == none { return }
-  let x-trained = ctx.trained.at("x", default: none)
-  let y-trained = ctx.trained.at("y", default: none)
-  if x-trained == none or y-trained == none { return }
+#let _build-pts(rows, layer, mapping, x-trained, y-trained, ctx) = (
+  rows-to-points(rows, mapping, x-trained, y-trained, ctx)
+)
 
-  let ink = ctx.theme.at("ink", default: black)
-
-  let linetype-param = layer.params.linetype
-  let linetype-pinned = linetype-param != auto and linetype-param != none
-  let linetype-col = mapping.at("linetype", default: none)
-  let linetype-trained = ctx.trained.at("linetype", default: none)
-  let linetype-palette = if linetype-trained != none {
-    if linetype-trained.at("spec", default: none) != none {
-      linetype-trained.spec.at("palette", default: default-linetypes)
-    } else { default-linetypes }
-  } else { default-linetypes }
-  let default-linetype = if linetype-pinned { linetype-param } else { "solid" }
-
-  for g in partition-by-group(data, mapping, trained: ctx.trained) {
-    let rows = g.data
-    let pts = ()
-    for row in rows {
-      let cx = map-position(
-        x-trained,
-        row.at(mapping.x, default: none),
-        ctx.px-range,
-      )
-      let cy = map-position(
-        y-trained,
-        row.at(mapping.y, default: none),
-        ctx.py-range,
-      )
-      if cx == none or cy == none { continue }
-      pts.push((cx, cy))
-    }
-    if pts.len() < 2 { continue }
-
-    let final-colour = resolve-stroke-colour(
-      layer,
-      mapping,
-      ctx,
-      rows.first(),
-      ink,
-    )
-
-    let dash = if linetype-pinned {
-      linetype-param
-    } else if linetype-col != none and linetype-trained != none {
-      let sample = rows.first().at(linetype-col, default: none)
-      if linetype-trained.type == "identity" {
-        if sample == none or sample == "" { default-linetype } else {
-          str(sample)
-        }
-      } else {
-        let idx = linetype-trained.domain.position(v => v == str(sample))
-        if idx == none { default-linetype } else {
-          linetype-palette.at(calc.rem(idx, linetype-palette.len()))
-        }
-      }
-    } else { default-linetype }
-
-    let thickness = resolve-linewidth(
-      layer,
-      mapping,
-      ctx,
-      rows.first(),
-      layer.params.stroke,
-    )
-    cetz.draw.line(
-      ..pts,
-      stroke: (paint: final-colour, thickness: thickness, dash: dash),
-    )
-  }
-}
+#let draw(layer, ctx) = draw-grouped-paths(layer, ctx, _build-pts)

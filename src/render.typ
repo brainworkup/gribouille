@@ -10,7 +10,7 @@
 #import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
-#import "utils/palette.typ": default-discrete
+#import "utils/palette.typ": default-discrete, spec-palette
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
@@ -232,13 +232,6 @@
   _prepare-layer(l, plot-mapping, plot-data)
 }
 
-#let _scale-palette(trained, fallback) = {
-  let spec = trained.at("spec", default: none)
-  if spec == none { return fallback }
-  let p = spec.at("palette", default: auto)
-  if p == auto or p == none { fallback } else { p }
-}
-
 #let _make-resolve-colour(ink) = (trained, value, palette) => {
   if trained == none or value == none or value == "" { return ink }
   if trained.type == "identity" {
@@ -246,7 +239,7 @@
     if type(value) == str { return rgb(value) }
     return ink
   }
-  let pal = _scale-palette(trained, palette)
+  let pal = spec-palette(trained, palette)
   if trained.type == "discrete" {
     let s = str(value)
     let idx = trained.domain.position(v => v == s)

@@ -278,6 +278,18 @@
   ),
 )
 
+// Resolve the palette declared on a trained scale, falling back to `fallback`.
+// Returns `fallback` when the scale is untrained, has no spec, or sets the
+// palette to `auto` or `none`. Used by geoms (linetype, shape) and the
+// level-driven legend kernel.
+#let spec-palette(trained, fallback) = {
+  if trained == none { return fallback }
+  let spec = trained.at("spec", default: none)
+  if spec == none { return fallback }
+  let p = spec.at("palette", default: auto)
+  if p == auto or p == none { fallback } else { p }
+}
+
 /// Look up a ColorBrewer palette by name.
 ///
 /// Returns the canonical colour array for the named palette.

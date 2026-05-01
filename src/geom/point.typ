@@ -7,7 +7,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-discrete, map-position
-#import "../utils/palette.typ": default-shapes
+#import "../utils/palette.typ": default-shapes, spec-palette
 #import "../utils/colour-resolve.typ": resolve-size
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -130,12 +130,7 @@
   let shape-pinned = shape-param != auto and shape-param != none
   let shape-col = mapping.at("shape", default: none)
   let shape-trained = ctx.trained.at("shape", default: none)
-  let shape-palette = if shape-trained != none {
-    let p = if shape-trained.at("spec", default: none) != none {
-      shape-trained.spec.at("palette", default: default-shapes)
-    } else { default-shapes }
-    p
-  } else { default-shapes }
+  let shape-palette = spec-palette(shape-trained, default-shapes)
   let default-shape-kind = if shape-pinned { shape-param } else { "circle" }
 
   for row in data {

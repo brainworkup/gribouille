@@ -12,17 +12,10 @@
 // from the composed glyph".
 
 #import "./colour.typ": resolve-continuous-colour
-#import "./palette.typ": default-linetypes, default-shapes
+#import "./palette.typ": default-linetypes, default-shapes, spec-palette
 #import "../scale/train.typ": map-continuous
 
 #let _palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
-
-#let _spec-palette(trained, fallback) = {
-  let spec = trained.at("spec", default: none)
-  if spec == none { return fallback }
-  let p = spec.at("palette", default: auto)
-  if p == auto or p == none { fallback } else { p }
-}
 
 #let _spec-range(trained, fallback) = {
   let spec = trained.at("spec", default: none)
@@ -66,7 +59,7 @@
   if trained.type == "identity" { return value }
 
   if aesthetic == "colour" or aesthetic == "fill" {
-    let pal = _spec-palette(trained, palette)
+    let pal = spec-palette(trained, palette)
     if pal == none { return ink }
     if trained.type == "discrete" {
       let idx = _discrete-index(trained, value)
@@ -78,7 +71,7 @@
 
   if aesthetic == "shape" {
     if trained.type != "discrete" { return none }
-    let pal = _spec-palette(trained, default-shapes)
+    let pal = spec-palette(trained, default-shapes)
     let idx = _discrete-index(trained, value)
     if idx == none { return none }
     return _palette-at(pal, idx)
@@ -86,7 +79,7 @@
 
   if aesthetic == "linetype" {
     if trained.type != "discrete" { return none }
-    let pal = _spec-palette(trained, default-linetypes)
+    let pal = spec-palette(trained, default-linetypes)
     let idx = _discrete-index(trained, value)
     if idx == none { return none }
     return _palette-at(pal, idx)

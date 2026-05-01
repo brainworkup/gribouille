@@ -8,6 +8,7 @@
 #import "deps.typ": cetz
 #import "utils/pretty.typ": pretty
 #import "utils/colour.typ": resolve-continuous-colour
+#import "utils/palette.typ": spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour, resolve-field
 #import "guide/draw-key.typ": default-key-for, draw-glyph
@@ -571,16 +572,9 @@
   }
 }
 
-#let _palette-for(trained, fallback) = {
-  let spec = trained.at("spec", default: none)
-  if spec == none { return fallback }
-  let p = spec.at("palette", default: auto)
-  if p == auto or p == none { fallback } else { p }
-}
-
 #let _resolve-bar-colour(trained, value, palette, ink) = {
   if trained == none or value == none { return ink }
-  let pal = _palette-for(trained, palette)
+  let pal = spec-palette(trained, palette)
   resolve-continuous-colour(trained, value, pal, ink)
 }
 

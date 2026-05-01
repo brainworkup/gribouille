@@ -140,6 +140,12 @@
   none
 }
 
+#let _scale-param(target, spec, key, fallback) = {
+  if target != none { return target.at(key, default: fallback) }
+  if spec != none { return spec.at(key, default: fallback) }
+  fallback
+}
+
 #let train(scales: (), layers: (), mapping: none, data: none) = {
   let trained = (:)
   let aesthetics = (
@@ -253,33 +259,20 @@
     }
     let spec = if target != none { target.spec } else { none }
     if spec != none and spec.at("limits", default: none) != none { continue }
-    let trans = if target != none {
-      target.at("trans", default: "identity")
-    } else if spec != none {
-      spec.at("trans", default: "identity")
-    } else { "identity" }
     let entry = (
       type: "continuous",
       domain: (lo, hi),
       spec: spec,
-      trans: trans,
-      typst-mark: if target != none {
-        target.at("typst-mark", default: false)
-      } else { false },
+      trans: _scale-param(target, spec, "trans", "identity"),
+      typst-mark: _scale-param(target, none, "typst-mark", false),
     )
-    let temporal = if target != none {
-      target.at("temporal", default: none)
-    } else if spec != none {
-      spec.at("temporal", default: none)
-    } else { none }
+    let temporal = _scale-param(target, spec, "temporal", none)
     if temporal != none {
       entry.insert("temporal", temporal)
-      let fmt = if target != none {
-        target.at("date-format", default: "")
-      } else if spec != none {
-        spec.at("date-format", default: "")
-      } else { "" }
-      entry.insert("date-format", fmt)
+      entry.insert(
+        "date-format",
+        _scale-param(target, spec, "date-format", ""),
+      )
     }
     trained.insert(axis, entry)
   }
