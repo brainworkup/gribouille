@@ -1,4 +1,4 @@
-// Binned scale family: stepped colour gradient, fermenter palette, area sizing.
+// Binned scale family: stepped fill gradient, fermenter palette, area sizing.
 
 #import "../lib.typ": *
 
@@ -32,9 +32,9 @@
     "steps (5 bins)",
     plot(
       data: continuous-d,
-      mapping: aes(x: "x", y: "y", colour: "z"),
+      mapping: aes(x: "x", y: "y", fill: "z"),
       layers: (geom-point(size: 4pt),),
-      scales: (scale-colour-steps(n-breaks: 5),),
+      scales: (scale-fill-steps(n-breaks: 5),),
       width: 6cm,
       height: 5cm,
     ),
@@ -43,9 +43,9 @@
     "fermenter Spectral (7 bins)",
     plot(
       data: continuous-d,
-      mapping: aes(x: "x", y: "y", colour: "z"),
+      mapping: aes(x: "x", y: "y", fill: "z"),
       layers: (geom-point(size: 4pt),),
-      scales: (scale-colour-fermenter(palette: "Spectral", n-breaks: 7),),
+      scales: (scale-fill-fermenter(palette: "Spectral", n-breaks: 7),),
       width: 6cm,
       height: 5cm,
     ),

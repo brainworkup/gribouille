@@ -11,7 +11,7 @@
 #import "theme/theme.typ": _line-stroke, _rect-fill, _text-style
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
-#import "utils/palette.typ": default-discrete, spec-palette
+#import "utils/palette.typ": default-discrete, palette-at, spec-palette
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
@@ -233,20 +233,34 @@
   _prepare-layer(l, plot-mapping, plot-data)
 }
 
-#let _make-resolve-colour(ink) = (trained, value, palette) => {
-  if trained == none or value == none or value == "" { return ink }
+// Build a colour resolver curried over the (trained, palette) pair so per-row
+// callers resolve the palette once outside the row loop and call the returned
+// closure with bare values. One-shot callers can still chain immediately:
+// `(ctx.resolve-colour)(trained, palette)(value)`.
+#let _make-resolve-colour(ink) = (trained, palette) => {
+  if trained == none {
+    return _ => ink
+  }
   if trained.type == "identity" {
-    if type(value) == color { return value }
-    if type(value) == str { return rgb(value) }
-    return ink
+    return value => {
+      if value == none or value == "" { return ink }
+      if type(value) == color { return value }
+      if type(value) == str { return rgb(value) }
+      ink
+    }
   }
   let pal = spec-palette(trained, palette)
   if trained.type == "discrete" {
-    let s = str(value)
-    let idx = trained.domain.position(v => v == s)
-    if idx == none { return ink }
-    pal.at(calc.rem(idx, pal.len()))
-  } else {
+    return value => {
+      if value == none or value == "" { return ink }
+      let s = str(value)
+      let idx = trained.domain.position(v => v == s)
+      if idx == none { return ink }
+      palette-at(pal, idx)
+    }
+  }
+  value => {
+    if value == none or value == "" { return ink }
     let v = if type(value) == str { float(value.trim()) } else { float(value) }
     resolve-continuous-colour(trained, v, pal, ink)
   }
@@ -400,6 +414,34 @@
   trained
 }
 
+// Pre-compute primary and secondary x/y axis breaks for a trained scale set.
+// Callers that share `trained` across panels (e.g. grid facets without free
+// scales) build this once and pass it down so per-panel renders skip the
+// redundant `_axis-breaks` calls.
+#let _shared-axis-breaks(trained) = {
+  let xt = trained.at("x", default: none)
+  let yt = trained.at("y", default: none)
+  let x-breaks = if xt != none and xt.type == "continuous" {
+    _axis-breaks(xt)
+  } else { none }
+  let y-breaks = if yt != none and yt.type == "continuous" {
+    _axis-breaks(yt)
+  } else { none }
+  let x-sec-breaks = if xt != none and xt.type == "continuous" {
+    let spec = xt.at("spec", default: none)
+    if spec != none and spec.at("secondary", default: none) != none {
+      x-breaks
+    } else { none }
+  } else { none }
+  let y-sec-breaks = if yt != none and yt.type == "continuous" {
+    let spec = yt.at("spec", default: none)
+    if spec != none and spec.at("secondary", default: none) != none {
+      y-breaks
+    } else { none }
+  } else { none }
+  (x: x-breaks, y: y-breaks, x-sec: x-sec-breaks, y-sec: y-sec-breaks)
+}
+
 #let _draw-axis-and-layers(
   prepared,
   trained,
@@ -417,6 +459,7 @@
   show-x-sec: true,
   show-y-sec: true,
   flipped: false,
+  axis-breaks: none,
 ) = {
   import cetz.draw: *
   let (ox, oy) = origin
@@ -514,7 +557,9 @@
   let _y-disp = _axis-display(y-trained)
 
   if x-trained != none and x-trained.type == "continuous" {
-    let breaks = _axis-breaks(x-trained)
+    let breaks = if axis-breaks != none and axis-breaks.x != none {
+      axis-breaks.x
+    } else { _axis-breaks(x-trained) }
     for (idx, b) in breaks.enumerate() {
       let cx = map-axis(x-trained, b, px-range)
       if grid-stroke != none {
@@ -563,7 +608,9 @@
   }
 
   if y-trained != none and y-trained.type == "continuous" {
-    let breaks = _axis-breaks(y-trained)
+    let breaks = if axis-breaks != none and axis-breaks.y != none {
+      axis-breaks.y
+    } else { _axis-breaks(y-trained) }
     for (idx, b) in breaks.enumerate() {
       let cy = map-axis(y-trained, b, py-range)
       if grid-stroke != none {
@@ -636,7 +683,9 @@
     x-trained.spec.at("secondary", default: none)
   } else { none }
   if _x-sec != none and show-x-sec {
-    let breaks = _axis-breaks(x-trained)
+    let breaks = if axis-breaks != none and axis-breaks.x-sec != none {
+      axis-breaks.x-sec
+    } else { _axis-breaks(x-trained) }
     for b in breaks {
       let cx = map-axis(x-trained, b, px-range)
       if axis-stroke != none and tick-len > 0 {
@@ -684,7 +733,9 @@
     y-trained.spec.at("secondary", default: none)
   } else { none }
   if _y-sec != none and show-y-sec {
-    let breaks = _axis-breaks(y-trained)
+    let breaks = if axis-breaks != none and axis-breaks.y-sec != none {
+      axis-breaks.y-sec
+    } else { _axis-breaks(y-trained) }
     for b in breaks {
       let cy = map-axis(y-trained, b, py-range)
       if axis-stroke != none and tick-len > 0 {
@@ -1105,6 +1156,10 @@
   let panel-w = (grid-w - gutter-x * (ncol - 1)) / ncol
   let panel-h = (grid-h - gutter-y * (nrow - 1) - strip-h * nrow) / nrow
 
+  let shared-breaks = if free-x or free-y {
+    none
+  } else { _shared-axis-breaks(trained) }
+
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
     let _wrap-labeller = spec.facet.at("labeller", default: none)
@@ -1161,6 +1216,7 @@
         show-x-sec: free-x or row == 0,
         show-y-sec: free-y or col == ncol - 1,
         flipped: _is-flipped(coord),
+        axis-breaks: shared-breaks,
       )
     }
 
@@ -1256,6 +1312,8 @@
   let panel-w = (grid-w - gutter-x * (n-cols - 1)) / n-cols
   let panel-h = (grid-h - gutter-y * (n-rows - 1)) / n-rows
 
+  let shared-breaks = _shared-axis-breaks(trained)
+
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
     for (r, row-lv) in row-levels.enumerate() {
@@ -1284,6 +1342,7 @@
           show-x-sec: r == 0,
           show-y-sec: c == n-cols - 1,
           flipped: _is-flipped(coord),
+          axis-breaks: shared-breaks,
         )
       }
     }

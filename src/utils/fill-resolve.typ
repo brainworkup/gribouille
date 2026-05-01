@@ -42,19 +42,15 @@
       ctx.trained.at("fill", default: none)
     } else { none }
     if fill-col != none and fill-trained != none {
-      (ctx.resolve-colour)(
-        fill-trained,
+      ((ctx.resolve-colour)(fill-trained, ctx.palette))(
         sample-row.at(fill-col, default: none),
-        ctx.palette,
       )
     } else if colour-fallback {
       let colour-col = mapping.at("colour", default: none)
       let colour-trained = ctx.trained.at("colour", default: none)
       if colour-col != none and colour-trained != none {
-        (ctx.resolve-colour)(
-          colour-trained,
+        ((ctx.resolve-colour)(colour-trained, ctx.palette))(
           sample-row.at(colour-col, default: none),
-          ctx.palette,
         )
       } else { default-fill }
     } else { default-fill }

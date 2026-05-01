@@ -1,5 +1,5 @@
 // Inline aesthetic coercion: force a numeric column to be treated as discrete
-// for the colour aesthetic without changing the underlying data.
+// for the fill aesthetic without changing the underlying data.
 
 #import "../lib.typ": *
 
@@ -12,9 +12,9 @@
 
 #plot(
   data: obs,
-  mapping: aes(x: "x", y: "y", colour: as-factor("cluster")),
+  mapping: aes(x: "x", y: "y", fill: as-factor("cluster")),
   layers: (geom-point(size: 4pt),),
-  labs: labs(title: "cluster forced to factor on colour"),
+  labs: labs(title: "cluster forced to factor on fill"),
   width: 10cm,
   height: 7cm,
 )

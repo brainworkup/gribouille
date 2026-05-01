@@ -58,7 +58,7 @@
 /// }
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "grp"),
+///   mapping: aes(x: "x", y: "y", colour: "grp", fill: "grp"),
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-rug(sides: "tblr"),
@@ -112,6 +112,9 @@
   )
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
+  let resolve-colour = if colour-trained != none {
+    (ctx.resolve-colour)(colour-trained, ctx.palette)
+  } else { none }
   let ink = ctx.theme.at("ink", default: black)
 
   let (px-lo, px-hi) = ctx.px-range
@@ -126,9 +129,8 @@
   for row in data {
     let colour = if colour-pinned {
       layer.params.colour
-    } else if colour-col != none and colour-trained != none {
-      let sample = row.at(colour-col, default: none)
-      (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
+    } else if colour-col != none and resolve-colour != none {
+      resolve-colour(row.at(colour-col, default: none))
     } else { ink }
     let alpha = resolve-alpha(layer, mapping, ctx, row)
     let final-colour = apply-alpha(colour, alpha)

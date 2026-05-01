@@ -25,7 +25,7 @@
     text(weight: "bold", label),
     plot(
       data: pts,
-      mapping: aes(x: "x", y: "y", colour: "g"),
+      mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 2.5pt),),
       theme: t,
       width: 5.5cm,
@@ -42,7 +42,5 @@
   make-plot("theme-bw", theme-bw()),
   make-plot("theme-linedraw", theme-linedraw()),
 
-  make-plot("theme-light", theme-light()),
-  make-plot("theme-dark", theme-dark()),
-  make-plot("theme-test", theme-test()),
+  make-plot("theme-light", theme-light()), make-plot("theme-dark", theme-dark()), make-plot("theme-test", theme-test()),
 )

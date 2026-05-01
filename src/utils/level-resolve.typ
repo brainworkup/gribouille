@@ -12,34 +12,33 @@
 // from the composed glyph".
 
 #import "./colour.typ": resolve-continuous-colour
-#import "./palette.typ": default-linetypes, default-shapes, spec-palette
+#import "./palette.typ": (
+  default-linetypes, default-shapes, palette-at, spec-palette,
+)
 #import "../scale/train.typ": map-continuous
 
-#let _palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
-
-#let _spec-range(trained, fallback) = {
+#let spec-range(trained, fallback) = {
   let spec = trained.at("spec", default: none)
   if spec == none { return fallback }
   spec.at("range", default: fallback)
 }
 
-#let _discrete-index(trained, level) = {
+#let discrete-index(trained, level) = {
   let s = str(level)
-  let idx = trained.domain.position(v => v == s)
-  idx
+  trained.domain.position(v => v == s)
 }
 
-#let _discrete-numeric(trained, level, range) = {
+#let discrete-numeric(trained, level, range) = {
   let n = trained.domain.len()
   if n == 0 { return none }
   let (lo, hi) = range
   if n == 1 { return (lo + hi) / 2 }
-  let idx = _discrete-index(trained, level)
+  let idx = discrete-index(trained, level)
   if idx == none { return none }
   lo + idx * (hi - lo) / (n - 1)
 }
 
-#let _continuous-numeric(trained, value, range) = {
+#let continuous-numeric(trained, value, range) = {
   let (d-lo, d-hi) = trained.domain
   let (lo, hi) = range
   if d-hi == d-lo { return (lo + hi) / 2 }
@@ -62,9 +61,9 @@
     let pal = spec-palette(trained, palette)
     if pal == none { return ink }
     if trained.type == "discrete" {
-      let idx = _discrete-index(trained, value)
+      let idx = discrete-index(trained, value)
       if idx == none { return ink }
-      return _palette-at(pal, idx)
+      return palette-at(pal, idx)
     }
     return resolve-continuous-colour(trained, value, pal, ink)
   }
@@ -72,41 +71,41 @@
   if aesthetic == "shape" {
     if trained.type != "discrete" { return none }
     let pal = spec-palette(trained, default-shapes)
-    let idx = _discrete-index(trained, value)
+    let idx = discrete-index(trained, value)
     if idx == none { return none }
-    return _palette-at(pal, idx)
+    return palette-at(pal, idx)
   }
 
   if aesthetic == "linetype" {
     if trained.type != "discrete" { return none }
     let pal = spec-palette(trained, default-linetypes)
-    let idx = _discrete-index(trained, value)
+    let idx = discrete-index(trained, value)
     if idx == none { return none }
-    return _palette-at(pal, idx)
+    return palette-at(pal, idx)
   }
 
   if aesthetic == "size" {
-    let range = _spec-range(trained, (1pt, 6pt))
+    let range = spec-range(trained, (1pt, 6pt))
     if trained.type == "discrete" {
-      return _discrete-numeric(trained, value, range)
+      return discrete-numeric(trained, value, range)
     }
-    return _continuous-numeric(trained, value, range)
+    return continuous-numeric(trained, value, range)
   }
 
   if aesthetic == "linewidth" {
-    let range = _spec-range(trained, (0.4pt, 1.4pt))
+    let range = spec-range(trained, (0.4pt, 1.4pt))
     if trained.type == "discrete" {
-      return _discrete-numeric(trained, value, range)
+      return discrete-numeric(trained, value, range)
     }
-    return _continuous-numeric(trained, value, range)
+    return continuous-numeric(trained, value, range)
   }
 
   if aesthetic == "alpha" {
-    let range = _spec-range(trained, (0.1, 1))
+    let range = spec-range(trained, (0.1, 1))
     if trained.type == "discrete" {
-      return _discrete-numeric(trained, value, range)
+      return discrete-numeric(trained, value, range)
     }
-    return _continuous-numeric(trained, value, range)
+    return continuous-numeric(trained, value, range)
   }
 
   none

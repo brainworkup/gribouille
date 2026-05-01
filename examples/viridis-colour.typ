@@ -1,4 +1,4 @@
-// Viridis continuous colour scale.
+// Viridis continuous fill scale.
 
 #import "../lib.typ": *
 
@@ -11,9 +11,9 @@
 
 #plot(
   data: df,
-  mapping: aes(x: "x", y: "y", colour: "z"),
+  mapping: aes(x: "x", y: "y", fill: "z"),
   layers: (geom-point(size: 5pt),),
-  scales: (scale-colour-viridis-c(),),
+  scales: (scale-fill-viridis-c(),),
   labs: labs(title: "Viridis continuous"),
   width: 11cm,
   height: 7cm,

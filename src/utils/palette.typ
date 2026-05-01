@@ -278,6 +278,9 @@
   ),
 )
 
+// Index a palette with modulo wrap so out-of-range indices cycle.
+#let palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
+
 // Resolve the palette declared on a trained scale, falling back to `fallback`.
 // Returns `fallback` when the scale is untrained, has no spec, or sets the
 // palette to `auto` or `none`. Used by geoms (linetype, shape) and the

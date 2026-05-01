@@ -29,15 +29,8 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 :::
 
 ::: {.hero-art}
-
-::: {.light-content}
-![](/assets/typst-render/examples/penguins-light.svg){fig-alt="To be Updated"}
-:::
-
-::: {.dark-content}
-![](/assets/typst-render/examples/penguins-dark.svg){fig-alt="To be Updated"}
-:::
-
+![](/assets/typst-render/examples/penguins-light.svg){.light-content fig-alt="To be Updated"}
+![](/assets/typst-render/examples/penguins-dark.svg){.dark-content fig-alt="To be Updated"}
 :::
 
 :::

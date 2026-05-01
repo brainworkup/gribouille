@@ -158,14 +158,14 @@
       layer.params.colour
     } else if colour-col != none and colour-trained != none {
       let sample = rows.first().at(colour-col, default: none)
-      (ctx.resolve-colour)(colour-trained, sample, ctx.palette)
+      ((ctx.resolve-colour)(colour-trained, ctx.palette))(sample)
     } else { default-colour }
 
     let ribbon-colour = if fill-pinned {
       layer.params.fill
     } else if fill-col != none and fill-trained != none {
       let sample = rows.first().at(fill-col, default: none)
-      (ctx.resolve-colour)(fill-trained, sample, ctx.palette)
+      ((ctx.resolve-colour)(fill-trained, ctx.palette))(sample)
     } else { line-colour }
 
     // Confidence ribbon first, so the line draws on top.

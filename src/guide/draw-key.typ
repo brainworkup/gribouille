@@ -26,7 +26,7 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt, key: draw-key-point()),),
 ///   width: 8cm,
 ///   height: 5cm,
@@ -133,7 +133,7 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt, key: draw-key-rect()),),
 ///   width: 8cm,
 ///   height: 5cm,
@@ -208,7 +208,7 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt, key: draw-key-blank()),),
 ///   width: 8cm,
 ///   height: 5cm,
@@ -225,7 +225,7 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", colour: "g", fill: "g"),
 ///   layers: (
 ///     geom-line(stroke: 1pt),
 ///     geom-point(size: 3pt, key: draw-key-blank()),

@@ -41,7 +41,7 @@
 /// )
 /// ```
 ///
-/// \@examples Flipper length vs body mass, coloured and shaped by species.
+/// \@examples Flipper length vs body mass, coloured, filled, and shaped by species.
 /// ```
 /// #plot(
 ///   data: penguins,
@@ -49,6 +49,7 @@
 ///     x: "flipper-len",
 ///     y: "body-mass",
 ///     colour: "species",
+///     fill: "species",
 ///     shape: "species",
 ///   ),
 ///   layers: (
@@ -59,6 +60,9 @@
 ///     scale-x-continuous(),
 ///     scale-y-continuous(),
 ///     scale-colour-discrete(
+///       palette: (rgb("#ff8c00"), rgb("#800080"), rgb("#008B8B")),
+///     ),
+///     scale-fill-discrete(
 ///       palette: (rgb("#ff8c00"), rgb("#800080"), rgb("#008B8B")),
 ///     ),
 ///   ),

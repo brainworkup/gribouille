@@ -30,9 +30,9 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt),),
-///   guides: guides(colour: guide-legend(reverse: true)),
+///   guides: guides(fill: guide-legend(reverse: true)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -47,9 +47,9 @@
 /// }
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt),),
-///   guides: guides(colour: guide-legend(title: "Group", ncol: 2)),
+///   guides: guides(fill: guide-legend(title: "Group", ncol: 2)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

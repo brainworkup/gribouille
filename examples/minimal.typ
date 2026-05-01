@@ -18,7 +18,7 @@
 
 #plot(
   data: iris,
-  mapping: aes(x: "sepal-length", y: "sepal-width", colour: "species"),
+  mapping: aes(x: "sepal-length", y: "sepal-width", fill: "species"),
   layers: (
     geom-point(size: 3pt),
   ),

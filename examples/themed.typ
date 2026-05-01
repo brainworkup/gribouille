@@ -22,7 +22,7 @@
   column-gutter: 0.3cm,
   plot(
     data: pts,
-    mapping: aes(x: "x", y: "y", colour: "g"),
+    mapping: aes(x: "x", y: "y", fill: "g"),
     layers: (geom-point(size: 2.5pt),),
     theme: theme-minimal(),
     width: 6cm,
@@ -30,7 +30,7 @@
   ),
   plot(
     data: pts,
-    mapping: aes(x: "x", y: "y", colour: "g"),
+    mapping: aes(x: "x", y: "y", fill: "g"),
     layers: (geom-point(size: 2.5pt),),
     theme: theme-classic(),
     width: 6cm,
@@ -38,7 +38,7 @@
   ),
   plot(
     data: pts,
-    mapping: aes(x: "x", y: "y", colour: "g"),
+    mapping: aes(x: "x", y: "y", fill: "g"),
     layers: (geom-point(size: 2.5pt),),
     theme: theme-void(),
     width: 6cm,

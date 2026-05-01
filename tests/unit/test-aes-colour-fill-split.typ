@@ -10,10 +10,8 @@
 #import "../../src/utils/aes-pair.typ": aes-set, resolve-pair-defaults
 
 #let fake-trained = (type: "discrete", domain: ("a", "b"))
-#let marker-resolve(trained, value, palette) = {
+#let marker-resolve(trained, palette) = value => {
   if trained == none { return rgb("#000000") }
-  // Encode which scale was consulted by mixing the value into the alpha
-  // channel so the test can distinguish fill vs colour paths.
   if value == "a" { rgb("#ff0000") } else { rgb("#0000ff") }
 }
 

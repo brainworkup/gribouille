@@ -7,7 +7,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-discrete, map-position
-#import "../utils/palette.typ": default-shapes, spec-palette
+#import "../utils/palette.typ": default-shapes, palette-at, spec-palette
 #import "../utils/colour-resolve.typ": resolve-size
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -108,8 +108,6 @@
   inherit-aes: inherit-aes,
 )
 
-#let _palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
-
 #let draw(layer, ctx) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
@@ -171,7 +169,7 @@
           v == str(row.at(shape-col, default: none))
         ))
         if idx == none { default-shape-kind } else {
-          _palette-at(shape-palette, idx)
+          palette-at(shape-palette, idx)
         }
       }
     } else { default-shape-kind }

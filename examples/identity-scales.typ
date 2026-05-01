@@ -13,7 +13,7 @@
 
 #plot(
   data: d,
-  mapping: aes(x: "x", y: "y", colour: "c", shape: "s"),
+  mapping: aes(x: "x", y: "y", fill: "c", shape: "s"),
   layers: (geom-point(size: 3pt),),
   scales: (scale-colour-identity(), scale-shape-identity()),
   width: 9cm,

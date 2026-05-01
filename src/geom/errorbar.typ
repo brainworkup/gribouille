@@ -111,6 +111,9 @@
   )
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
+  let resolve-colour = if colour-trained != none {
+    (ctx.resolve-colour)(colour-trained, ctx.palette)
+  } else { none }
   let ink = ctx.theme.at("ink", default: black)
 
   // `width` accepts a Typst length (cap span in panel units) or a number (cap
@@ -139,12 +142,8 @@
 
     let colour = if colour-pinned {
       layer.params.colour
-    } else if colour-col != none and colour-trained != none {
-      (ctx.resolve-colour)(
-        colour-trained,
-        row.at(colour-col, default: none),
-        ctx.palette,
-      )
+    } else if colour-col != none and resolve-colour != none {
+      resolve-colour(row.at(colour-col, default: none))
     } else { ink }
     let alpha = resolve-alpha(layer, mapping, ctx, row)
     let final-colour = apply-alpha(colour, alpha)

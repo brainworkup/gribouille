@@ -1,4 +1,4 @@
-// Line plus point layers sharing a discrete colour mapping.
+// Line plus point layers sharing discrete colour and fill mappings.
 
 #import "../lib.typ": *
 
@@ -27,7 +27,7 @@
 
 #plot(
   data: trend,
-  mapping: aes(x: "month", y: "sales", colour: "region"),
+  mapping: aes(x: "month", y: "sales", colour: "region", fill: "region"),
   layers: (
     geom-line(stroke: 1pt),
     geom-point(size: 3pt),

@@ -1,4 +1,4 @@
-#import "../scale/train.typ": map-continuous
+#import "./level-resolve.typ": continuous-numeric, discrete-numeric, spec-range
 #import "./types.typ": parse-number
 
 /// Apply an alpha transparentise to an already-resolved colour.
@@ -38,34 +38,29 @@
   if pinned != auto and pinned != none {
     return _clamp(pinned, 0, 1)
   }
+  let fallback = _clamp(default-alpha, 0, 1)
   let col = if mapping == none { none } else {
     mapping.at("alpha", default: none)
   }
   let trained = ctx.trained.at("alpha", default: none)
-  if col == none or trained == none { return _clamp(default-alpha, 0, 1) }
+  if col == none or trained == none { return fallback }
   let raw = sample-row.at(col, default: none)
-  if raw == none { return _clamp(default-alpha, 0, 1) }
+  if raw == none { return fallback }
   if trained.type == "identity" {
     let v = parse-number(raw)
-    if v == none { return _clamp(default-alpha, 0, 1) }
+    if v == none { return fallback }
     return _clamp(v, 0, 1)
   }
-  let spec = trained.at("spec", default: none)
-  let range = if spec != none { spec.at("range", default: (0.1, 1)) } else {
-    (0.1, 1)
-  }
-  if trained.type == "continuous" {
+  let range = spec-range(trained, (0.1, 1))
+  let resolved = if trained.type == "continuous" {
     let v = parse-number(raw)
-    if v == none { return _clamp(default-alpha, 0, 1) }
-    return _clamp(map-continuous(v, trained.domain, range), 0, 1)
+    if v == none { return fallback }
+    continuous-numeric(trained, v, range)
+  } else {
+    discrete-numeric(trained, raw, range)
   }
-  let s = str(raw)
-  let idx = trained.domain.position(v => v == s)
-  let n = trained.domain.len()
-  if idx == none or n == 0 { return _clamp(default-alpha, 0, 1) }
-  let (lo, hi) = range
-  if n == 1 { return _clamp((lo + hi) / 2, 0, 1) }
-  _clamp(lo + idx * (hi - lo) / (n - 1), 0, 1)
+  if resolved == none { return fallback }
+  _clamp(resolved, 0, 1)
 }
 
 /// Resolve a per-row stroke thickness.
@@ -104,28 +99,16 @@
     if v == none { return default-thickness }
     return v * 1pt
   }
-  let spec = trained.at("spec", default: none)
-  let range = if spec != none {
-    spec.at("range", default: (0.4pt, 1.4pt))
-  } else {
-    (0.4pt, 1.4pt)
-  }
-  let (lo, hi) = range
-  if trained.type == "continuous" {
+  let range = spec-range(trained, (0.4pt, 1.4pt))
+  let resolved = if trained.type == "continuous" {
     let v = parse-number(raw)
     if v == none { return default-thickness }
-    let (d-lo, d-hi) = trained.domain
-    if d-hi == d-lo { return (lo + hi) / 2 }
-    let t = (v - d-lo) / (d-hi - d-lo)
-    let t-clamped = if t < 0 { 0 } else if t > 1 { 1 } else { t }
-    return lo + t-clamped * (hi - lo)
+    continuous-numeric(trained, v, range)
+  } else {
+    discrete-numeric(trained, raw, range)
   }
-  let s = str(raw)
-  let idx = trained.domain.position(v => v == s)
-  let n = trained.domain.len()
-  if idx == none or n == 0 { return default-thickness }
-  if n == 1 { return (lo + hi) / 2 }
-  lo + idx * (hi - lo) / (n - 1)
+  if resolved == none { return default-thickness }
+  resolved
 }
 
 /// Resolve a per-row marker size.
@@ -160,28 +143,16 @@
     if v == none { return default-size }
     return v * 1pt
   }
-  let spec = trained.at("spec", default: none)
-  let range = if spec != none {
-    spec.at("range", default: (1pt, 6pt))
-  } else {
-    (1pt, 6pt)
-  }
-  let (lo, hi) = range
-  if trained.type == "continuous" {
+  let range = spec-range(trained, (1pt, 6pt))
+  let resolved = if trained.type == "continuous" {
     let v = parse-number(raw)
     if v == none { return default-size }
-    let (d-lo, d-hi) = trained.domain
-    if d-hi == d-lo { return (lo + hi) / 2 }
-    let t = (v - d-lo) / (d-hi - d-lo)
-    let t-clamped = if t < 0 { 0 } else if t > 1 { 1 } else { t }
-    return lo + t-clamped * (hi - lo)
+    continuous-numeric(trained, v, range)
+  } else {
+    discrete-numeric(trained, raw, range)
   }
-  let s = str(raw)
-  let idx = trained.domain.position(v => v == s)
-  let n = trained.domain.len()
-  if idx == none or n == 0 { return default-size }
-  if n == 1 { return (lo + hi) / 2 }
-  lo + idx * (hi - lo) / (n - 1)
+  if resolved == none { return default-size }
+  resolved
 }
 
 /// Resolve a stroke colour for a row sample.
@@ -209,7 +180,7 @@
     let colour-trained = ctx.trained.at("colour", default: none)
     if colour-col != none and colour-trained != none {
       let v = sample-row.at(colour-col, default: none)
-      (ctx.resolve-colour)(colour-trained, v, ctx.palette)
+      ((ctx.resolve-colour)(colour-trained, ctx.palette))(v)
     } else { default-colour }
   }
   let alpha = resolve-alpha(layer, mapping, ctx, sample-row)

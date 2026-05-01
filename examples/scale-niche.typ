@@ -1,4 +1,4 @@
-// Niche colour scales: grey ramp, hue wheel, distiller.
+// Niche fill scales: grey ramp, hue wheel, distiller.
 
 #import "../lib.typ": *
 
@@ -35,9 +35,9 @@
     "grey (discrete)",
     plot(
       data: discrete-d,
-      mapping: aes(x: "x", y: "y", colour: "g"),
+      mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 4pt),),
-      scales: (scale-colour-grey(),),
+      scales: (scale-fill-grey(),),
       width: 6cm,
       height: 5cm,
     ),
@@ -46,9 +46,9 @@
     "hue (discrete)",
     plot(
       data: discrete-d,
-      mapping: aes(x: "x", y: "y", colour: "g"),
+      mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 4pt),),
-      scales: (scale-colour-hue(),),
+      scales: (scale-fill-hue(),),
       width: 6cm,
       height: 5cm,
     ),
@@ -57,9 +57,9 @@
     "distiller Spectral (continuous)",
     plot(
       data: continuous-d,
-      mapping: aes(x: "x", y: "y", colour: "z"),
+      mapping: aes(x: "x", y: "y", fill: "z"),
       layers: (geom-point(size: 4pt),),
-      scales: (scale-colour-distiller(palette: "Spectral"),),
+      scales: (scale-fill-distiller(palette: "Spectral"),),
       width: 6cm,
       height: 5cm,
     ),

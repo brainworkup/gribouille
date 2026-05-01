@@ -40,7 +40,7 @@
 /// )
 /// ```
 ///
-/// \@examples Pair `shape` and `colour` mappings with the same column to
+/// \@examples Pair `shape` and `fill` mappings with the same column to
 /// reinforce the categorical encoding.
 /// ```
 /// #let d = (
@@ -50,7 +50,7 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", shape: "sp", colour: "sp"),
+///   mapping: aes(x: "x", y: "y", shape: "sp", fill: "sp"),
 ///   layers: (geom-point(size: 4pt),),
 ///   width: 10cm,
 ///   height: 6cm,

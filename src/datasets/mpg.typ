@@ -39,11 +39,11 @@
 /// )
 /// ```
 ///
-/// \@examples Highway mpg vs engine displacement, coloured by vehicle class.
+/// \@examples Highway mpg vs engine displacement, filled by vehicle class.
 /// ```
 /// #plot(
 ///   data: mpg,
-///   mapping: aes(x: "displ", y: "hwy", colour: "class"),
+///   mapping: aes(x: "displ", y: "hwy", fill: "class"),
 ///   layers: (geom-point(size: 3pt),),
 ///   width: 11cm,
 ///   height: 7cm,

@@ -22,9 +22,9 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g"),
+///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt),),
-///   guides: guides(colour: guide-none()),
+///   guides: guides(fill: guide-none()),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -40,9 +40,9 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", colour: "g", size: "w"),
+///   mapping: aes(x: "x", y: "y", fill: "g", size: "w"),
 ///   layers: (geom-point(),),
-///   guides: guides(colour: guide-none(), size: guide-none()),
+///   guides: guides(fill: guide-none(), size: guide-none()),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

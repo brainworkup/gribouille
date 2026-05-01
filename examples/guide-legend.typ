@@ -25,7 +25,7 @@
     text(weight: "bold", label),
     plot(
       data: pts,
-      mapping: aes(x: "x", y: "y", colour: "g"),
+      mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 2.5pt),),
       guides: gs,
       width: 6cm,

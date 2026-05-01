@@ -58,7 +58,7 @@
 /// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", label: "name", colour: "grp"),
+///   mapping: aes(x: "x", y: "y", label: "name", colour: "grp", fill: "grp"),
 ///   layers: (
 ///     geom-point(size: 2pt),
 ///     geom-text(anchor: "west", dx: 0.15),
@@ -110,9 +110,10 @@
 
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
-  let label-typst = layer
-    .at("typst-marks", default: (:))
-    .at("label", default: false)
+  let resolve-colour = if colour-trained != none {
+    (ctx.resolve-colour)(colour-trained, ctx.palette)
+  } else { none }
+  let label-typst = layer.at("typst-marks", default: (:)).at("label", default: false)
 
   for row in data {
     let cx = map-position(
@@ -129,12 +130,8 @@
     let label = row.at(label-col, default: none)
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
-    let colour = if colour-col != none and colour-trained != none {
-      (ctx.resolve-colour)(
-        colour-trained,
-        row.at(colour-col, default: none),
-        ctx.palette,
-      )
+    let colour = if colour-col != none and resolve-colour != none {
+      resolve-colour(row.at(colour-col, default: none))
     } else if layer.params.colour == auto {
       ctx.theme.at("ink", default: black)
     } else { layer.params.colour }

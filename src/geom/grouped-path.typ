@@ -5,7 +5,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/palette.typ": default-linetypes, spec-palette
+#import "../utils/palette.typ": default-linetypes, palette-at, spec-palette
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 
@@ -89,7 +89,7 @@
       } else {
         let idx = linetype-trained.domain.position(v => v == str(sample))
         if idx == none { default-linetype } else {
-          linetype-palette.at(calc.rem(idx, linetype-palette.len()))
+          palette-at(linetype-palette, idx)
         }
       }
     } else { default-linetype }

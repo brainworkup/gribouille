@@ -1,4 +1,4 @@
-// scale-colour-manual: user-supplied palette.
+// scale-colour-manual and scale-fill-manual: user-supplied palettes.
 
 #import "../lib.typ": *
 
@@ -13,10 +13,15 @@
 
 #plot(
   data: obs,
-  mapping: aes(x: "x", y: "y", colour: "g"),
+  mapping: aes(x: "x", y: "y", colour: "g", fill: "g"),
   layers: (geom-point(size: 4pt), geom-line()),
   scales: (
     scale-colour-manual(values: (
+      rgb("#e63946"),
+      rgb("#f4a261"),
+      rgb("#2a9d8f"),
+    )),
+    scale-fill-manual(values: (
       rgb("#e63946"),
       rgb("#f4a261"),
       rgb("#2a9d8f"),

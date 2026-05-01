@@ -1,5 +1,5 @@
-// Continuous colour guide: a colourbar appears automatically when the
-// colour aesthetic is trained continuously.
+// Continuous fill guide: a colourbar appears automatically when the
+// fill aesthetic is trained continuously.
 
 #import "../lib.typ": *
 
@@ -14,7 +14,7 @@
   data: df,
   mapping: aes(x: "x", y: "y", fill: "temp"),
   layers: (geom-point(size: 5pt),),
-  labs: labs(title: "Colourbar guide", colour: "Temperature"),
+  labs: labs(title: "Colourbar guide", fill: "Temperature"),
   width: 11cm,
   height: 7cm,
 )
