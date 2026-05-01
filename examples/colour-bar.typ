@@ -12,7 +12,7 @@
 
 #plot(
   data: df,
-  mapping: aes(x: "x", y: "y", colour: "temp"),
+  mapping: aes(x: "x", y: "y", fill: "temp"),
   layers: (geom-point(size: 5pt),),
   labs: labs(title: "Colourbar guide", colour: "Temperature"),
   width: 11cm,

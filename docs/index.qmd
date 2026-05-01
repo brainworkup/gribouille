@@ -81,7 +81,7 @@ Stack geoms, scales, facets, and a theme until the plot is right.
   mapping: aes(
     x: "flipper-len",
     y: "body-mass",
-    colour: "species",
+    fill: "species",
   ),
   layers: (
     geom-point(size: 2pt),
