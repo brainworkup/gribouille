@@ -76,14 +76,3 @@
   black
 }
 
-// Resolve a non-colour field (size, weight, family, angle) by walking the
-// inheritance chain. Returns the first non-none value, then the default.
-#let resolve-field(theme, key, ..parents, fallback: none) = {
-  let v = theme.at(key, default: none)
-  if v != none { return v }
-  for p in parents.pos() {
-    let pv = theme.at(p, default: none)
-    if pv != none { return pv }
-  }
-  fallback
-}

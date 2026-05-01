@@ -7,7 +7,7 @@
 )
 #import "stat/apply.typ": apply-stat, stat-default-params
 #import "position/apply.typ": apply-position
-#import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
+#import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": _line-stroke, _rect-fill, _text-style
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number

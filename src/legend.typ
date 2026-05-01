@@ -10,7 +10,7 @@
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/palette.typ": spec-palette
 #import "utils/level-resolve.typ": resolve-level
-#import "theme/defaults.typ": resolve-colour, resolve-field
+#import "theme/defaults.typ": resolve-colour
 #import "theme/theme.typ": _text-style
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-ref-col
