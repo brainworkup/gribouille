@@ -6,6 +6,7 @@
 #import "../../src/scale/linewidth.typ": (
   scale-linewidth-continuous, scale-linewidth-identity,
 )
+#import "../../src/scale/size.typ": scale-size-continuous, scale-size-identity
 #import "../../src/scale/train.typ": train
 
 // --- alpha scale specs ---
@@ -37,6 +38,17 @@
 #let s-lw-id = scale-linewidth-identity()
 #assert.eq(s-lw-id.aesthetic, "linewidth")
 #assert.eq(s-lw-id.type, "identity")
+
+// --- size scale specs ---
+
+#let s-size-c = scale-size-continuous()
+#assert.eq(s-size-c.kind, "scale")
+#assert.eq(s-size-c.aesthetic, "size")
+#assert.eq(s-size-c.type, "continuous")
+
+#let s-size-id = scale-size-identity()
+#assert.eq(s-size-id.aesthetic, "size")
+#assert.eq(s-size-id.type, "identity")
 
 // --- train() picks up alpha and linewidth on a mapped layer ---
 
@@ -84,5 +96,25 @@
 )
 #assert.eq(trained2.alpha.type, "identity")
 #assert.eq(trained2.alpha.domain, ())
+
+#let layers3 = (
+  (
+    geom: "point",
+    mapping: (x: "x", y: "y", size: "s"),
+    data: (
+      (x: 0, y: 0, s: 2pt),
+      (x: 1, y: 1, s: 6pt),
+    ),
+    inherit-aes: true,
+  ),
+)
+#let trained3 = train(
+  scales: (scale-size-identity(),),
+  layers: layers3,
+  mapping: (x: "x", y: "y", size: "s"),
+  data: none,
+)
+#assert.eq(trained3.size.type, "identity")
+#assert.eq(trained3.size.domain, ())
 
 aes-promote tests passed.

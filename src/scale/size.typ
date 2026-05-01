@@ -263,3 +263,43 @@
   n-breaks: n-breaks,
   size-trans: "area",
 )
+
+/// Size scale that uses each row's value as the marker or line size.
+///
+/// Values may be Typst lengths (passed through verbatim) or numbers
+/// (interpreted as point sizes). No legend is drawn because the column
+/// carries the visual outcome verbatim.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param name Legend title. Identity scales draw no legend.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Per-row Typst lengths carried straight through to the marker
+/// radii; no legend is drawn.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1, s: 2pt),
+///   (x: 2, y: 2, s: 5pt),
+///   (x: 3, y: 3, s: 9pt),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", size: "s"),
+///   layers: (geom-point(),),
+///   scales: (scale-size-identity(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-size-continuous, \@scale-alpha-identity, \@scale-linewidth-identity
+#let scale-size-identity(name: none) = (
+  kind: "scale",
+  aesthetic: "size",
+  type: "identity",
+  name: name,
+)
