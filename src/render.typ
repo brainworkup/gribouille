@@ -1013,6 +1013,72 @@
   trained
 }
 
+#let _render-prepare(spec) = {
+  let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
+  let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
+
+  let wrap-levels = if facet-wrap-mode {
+    _raw-levels-for(spec, spec.facet.var)
+  } else { () }
+
+  let grid-row-levels = if facet-grid-mode and spec.facet.rows != none {
+    _raw-levels-for(spec, spec.facet.rows)
+  } else if facet-grid-mode { ("",) } else { () }
+  let grid-col-levels = if facet-grid-mode and spec.facet.cols != none {
+    _raw-levels-for(spec, spec.facet.cols)
+  } else if facet-grid-mode { ("",) } else { () }
+
+  let panels = if facet-wrap-mode {
+    wrap-levels.map(level => (
+      level: level,
+      layers: spec.layers.map(l => _prepare-layer-filtered(
+        l,
+        spec.mapping,
+        spec.data,
+        ((spec.facet.var, level),),
+      )),
+    ))
+  } else if facet-grid-mode {
+    let out = ()
+    for row-lv in grid-row-levels {
+      for col-lv in grid-col-levels {
+        let filters = ()
+        if spec.facet.rows != none { filters.push((spec.facet.rows, row-lv)) }
+        if spec.facet.cols != none { filters.push((spec.facet.cols, col-lv)) }
+        out.push((
+          row-level: row-lv,
+          col-level: col-lv,
+          layers: spec.layers.map(l => _prepare-layer-filtered(
+            l,
+            spec.mapping,
+            spec.data,
+            filters,
+          )),
+        ))
+      }
+    }
+    out
+  } else { () }
+
+  let prepared = if facet-wrap-mode or facet-grid-mode {
+    let union = ()
+    for panel in panels { union += panel.layers }
+    union
+  } else {
+    spec.layers.map(l => _prepare-layer(l, spec.mapping, spec.data))
+  }
+
+  (
+    facet-wrap-mode: facet-wrap-mode,
+    facet-grid-mode: facet-grid-mode,
+    wrap-levels: wrap-levels,
+    grid-row-levels: grid-row-levels,
+    grid-col-levels: grid-col-levels,
+    panels: panels,
+    prepared: prepared,
+  )
+}
+
 #let _render-decorate(canvas, labs, theme) = {
   if labs == none { return canvas }
   let title-block = if labs.title != none {
@@ -1086,64 +1152,14 @@
   // count) are computed on each panel's own subset of rows, following
   // grammar-of-graphics semantics.
   // Non-faceted plots run the classic single-pass preparation.
-  let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
-  let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
-
-  let wrap-levels = if facet-wrap-mode {
-    _raw-levels-for(spec, spec.facet.var)
-  } else { () }
-
-  let grid-row-levels = if facet-grid-mode and spec.facet.rows != none {
-    _raw-levels-for(spec, spec.facet.rows)
-  } else if facet-grid-mode { ("",) } else { () }
-  let grid-col-levels = if facet-grid-mode and spec.facet.cols != none {
-    _raw-levels-for(spec, spec.facet.cols)
-  } else if facet-grid-mode { ("",) } else { () }
-
-  // panels: list of (key: ..., layers: (prepared-layer, ...))
-  // For wrap, key is the level string. For grid, key is a (row, col) pair.
-  let panels = if facet-wrap-mode {
-    wrap-levels.map(level => (
-      level: level,
-      layers: spec.layers.map(l => _prepare-layer-filtered(
-        l,
-        spec.mapping,
-        spec.data,
-        ((spec.facet.var, level),),
-      )),
-    ))
-  } else if facet-grid-mode {
-    let out = ()
-    for row-lv in grid-row-levels {
-      for col-lv in grid-col-levels {
-        let filters = ()
-        if spec.facet.rows != none { filters.push((spec.facet.rows, row-lv)) }
-        if spec.facet.cols != none { filters.push((spec.facet.cols, col-lv)) }
-        out.push((
-          row-level: row-lv,
-          col-level: col-lv,
-          layers: spec.layers.map(l => _prepare-layer-filtered(
-            l,
-            spec.mapping,
-            spec.data,
-            filters,
-          )),
-        ))
-      }
-    }
-    out
-  } else { () }
-
-  // `prepared` is the training set. For faceted plots it is the union of
-  // every panel's prepared layers, so shared (fixed) scales span all panels
-  // exactly. For non-faceted plots it is the classic plot-wide preparation.
-  let prepared = if facet-wrap-mode or facet-grid-mode {
-    let union = ()
-    for panel in panels { union += panel.layers }
-    union
-  } else {
-    spec.layers.map(l => _prepare-layer(l, spec.mapping, spec.data))
-  }
+  let prep = _render-prepare(spec)
+  let facet-wrap-mode = prep.facet-wrap-mode
+  let facet-grid-mode = prep.facet-grid-mode
+  let wrap-levels = prep.wrap-levels
+  let grid-row-levels = prep.grid-row-levels
+  let grid-col-levels = prep.grid-col-levels
+  let panels = prep.panels
+  let prepared = prep.prepared
 
   let trained = train(
     scales: spec.scales,
