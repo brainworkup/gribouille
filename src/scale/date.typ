@@ -9,6 +9,26 @@
 ///! the epoch documented on each scale) or ISO-8601 strings, which the
 ///! scale parses on the fly during training.
 
+#let _temporal-scale(
+  aesthetic,
+  temporal,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+  date-format: none,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  temporal: temporal,
+  date-format: date-format,
+  name: name,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
 /// Continuous x scale that formats axis labels as dates.
 ///
 /// Column values may be numeric days since 2000-01-01 or ISO-8601 strings
@@ -67,16 +87,14 @@
   breaks: auto,
   labels: auto,
   date-format: "[year]-[month repr:numerical]-[day]",
-) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
-  temporal: "date",
-  date-format: date-format,
+) = _temporal-scale(
+  "x",
+  "date",
   name: name,
   limits: limits,
   breaks: breaks,
   labels: labels,
+  date-format: date-format,
 )
 
 /// Continuous y scale that formats axis labels as dates.
@@ -121,16 +139,14 @@
   breaks: auto,
   labels: auto,
   date-format: "[year]-[month repr:numerical]-[day]",
-) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
-  temporal: "date",
-  date-format: date-format,
+) = _temporal-scale(
+  "y",
+  "date",
   name: name,
   limits: limits,
   breaks: breaks,
   labels: labels,
+  date-format: date-format,
 )
 
 /// Continuous x scale that formats axis labels as datetimes.
@@ -176,16 +192,14 @@
   breaks: auto,
   labels: auto,
   date-format: "[year]-[month repr:numerical]-[day] [hour]:[minute]",
-) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
-  temporal: "datetime",
-  date-format: date-format,
+) = _temporal-scale(
+  "x",
+  "datetime",
   name: name,
   limits: limits,
   breaks: breaks,
   labels: labels,
+  date-format: date-format,
 )
 
 /// Continuous y scale that formats axis labels as datetimes.
@@ -230,16 +244,14 @@
   breaks: auto,
   labels: auto,
   date-format: "[year]-[month repr:numerical]-[day] [hour]:[minute]",
-) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
-  temporal: "datetime",
-  date-format: date-format,
+) = _temporal-scale(
+  "y",
+  "datetime",
   name: name,
   limits: limits,
   breaks: breaks,
   labels: labels,
+  date-format: date-format,
 )
 
 /// Continuous x scale that formats axis labels as times of day.
@@ -289,16 +301,14 @@
   breaks: auto,
   labels: auto,
   date-format: "[hour]:[minute]",
-) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
-  temporal: "time",
-  date-format: date-format,
+) = _temporal-scale(
+  "x",
+  "time",
   name: name,
   limits: limits,
   breaks: breaks,
   labels: labels,
+  date-format: date-format,
 )
 
 /// Continuous y scale that formats axis labels as times of day.
@@ -343,14 +353,12 @@
   breaks: auto,
   labels: auto,
   date-format: "[hour]:[minute]",
-) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
-  temporal: "time",
-  date-format: date-format,
+) = _temporal-scale(
+  "y",
+  "time",
   name: name,
   limits: limits,
   breaks: breaks,
   labels: labels,
+  date-format: date-format,
 )

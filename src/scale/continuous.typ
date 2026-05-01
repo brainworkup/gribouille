@@ -4,6 +4,67 @@
 ///! `breaks` and `labels` to control tick marks, or `trans` to apply
 ///! `"log10"`, `"sqrt"`, or `"reverse"` transformations.
 
+#let _continuous-scale(
+  aesthetic,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+  trans: "identity",
+  expand: auto,
+  secondary: none,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+  trans: trans,
+  expand: expand,
+  secondary: secondary,
+)
+
+#let _trans-scale(
+  aesthetic,
+  trans,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+  trans: trans,
+  expand: auto,
+)
+
+#let _binned-scale(
+  aesthetic,
+  name: none,
+  limits: none,
+  n-breaks: 10,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  limits: limits,
+  breaks: auto,
+  labels: labels,
+  trans: "identity",
+  expand: auto,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
 /// Continuous x scale: axis title, limits, breaks, labels, and transformation.
 ///
 /// `trans` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
@@ -62,10 +123,8 @@
   trans: "identity",
   expand: auto,
   secondary: none,
-) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
+) = _continuous-scale(
+  "x",
   name: name,
   limits: limits,
   breaks: breaks,
@@ -130,10 +189,8 @@
   trans: "identity",
   expand: auto,
   secondary: none,
-) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
+) = _continuous-scale(
+  "y",
   name: name,
   limits: limits,
   breaks: breaks,
@@ -191,15 +248,14 @@
 ///
 /// \@see \@scale-x-continuous, \@scale-y-log10
 #let scale-x-log10(name: none, limits: none, breaks: auto, labels: auto) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
-  name: name,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-  trans: "log10",
-  expand: auto,
+  _trans-scale(
+    "x",
+    "log10",
+    name: name,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
 )
 
 /// Continuous y scale on a base-10 log axis.
@@ -251,15 +307,14 @@
 ///
 /// \@see \@scale-y-continuous, \@scale-x-log10
 #let scale-y-log10(name: none, limits: none, breaks: auto, labels: auto) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
-  name: name,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-  trans: "log10",
-  expand: auto,
+  _trans-scale(
+    "y",
+    "log10",
+    name: name,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
 )
 
 /// Continuous x scale on a square-root axis.
@@ -311,15 +366,14 @@
 ///
 /// \@see \@scale-x-continuous, \@scale-y-sqrt
 #let scale-x-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
-  name: name,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-  trans: "sqrt",
-  expand: auto,
+  _trans-scale(
+    "x",
+    "sqrt",
+    name: name,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
 )
 
 /// Continuous y scale on a square-root axis.
@@ -367,15 +421,14 @@
 ///
 /// \@see \@scale-y-continuous, \@scale-x-sqrt
 #let scale-y-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
-  name: name,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-  trans: "sqrt",
-  expand: auto,
+  _trans-scale(
+    "y",
+    "sqrt",
+    name: name,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
 )
 
 /// Continuous x scale flipped left-to-right.
@@ -423,15 +476,14 @@
 ///
 /// \@see \@scale-x-continuous, \@scale-y-reverse
 #let scale-x-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
-  name: name,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-  trans: "reverse",
-  expand: auto,
+  _trans-scale(
+    "x",
+    "reverse",
+    name: name,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
 )
 
 /// Binned continuous x scale: quantises a numeric axis into `n-breaks` bins.
@@ -484,18 +536,12 @@
   limits: none,
   n-breaks: 10,
   labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "continuous",
+) = _binned-scale(
+  "x",
   name: name,
   limits: limits,
-  breaks: auto,
-  labels: labels,
-  trans: "identity",
-  expand: auto,
-  binned: true,
   n-breaks: n-breaks,
+  labels: labels,
 )
 
 /// Binned continuous y scale: quantises a numeric axis into `n-breaks` bins.
@@ -546,18 +592,12 @@
   limits: none,
   n-breaks: 10,
   labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
+) = _binned-scale(
+  "y",
   name: name,
   limits: limits,
-  breaks: auto,
-  labels: labels,
-  trans: "identity",
-  expand: auto,
-  binned: true,
   n-breaks: n-breaks,
+  labels: labels,
 )
 
 /// Continuous y scale flipped bottom-to-top.
@@ -609,13 +649,12 @@
 ///
 /// \@see \@scale-y-continuous, \@scale-x-reverse
 #let scale-y-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "continuous",
-  name: name,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-  trans: "reverse",
-  expand: auto,
+  _trans-scale(
+    "y",
+    "reverse",
+    name: name,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
 )

@@ -3,6 +3,22 @@
 ///! Use these when the mapped column is categorical. `limits` controls which
 ///! levels appear and in what order.
 
+#let _discrete-scale(
+  aesthetic,
+  name: none,
+  limits: none,
+  labels: auto,
+  expand: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  limits: limits,
+  labels: labels,
+  expand: expand,
+)
+
 /// Discrete x scale: axis title, level ordering, and tick labels.
 ///
 /// \@category Scales
@@ -57,13 +73,13 @@
 ///
 /// \@see \@scale-y-discrete, \@scale-x-continuous
 #let scale-x-discrete(name: none, limits: none, labels: auto, expand: auto) = (
-  kind: "scale",
-  aesthetic: "x",
-  type: "discrete",
-  name: name,
-  limits: limits,
-  labels: labels,
-  expand: expand,
+  _discrete-scale(
+    "x",
+    name: name,
+    limits: limits,
+    labels: labels,
+    expand: expand,
+  )
 )
 
 /// Discrete y scale: axis title, level ordering, and tick labels.
@@ -117,11 +133,11 @@
 ///
 /// \@see \@scale-x-discrete, \@scale-y-continuous
 #let scale-y-discrete(name: none, limits: none, labels: auto, expand: auto) = (
-  kind: "scale",
-  aesthetic: "y",
-  type: "discrete",
-  name: name,
-  limits: limits,
-  labels: labels,
-  expand: expand,
+  _discrete-scale(
+    "y",
+    name: name,
+    limits: limits,
+    labels: labels,
+    expand: expand,
+  )
 )
