@@ -4,6 +4,7 @@
 ///! own without an axis frame (e.g. maps, annotated figures).
 
 #import "defaults.typ": _tr-ink
+#import "elements.typ": element-blank, element-text
 #import "theme.typ": _apply-overrides
 
 /// Void theme: no axes, no grid, no panel background.
@@ -75,14 +76,12 @@
     ink: ink,
     paper: paper,
     accent: accent,
-    panel-fill: none,
-    grid-colour: none,
-    grid-thickness: 0pt,
-    axis-colour: none,
-    axis-thickness: 0pt,
+    panel-background: element-blank(),
+    panel-grid: element-blank(),
+    axis-line: element-blank(),
+    axis-title: element-text(size: 0pt),
     tick-length: 0,
     tick-labels: false,
-    axis-title-size: 0pt,
   )
   _apply-overrides(base, fields)
 }

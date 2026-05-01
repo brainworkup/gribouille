@@ -11,6 +11,7 @@
 #import "utils/palette.typ": spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour, resolve-field
+#import "theme/theme.typ": _text-style
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-ref-col
 #import "utils/typst-markup.typ": resolve-prose
@@ -446,26 +447,14 @@
 }
 
 #let _draw-title(ox, cursor, theme, title) = {
-  let title-colour = resolve-colour(
-    theme,
-    "legend-title-colour",
-    "text-colour",
-    "ink",
-  )
-  let title-weight = resolve-field(
-    theme,
-    "legend-title-weight",
-    "text-weight",
-    fallback: "medium",
-  )
-  let title-size = theme.at("legend-title-size", default: 8pt)
+  let s = _text-style(theme, "legend-title")
   cetz.draw.content(
     (ox, cursor),
     text(
-      size: title-size,
-      fill: title-colour,
-      weight: title-weight,
-    )[#resolve-prose(title, eval-strings: theme.legend-title-typst)],
+      size: s.size,
+      fill: s.fill,
+      weight: s.weight,
+    )[#resolve-prose(title, eval-strings: s.typst)],
     anchor: "north-west",
   )
 }
@@ -475,13 +464,9 @@
   let line-h = 0.4
   let glyph-size = 0.12
   let ink = resolve-colour(theme, "ink")
-  let text-colour = resolve-colour(
-    theme,
-    "legend-text-colour",
-    "text-colour",
-    "ink",
-  )
-  let text-size = theme.at("legend-text-size", default: 8pt)
+  let _legend-text = _text-style(theme, "legend-text")
+  let text-colour = _legend-text.fill
+  let text-size = _legend-text.size
 
   _draw-title(ox, cursor, theme, guide.title)
   let top = cursor - title-h
@@ -516,7 +501,7 @@
         level,
         typst-mark: guide.at("typst-mark", default: false),
       ),
-      eval-strings: theme.legend-text-typst,
+      eval-strings: _legend-text.typst,
     )
     cetz.draw.content(
       (cx + glyph-size * 2 + 0.15, cy - glyph-size),
@@ -531,13 +516,9 @@
   let line-h = 0.45
   let glyph-size = 0.16
   let ink = resolve-colour(theme, "ink")
-  let text-colour = resolve-colour(
-    theme,
-    "legend-text-colour",
-    "text-colour",
-    "ink",
-  )
-  let text-size = theme.at("legend-text-size", default: 8pt)
+  let _legend-text = _text-style(theme, "legend-text")
+  let text-colour = _legend-text.fill
+  let text-size = _legend-text.size
 
   _draw-title(ox, cursor, theme, guide.title)
   let top = cursor - title-h
@@ -562,7 +543,7 @@
         _format-break(value),
         typst-mark: guide.at("typst-mark", default: false),
       ),
-      eval-strings: theme.legend-text-typst,
+      eval-strings: _legend-text.typst,
     )
     cetz.draw.content(
       (ox + glyph-size * 2 + 0.15, cy - glyph-size),
@@ -588,13 +569,9 @@
   } else { "fill" }
   let trained = ctx.trained.at(bar-aes)
   let ink = resolve-colour(theme, "ink")
-  let text-colour = resolve-colour(
-    theme,
-    "legend-text-colour",
-    "text-colour",
-    "ink",
-  )
-  let text-size = theme.at("legend-text-size", default: 8pt)
+  let _legend-text = _text-style(theme, "legend-text")
+  let text-colour = _legend-text.fill
+  let text-size = _legend-text.size
   let (lo, hi) = guide.domain
 
   _draw-title(ox, cursor, theme, guide.title)
@@ -642,7 +619,7 @@
         _format-break(b),
         typst-mark: typst-mark,
       ),
-      eval-strings: theme.legend-text-typst,
+      eval-strings: _legend-text.typst,
     )
     cetz.draw.content(
       (ox + bar-w + tick-gap + 0.1, cy),

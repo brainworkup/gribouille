@@ -4,6 +4,7 @@
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "elements.typ": element-line, element-rect, element-text
 #import "theme.typ": _apply-overrides
 
 /// Light theme: light grey panel, white grid, soft grey axes.
@@ -72,12 +73,10 @@
     ink: ink,
     paper: paper,
     accent: accent,
-    panel-fill: col-mix(ink, paper, 0.9216),
-    grid-colour: paper,
-    grid-thickness: 0.5pt,
-    axis-colour: col-mix(ink, paper, 0.8),
-    axis-thickness: 0.5pt,
-    axis-text-colour: col-mix(ink, paper, 0.302),
+    panel-background: element-rect(fill: col-mix(ink, paper, 0.9216)),
+    panel-grid: element-line(colour: paper, thickness: 0.5pt),
+    axis-line: element-line(colour: col-mix(ink, paper, 0.8), thickness: 0.5pt),
+    axis-text: element-text(colour: col-mix(ink, paper, 0.302)),
   )
   _apply-overrides(base, fields)
 }

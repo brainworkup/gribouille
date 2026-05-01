@@ -8,6 +8,7 @@
 #import "stat/apply.typ": apply-stat, stat-default-params
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour, resolve-field
+#import "theme/theme.typ": _line-stroke, _rect-fill, _text-style
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
 #import "utils/palette.typ": default-discrete, spec-palette
@@ -428,30 +429,8 @@
   let py-range = (py-lo, py-hi)
 
   let _ink = resolve-colour(theme, "ink")
-  let _ax-text-colour = resolve-colour(
-    theme,
-    "axis-text-colour",
-    "text-colour",
-    "ink",
-  )
-  let _ax-text-weight = resolve-field(
-    theme,
-    "axis-text-weight",
-    "text-weight",
-    fallback: "regular",
-  )
-  let _ax-title-colour = resolve-colour(
-    theme,
-    "axis-title-colour",
-    "text-colour",
-    "ink",
-  )
-  let _ax-title-weight = resolve-field(
-    theme,
-    "axis-title-weight",
-    "text-weight",
-    fallback: "regular",
-  )
+  let _ax-text = _text-style(theme, "axis-text")
+  let _ax-title = _text-style(theme, "axis-title")
 
   let _resolve-mapping-flipped(layer) = {
     let m = _resolve-mapping(layer, spec.mapping)
@@ -476,26 +455,7 @@
     flipped: flipped,
   )
 
-  let _line-base = theme.at("line-colour", default: auto)
-  let _rect-base = theme.at("rect-fill", default: auto)
-  let _resolve-line(value) = {
-    if value == none { return none }
-    if value == auto {
-      if _line-base != none and _line-base != auto { return _line-base }
-      return _ink
-    }
-    value
-  }
-  let _resolve-rect(value, fallback) = {
-    if value == none { return none }
-    if value == auto {
-      if _rect-base != none and _rect-base != auto { return _rect-base }
-      return fallback
-    }
-    value
-  }
-
-  let _panel-fill = _resolve-rect(theme.panel-fill, theme.paper)
+  let _panel-fill = _rect-fill(theme, "panel-background", fallback: theme.paper)
   if _panel-fill != none {
     rect(
       (px-lo, py-lo),
@@ -507,14 +467,8 @@
 
   let x-trained = trained.at("x", default: none)
   let y-trained = trained.at("y", default: none)
-  let _grid-paint = _resolve-line(theme.grid-colour)
-  let grid-stroke = if _grid-paint == none { none } else {
-    (paint: _grid-paint, thickness: theme.grid-thickness)
-  }
-  let _axis-paint = _resolve-line(theme.axis-colour)
-  let axis-stroke = if _axis-paint == none { none } else {
-    (paint: _axis-paint, thickness: theme.axis-thickness)
-  }
+  let grid-stroke = _line-stroke(theme, "panel-grid", fallback-colour: _ink)
+  let axis-stroke = _line-stroke(theme, "axis-line", fallback-colour: _ink)
   let tick-len = theme.tick-length
 
   let x-guide = {
@@ -539,9 +493,9 @@
     content(
       (cx, cy),
       text(
-        size: theme.axis-text-size,
-        fill: _ax-text-colour,
-        weight: _ax-text-weight,
+        size: _ax-text.size,
+        fill: _ax-text.fill,
+        weight: _ax-text.weight,
       )[#label-text],
       anchor: _x-label-anchor(x-guide.angle),
       angle: x-guide.angle * 1deg,
@@ -579,7 +533,7 @@
             _axis-label(x-trained, b),
             typst-mark: _x-disp.typst-mark,
           ),
-          eval-strings: theme.axis-text-typst,
+          eval-strings: _ax-text.typst,
         ),
         idx,
       )
@@ -601,7 +555,7 @@
             level,
             typst-mark: _x-disp.typst-mark,
           ),
-          eval-strings: theme.axis-text-typst,
+          eval-strings: _ax-text.typst,
         ),
         idx,
       )
@@ -627,14 +581,14 @@
             _axis-label(y-trained, b),
             typst-mark: _y-disp.typst-mark,
           ),
-          eval-strings: theme.axis-text-typst,
+          eval-strings: _ax-text.typst,
         )
         content(
           (px-lo - 0.2, cy),
           text(
-            size: theme.axis-text-size,
-            fill: _ax-text-colour,
-            weight: _ax-text-weight,
+            size: _ax-text.size,
+            fill: _ax-text.fill,
+            weight: _ax-text.weight,
           )[#txt],
           anchor: "east",
         )
@@ -656,14 +610,14 @@
             level,
             typst-mark: _y-disp.typst-mark,
           ),
-          eval-strings: theme.axis-text-typst,
+          eval-strings: _ax-text.typst,
         )
         content(
           (px-lo - 0.2, cy),
           text(
-            size: theme.axis-text-size,
-            fill: _ax-text-colour,
-            weight: _ax-text-weight,
+            size: _ax-text.size,
+            fill: _ax-text.fill,
+            weight: _ax-text.weight,
           )[#txt],
           anchor: "east",
         )
@@ -693,12 +647,12 @@
         content(
           (cx, py-hi + tick-len + 0.05),
           text(
-            size: theme.axis-text-size,
-            fill: _ax-text-colour,
-            weight: _ax-text-weight,
+            size: _ax-text.size,
+            fill: _ax-text.fill,
+            weight: _ax-text.weight,
           )[#resolve-prose(
             _format-break(mapped),
-            eval-strings: theme.axis-text-typst,
+            eval-strings: _ax-text.typst,
           )],
           anchor: "south",
         )
@@ -707,14 +661,14 @@
     if axis-stroke != none {
       line((px-lo, py-hi), (px-hi, py-hi), stroke: axis-stroke)
     }
-    if _x-sec.name != none and theme.axis-title-size > 0pt {
+    if _x-sec.name != none and _ax-title.size > 0pt {
       content(
         ((px-lo + px-hi) / 2, py-hi + tick-len + 0.55),
         text(
-          size: theme.axis-title-size,
-          fill: _ax-title-colour,
-          weight: _ax-title-weight,
-        )[#resolve-prose(_x-sec.name, eval-strings: theme.axis-title-typst)],
+          size: _ax-title.size,
+          fill: _ax-title.fill,
+          weight: _ax-title.weight,
+        )[#resolve-prose(_x-sec.name, eval-strings: _ax-title.typst)],
         anchor: "south",
       )
     }
@@ -741,12 +695,12 @@
         content(
           (px-hi + tick-len + 0.05, cy),
           text(
-            size: theme.axis-text-size,
-            fill: _ax-text-colour,
-            weight: _ax-text-weight,
+            size: _ax-text.size,
+            fill: _ax-text.fill,
+            weight: _ax-text.weight,
           )[#resolve-prose(
             _format-break(mapped),
-            eval-strings: theme.axis-text-typst,
+            eval-strings: _ax-text.typst,
           )],
           anchor: "west",
         )
@@ -755,14 +709,14 @@
     if axis-stroke != none {
       line((px-hi, py-lo), (px-hi, py-hi), stroke: axis-stroke)
     }
-    if _y-sec.name != none and theme.axis-title-size > 0pt {
+    if _y-sec.name != none and _ax-title.size > 0pt {
       content(
         (px-hi + tick-len + 0.7, (py-lo + py-hi) / 2),
         text(
-          size: theme.axis-title-size,
-          fill: _ax-title-colour,
-          weight: _ax-title-weight,
-        )[#resolve-prose(_y-sec.name, eval-strings: theme.axis-title-typst)],
+          size: _ax-title.size,
+          fill: _ax-title.fill,
+          weight: _ax-title.weight,
+        )[#resolve-prose(_y-sec.name, eval-strings: _ax-title.typst)],
         angle: 90deg,
       )
     }
@@ -851,25 +805,25 @@
     } else { none }
     if from-scale != none { from-scale } else { _mapping-y-name }
   }
-  if show-x-title and x-title != none and theme.axis-title-size > 0pt {
+  if show-x-title and x-title != none and _ax-title.size > 0pt {
     content(
       ((px-lo + px-hi) / 2, oy - 0.8),
       text(
-        size: theme.axis-title-size,
-        fill: _ax-title-colour,
-        weight: _ax-title-weight,
-      )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
+        size: _ax-title.size,
+        fill: _ax-title.fill,
+        weight: _ax-title.weight,
+      )[#resolve-prose(x-title, eval-strings: _ax-title.typst)],
       anchor: "south",
     )
   }
-  if show-y-title and y-title != none and theme.axis-title-size > 0pt {
+  if show-y-title and y-title != none and _ax-title.size > 0pt {
     content(
       (px-lo - 1.1, (py-lo + py-hi) / 2),
       text(
-        size: theme.axis-title-size,
-        fill: _ax-title-colour,
-        weight: _ax-title-weight,
-      )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
+        size: _ax-title.size,
+        fill: _ax-title.fill,
+        weight: _ax-title.weight,
+      )[#resolve-prose(y-title, eval-strings: _ax-title.typst)],
       angle: 90deg,
     )
   }
@@ -1014,32 +968,9 @@
 }
 
 #let _render-style(theme) = (
-  strip-fill: resolve-colour(theme, "strip-fill", "rect-fill", "paper"),
-  strip-text-size: theme.at("strip-text-size", default: 8pt),
-  strip-text-colour: resolve-colour(
-    theme,
-    "strip-text-colour",
-    "text-colour",
-    "ink",
-  ),
-  strip-text-weight: resolve-field(
-    theme,
-    "strip-text-weight",
-    "text-weight",
-    fallback: "medium",
-  ),
-  ax-title-colour: resolve-colour(
-    theme,
-    "axis-title-colour",
-    "text-colour",
-    "ink",
-  ),
-  ax-title-weight: resolve-field(
-    theme,
-    "axis-title-weight",
-    "text-weight",
-    fallback: "regular",
-  ),
+  strip-fill: _rect-fill(theme, "strip-background", fallback: theme.paper),
+  strip-text: _text-style(theme, "strip-text"),
+  ax-title: _text-style(theme, "axis-title"),
 )
 
 #let _render-prepare(spec) = {
@@ -1154,6 +1085,7 @@
   let free-x = ctx.free-x
   let free-y = ctx.free-y
   let style = ctx.style
+  let _ax-title = style.ax-title
 
   let levels = wrap-levels
   let n = levels.len()
@@ -1200,10 +1132,10 @@
       content(
         (x0 + panel-w / 2, y0 + panel-h + strip-h / 2),
         text(
-          size: style.strip-text-size,
-          fill: style.strip-text-colour,
-          weight: style.strip-text-weight,
-        )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
+          size: style.strip-text.size,
+          fill: style.strip-text.fill,
+          weight: style.strip-text.weight,
+        )[#resolve-prose(strip-text, eval-strings: style.strip-text.typst)],
       )
       let panel-trained = if panel-trained-list.len() == 0 {
         trained
@@ -1250,25 +1182,25 @@
         mapping-ref-col(spec.mapping.at("y", default: none))
       } else { none }
     }
-    if x-title != none and theme.axis-title-size > 0pt {
+    if x-title != none and _ax-title.size > 0pt {
       content(
         (margin.left + grid-w / 2, 0.1),
         text(
-          size: theme.axis-title-size,
-          fill: style.ax-title-colour,
-          weight: style.ax-title-weight,
-        )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
+          size: _ax-title.size,
+          fill: style.ax-title.fill,
+          weight: style.ax-title.weight,
+        )[#resolve-prose(x-title, eval-strings: _ax-title.typst)],
         anchor: "south",
       )
     }
-    if y-title != none and theme.axis-title-size > 0pt {
+    if y-title != none and _ax-title.size > 0pt {
       content(
         (0.2, margin.bottom + grid-h / 2),
         text(
-          size: theme.axis-title-size,
-          fill: style.ax-title-colour,
-          weight: style.ax-title-weight,
-        )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
+          size: _ax-title.size,
+          fill: style.ax-title.fill,
+          weight: style.ax-title.weight,
+        )[#resolve-prose(y-title, eval-strings: _ax-title.typst)],
         angle: 90deg,
       )
     }
@@ -1304,6 +1236,7 @@
   let width-units = ctx.width-units
   let height-units = ctx.height-units
   let style = ctx.style
+  let _ax-title = style.ax-title
 
   let row-var = spec.facet.rows
   let col-var = spec.facet.cols
@@ -1390,10 +1323,10 @@
         content(
           (x0 + panel-w / 2, strip-y + top-strip / 2),
           text(
-            size: style.strip-text-size,
-            fill: style.strip-text-colour,
-            weight: style.strip-text-weight,
-          )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
+            size: style.strip-text.size,
+            fill: style.strip-text.fill,
+            weight: style.strip-text.weight,
+          )[#resolve-prose(strip-text, eval-strings: style.strip-text.typst)],
         )
       }
     }
@@ -1417,10 +1350,10 @@
         content(
           (strip-x + right-strip / 2, y0 + panel-h / 2),
           text(
-            size: style.strip-text-size,
-            fill: style.strip-text-colour,
-            weight: style.strip-text-weight,
-          )[#resolve-prose(strip-text, eval-strings: theme.strip-text-typst)],
+            size: style.strip-text.size,
+            fill: style.strip-text.fill,
+            weight: style.strip-text.weight,
+          )[#resolve-prose(strip-text, eval-strings: style.strip-text.typst)],
           angle: -90deg,
         )
       }
@@ -1444,25 +1377,25 @@
         mapping-ref-col(spec.mapping.at("y", default: none))
       } else { none }
     }
-    if x-title != none and theme.axis-title-size > 0pt {
+    if x-title != none and _ax-title.size > 0pt {
       content(
         (margin.left + grid-w / 2, 0.1),
         text(
-          size: theme.axis-title-size,
-          fill: style.ax-title-colour,
-          weight: style.ax-title-weight,
-        )[#resolve-prose(x-title, eval-strings: theme.axis-title-typst)],
+          size: _ax-title.size,
+          fill: style.ax-title.fill,
+          weight: style.ax-title.weight,
+        )[#resolve-prose(x-title, eval-strings: _ax-title.typst)],
         anchor: "south",
       )
     }
-    if y-title != none and theme.axis-title-size > 0pt {
+    if y-title != none and _ax-title.size > 0pt {
       content(
         (0.2, margin.bottom + grid-h / 2),
         text(
-          size: theme.axis-title-size,
-          fill: style.ax-title-colour,
-          weight: style.ax-title-weight,
-        )[#resolve-prose(y-title, eval-strings: theme.axis-title-typst)],
+          size: _ax-title.size,
+          fill: style.ax-title.fill,
+          weight: style.ax-title.weight,
+        )[#resolve-prose(y-title, eval-strings: _ax-title.typst)],
         angle: 90deg,
       )
     }
@@ -1523,30 +1456,28 @@
 
 #let _render-decorate(canvas, labs, theme) = {
   if labs == none { return canvas }
+  let title = _text-style(theme, "plot-title")
+  let subtitle = _text-style(theme, "plot-subtitle")
+  let caption = _text-style(theme, "plot-caption")
   let title-block = if labs.title != none {
     text(
-      size: theme.at("plot-title-size", default: 12pt),
-      weight: resolve-field(
-        theme,
-        "plot-title-weight",
-        "text-weight",
-        fallback: "bold",
-      ),
-      fill: resolve-colour(theme, "plot-title-colour", "text-colour", "ink"),
-    )[#resolve-prose(labs.title, eval-strings: theme.plot-title-typst)]
+      size: title.size,
+      weight: title.weight,
+      fill: title.fill,
+    )[#resolve-prose(labs.title, eval-strings: title.typst)]
   } else { none }
   let subtitle-block = if labs.subtitle != none {
     text(
-      size: theme.at("plot-subtitle-size", default: 9pt),
-      fill: resolve-colour(theme, "plot-subtitle-colour", "text-colour", "ink"),
-    )[#resolve-prose(labs.subtitle, eval-strings: theme.plot-subtitle-typst)]
+      size: subtitle.size,
+      fill: subtitle.fill,
+    )[#resolve-prose(labs.subtitle, eval-strings: subtitle.typst)]
   } else { none }
   let caption-block = if labs.caption != none {
     text(
-      size: theme.at("plot-caption-size", default: 8pt),
-      fill: resolve-colour(theme, "plot-caption-colour", "text-colour", "ink"),
+      size: caption.size,
+      fill: caption.fill,
       style: "italic",
-    )[#resolve-prose(labs.caption, eval-strings: theme.plot-caption-typst)]
+    )[#resolve-prose(labs.caption, eval-strings: caption.typst)]
   } else { none }
 
   let parts = ()

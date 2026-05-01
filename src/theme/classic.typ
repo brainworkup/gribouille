@@ -3,6 +3,7 @@
 ///! White panel background with visible axis borders and no gridlines.
 
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "elements.typ": element-blank, element-line, element-rect
 #import "theme.typ": _apply-overrides
 
 /// Classic theme: white panel, axis borders, no gridlines.
@@ -71,11 +72,9 @@
     ink: ink,
     paper: paper,
     accent: accent,
-    panel-fill: paper,
-    grid-colour: none,
-    grid-thickness: 0pt,
-    axis-colour: ink,
-    axis-thickness: 0.6pt,
+    panel-background: element-rect(fill: paper),
+    panel-grid: element-blank(),
+    axis-line: element-line(colour: ink, thickness: 0.6pt),
   )
   _apply-overrides(base, fields)
 }

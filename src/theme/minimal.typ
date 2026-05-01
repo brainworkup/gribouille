@@ -3,6 +3,7 @@
 ///! White panel with thin light grey gridlines, no axis lines, no tick marks.
 
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "elements.typ": element-blank, element-line
 #import "theme.typ": _apply-overrides
 
 /// Minimal theme: white panel, light grey gridlines, no axis lines.
@@ -74,11 +75,9 @@
     ink: ink,
     paper: paper,
     accent: accent,
-    panel-fill: none,
-    grid-colour: rgb("#ebebeb"),
-    grid-thickness: 0.4pt,
-    axis-colour: none,
-    axis-thickness: 0pt,
+    panel-background: element-blank(),
+    panel-grid: element-line(colour: rgb("#ebebeb"), thickness: 0.4pt),
+    axis-line: element-blank(),
     tick-length: 0,
   )
   _apply-overrides(base, fields)

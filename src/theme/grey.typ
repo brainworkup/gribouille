@@ -6,6 +6,7 @@
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
+#import "elements.typ": element-line, element-rect, element-text
 #import "theme.typ": _apply-overrides
 
 /// Grey theme: light grey panel with white gridlines.
@@ -76,13 +77,11 @@
     ink: ink,
     paper: paper,
     accent: accent,
-    panel-fill: col-mix(ink, paper, 0.92),
-    grid-colour: paper,
-    grid-thickness: 0.5pt,
-    axis-colour: ink,
-    axis-thickness: 0.5pt,
-    axis-text-colour: col-mix(ink, paper, 0.302),
-    strip-fill: col-mix(ink, paper, 0.85),
+    panel-background: element-rect(fill: col-mix(ink, paper, 0.92)),
+    panel-grid: element-line(colour: paper, thickness: 0.5pt),
+    axis-line: element-line(colour: ink, thickness: 0.5pt),
+    axis-text: element-text(colour: col-mix(ink, paper, 0.302)),
+    strip-background: element-rect(fill: col-mix(ink, paper, 0.85)),
   )
   _apply-overrides(base, fields)
 }

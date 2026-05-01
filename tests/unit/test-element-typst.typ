@@ -11,26 +11,27 @@
 )
 #import "../../src/theme/defaults.typ": merge-theme
 
-// Theme unpacking sets the per-surface <key>-typst flag.
+// Theme stores element records verbatim; element-typst keeps the kind tag
+// while exposing the same fields as element-text.
 #let t = theme(
   plot-title: element-typst(size: 14pt, weight: "bold"),
   axis-text: element-typst(),
   legend-title: element-text(),
 )
 #let merged = merge-theme(t)
-#assert.eq(merged.plot-title-typst, true)
-#assert.eq(merged.plot-title-size, 14pt)
-#assert.eq(merged.plot-title-weight, "bold")
-#assert.eq(merged.axis-text-typst, true)
-#assert.eq(merged.legend-title-typst, false)
-#assert.eq(merged.plot-subtitle-typst, false)
+#assert.eq(merged.plot-title.kind, "element-typst")
+#assert.eq(merged.plot-title.size, 14pt)
+#assert.eq(merged.plot-title.weight, "bold")
+#assert.eq(merged.axis-text.kind, "element-typst")
+#assert.eq(merged.legend-title.kind, "element-text")
+#assert.eq(merged.plot-subtitle.kind, "element-text")
 
-// Defaults: every text surface starts with typst=false.
+// Defaults: every text surface starts with element-text (not element-typst).
 #let plain = merge-theme(none)
-#assert.eq(plain.plot-title-typst, false)
-#assert.eq(plain.axis-text-typst, false)
-#assert.eq(plain.legend-text-typst, false)
-#assert.eq(plain.strip-text-typst, false)
+#assert.eq(plain.plot-title.kind, "element-text")
+#assert.eq(plain.axis-text.kind, "element-text")
+#assert.eq(plain.legend-text.kind, "element-text")
+#assert.eq(plain.strip-text.kind, "element-text")
 
 #let d = ((x: 1, y: 1), (x: 2, y: 4), (x: 3, y: 9))
 

@@ -44,6 +44,9 @@
 /// fallbacks (e.g. colour → `theme.ink`).
 ///
 /// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param surface Surface key, e.g. `"axis-text"`, `"panel-grid"`.
+/// \@returns Element record with cascaded fields.
 #let resolve-element(theme, surface) = {
   let parent-key = _surface-parent.at(surface, default: none)
   let surface-record = theme.at(surface, default: none)
@@ -61,109 +64,78 @@
 /// Whether a text surface is configured to evaluate strings as Typst markup.
 ///
 /// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param surface Text surface key, e.g. `"axis-text"`.
+/// \@returns Boolean.
 #let is-typst(theme, surface) = {
   let el = resolve-element(theme, surface)
   el.at("kind", default: none) == "element-typst"
 }
 
-#let _apply-text(out, prefix, value) = {
-  if value.size != none { out.insert(prefix + "-size", value.size) }
-  if value.colour != none { out.insert(prefix + "-colour", value.colour) }
-  if value.weight != none { out.insert(prefix + "-weight", value.weight) }
-  if value.angle != none { out.insert(prefix + "-angle", value.angle) }
-  if value.family != none { out.insert(prefix + "-family", value.family) }
-  if value.at("kind", default: none) == "element-typst" {
-    out.insert(prefix + "-typst", true)
-  }
-  out
+/// Resolve a text surface into a flat dict ready for `text(...)` arguments.
+///
+/// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param surface Text surface key, e.g. `"axis-text"`.
+/// \@returns Dict with `size`, `fill`, `weight`, `family`, `angle`, `typst`.
+#let _text-style(theme, surface) = {
+  let el = resolve-element(theme, surface)
+  let colour = el.at("colour", default: none)
+  let weight = el.at("weight", default: none)
+  (
+    size: el.at("size", default: 9pt),
+    fill: if colour != none { colour } else { theme.ink },
+    weight: if weight != none { weight } else { "regular" },
+    family: el.at("family", default: none),
+    angle: el.at("angle", default: 0deg),
+    typst: el.at("kind", default: none) == "element-typst",
+  )
+}
+
+/// Resolve a line surface into a stroke dict, or `none` for `element-blank`.
+///
+/// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param surface Line surface key, e.g. `"panel-grid"`.
+/// \@param fallback-colour Colour used when neither surface nor parent set one.
+/// \@returns Stroke dict `(paint, thickness)`, or `none` to skip drawing.
+#let _line-stroke(theme, surface, fallback-colour: none) = {
+  let el = resolve-element(theme, surface)
+  if el.at("kind", default: none) == "element-blank" { return none }
+  let colour = el.at("colour", default: none)
+  let thickness = el.at("thickness", default: none)
+  if thickness == 0pt { return none }
+  let paint = if colour != none {
+    colour
+  } else if fallback-colour != none {
+    fallback-colour
+  } else { theme.ink }
+  (
+    paint: paint,
+    thickness: if thickness != none { thickness } else { 0.5pt },
+  )
+}
+
+/// Resolve a rect surface into a fill colour, or `none` for `element-blank`.
+///
+/// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param surface Rect surface key, e.g. `"panel-background"`.
+/// \@param fallback Fill used when neither surface nor parent sets one.
+/// \@returns Colour, or `none` to skip drawing.
+#let _rect-fill(theme, surface, fallback: none) = {
+  let el = resolve-element(theme, surface)
+  if el.at("kind", default: none) == "element-blank" { return none }
+  let fill = el.at("fill", default: none)
+  if fill != none { return fill }
+  fallback
 }
 
 #let _apply-element(out, key, value) = {
   if value == none { return out }
-  let el-kind = if type(value) == dictionary {
-    value.at("kind", default: none)
-  } else { none }
-
-  // ── Base element keys ──────────────────────────────────────────────────────
-
-  if key == "text" and el-kind == "element-text" {
-    if value.size != none { out.insert("text-size", value.size) }
-    if value.colour != none { out.insert("text-colour", value.colour) }
-    if value.weight != none { out.insert("text-weight", value.weight) }
-    if value.family != none { out.insert("text-family", value.family) }
-    return out
-  }
-
-  if key == "line" and el-kind == "element-line" {
-    if value.colour != none { out.insert("line-colour", value.colour) }
-    if value.thickness != none { out.insert("line-thickness", value.thickness) }
-    return out
-  }
-
-  if key == "rect" and el-kind == "element-rect" {
-    if value.fill != none { out.insert("rect-fill", value.fill) }
-    return out
-  }
-
-  // ── Specific text element keys ─────────────────────────────────────────────
-
-  let _is-text-element = el-kind == "element-text" or el-kind == "element-typst"
-
-  if key == "axis-text" and _is-text-element {
-    return _apply-text(out, "axis-text", value)
-  }
-  if key == "axis-title" and _is-text-element {
-    return _apply-text(out, "axis-title", value)
-  }
-  if key == "legend-text" and _is-text-element {
-    return _apply-text(out, "legend-text", value)
-  }
-  if key == "legend-title" and _is-text-element {
-    return _apply-text(out, "legend-title", value)
-  }
-  if key == "strip-text" and _is-text-element {
-    return _apply-text(out, "strip-text", value)
-  }
-  if key == "plot-title" and _is-text-element {
-    return _apply-text(out, "plot-title", value)
-  }
-  if key == "plot-subtitle" and _is-text-element {
-    return _apply-text(out, "plot-subtitle", value)
-  }
-  if key == "plot-caption" and _is-text-element {
-    return _apply-text(out, "plot-caption", value)
-  }
-
-  // ── Rect element keys ──────────────────────────────────────────────────────
-
-  if key == "panel-background" and el-kind == "element-rect" {
-    if value.fill != none { out.insert("panel-fill", value.fill) }
-    if value.stroke != none { out.insert("panel-stroke", value.stroke) }
-    return out
-  }
-
-  // ── Line element keys ──────────────────────────────────────────────────────
-
-  if key == "panel-grid" and el-kind == "element-line" {
-    if value.colour != none { out.insert("grid-colour", value.colour) }
-    if value.thickness != none { out.insert("grid-thickness", value.thickness) }
-    return out
-  }
-  if key == "panel-grid" and el-kind == "element-blank" {
-    out.insert("grid-colour", none)
-    return out
-  }
-  if key == "axis-line" and el-kind == "element-line" {
-    if value.colour != none { out.insert("axis-colour", value.colour) }
-    if value.thickness != none { out.insert("axis-thickness", value.thickness) }
-    return out
-  }
-  if key == "axis-line" and el-kind == "element-blank" {
-    out.insert("axis-colour", none)
-    return out
-  }
-
-  // ── Low-level passthrough ──────────────────────────────────────────────────
+  // Element records (text / line / rect / blank / typst) and bare scalars
+  // both pass through verbatim. The renderer queries records via
+  // `resolve-element`.
   out.insert(key, value)
   out
 }
@@ -177,35 +149,17 @@
 
 /// Build a custom theme from per-element overrides.
 ///
-/// Pass named arguments like `axis-title: element-text(size: 12pt)` or low-level keys like `panel-fill: rgb("#f7f0e7")`.
-/// Structured element records are translated into the flat theme fields consumed internally.
+/// Pass named arguments like `axis-title: element-text(size: 12pt)` or `panel-grid: element-blank()`.
+/// Each surface is stored as an element record; the renderer reads them via `resolve-element` with cascade `surface → parent → defaults`.
 ///
-/// Base element keys (`text`, `line`, `rect`) set inherited parent values for all descendant elements.
-/// Specific keys always take priority at render time.
+/// Surfaces:
 ///
-/// Structured element keys translate \@element-text, \@element-line, \@element-rect, \@element-blank, and \@element-typst records into the flat fields the renderer consumes:
+/// - Base elements: `text`, `line`, `rect`. Set inherited parents that descendants fall back to.
+/// - Text surfaces: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`.
+/// - Line surfaces: `panel-grid`, `axis-line`. Each accepts `element-line()` or `element-blank()`.
+/// - Rect surfaces: `panel-background`, `strip-background`. Each accepts `element-rect()` or `element-blank()`.
 ///
-/// - Base elements: `text`, `line`, `rect`. These set inherited parents that descendants fall back to.
-/// - Text elements: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`.
-/// - Rect elements: `panel-background`.
-/// - Line elements: `panel-grid`, `axis-line`. Both also accept `element-blank()` to hide them entirely.
-///
-/// Flat fields override individual values directly and mirror the keys of the internal default theme:
-///
-/// - Base colours: `ink`, `paper`, `accent`.
-/// - Panel, grid, axis: `panel-fill`, `grid-colour`, `grid-thickness`, `axis-colour`, `axis-thickness`, `tick-length`, `tick-labels`.
-/// - Line base: `line-colour`, `line-thickness`.
-/// - Rect base: `rect-fill`.
-/// - Text base: `text-colour`, `text-size`, `text-weight`, `text-family`.
-/// - Axis text: `axis-text-size`, `axis-text-colour`, `axis-text-weight`, `axis-text-family`, `axis-text-angle`.
-/// - Axis title: `axis-title-size`, `axis-title-colour`, `axis-title-weight`, `axis-title-family`.
-/// - Legend text: `legend-text-size`, `legend-text-colour`, `legend-text-weight`.
-/// - Legend title: `legend-title-size`, `legend-title-colour`, `legend-title-weight`.
-/// - Strip (facet labels): `strip-fill`, `strip-text-size`, `strip-text-colour`, `strip-text-weight`, `strip-text-family`.
-/// - Plot title: `plot-title-size`, `plot-title-colour`, `plot-title-weight`.
-/// - Plot subtitle: `plot-subtitle-size`, `plot-subtitle-colour`.
-/// - Plot caption: `plot-caption-size`, `plot-caption-colour`.
-/// - Typst-markup passthrough (boolean, normally set via `element-typst()`): `axis-text-typst`, `axis-title-typst`, `legend-text-typst`, `legend-title-typst`, `strip-text-typst`, `plot-title-typst`, `plot-subtitle-typst`, `plot-caption-typst`.
+/// Bare scalars: `ink`, `paper`, `accent`, `tick-length`, `tick-labels`.
 ///
 /// \@category Themes
 /// \@stability stable

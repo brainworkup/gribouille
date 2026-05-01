@@ -40,16 +40,15 @@
 #_check-theme(theme-dark(), "dark")
 #_check-theme(theme-test(), "test")
 
-// Each theme must define the structural fields the renderer reads directly.
+// Each theme must define the structural surfaces the renderer reads via
+// resolve-element.
 #let _structural = (
   "ink",
   "paper",
   "accent",
-  "panel-fill",
-  "grid-colour",
-  "grid-thickness",
-  "axis-colour",
-  "axis-thickness",
+  "panel-background",
+  "panel-grid",
+  "axis-line",
 )
 #for t in (
   theme-bw(),
@@ -65,54 +64,54 @@
 
 // theme-bw: white panel, light grey grid, black axes.
 #let bw = theme-bw()
-#assert.eq(bw.panel-fill, white)
-#assert.eq(bw.axis-colour, black)
-#assert(bw.grid-colour != none)
+#assert.eq(bw.panel-background.fill, white)
+#assert.eq(bw.axis-line.colour, black)
+#assert(bw.panel-grid.colour != none)
 
-// theme-linedraw: white panel, no/very faint grid, black axes are heavier.
+// theme-linedraw: white panel, very faint grid, black axes.
 #let ld = theme-linedraw()
-#assert.eq(ld.panel-fill, white)
-#assert.eq(ld.axis-colour, black)
+#assert.eq(ld.panel-background.fill, white)
+#assert.eq(ld.axis-line.colour, black)
 
 // theme-test: red axes for easy visual identification.
 #let tst = theme-test()
-#assert.eq(tst.axis-colour, rgb("#cc0000"))
+#assert.eq(tst.axis-line.colour, rgb("#cc0000"))
 
 // Custom ink/paper propagate.
 #let custom = theme-bw(ink: rgb("#222222"), paper: rgb("#fafafa"))
 #assert.eq(custom.ink, rgb("#222222"))
 #assert.eq(custom.paper, rgb("#fafafa"))
-#assert.eq(custom.panel-fill, rgb("#fafafa"))
+#assert.eq(custom.panel-background.fill, rgb("#fafafa"))
 
 // ── Spot-overrides on complete themes ───────────────────────────────────────
 
-// Flat key override: sets the field directly without disturbing the preset.
-#let m1 = theme-minimal(axis-text-size: 11pt)
-#assert.eq(m1.axis-text-size, 11pt)
-#assert.eq(m1.grid-colour, rgb("#ebebeb"))
+// Element override on top of a preset replaces the surface record.
+#let m1 = theme-minimal(axis-text: element-text(size: 11pt))
+#assert.eq(m1.axis-text.size, 11pt)
+#assert.eq(m1.panel-grid.colour, rgb("#ebebeb"))
 #assert.eq(m1.name, "minimal")
 
-// Structured rect override flattens to panel-fill on top of theme-bw.
+// Structured rect override on theme-bw.
 #let bw1 = theme-bw(panel-background: element-rect(fill: rgb("#ff9900")))
-#assert.eq(bw1.panel-fill, rgb("#ff9900"))
-#assert.eq(bw1.axis-colour, black)
+#assert.eq(bw1.panel-background.fill, rgb("#ff9900"))
+#assert.eq(bw1.axis-line.colour, black)
 #assert.eq(bw1.name, "bw")
 
-// Structured text override flattens to axis-title-size.
+// Structured text override on theme-classic.
 #let c1 = theme-classic(axis-title: element-text(size: 14pt))
-#assert.eq(c1.axis-title-size, 14pt)
-#assert.eq(c1.panel-fill, white)
+#assert.eq(c1.axis-title.size, 14pt)
+#assert.eq(c1.panel-background.fill, white)
 #assert.eq(c1.name, "classic")
 
 // element-blank zeroes the targeted line on a complete theme.
 #let v1 = theme-void(panel-grid: element-blank())
-#assert.eq(v1.grid-colour, none)
+#assert.eq(v1.panel-grid.kind, "element-blank")
 
 // Overrides survive merge-theme: the user value wins against the default.
-#let g1 = theme-grey(panel-fill: rgb("#abcdef"))
-#assert.eq(g1.panel-fill, rgb("#abcdef"))
+#let g1 = theme-grey(panel-background: element-rect(fill: rgb("#abcdef")))
+#assert.eq(g1.panel-background.fill, rgb("#abcdef"))
 #let g1-merged = merge-theme(g1)
-#assert.eq(g1-merged.panel-fill, rgb("#abcdef"))
+#assert.eq(g1-merged.panel-background.fill, rgb("#abcdef"))
 #assert.eq(g1-merged.name, "grey")
 
 // Multiple overrides combined in one call.
@@ -121,8 +120,8 @@
   panel-background: element-rect(fill: rgb("#f7f0e7")),
   panel-grid: element-line(colour: rgb("#d9cfbf")),
 )
-#assert.eq(m2.axis-title-size, 14pt)
-#assert.eq(m2.panel-fill, rgb("#f7f0e7"))
-#assert.eq(m2.grid-colour, rgb("#d9cfbf"))
+#assert.eq(m2.axis-title.size, 14pt)
+#assert.eq(m2.panel-background.fill, rgb("#f7f0e7"))
+#assert.eq(m2.panel-grid.colour, rgb("#d9cfbf"))
 
 Extra theme tests passed.

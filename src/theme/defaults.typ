@@ -1,5 +1,10 @@
 // Default theme values consumed by the renderer.
-// User themes override individual fields; missing fields fall back here.
+// Each surface is stored as an element record (element-text / element-line /
+// element-rect / element-blank). The renderer queries records via
+// `resolve-element` in `theme.typ`; user themes override individual records or
+// pass spot-overrides via the master `text` / `line` / `rect` keys.
+
+#import "elements.typ": element-line, element-rect, element-text
 
 // Read document colours injected by the typst-render Quarto extension via
 // --input flags. Falls back to black/white when rendering standalone.
@@ -16,81 +21,37 @@
   kind: "theme",
   name: "grey",
 
-  // Base colours: ink / paper / accent
+  // Base colours
   ink: _tr-ink,
   paper: _tr-paper,
   accent: rgb("#3366FF"),
 
-  // Panel / grid / axis structural fields
-  // none = element-blank (don't draw)
-  panel-fill: auto,
-  grid-colour: auto,
-  grid-thickness: 0.5pt,
-  axis-colour: auto,
-  axis-thickness: 0.5pt,
+  // Inherited base records (cascade parents for descendant surfaces)
+  text: element-text(size: 9pt, weight: "regular"),
+  line: element-line(thickness: 0.5pt),
+  rect: element-rect(),
+
+  // Per-surface text records
+  axis-text: element-text(size: 8pt),
+  axis-title: element-text(size: 9pt),
+  legend-text: element-text(size: 8pt),
+  legend-title: element-text(size: 8pt),
+  strip-text: element-text(size: 8pt),
+  plot-title: element-text(size: 12pt, weight: "bold"),
+  plot-subtitle: element-text(size: 9pt),
+  plot-caption: element-text(size: 8pt),
+
+  // Per-surface line records
+  panel-grid: element-line(thickness: 0.5pt),
+  axis-line: element-line(thickness: 0.5pt),
+
+  // Per-surface rect records
+  panel-background: element-rect(),
+  strip-background: element-rect(),
+
+  // Bare scalars
   tick-length: 0.1,
   tick-labels: true,
-
-  // Line base (set via theme(line: element-line(...)))
-  line-colour: none,
-  line-thickness: none,
-
-  // Rect base (set via theme(rect: element-rect(...)))
-  rect-fill: none,
-
-  // Text base (set via theme(text: element-text(...)))
-  text-colour: none,
-  text-size: 9pt,
-  text-weight: "regular",
-  text-family: none,
-
-  // axis-text
-  axis-text-size: 8pt,
-  axis-text-colour: none,
-  axis-text-weight: none,
-  axis-text-family: none,
-  axis-text-angle: none,
-
-  // axis-title
-  axis-title-size: 9pt,
-  axis-title-colour: none,
-  axis-title-weight: none,
-  axis-title-family: none,
-
-  // legend
-  legend-text-size: 8pt,
-  legend-text-colour: none,
-  legend-text-weight: none,
-  legend-title-size: 8pt,
-  legend-title-colour: none,
-  legend-title-weight: none,
-
-  // strip (facet labels)
-  strip-fill: none,
-  strip-text-size: 8pt,
-  strip-text-colour: none,
-  strip-text-weight: none,
-  strip-text-family: none,
-
-  // plot labels
-  plot-title-size: 12pt,
-  plot-title-colour: none,
-  plot-title-weight: "bold",
-  plot-subtitle-size: 9pt,
-  plot-subtitle-colour: none,
-  plot-caption-size: 8pt,
-  plot-caption-colour: none,
-
-  // Per-surface Typst-markup passthrough flags (set via element-typst()).
-  // When true, plain strings reaching that surface are eval'd as Typst markup.
-  axis-text-typst: false,
-  axis-title-typst: false,
-  legend-text-typst: false,
-  legend-title-typst: false,
-  strip-text-typst: false,
-  plot-title-typst: false,
-  plot-subtitle-typst: false,
-  plot-caption-typst: false,
 )
 
 #let merge-theme(user) = {
@@ -126,4 +87,3 @@
   }
   fallback
 }
-
