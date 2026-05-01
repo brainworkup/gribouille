@@ -1013,6 +1013,43 @@
   trained
 }
 
+#let _render-decorate(canvas, labs, theme) = {
+  if labs == none { return canvas }
+  let title-block = if labs.title != none {
+    text(
+      size: theme.at("plot-title-size", default: 12pt),
+      weight: resolve-field(
+        theme,
+        "plot-title-weight",
+        "text-weight",
+        fallback: "bold",
+      ),
+      fill: resolve-colour(theme, "plot-title-colour", "text-colour", "ink"),
+    )[#resolve-prose(labs.title, eval-strings: theme.plot-title-typst)]
+  } else { none }
+  let subtitle-block = if labs.subtitle != none {
+    text(
+      size: theme.at("plot-subtitle-size", default: 9pt),
+      fill: resolve-colour(theme, "plot-subtitle-colour", "text-colour", "ink"),
+    )[#resolve-prose(labs.subtitle, eval-strings: theme.plot-subtitle-typst)]
+  } else { none }
+  let caption-block = if labs.caption != none {
+    text(
+      size: theme.at("plot-caption-size", default: 8pt),
+      fill: resolve-colour(theme, "plot-caption-colour", "text-colour", "ink"),
+      style: "italic",
+    )[#resolve-prose(labs.caption, eval-strings: theme.plot-caption-typst)]
+  } else { none }
+
+  let parts = ()
+  if title-block != none { parts.push(title-block) }
+  if subtitle-block != none { parts.push(subtitle-block) }
+  parts.push(canvas)
+  if caption-block != none { parts.push(caption-block) }
+  if parts.len() == 1 { return canvas }
+  block(stack(dir: ttb, spacing: 0.3em, ..parts))
+}
+
 #let render-plot(spec) = {
   let theme = merge-theme(spec.theme)
   let labs = spec.at("labs", default: none)
@@ -1538,38 +1575,5 @@
     })
   }
 
-  if labs == none { return canvas }
-  let title-block = if labs.title != none {
-    text(
-      size: theme.at("plot-title-size", default: 12pt),
-      weight: resolve-field(
-        theme,
-        "plot-title-weight",
-        "text-weight",
-        fallback: "bold",
-      ),
-      fill: resolve-colour(theme, "plot-title-colour", "text-colour", "ink"),
-    )[#resolve-prose(labs.title, eval-strings: theme.plot-title-typst)]
-  } else { none }
-  let subtitle-block = if labs.subtitle != none {
-    text(
-      size: theme.at("plot-subtitle-size", default: 9pt),
-      fill: resolve-colour(theme, "plot-subtitle-colour", "text-colour", "ink"),
-    )[#resolve-prose(labs.subtitle, eval-strings: theme.plot-subtitle-typst)]
-  } else { none }
-  let caption-block = if labs.caption != none {
-    text(
-      size: theme.at("plot-caption-size", default: 8pt),
-      fill: resolve-colour(theme, "plot-caption-colour", "text-colour", "ink"),
-      style: "italic",
-    )[#resolve-prose(labs.caption, eval-strings: theme.plot-caption-typst)]
-  } else { none }
-
-  let parts = ()
-  if title-block != none { parts.push(title-block) }
-  if subtitle-block != none { parts.push(subtitle-block) }
-  parts.push(canvas)
-  if caption-block != none { parts.push(caption-block) }
-  if parts.len() == 1 { return canvas }
-  block(stack(dir: ttb, spacing: 0.3em, ..parts))
+  _render-decorate(canvas, labs, theme)
 }
