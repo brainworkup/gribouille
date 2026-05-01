@@ -1079,6 +1079,12 @@
   )
 }
 
+#let _panel-row-count(panel-layers) = {
+  let n = 0
+  for layer in panel-layers { n += layer.data.len() }
+  n
+}
+
 #let _train-panels(spec, panels, trained, coord, labs, free-x, free-y) = {
   if not (free-x or free-y) { return () }
   panels.map(p => {
@@ -1298,12 +1304,6 @@
     top: 0.3,
     right: 0.3 + legend-gap + legend-width,
   )
-
-  let _panel-row-count(panel-layers) = {
-    let n = 0
-    for layer in panel-layers { n += layer.data.len() }
-    n
-  }
 
   let canvas = if facet-wrap-mode {
     let levels = wrap-levels
