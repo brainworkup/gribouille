@@ -1013,6 +1013,35 @@
   trained
 }
 
+#let _render-style(theme) = (
+  strip-fill: resolve-colour(theme, "strip-fill", "rect-fill", "paper"),
+  strip-text-size: theme.at("strip-text-size", default: 8pt),
+  strip-text-colour: resolve-colour(
+    theme,
+    "strip-text-colour",
+    "text-colour",
+    "ink",
+  ),
+  strip-text-weight: resolve-field(
+    theme,
+    "strip-text-weight",
+    "text-weight",
+    fallback: "medium",
+  ),
+  ax-title-colour: resolve-colour(
+    theme,
+    "axis-title-colour",
+    "text-colour",
+    "ink",
+  ),
+  ax-title-weight: resolve-field(
+    theme,
+    "axis-title-weight",
+    "text-weight",
+    fallback: "regular",
+  ),
+)
+
 #let _render-prepare(spec) = {
   let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
   let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
@@ -1533,33 +1562,7 @@
   let theme = merge-theme(spec.theme)
   let labs = spec.at("labs", default: none)
 
-  // Pre-resolve theme colours and fields used across the renderer.
-  let _strip-fill = resolve-colour(theme, "strip-fill", "rect-fill", "paper")
-  let _strip-text-size = theme.at("strip-text-size", default: 8pt)
-  let _strip-text-colour = resolve-colour(
-    theme,
-    "strip-text-colour",
-    "text-colour",
-    "ink",
-  )
-  let _strip-text-weight = resolve-field(
-    theme,
-    "strip-text-weight",
-    "text-weight",
-    fallback: "medium",
-  )
-  let _ax-title-colour = resolve-colour(
-    theme,
-    "axis-title-colour",
-    "text-colour",
-    "ink",
-  )
-  let _ax-title-weight = resolve-field(
-    theme,
-    "axis-title-weight",
-    "text-weight",
-    fallback: "regular",
-  )
+  let style = _render-style(theme)
 
   // Faceted plots prepare layers per panel so that stats (smooth, bin,
   // count) are computed on each panel's own subset of rows, following
@@ -1651,14 +1654,6 @@
     right: 0.3 + legend-gap + legend-width,
   )
 
-  let style = (
-    strip-fill: _strip-fill,
-    strip-text-size: _strip-text-size,
-    strip-text-colour: _strip-text-colour,
-    strip-text-weight: _strip-text-weight,
-    ax-title-colour: _ax-title-colour,
-    ax-title-weight: _ax-title-weight,
-  )
   let canvas = if facet-wrap-mode {
     _render-canvas-wrap((
       spec: spec,
