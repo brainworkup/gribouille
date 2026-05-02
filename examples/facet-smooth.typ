@@ -1,27 +1,26 @@
-// Facet-wrap with a per-panel smoother. Each group has a different slope;
-// the linear fit in every panel follows only its own subset of rows.
+// Facet-wrap with a per-panel smoother fitted only on each panel's subset.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let slopes = (a: 0.5, b: -0.4, c: 1.2)
-#let df = ()
-#for (group, slope) in slopes.pairs() {
-  for i in range(0, 20) {
-    let x = i
-    let jitter = calc.sin(i * 1.7 + slopes.at(group) * 3.1) * 0.6
-    df.push((group: group, x: x, y: slope * x + jitter))
-  }
-}
+#let accent = rgb("#1f77b4")
 
 #plot(
-  data: df,
-  mapping: aes(x: "x", y: "y"),
+  data: mpg,
+  mapping: aes(x: "displ", y: "hwy"),
   layers: (
-    geom-point(size: 2pt),
-    geom-smooth(method: "lm"),
+    geom-point(size: 2.5pt, alpha: 0.85, colour: accent),
+    geom-smooth(method: "lm", colour: accent, fill: accent, alpha: 0.2),
   ),
-  facet: facet-wrap("group", ncol: 3),
+  facet: facet-wrap("cyl", ncol: 3, labeller: label-both()),
+  labs: labs(
+    title: "Per-panel linear smoother",
+    subtitle: "Each fit follows only the rows in its own panel",
+    x: "Displacement (L)",
+    y: "Highway mpg",
+  ),
   theme: theme-minimal(),
+  width: 14cm,
+  height: 6cm,
 )

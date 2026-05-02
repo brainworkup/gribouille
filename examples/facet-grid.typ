@@ -1,31 +1,22 @@
-// facet-grid: panels over two discrete variables (row x col).
+// facet-grid: panels arranged on a row × column grid of two discrete variables.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let cells = ()
-#let species = ("A", "B", "C")
-#let sexes = ("F", "M")
-#for (i, s) in species.enumerate() {
-  for (j, sex) in sexes.enumerate() {
-    for k in range(0, 8) {
-      cells.push((
-        sp: s,
-        sex: sex,
-        x: k,
-        y: k + i * 3 + j * 2 + calc.rem(k * 3, 5),
-      ))
-    }
-  }
-}
-
 #plot(
-  data: cells,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 3pt),),
-  facet: facet-grid(rows: "sex", cols: "sp"),
-  labs: labs(title: "facet-grid: species x sex"),
-  width: 12cm,
-  height: 7cm,
+  data: penguins,
+  mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
+  layers: (geom-point(size: 2pt, alpha: 0.85),),
+  facet: facet-grid(rows: "sex", cols: "species", labeller: label-both()),
+  scales: (scale-y-continuous(labels: label-comma()),),
+  guides: guides(colour: guide-none()),
+  labs: labs(
+    title: "Penguin morphology by sex and species",
+    x: "Flipper length (mm)",
+    y: "Body mass (g)",
+  ),
+  theme: theme-minimal(),
+  width: 14cm,
+  height: 7.5cm,
 )

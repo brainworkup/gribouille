@@ -1,35 +1,39 @@
-// Facet wrap with both axes free: each panel trains its own x and y on
-// its own subset, useful when groups span very different domains in both
-// directions.
+// Facet wrap with both axes free: each panel trains its own x and y range.
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (g: "near", t: 0, v: 1.2),
-  (g: "near", t: 1, v: 1.4),
-  (g: "near", t: 2, v: 1.5),
-  (g: "near", t: 3, v: 1.6),
-  (g: "mid", t: 50, v: 30),
-  (g: "mid", t: 60, v: 38),
-  (g: "mid", t: 70, v: 45),
-  (g: "mid", t: 80, v: 52),
-  (g: "far", t: 1000, v: 600),
-  (g: "far", t: 1500, v: 720),
-  (g: "far", t: 2000, v: 880),
-  (g: "far", t: 2500, v: 950),
+#let zooms = (
+  (scale: "near (0-3)", t: 0, v: 1.2),
+  (scale: "near (0-3)", t: 1, v: 1.4),
+  (scale: "near (0-3)", t: 2, v: 1.5),
+  (scale: "near (0-3)", t: 3, v: 1.6),
+  (scale: "mid (50-80)", t: 50, v: 30),
+  (scale: "mid (50-80)", t: 60, v: 38),
+  (scale: "mid (50-80)", t: 70, v: 45),
+  (scale: "mid (50-80)", t: 80, v: 52),
+  (scale: "far (1000-2500)", t: 1000, v: 600),
+  (scale: "far (1000-2500)", t: 1500, v: 720),
+  (scale: "far (1000-2500)", t: 2000, v: 880),
+  (scale: "far (1000-2500)", t: 2500, v: 950),
 )
 
 #plot(
-  data: d,
+  data: zooms,
   mapping: aes(x: "t", y: "v"),
-  layers: (geom-line(), geom-point(size: 2pt)),
-  facet: facet-wrap("g", ncol: 3, scales: "free"),
-  scales: (
-    scale-x-continuous(name: "Time"),
-    scale-y-continuous(name: "Value"),
+  layers: (
+    geom-line(stroke: 1.2pt, colour: rgb("#1f77b4")),
+    geom-point(size: 2.5pt),
   ),
+  facet: facet-wrap("scale", ncol: 3, scales: "free"),
+  labs: labs(
+    title: "scales = free trains both x and y per panel",
+    subtitle: "Useful when groups span very different domains in both directions",
+    x: "Time",
+    y: "Value",
+  ),
+  theme: theme-minimal(),
   width: 16cm,
   height: 6cm,
 )

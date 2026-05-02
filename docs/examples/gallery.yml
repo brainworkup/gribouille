@@ -416,3 +416,45 @@
   title: "Reference lines through axis transforms"
   description: '<a href="../reference/geoms/geom-hline.qmd"><code>geom-hline</code></a> intercepts route through the active y-axis transform so they land at the correct log positions.'
   alt: "Line and point chart of an exponential curve on a log10 y axis with three dashed red horizontal reference lines at y equals 10, 100, and 1000."
+
+- slug: facet-wrap-free
+  section: facets
+  title: "Free y per panel"
+  description: 'Pass <code>scales: "free_y"</code> to <a href="../reference/facets/facet-wrap.qmd"><code>facet-wrap</code></a> so each panel trains its own y range.'
+  alt: "Three side-by-side line panels (millis, seconds, minutes) where each panel trains its own y axis to match its very different value range."
+
+- slug: facet-wrap-free-xy
+  section: facets
+  title: "Free x and y per panel"
+  description: 'Pass <code>scales: "free"</code> to <a href="../reference/facets/facet-wrap.qmd"><code>facet-wrap</code></a> to train both axes per panel.'
+  alt: "Three side-by-side line panels (near, mid, far) where each panel trains its own x and y range to match very different domains."
+
+- slug: facet-labellers
+  section: facets
+  title: "Strip labellers"
+  description: '<a href="../reference/facets/label-both.qmd"><code>label-both</code></a> prefixes each strip with the facet variable name (e.g., <code>cyl: 4</code>).'
+  alt: "Three facet panels of highway mpg against displacement coloured by class, with strip labels reading cyl colon four, six, and eight."
+
+- slug: facet-smooth
+  section: facets
+  title: "Per-panel smoother"
+  description: '<a href="../reference/geoms/geom-smooth.qmd"><code>geom-smooth</code></a> inside <a href="../reference/facets/facet-wrap.qmd"><code>facet-wrap</code></a> fits each panel only on its own subset.'
+  alt: "Three facet panels of highway mpg against displacement, each with its own linear smoother and 95% confidence ribbon fitted to that panel's rows."
+
+- slug: coord-flip
+  section: facets
+  title: "Coordinate flip"
+  description: '<a href="../reference/coord/coord-flip.qmd"><code>coord-flip</code></a> swaps x and y so vertical bars read horizontally.'
+  alt: "Two stacked bar charts of revenue per quarter, the first with vertical bars and the second flipped to horizontal bars via coord-flip."
+
+- slug: coord-fixed
+  section: facets
+  title: "Fixed aspect ratio"
+  description: '<a href="../reference/coord/coord-fixed.qmd"><code>coord-fixed</code></a> locks one x unit equal to <code>ratio</code> y units regardless of panel size.'
+  alt: "Two stacked line plots of y equals x, the first using the default cartesian ratio and the second locked to a 1:1 ratio via coord-fixed."
+
+- slug: coord-fixed-facet
+  section: facets
+  title: "Fixed ratio with facets"
+  description: '<a href="../reference/coord/coord-fixed.qmd"><code>coord-fixed</code></a> applies inside every <a href="../reference/facets/facet-wrap.qmd"><code>facet-wrap</code></a> panel.'
+  alt: "Three facet panels of three parallel lines (y equals x, y equals x plus 1, y equals x minus 1), each panel locked to a 1:1 unit ratio."

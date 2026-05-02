@@ -4,14 +4,24 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
+#let accent = rgb("#1f77b4")
 #let df = range(0, 25).map(i => (x: i, y: i * i))
 
 #plot(
   data: df,
   mapping: aes(x: "x", y: "y"),
-  layers: (geom-line(colour: rgb("#1f77b4")), geom-point(size: 2pt)),
+  layers: (
+    geom-line(stroke: 1pt, colour: accent),
+    geom-point(size: 2pt, fill: accent),
+  ),
   coord: coord-cartesian(xlim: (5, 15), ylim: (0, 250)),
-  labs: labs(title: "coord-cartesian zoom"),
-  width: 10cm,
-  height: 7cm,
+  labs: labs(
+    title: "coord-cartesian zoom",
+    subtitle: "xlim and ylim clip the view; rows outside the window stay in the data",
+    x: "x",
+    y: "y",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )
