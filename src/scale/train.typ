@@ -91,11 +91,13 @@
   )
 }
 
-// Synthetic feeder axes (xmin/xmax/ymin/ymax/xend/yend) only contribute
-// their raw min/max to the main x or y axis; they should not get the
-// singleton-domain expansion that would otherwise turn `ymin: 0` for every
-// bar into `(-0.5, 0.5)` and bleed below the y=0 baseline.
-#let _SYNTHETIC-FEEDERS = (
+// Positional aesthetics drive panel layout and are retrained per panel under
+// `facet-wrap` free scales. The order here matters: `train()` folds the
+// synthetic feeders (xmin/xmax/ymin/ymax/xend/yend) into x and y after the
+// per-aesthetic loop, so x/y appear first.
+#let positional-aesthetics = (
+  "x",
+  "y",
   "xmin",
   "xmax",
   "ymin",
@@ -104,11 +106,34 @@
   "yend",
 )
 
-#let train-continuous(layers, aesthetic, plot-mapping, plot-data) = {
+// Synthetic feeder axes feed their min/max into the main x or y axis; they
+// must not get singleton-domain expansion (which would turn `ymin: 0` on
+// every bar into `(-0.5, 0.5)` and bleed below the y=0 baseline).
+#let _SYNTHETIC-FEEDERS = positional-aesthetics.filter(a => (
+  a != "x" and a != "y"
+))
+
+#let all-aesthetics = (
+  "x",
+  "y",
+  "colour",
+  "fill",
+  "size",
+  "alpha",
+  "linewidth",
+  "shape",
+  "linetype",
+  "xmin",
+  "xmax",
+  "ymin",
+  "ymax",
+  "xend",
+  "yend",
+)
+
+#let _continuous-domain-from-cache(cols, aesthetic) = {
   let all-vals = ()
-  for layer in layers {
-    let col = _column-for-aesthetic(layer, aesthetic, plot-mapping, plot-data)
-    if col == none { continue }
+  for col in cols {
     let numeric = col.values.map(parse-number).filter(v => v != none)
     all-vals += numeric
   }
@@ -121,11 +146,9 @@
   (lo, hi)
 }
 
-#let train-discrete(layers, aesthetic, plot-mapping, plot-data) = {
+#let _discrete-domain-from-cache(cols) = {
   let seen = ()
-  for layer in layers {
-    let col = _column-for-aesthetic(layer, aesthetic, plot-mapping, plot-data)
-    if col == none { continue }
+  for col in cols {
     for v in col.values {
       if v == none or v == "" { continue }
       let s = str(v)
@@ -135,10 +158,8 @@
   seen
 }
 
-#let _layer-aesthetic-type(layers, aesthetic, plot-mapping, plot-data) = {
-  for layer in layers {
-    let col = _column-for-aesthetic(layer, aesthetic, plot-mapping, plot-data)
-    if col == none { continue }
+#let _scale-type-from-cache(cols) = {
+  for col in cols {
     if col.forced-type != none { return col.forced-type }
     let t = infer-column-type(col.values)
     if t == "numeric" { return "continuous" }
@@ -161,49 +182,59 @@
   fallback
 }
 
-#let train(scales: (), layers: (), mapping: none, data: none) = {
+#let train(
+  scales: (),
+  layers: (),
+  mapping: none,
+  data: none,
+  aesthetics: none,
+) = {
   let trained = (:)
-  let aesthetics = (
-    "x",
-    "y",
-    "colour",
-    "fill",
-    "size",
-    "alpha",
-    "linewidth",
-    "shape",
-    "linetype",
-    "xmin",
-    "xmax",
-    "ymin",
-    "ymax",
-    "xend",
-    "yend",
-  )
-  for a in aesthetics {
-    let user-scale = _find-user-scale(scales, a)
-    let mapped = false
-    let typst-mark = false
-    for layer in layers {
-      let m = _resolve-mapping(layer, mapping)
-      if m == none { continue }
-      let v = m.at(a, default: none)
-      if v == none { continue }
-      mapped = true
-      if is-typst-markup(v) { typst-mark = true }
+  let aes-list = if aesthetics == none { all-aesthetics } else { aesthetics }
+
+  let cache = (:)
+  for a in aes-list { cache.insert(a, (cols: (), typst-mark: false)) }
+  for layer in layers {
+    let layer-mapping = _resolve-mapping(layer, mapping)
+    if layer-mapping == none { continue }
+    let layer-data = _resolve-data(layer, data)
+    for a in aes-list {
+      let raw = layer-mapping.at(a, default: none)
+      if raw == none { continue }
+      let col-name = mapping-ref-col(raw)
+      let forced = mapping-ref-type(raw)
+      if forced == none {
+        forced = _factor-sentinel-type(layer-data, col-name)
+      }
+      let entry = cache.at(a)
+      entry.cols.push((
+        name: col-name,
+        values: column(layer-data, col-name),
+        forced-type: forced,
+      ))
+      if is-typst-markup(raw) { entry.typst-mark = true }
+      cache.insert(a, entry)
     }
+  }
+
+  for a in aes-list {
+    let user-scale = _find-user-scale(scales, a)
+    let cached = cache.at(a)
+    let cols = cached.cols
+    let mapped = cols.len() > 0
+    let typst-mark = cached.typst-mark
     if not mapped and user-scale == none { continue }
     let scale-type = if user-scale != none {
       user-scale.type
     } else {
-      _layer-aesthetic-type(layers, a, mapping, data)
+      _scale-type-from-cache(cols)
     }
     let domain = if scale-type == "identity" {
       ()
     } else if scale-type == "continuous" {
-      train-continuous(layers, a, mapping, data)
+      _continuous-domain-from-cache(cols, a)
     } else {
-      train-discrete(layers, a, mapping, data)
+      _discrete-domain-from-cache(cols)
     }
     if (
       scale-type != "identity"
@@ -249,13 +280,10 @@
   }
 
   // Fold the directional aesthetics into the positional axes so the x and y
-  // domains span every column that contributes a position: `x` plus
-  // `xmin/xmax/xend`, and `y` plus `ymin/ymax/yend`. Without this,
+  // domains span every column that contributes a position. Without this,
   // `geom-segment(x: 0, xend: 4, ...)` would clip the panel at x = 0.
-  for (axis, sources) in (
-    (axis: "x", sources: ("xmin", "xmax", "xend")),
-    (axis: "y", sources: ("ymin", "ymax", "yend")),
-  ) {
+  for axis in ("x", "y") {
+    let sources = _SYNTHETIC-FEEDERS.filter(s => s.starts-with(axis))
     let target = trained.at(axis, default: none)
     if target != none and target.type != "continuous" { continue }
     let lo = if target != none { target.domain.at(0) } else { none }

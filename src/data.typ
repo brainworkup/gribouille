@@ -12,6 +12,19 @@
   data.map(row => row.at(name, default: none))
 }
 
+// Partition `rows` into buckets keyed by `str(key-fn(row))`.
+// Preserves input order within each bucket.
+#let group-by(rows, key-fn) = {
+  let out = (:)
+  for row in rows {
+    let k = str(key-fn(row))
+    let bucket = out.at(k, default: ())
+    bucket.push(row)
+    out.insert(k, bucket)
+  }
+  out
+}
+
 // Coerce a `data` argument into the canonical row-store shape.
 //
 // Accepts either:

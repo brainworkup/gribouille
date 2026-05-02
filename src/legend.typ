@@ -279,6 +279,57 @@
   cand
 }
 
+#let _format-break(n) = {
+  if type(n) == int { return str(n) }
+  if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
+  str(calc.round(n, digits: 3))
+}
+
+#let _title-chars(g) = if g.title == none { 0 } else { g.title.len() }
+
+// Approximate per-character horizontal extent in canvas units.
+#let _char-width = 0.18
+
+// Approximate label extent capped so the legend column does not outgrow the
+// available space.
+#let _label-width(chars) = calc.min(2.5, 0.6 + chars * _char-width)
+
+// Per-guide width estimate. Stored on each guide so `estimate-width` is O(1).
+#let _guide-width(g) = {
+  if g.kind == "swatch" {
+    let level-chars = 0
+    for level in g.levels {
+      level-chars = calc.max(level-chars, level.len())
+    }
+    let shape = _grid-shape(g.levels.len(), g.nrow, g.ncol)
+    let col-w = _label-width(level-chars)
+    let col-gap = calc.max(0.15, 0.1 * col-w)
+    let grid-w = col-w * shape.cols + col-gap * (shape.cols - 1)
+    return calc.max(_label-width(_title-chars(g)), grid-w)
+  }
+  if g.kind == "size-ladder" {
+    let label-chars = 0
+    for b in g.breaks {
+      label-chars = calc.max(label-chars, _format-break(b).len())
+    }
+    return calc.max(_label-width(_title-chars(g)), _label-width(label-chars))
+  }
+  if g.kind == "colourbar" {
+    let breaks = if g.at("breaks", default: none) != none {
+      g.breaks
+    } else {
+      let (lo, hi) = g.domain
+      pretty(lo, hi, n: 5)
+    }
+    let max-chars = _title-chars(g)
+    for b in breaks {
+      max-chars = calc.max(max-chars, _format-break(b).len())
+    }
+    return 0.65 + max-chars * _char-width
+  }
+  0.0
+}
+
 #let guides-for(spec, trained) = {
   let overrides = spec.at("guides", default: (:))
 
@@ -312,10 +363,10 @@
     let key-kind = _key-kind-for-group(members)
 
     let typst-mark = members.any(m => m.at("typst-mark", default: false))
-    if first.t.type == "discrete" {
+    let g = if first.t.type == "discrete" {
       let levels = first.levels
       if first.reverse { levels = levels.rev() }
-      guides.push((
+      (
         kind: "swatch",
         aesthetics: aesthetics,
         title: first.title,
@@ -325,28 +376,31 @@
         ncol: first.ncol,
         key: key-kind,
         typst-mark: typst-mark,
-      ))
+      )
     } else if aesthetics.contains("colour") or aesthetics.contains("fill") {
       // A colour/fill continuous member governs rendering; any size/alpha
       // members in the same group are intentionally dropped from the bar
       // because compositing them on a smooth gradient is awkward and rare.
+      // Pre-compute the tick breaks once so width estimation and the
+      // colourbar drawer share a single `pretty()` call.
       let user-labels = if (
         first.t.at("spec", default: none) != none
       ) { first.t.spec.at("labels", default: auto) } else { auto }
-      guides.push((
+      (
         kind: "colourbar",
         aesthetics: aesthetics,
         title: first.title,
         domain: first.domain,
+        breaks: pretty(first.domain.first(), first.domain.last(), n: 5),
         labels: user-labels,
         typst-mark: typst-mark,
-      ))
+      )
     } else {
       let breaks = pretty(first.domain.first(), first.domain.last(), n: 5)
       let user-labels = if (
         first.t.at("spec", default: none) != none
       ) { first.t.spec.at("labels", default: auto) } else { auto }
-      guides.push((
+      (
         kind: "size-ladder",
         aesthetics: aesthetics,
         title: first.title,
@@ -355,16 +409,12 @@
         labels: user-labels,
         key: key-kind,
         typst-mark: typst-mark,
-      ))
+      )
     }
+    g.insert("width", _guide-width(g))
+    guides.push(g)
   }
   guides
-}
-
-#let _format-break(n) = {
-  if type(n) == int { return str(n) }
-  if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
-  str(calc.round(n, digits: 3))
 }
 
 // Compose an aesthetic bundle for one level/value across every member of the
@@ -387,42 +437,12 @@
   bundle
 }
 
-#let _title-chars(g) = if g.title == none { 0 } else { g.title.len() }
-
 #let estimate-width(guides) = {
   if guides.len() == 0 { return 0.0 }
   let max-width = 0.0
   for g in guides {
-    if g.kind == "swatch" {
-      let title-chars = _title-chars(g)
-      let level-chars = 0
-      for level in g.levels {
-        level-chars = calc.max(level-chars, level.len())
-      }
-      let shape = _grid-shape(g.levels.len(), g.nrow, g.ncol)
-      let col-w = calc.min(2.5, 0.6 + level-chars * 0.18)
-      let title-w = calc.min(2.5, 0.6 + title-chars * 0.18)
-      let col-gap = calc.max(0.15, 0.1 * col-w)
-      let grid-w = col-w * shape.cols + col-gap * (shape.cols - 1)
-      max-width = calc.max(max-width, calc.max(title-w, grid-w))
-    } else if g.kind == "size-ladder" {
-      let title-chars = _title-chars(g)
-      let label-chars = 0
-      for b in g.breaks {
-        label-chars = calc.max(label-chars, _format-break(b).len())
-      }
-      let col-w = calc.min(2.5, 0.6 + label-chars * 0.18)
-      let title-w = calc.min(2.5, 0.6 + title-chars * 0.18)
-      max-width = calc.max(max-width, calc.max(title-w, col-w))
-    } else if g.kind == "colourbar" {
-      let (lo, hi) = g.domain
-      let breaks = pretty(lo, hi, n: 5)
-      let max-chars = _title-chars(g)
-      for b in breaks {
-        max-chars = calc.max(max-chars, _format-break(b).len())
-      }
-      max-width = calc.max(max-width, 0.45 + 0.2 + max-chars * 0.18)
-    }
+    let w = g.at("width", default: 0.0)
+    if w > max-width { max-width = w }
   }
   max-width
 }
@@ -475,7 +495,7 @@
   for level in guide.levels {
     level-chars = calc.max(level-chars, level.len())
   }
-  let col-w = calc.min(2.5, 0.6 + level-chars * 0.18)
+  let col-w = _label-width(level-chars)
   let col-gap = calc.max(0.15, 0.1 * col-w)
   let key-kind = guide.at("key", default: "rect")
   let labels = guide.at("labels", default: auto)
@@ -598,7 +618,7 @@
     fill: none,
     stroke: (paint: luma(53%), thickness: 0.2pt),
   )
-  let breaks = pretty(lo, hi, n: 5)
+  let breaks = guide.at("breaks", default: pretty(lo, hi, n: 5))
   let labels = guide.at("labels", default: auto)
   let typst-mark = guide.at("typst-mark", default: false)
   for (i, b) in breaks.enumerate() {

@@ -3,8 +3,8 @@
 
 #import "deps.typ": cetz
 #import "scale/train.typ": (
-  map-axis, map-continuous, map-position, mapping-ref-col, train, trans-fwd,
-  trans-inv,
+  map-axis, map-continuous, map-position, mapping-ref-col,
+  positional-aesthetics, train, trans-fwd, trans-inv,
 )
 #import "scale/expansion.typ": normalise-expansion
 #import "stat/apply.typ": apply-stat, stat-default-params
@@ -18,7 +18,7 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
-#import "data.typ": _normalise-data
+#import "data.typ": _normalise-data, group-by
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
 #import "geom/path.typ" as path-geom
@@ -45,6 +45,38 @@
 #import "geom/blank.typ" as blank-geom
 #import "geom/rug.typ" as rug-geom
 #import "geom/function.typ" as function-geom
+
+// Single source of truth for layer dispatch in `_draw-axis-and-layers`.
+// Each entry maps a layer's `geom` string to its `draw(layer, ctx)` function.
+// Adding a new geom only requires importing it above and adding an entry here.
+#let _geom-draw = (
+  point: point-geom.draw,
+  line: line-geom.draw,
+  path: path-geom.draw,
+  step: step-geom.draw,
+  area: area-geom.draw,
+  rect: rect-geom.draw,
+  tile: tile-geom.draw,
+  segment: segment-geom.draw,
+  polygon: polygon-geom.draw,
+  col: col-geom.draw,
+  ribbon: ribbon-geom.draw,
+  smooth: smooth-geom.draw,
+  hline: hline-geom.draw,
+  vline: vline-geom.draw,
+  abline: abline-geom.draw,
+  text: text-geom.draw,
+  label: label-geom.draw,
+  boxplot: boxplot-geom.draw,
+  errorbar: errorbar-geom.draw,
+  errorbarh: errorbarh-geom.draw,
+  linerange: linerange-geom.draw,
+  crossbar: crossbar-geom.draw,
+  pointrange: pointrange-geom.draw,
+  blank: blank-geom.draw,
+  rug: rug-geom.draw,
+  function: function-geom.draw,
+)
 #import "legend.typ" as legend-mod
 #import "facet/labellers.typ" as labellers
 #import "scale/secondary.typ" as secondary-mod
@@ -99,8 +131,14 @@
   _strip-mapping-refs(_merge-mapping(layer, plot-mapping))
 }
 
+// `data-trusted: true` on the layer signals that `layer.data` is already in
+// canonical row-store form; the faceted path sets it on per-panel buckets it
+// has just produced from a normalised source, avoiding a second validation
+// pass over the same rows.
 #let _resolve-data(layer, plot-data) = {
-  if layer.data != none { _normalise-data(layer.data) } else { plot-data }
+  if layer.data == none { return plot-data }
+  if layer.at("data-trusted", default: false) { return layer.data }
+  _normalise-data(layer.data)
 }
 
 // Collect unique levels of a column from the raw (pre-stat) data across all
@@ -214,27 +252,6 @@
   new
 }
 
-// Prepare a layer as _prepare-layer does, but on the subset of rows matching
-// every (column, value) pair in `filters`. Enables per-panel stat evaluation
-// so geom-smooth, geom-histogram, etc. fit their subset rather than the
-// whole plot data.
-#let _prepare-layer-filtered(layer, plot-mapping, plot-data, filters) = {
-  let raw = _resolve-data(layer, plot-data)
-  let subset = raw.filter(row => {
-    let keep = true
-    for (col, value) in filters {
-      if str(row.at(col, default: "")) != value {
-        keep = false
-        break
-      }
-    }
-    keep
-  })
-  let l = layer
-  l.data = subset
-  _prepare-layer(l, plot-mapping, plot-data)
-}
-
 // Build a colour resolver curried over the (trained, palette) pair so per-row
 // callers resolve the palette once outside the row loop and call the returned
 // closure with bare values. One-shot callers can still chain immediately:
@@ -336,24 +353,81 @@
   _format-break(n)
 }
 
-#let _extend-x-for-bins(trained, layers) = {
-  if trained.at("x", default: none) == none { return trained }
-  if trained.x.type != "continuous" { return trained }
-  let max-half = 0.0
+// Single-pass classifier feeding `_post-train`. Per layer it picks the
+// minimal row scan needed (col layers project parsed x values; binned and
+// ribbon layers fold per-row aggregates) so non-col, non-binned, non-ribbon
+// layers skip the row loop entirely.
+#let _post-train-scan(layers) = {
+  let needs-y-zero = false
+  let any-fill = false
+  let cols = ()
+  let bin-half-max = 0.0
+  let ribbon-y-min = none
+  let ribbon-y-max = none
   for layer in layers {
-    for row in layer.data {
-      let w = row.at("width", default: none)
-      if w != none and (type(w) == int or type(w) == float) {
-        max-half = calc.max(max-half, w / 2)
+    let geom = layer.at("geom", default: none)
+    if geom == "col" or geom == "area" { needs-y-zero = true }
+
+    let mapping = layer.at("mapping", default: none)
+    let layer-data = layer.at("data", default: ())
+    let ymin-col = if mapping != none {
+      mapping.at("ymin", default: none)
+    } else { none }
+    let ymax-col = if mapping != none {
+      mapping.at("ymax", default: none)
+    } else { none }
+    let scan-width = (
+      layer-data.len() > 0
+        and layer-data.first().at("width", default: none) != none
+    )
+
+    if geom == "col" {
+      if layer.at("position", default: "identity") == "fill" {
+        any-fill = true
+      }
+      let x-col = if mapping != none {
+        mapping.at("x", default: none)
+      } else { none }
+      let xs = if x-col != none {
+        layer-data
+          .map(r => parse-number(r.at(x-col, default: none)))
+          .filter(v => v != none)
+      } else { () }
+      cols.push((
+        bar-frac: layer.at("params", default: (:)).at("width", default: 0.9),
+        xs: xs,
+      ))
+    }
+
+    if not (scan-width or ymin-col != none or ymax-col != none) { continue }
+    for row in layer-data {
+      if scan-width {
+        let w = row.at("width", default: none)
+        if w != none and (type(w) == int or type(w) == float) {
+          bin-half-max = calc.max(bin-half-max, w / 2)
+        }
+      }
+      for col in (ymin-col, ymax-col) {
+        if col == none { continue }
+        let v = parse-number(row.at(col, default: none))
+        if v == none { continue }
+        ribbon-y-min = if ribbon-y-min == none { v } else {
+          calc.min(ribbon-y-min, v)
+        }
+        ribbon-y-max = if ribbon-y-max == none { v } else {
+          calc.max(ribbon-y-max, v)
+        }
       }
     }
   }
-  if max-half == 0 { return trained }
-  let (lo, hi) = trained.x.domain
-  let new-x = trained.x
-  new-x.insert("domain", (lo - max-half, hi + max-half))
-  trained.insert("x", new-x)
-  trained
+  (
+    needs-y-zero: needs-y-zero,
+    any-fill: any-fill,
+    cols: cols,
+    bin-half-max: bin-half-max,
+    ribbon-y-min: ribbon-y-min,
+    ribbon-y-max: ribbon-y-max,
+  )
 }
 
 // `geom-col` centres each bar on its category value and draws it from
@@ -361,65 +435,21 @@
 // trained domain is `(min, max)` of the raw values, so the outer bars hang
 // off the panel by half a bar width. Mirror the geom's minimum-gap heuristic
 // to compute the half-width in domain units and pad the trained domain on
-// both sides. `axis` is "x" for normal orientation and "y" under coord-flip;
-// the renderer applies the flip after `_post-train`, so padding pre-flip x
-// covers the unflipped case and pre-flip y covers the flipped case.
-#let _extend-axis-for-cols(trained, layers, axis) = {
-  if trained.at(axis, default: none) == none { return trained }
-  if trained.at(axis).type != "continuous" { return trained }
+// both sides. The renderer applies coord-flip after `_post-train`, so
+// padding pre-flip x covers both orientations.
+#let _col-half-width-x(cols) = {
   let max-half = 0.0
-  for layer in layers {
-    if layer.at("geom", default: none) != "col" { continue }
-    let mapping = layer.at("mapping", default: none)
-    if mapping == none { continue }
-    let col-name = mapping.at(axis, default: none)
-    if col-name == none { continue }
-    let bar-frac = layer.at("params", default: (:)).at("width", default: 0.9)
-    let xs = layer
-      .at("data", default: ())
-      .map(r => parse-number(r.at(col-name, default: none)))
-      .filter(v => v != none)
-    let sorted = xs.dedup().sorted()
+  for layer in cols {
+    let sorted = layer.xs.dedup().sorted()
     if sorted.len() < 2 { continue }
     let gaps = range(sorted.len() - 1).map(i => (
       sorted.at(i + 1) - sorted.at(i)
     ))
     let min-gap = calc.min(..gaps)
-    let half = min-gap * bar-frac / 2
+    let half = min-gap * layer.bar-frac / 2
     if half > max-half { max-half = half }
   }
-  if max-half == 0 { return trained }
-  let (lo, hi) = trained.at(axis).domain
-  let new-axis = trained.at(axis)
-  new-axis.insert("domain", (lo - max-half, hi + max-half))
-  trained.insert(axis, new-axis)
-  trained
-}
-
-#let _extend-y-for-ribbon(trained, layers) = {
-  if trained.at("y", default: none) == none { return trained }
-  if trained.y.type != "continuous" { return trained }
-  let extras = ()
-  for layer in layers {
-    let mapping = layer.mapping
-    if mapping == none { continue }
-    for key in ("ymin", "ymax") {
-      let col = mapping.at(key, default: none)
-      if col == none { continue }
-      for row in layer.data {
-        let v = parse-number(row.at(col, default: none))
-        if v != none { extras.push(v) }
-      }
-    }
-  }
-  if extras.len() == 0 { return trained }
-  let (lo, hi) = trained.y.domain
-  let new-lo = calc.min(lo, ..extras)
-  let new-hi = calc.max(hi, ..extras)
-  let new-y = trained.y
-  new-y.insert("domain", (new-lo, new-hi))
-  trained.insert("y", new-y)
-  trained
+  max-half
 }
 
 // Pre-compute primary and secondary x/y axis breaks for a trained scale set.
@@ -785,59 +815,8 @@
   }
 
   for layer in prepared {
-    if layer.geom == "point" {
-      point-geom.draw(layer, ctx)
-    } else if layer.geom == "line" {
-      line-geom.draw(layer, ctx)
-    } else if layer.geom == "path" {
-      path-geom.draw(layer, ctx)
-    } else if layer.geom == "step" {
-      step-geom.draw(layer, ctx)
-    } else if layer.geom == "area" {
-      area-geom.draw(layer, ctx)
-    } else if layer.geom == "rect" {
-      rect-geom.draw(layer, ctx)
-    } else if layer.geom == "tile" {
-      tile-geom.draw(layer, ctx)
-    } else if layer.geom == "segment" {
-      segment-geom.draw(layer, ctx)
-    } else if layer.geom == "polygon" {
-      polygon-geom.draw(layer, ctx)
-    } else if layer.geom == "col" {
-      col-geom.draw(layer, ctx)
-    } else if layer.geom == "ribbon" {
-      ribbon-geom.draw(layer, ctx)
-    } else if layer.geom == "smooth" {
-      smooth-geom.draw(layer, ctx)
-    } else if layer.geom == "hline" {
-      hline-geom.draw(layer, ctx)
-    } else if layer.geom == "vline" {
-      vline-geom.draw(layer, ctx)
-    } else if layer.geom == "abline" {
-      abline-geom.draw(layer, ctx)
-    } else if layer.geom == "text" {
-      text-geom.draw(layer, ctx)
-    } else if layer.geom == "label" {
-      label-geom.draw(layer, ctx)
-    } else if layer.geom == "boxplot" {
-      boxplot-geom.draw(layer, ctx)
-    } else if layer.geom == "errorbar" {
-      errorbar-geom.draw(layer, ctx)
-    } else if layer.geom == "errorbarh" {
-      errorbarh-geom.draw(layer, ctx)
-    } else if layer.geom == "linerange" {
-      linerange-geom.draw(layer, ctx)
-    } else if layer.geom == "crossbar" {
-      crossbar-geom.draw(layer, ctx)
-    } else if layer.geom == "pointrange" {
-      pointrange-geom.draw(layer, ctx)
-    } else if layer.geom == "blank" {
-      blank-geom.draw(layer, ctx)
-    } else if layer.geom == "rug" {
-      rug-geom.draw(layer, ctx)
-    } else if layer.geom == "function" {
-      function-geom.draw(layer, ctx)
-    }
+    let draw = _geom-draw.at(layer.geom, default: none)
+    if draw != none { draw(layer, ctx) }
   }
 
   // When flipped, the bottom axis shows the user's original y mapping and
@@ -1056,62 +1035,93 @@
   trained
 }
 
+// Rewrite a continuous trained-scale's domain via `fn((lo, hi)) -> (lo, hi)`.
+// No-ops when the axis is missing or non-continuous.
+#let _rewrite-continuous-domain(trained, axis, fn) = {
+  let t = trained.at(axis, default: none)
+  if t == none or t.type != "continuous" { return trained }
+  let new = t
+  new.insert("domain", fn(t.domain))
+  trained.insert(axis, new)
+  trained
+}
+
 // Apply post-training domain fix-ups (bar-zero floor, bin width padding,
 // ribbon ymin/ymax padding). Called once globally and once per panel under
 // free scales so each panel's domain reflects its own subset.
 #let _post-train(trained, layers) = {
-  let needs-y-zero = layers.any(l => l.geom == "col" or l.geom == "area")
-  if (
-    needs-y-zero
-      and trained.at("y", default: none) != none
-      and trained.y.type == "continuous"
-  ) {
-    let (lo, hi) = trained.y.domain
-    let new-y = trained.y
-    new-y.insert("domain", (calc.min(lo, 0.0), calc.max(hi, 0.0)))
-    // Bars and areas live against a y=0 baseline; tag the side that touches
-    // it so `_apply-expand` collapses that side's auto expansion to zero,
-    // matching ggplot2's `expansion(mult = c(0, 0.05))` default for these
-    // geoms. `position: "fill"` normalises every stack to `[0, 1]`, so
-    // anchor both sides; mixed-sign data (data straddles 0) keeps symmetric
-    // expansion.
-    let any-fill = layers.any(l => (
-      l.at("geom", default: none) == "col"
-        and l.at("position", default: "identity") == "fill"
-    ))
-    let anchor = if any-fill {
-      "both"
-    } else if lo >= 0 {
-      "lo"
-    } else if hi <= 0 {
-      "hi"
-    } else { none }
-    if anchor != none { new-y.insert("anchor-zero", anchor) }
-    trained.insert("y", new-y)
-  }
-  trained = _extend-x-for-bins(trained, layers)
-  trained = _extend-axis-for-cols(trained, layers, "x")
-  trained = _extend-y-for-ribbon(trained, layers)
-  // For discrete category axes, record the bar half-width (in level-index
-  // units) so `_apply-expand` keeps the outer bars inside the panel even
-  // when the user passes a small `expand:`. Continuous category axes are
-  // already handled by `_extend-axis-for-cols` above, which folds the bar
-  // half-width into the trained domain.
-  let bar-half = 0
-  for layer in layers {
-    if layer.at("geom", default: none) != "col" { continue }
-    let bar-frac = layer.at("params", default: (:)).at("width", default: 0.9)
-    let half = bar-frac / 2
-    if half > bar-half { bar-half = half }
-  }
-  if bar-half > 0 {
-    let xt = trained.at("x", default: none)
-    if xt != none and xt.type == "discrete" {
-      let new-x = xt
-      new-x.insert("geom-min-pad", bar-half)
-      trained.insert("x", new-x)
+  let scan = _post-train-scan(layers)
+
+  // Bars and areas anchor against y=0. The touching side is tagged so
+  // `_apply-expand` collapses its auto-expansion to zero, matching ggplot2's
+  // `expansion(mult = c(0, 0.05))`. `position: "fill"` anchors both sides;
+  // mixed-sign data keeps symmetric expansion.
+  if scan.needs-y-zero {
+    let yt = trained.at("y", default: none)
+    if yt != none and yt.type == "continuous" {
+      let (lo, hi) = yt.domain
+      let new-y = yt
+      new-y.insert("domain", (calc.min(lo, 0.0), calc.max(hi, 0.0)))
+      let anchor = if scan.any-fill {
+        "both"
+      } else if lo >= 0 {
+        "lo"
+      } else if hi <= 0 {
+        "hi"
+      } else { none }
+      if anchor != none { new-y.insert("anchor-zero", anchor) }
+      trained.insert("y", new-y)
     }
   }
+
+  if scan.bin-half-max > 0 {
+    let pad = scan.bin-half-max
+    trained = _rewrite-continuous-domain(trained, "x", ((lo, hi)) => (
+      lo - pad,
+      hi + pad,
+    ))
+  }
+
+  // `geom-col` mirrors its own min-gap heuristic: pad the continuous category
+  // axis by half a bar width so outer bars stay inside the panel. Coord-flip
+  // is applied later, so padding pre-flip x covers both orientations.
+  if scan.cols.len() > 0 {
+    let max-half = _col-half-width-x(scan.cols)
+    if max-half > 0 {
+      trained = _rewrite-continuous-domain(trained, "x", ((lo, hi)) => (
+        lo - max-half,
+        hi + max-half,
+      ))
+    }
+  }
+
+  if scan.ribbon-y-min != none {
+    let lo-extra = scan.ribbon-y-min
+    let hi-extra = scan.ribbon-y-max
+    trained = _rewrite-continuous-domain(trained, "y", ((lo, hi)) => (
+      calc.min(lo, lo-extra),
+      calc.max(hi, hi-extra),
+    ))
+  }
+
+  // Discrete category axes get `geom-min-pad` so `_apply-expand` keeps outer
+  // bars inside the panel; the continuous case is already covered above.
+  if scan.cols.len() > 0 {
+    let bar-half = 0
+    for layer in scan.cols {
+      let half = layer.bar-frac / 2
+      if half > bar-half { bar-half = half }
+    }
+    if bar-half > 0 {
+      let xt = trained.at("x", default: none)
+      if xt != none and xt.type == "discrete" {
+        let new-x = xt
+        new-x.insert("geom-min-pad", bar-half)
+        trained.insert("x", new-x)
+      }
+    }
+  }
+
   trained
 }
 
@@ -1120,6 +1130,38 @@
   strip-text: _text-style(theme, "strip-text"),
   ax-title: _text-style(theme, "axis-title"),
 )
+
+// ASCII Unit Separator joins the two grid-facet level strings into a single
+// dict key. Assumed absent from any user-facing facet level.
+#let _facet-key-sep = "\u{1F}"
+
+// Build a (row-key-fn, panel-key-fn) pair for a grid facet spec, specialised
+// on which of `rows` / `cols` is set. The row-key-fn is invoked once per data
+// row inside `group-by` and must avoid per-row allocation.
+#let _grid-facet-keyers(spec) = {
+  let r = spec.facet.rows
+  let c = spec.facet.cols
+  if r != none and c != none {
+    return (
+      row: row => (
+        str(row.at(r, default: ""))
+          + _facet-key-sep
+          + str(row.at(c, default: ""))
+      ),
+      panel: (rl, cl) => rl + _facet-key-sep + cl,
+    )
+  }
+  if r != none {
+    return (
+      row: row => str(row.at(r, default: "")),
+      panel: (rl, _) => rl,
+    )
+  }
+  (
+    row: row => str(row.at(c, default: "")),
+    panel: (_, cl) => cl,
+  )
+}
 
 #let _render-prepare(spec) = {
   let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
@@ -1136,32 +1178,48 @@
     _raw-levels-for(spec, spec.facet.cols)
   } else if facet-grid-mode { ("",) } else { () }
 
+  // Partition each layer's data once by the facet key, then look up each
+  // panel's subset in O(1).
   let panels = if facet-wrap-mode {
+    let var = spec.facet.var
+    let layer-groups = spec.layers.map(l => group-by(
+      _resolve-data(l, spec.data),
+      row => str(row.at(var, default: "")),
+    ))
     wrap-levels.map(level => (
       level: level,
-      layers: spec.layers.map(l => _prepare-layer-filtered(
-        l,
-        spec.mapping,
-        spec.data,
-        ((spec.facet.var, level),),
-      )),
+      layers: spec
+        .layers
+        .enumerate()
+        .map(((i, l)) => {
+          let with-subset = l
+          with-subset.data = layer-groups.at(i).at(level, default: ())
+          with-subset.insert("data-trusted", true)
+          _prepare-layer(with-subset, spec.mapping, spec.data)
+        }),
     ))
   } else if facet-grid-mode {
+    let keyers = _grid-facet-keyers(spec)
+    let layer-groups = spec.layers.map(l => group-by(
+      _resolve-data(l, spec.data),
+      keyers.row,
+    ))
     let out = ()
     for row-lv in grid-row-levels {
       for col-lv in grid-col-levels {
-        let filters = ()
-        if spec.facet.rows != none { filters.push((spec.facet.rows, row-lv)) }
-        if spec.facet.cols != none { filters.push((spec.facet.cols, col-lv)) }
+        let key = (keyers.panel)(row-lv, col-lv)
         out.push((
           row-level: row-lv,
           col-level: col-lv,
-          layers: spec.layers.map(l => _prepare-layer-filtered(
-            l,
-            spec.mapping,
-            spec.data,
-            filters,
-          )),
+          layers: spec
+            .layers
+            .enumerate()
+            .map(((i, l)) => {
+              let with-subset = l
+              with-subset.data = layer-groups.at(i).at(key, default: ())
+              with-subset.insert("data-trusted", true)
+              _prepare-layer(with-subset, spec.mapping, spec.data)
+            }),
         ))
       }
     }
@@ -1195,12 +1253,16 @@
 
 #let _train-panels(spec, panels, trained, coord, labs, free-x, free-y) = {
   if not (free-x or free-y) { return () }
+  // Only positional aesthetics are retrained per panel; non-positionals stay
+  // shared so legends do not fragment. Labs labels must be re-applied because
+  // pt.x / pt.y overwrite the globally-labelled merged.x / merged.y below.
   panels.map(p => {
     let pt = train(
       scales: spec.scales,
       layers: p.layers,
       mapping: spec.mapping,
       data: spec.data,
+      aesthetics: positional-aesthetics,
     )
     pt = _apply-labs(pt, labs)
     pt = _post-train(pt, p.layers)
@@ -1254,9 +1316,22 @@
   let panel-w = (grid-w - gutter-x * (ncol - 1)) / ncol
   let panel-h = (grid-h - gutter-y * (nrow - 1) - strip-h * nrow) / nrow
 
-  let shared-breaks = if free-x or free-y {
-    none
-  } else { _shared-axis-breaks(trained) }
+  // Compute shared breaks once per axis. A free axis sets its entry to
+  // `none` so `_draw-axis-and-layers` falls back to per-panel computation
+  // (the per-panel scale is what differs); the fixed axis still benefits
+  // from the cached breaks even when the other axis is free.
+  let shared-breaks = {
+    let s = _shared-axis-breaks(trained)
+    if free-x {
+      s.insert("x", none)
+      s.insert("x-sec", none)
+    }
+    if free-y {
+      s.insert("y", none)
+      s.insert("y-sec", none)
+    }
+    s
+  }
 
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
@@ -1652,10 +1727,8 @@
 
   let style = _render-style(theme)
 
-  // Faceted plots prepare layers per panel so that stats (smooth, bin,
-  // count) are computed on each panel's own subset of rows, following
-  // grammar-of-graphics semantics.
-  // Non-faceted plots run the classic single-pass preparation.
+  // Faceted plots prepare layers per panel so stats (smooth, bin, count) fit
+  // each panel's own row subset, following grammar-of-graphics semantics.
   let prep = _render-prepare(spec)
   let facet-wrap-mode = prep.facet-wrap-mode
   let facet-grid-mode = prep.facet-grid-mode
