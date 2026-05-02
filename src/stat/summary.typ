@@ -93,11 +93,17 @@
 #let _group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
 #let _pass-aesthetics = _group-aesthetics + ("label",)
 
-#let _bivariate-row(data, x-col, y-col, fun, fun-args, mapping) = {
+#let _weights-of(data, weight-col) = {
+  if weight-col == none { return none }
+  data.map(r => r.at(weight-col, default: none))
+}
+
+#let _bivariate-row(data, x-col, y-col, fun, fun-args, mapping, weight-col) = {
   let xs = data.map(r => r.at(x-col, default: none))
   let ys = data.map(r => r.at(y-col, default: none))
-  let sx = summarise(fun, xs, fun-args: fun-args)
-  let sy = summarise(fun, ys, fun-args: fun-args)
+  let weights = _weights-of(data, weight-col)
+  let sx = summarise(fun, xs, fun-args: fun-args, weights: weights)
+  let sy = summarise(fun, ys, fun-args: fun-args, weights: weights)
   if sx.y == none or sy.y == none {
     return (data: (), mapping: (x: "x", y: "y", ymin: "ymin", ymax: "ymax"))
   }
@@ -164,6 +170,7 @@
       "stat-summary: axis must be \"both\", \"x\", or \"y\"; got " + repr(axis),
     )
   }
+  let weight-col = mapping.at("weight", default: none)
 
   let has-grouping = _group-aesthetics.any(a => (
     mapping.at(a, default: none) != none
@@ -180,7 +187,15 @@
       x-nonnull.len() > 0 and x-nonnull.all(v => parse-number(v) != none)
     )
     if x-continuous {
-      return _bivariate-row(data, x-col, y-col, fun, fun-args, mapping)
+      return _bivariate-row(
+        data,
+        x-col,
+        y-col,
+        fun,
+        fun-args,
+        mapping,
+        weight-col,
+      )
     }
   }
 
@@ -195,7 +210,8 @@
     for key in bucketed.order {
       let rows = bucketed.buckets.at(key)
       let xs = rows.map(r => r.at(x-col, default: none))
-      let summary = summarise(fun, xs, fun-args: fun-args)
+      let weights = _weights-of(rows, weight-col)
+      let summary = summarise(fun, xs, fun-args: fun-args, weights: weights)
       if summary.y == none { continue }
       let raw-y = rows.first().at(y-col, default: none)
       let parsed-y = parse-number(raw-y)
@@ -227,7 +243,8 @@
   for key in bucketed.order {
     let rows = bucketed.buckets.at(key)
     let ys = rows.map(r => r.at(y-col, default: none))
-    let summary = summarise(fun, ys, fun-args: fun-args)
+    let weights = _weights-of(rows, weight-col)
+    let summary = summarise(fun, ys, fun-args: fun-args, weights: weights)
     if summary.y == none { continue }
 
     let raw-x = rows.first().at(x-col, default: none)

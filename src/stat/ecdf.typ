@@ -58,19 +58,37 @@
   }
   let base-mapping = (x: "x", y: "y")
   if x-col == none { return (data: (), mapping: base-mapping) }
-  let xs = data
-    .map(r => parse-number(r.at(x-col, default: none)))
-    .filter(v => v != none)
-  let n = xs.len()
-  if n == 0 { return (data: (), mapping: base-mapping) }
-  let sorted = xs.sorted()
+  let weight-col = mapping.at("weight", default: none)
+  let pairs = data
+    .map(r => {
+      let xv = parse-number(r.at(x-col, default: none))
+      if xv == none { return none }
+      let w = if weight-col == none { 1 } else {
+        let raw = r.at(weight-col, default: none)
+        if raw == none { 0 } else if type(raw) == str { float(raw) } else {
+          raw
+        }
+      }
+      (x: xv, w: w)
+    })
+    .filter(p => p != none)
+  if pairs.len() == 0 { return (data: (), mapping: base-mapping) }
+  let total = pairs.fold(0, (acc, p) => acc + p.w)
+  if total == 0 { return (data: (), mapping: base-mapping) }
+  let sorted = pairs.sorted(key: p => p.x)
   let rows = ()
+  let cum = 0
   let i = 0
+  let n = sorted.len()
   while i < n {
-    let v = sorted.at(i)
-    rows.push((x: v, y: (i + 1) / n))
+    let v = sorted.at(i).x
+    cum += sorted.at(i).w
+    rows.push((x: v, y: cum / total))
     let j = i + 1
-    while j < n and sorted.at(j) == v { j = j + 1 }
+    while j < n and sorted.at(j).x == v {
+      cum += sorted.at(j).w
+      j = j + 1
+    }
     i = j
   }
   (data: rows, mapping: base-mapping)

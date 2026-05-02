@@ -57,10 +57,22 @@
     none
   }
   if x-col == none { return (data: data, mapping: mapping) }
-  let xs = data
-    .map(r => parse-number(r.at(x-col, default: none)))
-    .filter(v => v != none)
-  if xs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }
+  let weight-col = mapping.at("weight", default: none)
+  let pairs = data
+    .map(r => {
+      let xv = parse-number(r.at(x-col, default: none))
+      if xv == none { return none }
+      let w = if weight-col == none { 1 } else {
+        let raw = r.at(weight-col, default: none)
+        if raw == none { 0 } else if type(raw) == str { float(raw) } else {
+          raw
+        }
+      }
+      (x: xv, w: w)
+    })
+    .filter(p => p != none)
+  if pairs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }
+  let xs = pairs.map(p => p.x)
   let lo = calc.min(..xs)
   let hi = calc.max(..xs)
   if hi == lo { hi = lo + 1.0 }
@@ -73,10 +85,10 @@
   }
   let width = (hi - lo) / n-bins
   let counts = range(n-bins).map(_ => 0)
-  for v in xs {
-    let raw = int(calc.floor((v - lo) / width))
+  for p in pairs {
+    let raw = int(calc.floor((p.x - lo) / width))
     let idx = calc.max(0, calc.min(n-bins - 1, raw))
-    counts.at(idx) = counts.at(idx) + 1
+    counts.at(idx) = counts.at(idx) + p.w
   }
   let rows = range(n-bins).map(i => (
     x: lo + (i + 0.5) * width,

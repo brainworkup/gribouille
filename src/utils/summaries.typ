@@ -12,6 +12,29 @@
   values.map(v => parse-number(v)).filter(v => v != none)
 }
 
+// Pair each value with its weight, drop non-numeric values, and treat
+// missing weights as 1. Returns `(xs, ws)` arrays with matching lengths;
+// when `weights` is `none`, every entry weights as 1.
+#let _to-weighted(values, weights) = {
+  let n = values.len()
+  let xs = ()
+  let ws = ()
+  for i in range(n) {
+    let v = parse-number(values.at(i))
+    if v == none { continue }
+    let w = if weights == none { 1 } else {
+      let raw = weights.at(i, default: none)
+      if raw == none {
+        0
+      } else if type(raw) == str { float(raw) } else { raw }
+    }
+    if w <= 0 { continue }
+    xs.push(v)
+    ws.push(w)
+  }
+  (xs: xs, ws: ws)
+}
+
 #let _empty-summary = (y: none, ymin: none, ymax: none)
 
 #let _sum(xs) = {
@@ -21,6 +44,34 @@
 }
 
 #let _mean(xs) = _sum(xs) / xs.len()
+
+// Weighted mean with non-negative weights. Returns `none` when the total
+// weight is zero (caller handles as empty bucket).
+#let _wmean(xs, ws) = {
+  let total = _sum(ws)
+  if total == 0 { return none }
+  let acc = 0.0
+  for i in range(xs.len()) { acc += ws.at(i) * xs.at(i) }
+  acc / total
+}
+
+// Weighted sample standard deviation with frequency-weight semantics
+// (divisor `(n-1) / n * Σw`). Mirrors `_sd` for unit weights.
+#let _wsd(xs, ws) = {
+  let n = xs.len()
+  if n < 2 { return 0.0 }
+  let total = _sum(ws)
+  if total == 0 { return 0.0 }
+  let m = _wmean(xs, ws)
+  if m == none { return 0.0 }
+  let ss = 0.0
+  for i in range(n) {
+    let d = xs.at(i) - m
+    ss += ws.at(i) * d * d
+  }
+  // Frequency-weight Bessel correction: divisor = total * (n - 1) / n.
+  calc.sqrt(ss / (total * (n - 1) / n))
+}
 
 // Sample standard deviation (Bessel's correction, divisor n - 1). Returns
 // 0 when the sample has a single observation.
@@ -57,6 +108,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+/// \@param weights Optional array of non-negative weights (`none` for unit weights). Pairs are dropped when the weight is `none`, zero, or negative.
 ///
 /// \@returns Dict `(y, ymin, ymax)` with `ymin == ymax == y`; all-`none` if
 ///   `values` has no numerics.
@@ -66,7 +118,14 @@
 /// #let s = mean((2, 3, 4, 5, 6))
 /// // s.y == 4, s.ymin == 4, s.ymax == 4
 /// ```
-#let mean(values) = {
+#let mean(values, weights: none) = {
+  if weights != none {
+    let p = _to-weighted(values, weights)
+    if p.xs.len() == 0 { return _empty-summary }
+    let m = _wmean(p.xs, p.ws)
+    if m == none { return _empty-summary }
+    return (y: m, ymin: m, ymax: m)
+  }
   let xs = _to-numeric(values)
   if xs.len() == 0 { return _empty-summary }
   let m = _mean(xs)
@@ -180,6 +239,7 @@
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
 /// \@param mult Multiplier on the standard error.
+/// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics; total weight stands in for `n` in the standard-error denominator.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
@@ -194,7 +254,19 @@
 /// ```
 /// #let s = mean-se((2, 3, 4, 5, 6), mult: 2)
 /// ```
-#let mean-se(values, mult: 1) = {
+#let mean-se(values, mult: 1, weights: none) = {
+  if weights != none {
+    let p = _to-weighted(values, weights)
+    let n = p.xs.len()
+    if n == 0 { return _empty-summary }
+    let m = _wmean(p.xs, p.ws)
+    if m == none { return _empty-summary }
+    let total = _sum(p.ws)
+    let se = if n < 2 or total == 0 {
+      0.0
+    } else { _wsd(p.xs, p.ws) / calc.sqrt(total) }
+    return (y: m, ymin: m - mult * se, ymax: m + mult * se)
+  }
   let xs = _to-numeric(values)
   let n = xs.len()
   if n == 0 { return _empty-summary }
@@ -215,6 +287,7 @@
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
 /// \@param conf Confidence level in the open interval `(0, 1)`.
+/// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics; total weight stands in for `n` in the standard-error denominator.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
@@ -228,16 +301,28 @@
 /// ```
 /// #let s = mean-cl-normal((2, 3, 4, 5, 6), conf: 0.5)
 /// ```
-#let mean-cl-normal(values, conf: 0.95) = {
+#let mean-cl-normal(values, conf: 0.95, weights: none) = {
   if conf <= 0 or conf >= 1 {
     panic("mean-cl-normal: conf must be in (0, 1); got " + repr(conf))
+  }
+  let z = qnorm((1 + conf) / 2)
+  if weights != none {
+    let p = _to-weighted(values, weights)
+    let n = p.xs.len()
+    if n == 0 { return _empty-summary }
+    let m = _wmean(p.xs, p.ws)
+    if m == none { return _empty-summary }
+    let total = _sum(p.ws)
+    let se = if n < 2 or total == 0 {
+      0.0
+    } else { _wsd(p.xs, p.ws) / calc.sqrt(total) }
+    return (y: m, ymin: m - z * se, ymax: m + z * se)
   }
   let xs = _to-numeric(values)
   let n = xs.len()
   if n == 0 { return _empty-summary }
   let m = _mean(xs)
   let se = if n < 2 { 0.0 } else { _sd(xs) / calc.sqrt(n) }
-  let z = qnorm((1 + conf) / 2)
   (y: m, ymin: m - z * se, ymax: m + z * se)
 }
 
@@ -249,6 +334,7 @@
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
 /// \@param mult Multiplier on the sample standard deviation.
+/// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics for the weighted standard deviation.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
 ///
@@ -261,7 +347,15 @@
 /// ```
 /// #let s = mean-sd((2, 3, 4, 5, 6), mult: 2)
 /// ```
-#let mean-sd(values, mult: 1) = {
+#let mean-sd(values, mult: 1, weights: none) = {
+  if weights != none {
+    let p = _to-weighted(values, weights)
+    if p.xs.len() == 0 { return _empty-summary }
+    let m = _wmean(p.xs, p.ws)
+    if m == none { return _empty-summary }
+    let s = _wsd(p.xs, p.ws)
+    return (y: m, ymin: m - mult * s, ymax: m + mult * s)
+  }
   let xs = _to-numeric(values)
   if xs.len() == 0 { return _empty-summary }
   let m = _mean(xs)
@@ -392,6 +486,7 @@
 /// \@param name Summary helper name, or a callable returning `(y, ymin, ymax)`.
 /// \@param values Array of numbers; non-numeric entries are dropped.
 /// \@param fun-args Keyword arguments forwarded to the helper or callable.
+/// \@param weights Optional array of non-negative weights aligned with `values` (`none` for unit weights). Forwarded to helpers that honour weights (`mean`, `mean-se`, `mean-sd`, `mean-cl-normal`); helpers without a weighted formulation ignore the parameter.
 ///
 /// \@returns Dict `(y, ymin, ymax)`.
 ///
@@ -418,14 +513,17 @@
 ///   (1, 2, 3, 4, 5),
 /// )
 /// ```
-#let summarise(name, values, fun-args: (:)) = {
-  if type(name) == function { return name(values, ..fun-args) }
+#let summarise(name, values, fun-args: (:), weights: none) = {
+  if type(name) == function {
+    if weights == none { return name(values, ..fun-args) }
+    return name(values, weights: weights, ..fun-args)
+  }
   if name == "mean-se" {
     let mult = fun-args.at("mult", default: 1)
-    return mean-se(values, mult: mult)
+    return mean-se(values, mult: mult, weights: weights)
   } else if name == "mean-cl-normal" {
     let conf = fun-args.at("conf", default: 0.95)
-    return mean-cl-normal(values, conf: conf)
+    return mean-cl-normal(values, conf: conf, weights: weights)
   } else if name == "mean-cl-boot" {
     let conf = fun-args.at("conf", default: 0.95)
     let n-boot = fun-args.at("n-boot", default: 1000)
@@ -433,12 +531,12 @@
     return mean-cl-boot(values, conf: conf, n-boot: n-boot, seed: seed)
   } else if name == "mean-sd" {
     let mult = fun-args.at("mult", default: 1)
-    return mean-sd(values, mult: mult)
+    return mean-sd(values, mult: mult, weights: weights)
   } else if name == "median-hilow" {
     let conf = fun-args.at("conf", default: 0.5)
     return median-hilow(values, conf: conf)
   } else if name == "mean" {
-    return mean(values)
+    return mean(values, weights: weights)
   } else if name == "median" {
     return median(values)
   } else if name == "quantile" {

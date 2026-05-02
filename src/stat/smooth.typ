@@ -118,6 +118,7 @@
     if not samples.keys().contains(key) { samples.insert(key, row) }
   }
 
+  let weight-col = mapping.at("weight", default: none)
   let se-on = params.at("se", default: true)
   let t-val = 1.96
   let steps = 80
@@ -125,28 +126,37 @@
   let out = ()
   for (key, rows) in groups.pairs() {
     let pairs = rows
-      .map(r => (
-        x: parse-number(r.at(x-col, default: none)),
-        y: parse-number(r.at(y-col, default: none)),
-      ))
-      .filter(p => p.x != none and p.y != none)
+      .map(r => {
+        let x = parse-number(r.at(x-col, default: none))
+        let y = parse-number(r.at(y-col, default: none))
+        if x == none or y == none { return none }
+        let w = if weight-col == none { 1 } else {
+          let raw = r.at(weight-col, default: none)
+          if raw == none { 0 } else if type(raw) == str { float(raw) } else {
+            raw
+          }
+        }
+        (x: x, y: y, w: w)
+      })
+      .filter(p => p != none and p.w > 0)
     let n = pairs.len()
     if n < 2 { continue }
-    let xs = pairs.map(p => p.x)
-    let ys = pairs.map(p => p.y)
-    let x-mean = _sum(xs) / n
-    let y-mean = _sum(ys) / n
-    let sxx = _sum(pairs.map(p => (p.x - x-mean) * (p.x - x-mean)))
-    let sxy = _sum(pairs.map(p => (p.x - x-mean) * (p.y - y-mean)))
+    let w-sum = _sum(pairs.map(p => p.w))
+    if w-sum == 0 { continue }
+    let x-mean = _sum(pairs.map(p => p.w * p.x)) / w-sum
+    let y-mean = _sum(pairs.map(p => p.w * p.y)) / w-sum
+    let sxx = _sum(pairs.map(p => p.w * (p.x - x-mean) * (p.x - x-mean)))
+    let sxy = _sum(pairs.map(p => p.w * (p.x - x-mean) * (p.y - y-mean)))
     if sxx == 0 { continue }
     let slope = sxy / sxx
     let intercept = y-mean - slope * x-mean
     let rss = _sum(pairs.map(p => {
       let resid = p.y - (intercept + slope * p.x)
-      resid * resid
+      p.w * resid * resid
     }))
     let dof = calc.max(1, n - 2)
     let sigma2 = rss / dof
+    let xs = pairs.map(p => p.x)
     let x-min = calc.min(..xs)
     let x-max = calc.max(..xs)
     let sample = samples.at(key)
@@ -155,7 +165,7 @@
       let x = x-min + t * (x-max - x-min)
       let y-hat = intercept + slope * x
       let se = if se-on {
-        let var = sigma2 * (1.0 / n + (x - x-mean) * (x - x-mean) / sxx)
+        let var = sigma2 * (1.0 / w-sum + (x - x-mean) * (x - x-mean) / sxx)
         calc.sqrt(calc.max(0.0, var))
       } else { 0.0 }
       let margin = t-val * se

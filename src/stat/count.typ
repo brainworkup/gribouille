@@ -59,6 +59,9 @@
     none
   }
   if x-col == none { return (data: data, mapping: mapping) }
+  let weight-col = if mapping != none {
+    mapping.at("weight", default: none)
+  } else { none }
   let counts = (:)
   let order = ()
   for row in data {
@@ -67,7 +70,11 @@
     let key = str(raw)
     if key == "" { continue }
     if not order.contains(key) { order.push(key) }
-    counts.insert(key, counts.at(key, default: 0) + 1)
+    let w = if weight-col == none { 1 } else {
+      let v = row.at(weight-col, default: none)
+      if v == none { 0 } else if type(v) == str { float(v) } else { v }
+    }
+    counts.insert(key, counts.at(key, default: 0) + w)
   }
   // Use the original x column name so the per-group framework can re-inject
   // group column values without column-name mismatches. y maps to "_count"

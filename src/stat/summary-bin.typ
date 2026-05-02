@@ -89,10 +89,12 @@
   }
   if data.len() == 0 { return (data: (), mapping: base-mapping) }
 
+  let weight-col = mapping.at("weight", default: none)
   let pairs = data
     .map(r => (
       x: parse-number(r.at(x-col, default: none)),
       y: r.at(y-col, default: none),
+      w: if weight-col == none { 1 } else { r.at(weight-col, default: none) },
     ))
     .filter(p => p.x != none)
   if pairs.len() == 0 { return (data: (), mapping: base-mapping) }
@@ -111,11 +113,14 @@
   }
   let width = (hi - lo) / n-bins
 
-  let buckets = range(n-bins).map(_ => ())
+  let buckets = range(n-bins).map(_ => (ys: (), ws: ()))
   for p in pairs {
     let raw = int(calc.floor((p.x - lo) / width))
     let idx = calc.max(0, calc.min(n-bins - 1, raw))
-    buckets.at(idx) = buckets.at(idx) + (p.y,)
+    let bucket = buckets.at(idx)
+    bucket.ys.push(p.y)
+    bucket.ws.push(p.w)
+    buckets.at(idx) = bucket
   }
 
   let fun = params.at("fun", default: "mean-se")
@@ -123,9 +128,15 @@
 
   let out = ()
   for i in range(n-bins) {
-    let ys = buckets.at(i)
-    if ys.len() == 0 { continue }
-    let summary = summarise(fun, ys, fun-args: fun-args)
+    let bucket = buckets.at(i)
+    if bucket.ys.len() == 0 { continue }
+    let weights = if weight-col == none { none } else { bucket.ws }
+    let summary = summarise(
+      fun,
+      bucket.ys,
+      fun-args: fun-args,
+      weights: weights,
+    )
     if summary.y == none { continue }
     out.push((
       x: lo + (i + 0.5) * width,

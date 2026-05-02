@@ -61,6 +61,7 @@
     return (data: (), mapping: base-mapping)
   }
 
+  let weight-col = mapping.at("weight", default: none)
   let counts = (:)
   let order = ()
   let proto = (:)
@@ -74,8 +75,12 @@
       order.push(key)
       proto.insert(key, (x: xv, y: yv))
     }
-    counts.insert(key, counts.at(key, default: 0) + 1)
-    total += 1
+    let w = if weight-col == none { 1 } else {
+      let v = row.at(weight-col, default: none)
+      if v == none { 0 } else if type(v) == str { float(v) } else { v }
+    }
+    counts.insert(key, counts.at(key, default: 0) + w)
+    total += w
   }
 
   let rows = ()
