@@ -3,6 +3,7 @@
 
 #import "identity.typ" as identity-stat
 #import "bin.typ" as bin-stat
+#import "bindot.typ" as bindot-stat
 #import "count.typ" as count-stat
 #import "sum.typ" as sum-stat
 #import "smooth.typ" as smooth-stat
@@ -18,6 +19,7 @@
 
 #let _stat-constructors = (
   bin: bin-stat.stat-bin,
+  bindot: bindot-stat.stat-bindot,
   smooth: smooth-stat.stat-smooth,
   boxplot: boxplot-stat.stat-boxplot,
   summary: summary-stat.stat-summary,
@@ -36,6 +38,8 @@
     (data: data, mapping: mapping)
   } else if name == "bin" {
     bin-stat.apply(data, mapping, params: params)
+  } else if name == "bindot" {
+    bindot-stat.apply(data, mapping, params: params)
   } else if name == "count" {
     count-stat.apply(data, mapping, params: params)
   } else if name == "sum" {

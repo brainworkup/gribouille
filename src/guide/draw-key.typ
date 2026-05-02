@@ -245,6 +245,7 @@
     "point",
     "jitter",
     "pointrange",
+    "dotplot",
   ).contains(geom) {
     return "point"
   }

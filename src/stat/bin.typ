@@ -5,6 +5,7 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": read-weight
+#import "../utils/bin.typ": bin-config, bin-domain, bin-midpoint, bin-of
 
 /// Bin statistic: partition x into uniform-width bins, count rows per bin.
 ///
@@ -67,26 +68,20 @@
     })
     .filter(p => p != none)
   if pairs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }
-  let xs = pairs.map(p => p.x)
-  let lo = calc.min(..xs)
-  let hi = calc.max(..xs)
-  if hi == lo { hi = lo + 1.0 }
-  let binwidth = params.at("binwidth", default: none)
-  let bins = params.at("bins", default: 30)
-  let n-bins = if binwidth != none and binwidth > 0 {
-    calc.max(1, int(calc.ceil((hi - lo) / binwidth)))
-  } else {
-    bins
-  }
-  let width = (hi - lo) / n-bins
+  let (lo, hi) = bin-domain(pairs.map(p => p.x))
+  let (n-bins, width) = bin-config(
+    lo,
+    hi,
+    params.at("bins", default: 30),
+    params.at("binwidth", default: none),
+  )
   let counts = range(n-bins).map(_ => 0)
   for p in pairs {
-    let raw = int(calc.floor((p.x - lo) / width))
-    let idx = calc.max(0, calc.min(n-bins - 1, raw))
+    let idx = bin-of(p.x, lo, width, n-bins)
     counts.at(idx) = counts.at(idx) + p.w
   }
   let rows = range(n-bins).map(i => (
-    x: lo + (i + 0.5) * width,
+    x: bin-midpoint(lo, width, i),
     y: counts.at(i),
     width: width,
   ))

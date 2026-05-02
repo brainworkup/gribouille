@@ -60,6 +60,7 @@
 #import "src/geom/blank.typ": geom-blank
 #import "src/geom/rug.typ": geom-rug
 #import "src/geom/function.typ": geom-function
+#import "src/geom/dotplot.typ": geom-dotplot
 #import "src/geom/qq.typ": geom-qq
 #import "src/geom/qq-line.typ": geom-qq-line
 
@@ -69,6 +70,7 @@
 #import "src/stat/sum.typ": stat-sum
 #import "src/stat/function.typ": stat-function
 #import "src/stat/bin.typ": stat-bin
+#import "src/stat/bindot.typ": stat-bindot
 #import "src/stat/smooth.typ": stat-smooth
 #import "src/stat/boxplot.typ": stat-boxplot
 #import "src/stat/summary.typ": stat-summary
