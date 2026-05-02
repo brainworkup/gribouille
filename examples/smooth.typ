@@ -4,17 +4,14 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
+#let accent = rgb("#1f77b4")
+
 #plot(
   data: mpg,
   mapping: aes(x: "displ", y: "hwy"),
   layers: (
-    geom-point(size: 2.5pt, alpha: 0.75, colour: rgb("#1f77b4")),
-    geom-smooth(
-      method: "lm",
-      colour: rgb("#1f77b4"),
-      fill: rgb("#1f77b4"),
-      alpha: 0.2,
-    ),
+    geom-point(size: 2.5pt, alpha: 0.75, colour: accent),
+    geom-smooth(method: "lm", colour: accent, fill: accent, alpha: 0.2),
   ),
   labs: labs(
     title: "Engine displacement versus highway fuel economy",

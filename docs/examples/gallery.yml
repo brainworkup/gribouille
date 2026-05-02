@@ -67,19 +67,19 @@
   section: stats
   title: "Histogram"
   description: 'Continuous x binned with <a href="../reference/stats/stat-bin.qmd"><code>stat-bin</code></a> via <a href="../reference/geoms/geom-histogram.qmd"><code>geom-histogram</code></a>.'
-  alt: "Histogram of a continuous value across 12 bins from 0 to 10, with most observations concentrated between roughly 6 and 7."
+  alt: "Histogram of highway fuel economy across 12 equal-width bins, with most vehicles concentrated between roughly 25 and 30 mpg."
 
 - slug: smooth
   section: stats
   title: "Smoother"
   description: 'Scatter plus a linear fit with a 95% confidence ribbon from <a href="../reference/geoms/geom-smooth.qmd"><code>geom-smooth</code></a>.'
-  alt: "Scatter plot of y against x overlaid with a linear smoother and its 95% confidence ribbon, showing a strong positive trend."
+  alt: "Scatter of highway mpg against engine displacement overlaid with a linear smoother and its 95% confidence ribbon, showing a clear negative trend as displacement grows."
 
 - slug: ribbon-bounds
   section: stats
   title: "Ribbon bounds"
   description: 'Explicit <code>ymin</code> / <code>ymax</code> aesthetics drive <a href="../reference/geoms/geom-ribbon.qmd"><code>geom-ribbon</code></a> around a fitted line.'
-  alt: "Line chart of an upward trend over 20 steps with a shaded blue ribbon showing explicit lower and upper bounds around the line."
+  alt: "Line and point chart of an upward trend over 20 time steps with a shaded blue ribbon spanning explicit lower and upper bounds around the line."
 
 - slug: reference-lines
   section: annotations
