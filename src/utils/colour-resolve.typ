@@ -1,4 +1,7 @@
-#import "./level-resolve.typ": continuous-numeric, discrete-numeric, spec-range
+#import "./level-resolve.typ": (
+  continuous-numeric, discrete-index, discrete-numeric, spec-range,
+)
+#import "./palette.typ": spec-palette
 #import "./types.typ": parse-number
 
 /// Apply an alpha transparentise to an already-resolved colour.
@@ -105,7 +108,14 @@
     if v == none { return default-thickness }
     continuous-numeric(trained, v, range)
   } else {
-    discrete-numeric(trained, raw, range)
+    let pal = spec-palette(trained, none)
+    if pal != none and pal.len() > 0 {
+      let idx = discrete-index(trained, raw)
+      if idx == none { return default-thickness }
+      pal.at(calc.rem(idx, pal.len()))
+    } else {
+      discrete-numeric(trained, raw, range)
+    }
   }
   if resolved == none { return default-thickness }
   resolved

@@ -136,7 +136,8 @@
   scale-size-continuous, scale-size-identity,
 )
 #import "src/scale/linewidth.typ": (
-  scale-linewidth-continuous, scale-linewidth-identity,
+  scale-linewidth-binned, scale-linewidth-continuous, scale-linewidth-identity,
+  scale-linewidth-manual,
 )
 #import "src/scale/shape.typ": (
   scale-shape, scale-shape-identity, scale-shape-manual,
