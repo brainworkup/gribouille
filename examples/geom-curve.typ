@@ -5,42 +5,10 @@
 #set page(width: auto, height: auto, margin: 0.5cm)
 
 #let connections = (
-  (
-    from: "Source",
-    to: "Stage 1",
-    x: 0,
-    y: 0,
-    xend: 1,
-    yend: 1.5,
-    flow: "primary",
-  ),
-  (
-    from: "Source",
-    to: "Stage 2",
-    x: 0,
-    y: 0,
-    xend: 1,
-    yend: -1,
-    flow: "primary",
-  ),
-  (
-    from: "Stage 1",
-    to: "Sink",
-    x: 1,
-    y: 1.5,
-    xend: 2,
-    yend: 0.5,
-    flow: "feedback",
-  ),
-  (
-    from: "Stage 2",
-    to: "Sink",
-    x: 1,
-    y: -1,
-    xend: 2,
-    yend: 0.5,
-    flow: "feedback",
-  ),
+  (x: 0, y: 0, xend: 1, yend: 1.5, flow: "primary"),
+  (x: 0, y: 0, xend: 1, yend: -1, flow: "primary"),
+  (x: 1, y: 1.5, xend: 2, yend: 0.5, flow: "feedback"),
+  (x: 1, y: -1, xend: 2, yend: 0.5, flow: "feedback"),
 )
 
 #let panel(title, curvature) = {

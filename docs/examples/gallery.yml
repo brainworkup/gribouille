@@ -265,7 +265,7 @@
   section: geoms
   title: "Errorbar geom family"
   description: 'Side-by-side comparison of <a href="../reference/geoms/geom-errorbar.qmd"><code>geom-errorbar</code></a>, <a href="../reference/geoms/geom-linerange.qmd"><code>geom-linerange</code></a>, <a href="../reference/geoms/geom-crossbar.qmd"><code>geom-crossbar</code></a>, and <a href="../reference/geoms/geom-pointrange.qmd"><code>geom-pointrange</code></a>.'
-  alt: "Two by two grid of revenue-per-quarter charts rendered with four different range geoms: errorbar with whiskers, linerange, crossbar with a filled box, and pointrange with a centre dot."
+  alt: "Two by two grid of revenue across four quarters rendered with four different range geoms: errorbar with whiskers, linerange, crossbar with a filled box, and pointrange with a centre dot."
 
 - slug: longtail-geoms
   section: geoms
@@ -276,7 +276,7 @@
 - slug: draw-keys
   section: geoms
   title: "Per-geom legend glyphs"
-  description: 'Layer geoms drive different legend glyphs: lines render as strokes, ribbons as filled rectangles.'
+  description: 'Layer geoms drive different legend glyphs: <a href="../reference/geoms/geom-line.qmd"><code>geom-line</code></a> renders as a stroke, <a href="../reference/geoms/geom-ribbon.qmd"><code>geom-ribbon</code></a> as a filled rectangle.'
   alt: "Forecast line with a confidence ribbon, with the legend showing a stroke glyph for the line series and a filled rectangle glyph for the confidence band."
 
 - slug: jitter

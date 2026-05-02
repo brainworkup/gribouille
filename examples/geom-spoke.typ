@@ -10,6 +10,7 @@
     let dx = i - 3
     let dy = j - 3
     let mag = calc.sqrt(dx * dx + dy * dy)
+    if mag == 0 { continue }
     field.push((
       x: i,
       y: j,
