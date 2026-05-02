@@ -1224,19 +1224,18 @@
 // Resolve a per-side margin value to canvas units (cm). Typst lengths are
 // converted via `/1cm`; `auto` falls through to the dynamic default.
 #let _resolve-margin-side(value, fallback) = {
-  if value == auto or value == none { return fallback }
+  if value == auto { return fallback }
   if type(value) == length { return value / 1cm }
-  if type(value) == int or type(value) == float { return value }
   fallback
 }
 
 // Build the four-sided margin used by the canvas layout. `theme-margin` may
-// be `none` (use the dynamic default verbatim) or a `margin(...)` dict
-// whose per-side values override the dynamic default.
+// be `none` or a non-margin value (use the dynamic default verbatim) or a
+// `margin(...)` dict whose per-side values override the dynamic default.
 #let _resolve-margin(theme-margin, auto-margin) = {
-  if theme-margin == none { return auto-margin }
   if (
-    type(theme-margin) != dictionary
+    theme-margin == none
+      or type(theme-margin) != dictionary
       or theme-margin.at("kind", default: none) != "margin"
   ) {
     return auto-margin
