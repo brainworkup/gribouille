@@ -34,21 +34,19 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 ```{typst}
 //| output-filename: "/assets/typst-render/index/penguins.svg"
 //| alt: "To be Updated"
-#include "/examples/penguins.typ"
-
-#place(
-  bottom + right,
-  dx: 0.5cm,
-  dy: 0.5cm,
-  context {
-    let bg = page.fill
-    let dark-bg = if bg == auto or bg == none {
-      false
-    } else if type(bg) == color {
-      luma(bg).components().at(0) < 50%
-    } else {
-      false
-    }
+#set page(foreground: context {
+  let bg = page.fill
+  let dark-bg = if bg == auto or bg == none {
+    false
+  } else if type(bg) == color {
+    luma(bg).components().at(0) < 50%
+  } else {
+    false
+  }
+  place(
+    bottom + right,
+    dx: -0.5cm,
+    dy: -0.5cm,
     image(
       if dark-bg {
         "/docs/assets/images/logo-stacked-dark.svg"
@@ -56,9 +54,11 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
         "/docs/assets/images/logo-stacked.svg"
       },
       height: 2cm,
-    )
-  },
-)
+    ),
+  )
+})
+
+#include "/examples/penguins.typ"
 ```
 
 :::
