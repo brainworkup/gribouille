@@ -173,3 +173,54 @@
   type: "identity",
   name: name,
 )
+
+/// Binned shape scale: cuts a continuous variable into `n-breaks` bins, each
+/// bin gets one shape from `palette`.
+///
+/// The scale stays continuous: the trained domain is numeric and the
+/// resolver snaps each row to the bin its value falls into. The legend
+/// renders one glyph per bin at the midpoint.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param n-breaks Number of bins to partition the continuous domain into.
+/// \@param palette Array of shape keywords, one per bin, or `auto` for the library default.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Continuous `(lo, hi)` pair pinning the domain, or `none`.
+/// \@param labels Array of legend labels aligned with bin midpoints, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Bin a continuous score column into four shape buckets.
+/// ```
+/// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", shape: "w"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-shape-binned(n-breaks: 4),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-shape, \@scale-shape-manual, \@geom-point
+#let scale-shape-binned(
+  n-breaks: 4,
+  palette: auto,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "shape",
+  type: "continuous",
+  name: name,
+  palette: if palette == auto { default-shapes } else { palette },
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)

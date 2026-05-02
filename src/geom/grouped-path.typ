@@ -6,6 +6,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/palette.typ": default-linetypes, palette-at, spec-palette
+#import "../utils/level-resolve.typ": resolve-binned
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 
@@ -80,19 +81,26 @@
 
     let dash = if linetype-pinned {
       linetype-param
-    } else if linetype-col != none and linetype-trained != none {
+    } else if linetype-col == none or linetype-trained == none {
+      default-linetype
+    } else {
       let sample = rows.first().at(linetype-col, default: none)
       if linetype-trained.type == "identity" {
         if sample == none or sample == "" { default-linetype } else {
           str(sample)
         }
+      } else if linetype-trained.type == "continuous" {
+        let resolved = if sample == none { none } else {
+          resolve-binned(linetype-trained, sample, default-linetypes)
+        }
+        if resolved == none { default-linetype } else { resolved }
       } else {
         let idx = linetype-trained.domain.position(v => v == str(sample))
         if idx == none { default-linetype } else {
           palette-at(linetype-palette, idx)
         }
       }
-    } else { default-linetype }
+    }
 
     let thickness = resolve-linewidth(
       layer,

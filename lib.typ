@@ -153,10 +153,11 @@
   scale-stroke-manual,
 )
 #import "src/scale/shape.typ": (
-  scale-shape, scale-shape-identity, scale-shape-manual,
+  scale-shape, scale-shape-binned, scale-shape-identity, scale-shape-manual,
 )
 #import "src/scale/linetype.typ": (
-  scale-linetype, scale-linetype-identity, scale-linetype-manual,
+  scale-linetype, scale-linetype-binned, scale-linetype-continuous,
+  scale-linetype-discrete, scale-linetype-identity, scale-linetype-manual,
 )
 #import "src/utils/colour.typ": col-mix
 #import "src/limits.typ": expand-limits

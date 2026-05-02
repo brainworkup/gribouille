@@ -47,6 +47,28 @@
   lo + t-clamped * (hi - lo)
 }
 
+// Discretise a continuous value into one of `n-breaks` equal-width bins over
+// `[lo, hi]`. Returns an integer in `[0, n-breaks - 1]`.
+#let bin-index(value, lo, hi, n-breaks) = {
+  if n-breaks <= 1 or hi == lo { return 0 }
+  let t = (value - lo) / (hi - lo)
+  let raw = int(calc.floor(t * n-breaks))
+  if raw < 0 { 0 } else if raw >= n-breaks { n-breaks - 1 } else { raw }
+}
+
+// Resolve a binned-continuous trained scale to a palette entry. Returns
+// `none` when the trained scale is not binned (caller falls back to its own
+// default).
+#let resolve-binned(trained, value, fallback-palette) = {
+  let spec = trained.at("spec", default: none)
+  if spec == none or not spec.at("binned", default: false) { return none }
+  let pal = spec-palette(trained, fallback-palette)
+  if pal == none or pal.len() == 0 { return none }
+  let (lo, hi) = trained.domain
+  let n = spec.at("n-breaks", default: 4)
+  palette-at(pal, bin-index(value, lo, hi, n))
+}
+
 // Resolve a single aesthetic for a given value. `value` is a discrete level
 // string when `trained.type == "discrete"` and a number when continuous.
 //
@@ -69,19 +91,21 @@
   }
 
   if aesthetic == "shape" {
-    if trained.type != "discrete" { return none }
-    let pal = spec-palette(trained, default-shapes)
-    let idx = discrete-index(trained, value)
-    if idx == none { return none }
-    return palette-at(pal, idx)
+    if trained.type == "discrete" {
+      let idx = discrete-index(trained, value)
+      if idx == none { return none }
+      return palette-at(spec-palette(trained, default-shapes), idx)
+    }
+    return resolve-binned(trained, value, default-shapes)
   }
 
   if aesthetic == "linetype" {
-    if trained.type != "discrete" { return none }
-    let pal = spec-palette(trained, default-linetypes)
-    let idx = discrete-index(trained, value)
-    if idx == none { return none }
-    return palette-at(pal, idx)
+    if trained.type == "discrete" {
+      let idx = discrete-index(trained, value)
+      if idx == none { return none }
+      return palette-at(spec-palette(trained, default-linetypes), idx)
+    }
+    return resolve-binned(trained, value, default-linetypes)
   }
 
   if aesthetic == "size" {

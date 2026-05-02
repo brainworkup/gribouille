@@ -8,6 +8,7 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-discrete, map-position
 #import "../utils/palette.typ": default-shapes, palette-at, spec-palette
+#import "../utils/level-resolve.typ": bin-index
 #import "../utils/colour-resolve.typ": resolve-size
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -131,6 +132,19 @@
   let shape-palette = spec-palette(shape-trained, default-shapes)
   let default-shape-kind = if shape-pinned { shape-param } else { "circle" }
 
+  // Hoist layer-constant fields used by the per-row binned-shape resolver.
+  let shape-spec = if shape-trained == none { none } else {
+    shape-trained.at("spec", default: none)
+  }
+  let shape-binned = (
+    shape-spec != none and shape-spec.at("binned", default: false)
+  )
+  let shape-bin-lo = if shape-binned { shape-trained.domain.at(0) } else { 0 }
+  let shape-bin-hi = if shape-binned { shape-trained.domain.at(1) } else { 0 }
+  let shape-bin-n = if shape-binned {
+    shape-spec.at("n-breaks", default: 4)
+  } else { 4 }
+
   for row in data {
     let cx = map-position(
       x-trained,
@@ -160,19 +174,27 @@
     )
     let shape-kind = if shape-pinned {
       shape-param
-    } else if shape-col != none and shape-trained != none {
-      if shape-trained.type == "identity" {
-        let v = row.at(shape-col, default: none)
-        if v == none or v == "" { default-shape-kind } else { str(v) }
-      } else {
-        let idx = shape-trained.domain.position(v => (
-          v == str(row.at(shape-col, default: none))
-        ))
-        if idx == none { default-shape-kind } else {
-          palette-at(shape-palette, idx)
-        }
+    } else if shape-col == none or shape-trained == none {
+      default-shape-kind
+    } else if shape-trained.type == "identity" {
+      let v = row.at(shape-col, default: none)
+      if v == none or v == "" { default-shape-kind } else { str(v) }
+    } else if shape-binned {
+      let raw = row.at(shape-col, default: none)
+      if raw == none { default-shape-kind } else {
+        palette-at(
+          shape-palette,
+          bin-index(raw, shape-bin-lo, shape-bin-hi, shape-bin-n),
+        )
       }
-    } else { default-shape-kind }
+    } else {
+      let idx = shape-trained.domain.position(v => (
+        v == str(row.at(shape-col, default: none))
+      ))
+      if idx == none { default-shape-kind } else {
+        palette-at(shape-palette, idx)
+      }
+    }
     draw-marker((cx, cy), shape-kind, size, body-fill, stroke-spec)
   }
 }

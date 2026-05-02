@@ -176,3 +176,110 @@
   type: "identity",
   name: name,
 )
+
+/// Binned linetype scale: cuts a continuous variable into `n-breaks` bins,
+/// each bin gets one dash keyword from `palette`.
+///
+/// The scale stays continuous: the trained domain is numeric and the
+/// resolver snaps each row to the bin its value falls into.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param n-breaks Number of bins to partition the continuous domain into.
+/// \@param palette Array of dash keywords, one per bin, or `auto` for the library default.
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Continuous `(lo, hi)` pair pinning the domain, or `none`.
+/// \@param labels Array of legend labels aligned with bin midpoints, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Bin a continuous quality column into three linetype buckets.
+/// ```
+/// #let d = range(1, 13).map(i => (x: i, y: i, q: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", linetype: "q", group: "q"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-linetype-binned(n-breaks: 3),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-linetype, \@scale-linetype-manual, \@geom-line
+#let scale-linetype-binned(
+  n-breaks: 4,
+  palette: auto,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "linetype",
+  type: "continuous",
+  name: name,
+  palette: if palette == auto { default-linetypes } else { palette },
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+/// Continuous linetype scale: alias of \@scale-linetype-binned with the
+/// default bin count. Provided for ggplot2 API parity.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param name Legend title.
+/// \@param palette Array of dash keywords, or `auto`.
+/// \@param limits Continuous `(lo, hi)` pair, or `none`.
+/// \@param labels Array of legend labels, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@see \@scale-linetype-binned, \@scale-linetype, \@geom-line
+#let scale-linetype-continuous(
+  name: none,
+  palette: auto,
+  limits: none,
+  labels: auto,
+) = scale-linetype-binned(
+  n-breaks: 4,
+  palette: palette,
+  name: name,
+  limits: limits,
+  labels: labels,
+)
+
+/// Discrete linetype scale: alias of \@scale-linetype.
+///
+/// Provided for ggplot2 API parity. Identical to calling `scale-linetype()`
+/// directly.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param name Legend title.
+/// \@param palette Array of dash keywords, or `auto`.
+/// \@param limits Array of level names, or `none`.
+/// \@param labels Array of legend labels, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@see \@scale-linetype, \@geom-line
+#let scale-linetype-discrete(
+  name: none,
+  palette: auto,
+  limits: none,
+  labels: auto,
+) = scale-linetype(
+  name: name,
+  palette: palette,
+  limits: limits,
+  labels: labels,
+)
