@@ -131,10 +131,10 @@
 /// Resolve a per-row marker outline thickness from the `stroke` aesthetic.
 ///
 /// Priority order:
-/// 1. Pinned `layer.params.stroke` when set to a non-`auto`, non-`none` length.
-///    A stroke dictionary's `thickness` is used as the pinned value.
-/// 2. The trained stroke scale, if `mapping.stroke` is set.
-/// 3. `default-thickness` otherwise.
+/// 1. Pinned `layer.params.stroke` when set to a length.
+/// 2. Pinned stroke dictionary's `thickness` field, when one is supplied.
+/// 3. The trained stroke scale, if `mapping.stroke` is set.
+/// 4. `default-thickness` otherwise.
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.stroke`.

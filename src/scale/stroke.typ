@@ -23,7 +23,7 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", stroke: "w"),
-///   layers: (geom-point(size: 5pt, fill: rgb("#1f77b4"), stroke: auto),),
+///   layers: (geom-point(size: 5pt, fill: rgb("#1f77b4")),),
 ///   scales: (scale-stroke-continuous(range: (0.2pt, 1.6pt)),),
 ///   width: 10cm,
 ///   height: 6cm,

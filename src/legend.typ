@@ -26,6 +26,7 @@
   "size",
   "alpha",
   "linewidth",
+  "stroke",
   "shape",
   "linetype",
 )
@@ -92,6 +93,7 @@
 #let _geom-uses-aesthetic(geom, aes-name) = {
   if aes-name == "fill" { return _geom-uses-fill(geom) }
   if aes-name == "shape" { return geom == "point" or geom == "jitter" }
+  if aes-name == "stroke" { return geom == "point" or geom == "jitter" }
   if aes-name == "linetype" or aes-name == "linewidth" {
     return not (
       "col",
@@ -200,6 +202,7 @@
     return if prefers-path { "path" } else { "line" }
   }
   if has("size") { return "point" }
+  if has("stroke") { return "point" }
 
   let best = "rect"
   let best-prio = 0

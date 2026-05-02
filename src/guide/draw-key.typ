@@ -291,7 +291,8 @@
 //   fill      : a colour for the filled body of point/rect glyphs.
 //   shape     : a marker keyword (only consumed when `key == "point"`).
 //   linetype  : a CeTZ dash keyword (only consumed when `key` ∈ {"line","path"}).
-//   linewidth : a stroke thickness length.
+//   linewidth : a stroke thickness length for line/path glyphs.
+//   stroke    : a marker outline thickness length (only consumed when `key == "point"`); falls back to `linewidth` when absent.
 //   size      : a marker radius length (only consumed when `key == "point"`).
 //   alpha     : opacity in [0, 1] applied to whichever paints the glyph carries.
 //
@@ -317,9 +318,10 @@
   if key == "point" {
     let kind = bundle.at("shape", default: "circle")
     let size = bundle.at("size", default: r)
+    let outline-w = bundle.at("stroke", default: lw)
     if fill-paint != none {
       let stroke = if stroke-paint != none {
-        (paint: stroke-paint, thickness: lw)
+        (paint: stroke-paint, thickness: outline-w)
       } else { none }
       draw-marker((cx, cy), kind, size, fill-paint, stroke)
     } else if stroke-paint != none {
@@ -328,7 +330,7 @@
         kind,
         size,
         none,
-        (paint: stroke-paint, thickness: lw),
+        (paint: stroke-paint, thickness: outline-w),
       )
     } else {
       draw-marker((cx, cy), kind, size, ink, none)
