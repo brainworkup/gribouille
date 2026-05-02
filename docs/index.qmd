@@ -28,9 +28,14 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 [View on GitHub](https://github.com/mcanouil/gribouille){.btn .btn-outline .btn-lg}
 :::
 
-::: {.hero-art}
-![](/assets/typst-render/examples/penguins-light.svg){.light-content fig-alt="To be Updated"}
-![](/assets/typst-render/examples/penguins-dark.svg){.dark-content fig-alt="To be Updated"}
+::: {.showcase-output}
+
+```{typst}
+//| output-filename: "/assets/typst-render/index/penguins.svg"
+//| alt: "To be Updated"
+#include "/examples/penguins.typ"
+```
+
 :::
 
 :::
@@ -91,6 +96,7 @@ Stack geoms, scales, facets, and a theme until the plot is right.
 
 ```{typst}
 //| output-filename: "/assets/typst-render/index/showcase.svg"
+//| alt: "To be Updated"
 #include "/examples/showcase.typ"
 ```
 

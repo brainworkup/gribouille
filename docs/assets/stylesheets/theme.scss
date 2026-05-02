@@ -876,23 +876,6 @@ blockquote {
 
 .hero-content .btn + .btn { margin-left: 0.5rem; }
 
-.hero-art {
-  @include marker-border;
-  padding: 0.75rem;
-  background: var(--gb-surface);
-  transform: rotate(-1.25deg);
-  transition: transform 240ms var(--gb-ease);
-}
-
-.hero-art:hover { transform: rotate(-0.4deg); }
-
-.hero-art img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: var(--gb-radius-md);
-}
-
 // --- 3-step explainer. --------------------------------------------------
 .steps {
   display: grid;
@@ -1155,8 +1138,6 @@ blockquote {
     gap: 2rem;
     padding-top: 2rem;
   }
-  .hero-art { transform: none; }
-  .hero-art:hover { transform: none; }
   .showcase { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
   .install-band { padding: 1.5rem 1.5rem; }
