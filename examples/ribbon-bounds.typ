@@ -4,6 +4,8 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
+#let accent = rgb("#1f77b4")
+
 #let df = ()
 #for i in range(0, 20) {
   let mid = i * 0.5 + 1
@@ -14,10 +16,19 @@
   data: df,
   mapping: aes(x: "t", y: "y", ymin: "lo", ymax: "hi"),
   layers: (
-    geom-ribbon(fill: rgb("#4c78a8"), alpha: 0.3),
-    geom-line(colour: rgb("#4c78a8")),
+    geom-ribbon(fill: accent, alpha: 0.3),
+    geom-line(colour: accent, stroke: 1.2pt),
+    geom-point(size: 2.5pt, fill: accent),
   ),
-  labs: labs(title: "Trend with ribbon bounds"),
-  width: 10cm,
-  height: 7cm,
+  scales: (
+    scale-x-continuous(name: "Time step"),
+    scale-y-continuous(name: "Value"),
+  ),
+  labs: labs(
+    title: "Trend with an explicit ribbon band",
+    subtitle: "ymin and ymax aesthetics drive geom-ribbon directly",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

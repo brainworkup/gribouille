@@ -290,3 +290,51 @@
   title: "Jitter within dodged groups"
   description: '<a href="../reference/positions/position-jitterdodge.qmd"><code>position-jitterdodge</code></a> dodges colour groups apart, then jitters within each.'
   alt: "Scatter of trial responses across four weeks with three dose arms shown side by side, each arm dodged off the week and jittered inside its column."
+
+- slug: boxplot
+  section: stats
+  title: "Boxplots per category"
+  description: '<a href="../reference/stats/stat-boxplot.qmd"><code>stat-boxplot</code></a> reduces each group to a five-number summary; <a href="../reference/geoms/geom-boxplot.qmd"><code>geom-boxplot</code></a> draws the Tukey box.'
+  alt: "Boxplots of highway mpg per vehicle class, with one filled box per class showing the inter-quartile range, whiskers, and outlier dots."
+
+- slug: stat-summary
+  section: stats
+  title: "Mean ± SE summary"
+  description: 'Per-x summary statistic via <a href="../reference/stats/stat-summary.qmd"><code>stat-summary</code></a>, layered over the raw points.'
+  alt: "Highway mpg per cylinder count showing pale jittered raw points overlaid with a mean point and standard-error error bar at each cylinder level."
+
+- slug: stat-function
+  section: stats
+  title: "Analytic curves"
+  description: '<a href="../reference/stats/stat-function.qmd"><code>stat-function</code></a> samples an analytic function over <code>xlim</code> and routes the points to any line geom.'
+  alt: "Two analytic curves, sin(x) in solid blue and cos(x) in dashed red, drawn over a shared x-range from minus pi to pi."
+
+- slug: stat-ellipse
+  section: stats
+  title: "Per-group covariance ellipses"
+  description: '<a href="../reference/stats/stat-ellipse.qmd"><code>stat-ellipse</code></a> draws the 95% covariance ellipse around each colour group.'
+  alt: "Penguins flipper length against body mass coloured by species, with a 95% covariance ellipse drawn around each species cluster."
+
+- slug: qq
+  section: stats
+  title: "Normal Q-Q plot"
+  description: '<a href="../reference/geoms/geom-qq.qmd"><code>geom-qq</code></a> with <a href="../reference/geoms/geom-qq-line.qmd"><code>geom-qq-line</code></a> compares sample quantiles to a theoretical distribution.'
+  alt: "Normal Q-Q plot of 80 simulated samples, with points hugging an IQR-fitted reference line."
+
+- slug: qq-distributions
+  section: stats
+  title: "Q-Q against alternative distributions"
+  description: 'Pass <code>distribution:</code> to <a href="../reference/stats/stat-qq.qmd"><code>stat-qq</code></a> / <a href="../reference/stats/stat-qq-line.qmd"><code>stat-qq-line</code></a> to compare against uniform or exponential references.'
+  alt: "Three Q-Q panels comparing samples to normal, uniform, and exponential reference distributions, each with points following an IQR-fitted line."
+
+- slug: weight
+  section: stats
+  title: "Weight aesthetic"
+  description: 'Per-row weights threaded into counts and smoothers: bars sum the weight column, weighted least squares ignores down-weighted outliers.'
+  alt: "Two stacked panels: a bar chart of regional visitor totals where bar height equals the summed weight column, and a weighted-least-squares scatter where two outliers are ignored thanks to negligible weights."
+
+- slug: longtail-stats
+  section: stats
+  title: "ECDF and unique points"
+  description: '<a href="../reference/stats/stat-ecdf.qmd"><code>stat-ecdf</code></a> draws an empirical CDF; <a href="../reference/stats/stat-unique.qmd"><code>stat-unique</code></a> collapses repeated rows.'
+  alt: "Two side-by-side panels: an empirical CDF of highway mpg drawn as a step-up curve, and a deduplicated scatter where repeated points have been collapsed into a single marker each."

@@ -1,6 +1,4 @@
-// Q-Q plots against three reference distributions: normal, uniform, and
-// exponential. Each panel uses a sample drawn from the matching family so
-// the IQR-fitted reference line follows the points closely.
+// Q-Q plots against three reference distributions: normal, uniform, exponential.
 
 #import "../lib.typ": *
 
@@ -53,11 +51,7 @@
   out
 }
 
-#let normal-data = _draw-normal(80)
-#let uniform-data = _draw-uniform(80)
-#let exponential-data = _draw-exponential(80)
-
-#let make-panel(title, data, dist, x-name) = {
+#let panel(title, data, dist, x-name) = {
   set align(center)
   stack(
     dir: ttb,
@@ -68,12 +62,10 @@
       mapping: aes(y: "v"),
       layers: (
         geom-qq-line(stroke: 0.8pt, distribution: dist),
-        geom-qq(size: 2pt, distribution: dist),
+        geom-qq(size: 2pt, alpha: 0.85, distribution: dist),
       ),
-      scales: (
-        scale-x-continuous(name: x-name),
-        scale-y-continuous(name: "Sample quantile"),
-      ),
+      labs: labs(x: x-name, y: "Sample quantile"),
+      theme: theme-minimal(),
       width: 6cm,
       height: 5cm,
     ),
@@ -84,11 +76,11 @@
   columns: 3,
   column-gutter: 0.5cm,
   row-gutter: 0.5cm,
-  make-panel("normal", normal-data, "normal", "Normal quantile"),
-  make-panel("uniform", uniform-data, "uniform", "Uniform quantile"),
-  make-panel(
+  panel("normal", _draw-normal(80), "normal", "Normal quantile"),
+  panel("uniform", _draw-uniform(80), "uniform", "Uniform quantile"),
+  panel(
     "exponential",
-    exponential-data,
+    _draw-exponential(80),
     "exponential",
     "Exponential quantile",
   ),

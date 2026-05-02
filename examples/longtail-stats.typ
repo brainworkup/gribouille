@@ -1,28 +1,31 @@
 // stat-ecdf and stat-unique: ECDF curve plus a deduplicated scatter.
-// Left panel: a histogram-like sample drawn as a step-up ECDF using
-// `geom-line(stat: "ecdf")`. Right panel: a scatter with explicit
-// duplicates collapsed via `geom-point(stat: "unique")`.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let raw = (
-  (x: 1),
-  (x: 1),
-  (x: 2),
-  (x: 2),
-  (x: 2),
-  (x: 3),
-  (x: 3),
-  (x: 4),
-  (x: 5),
-  (x: 5),
-  (x: 6),
-  (x: 7),
-  (x: 8),
-  (x: 9),
-  (x: 10),
+#let accent = rgb("#1f77b4")
+
+#let panel(title, body) = {
+  set align(center)
+  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
+}
+
+#let ecdf = plot(
+  data: mpg,
+  mapping: aes(x: "hwy"),
+  layers: (geom-line(stat: "ecdf", colour: accent, stroke: 1.4pt),),
+  scales: (
+    scale-x-continuous(name: "Highway mpg"),
+    scale-y-continuous(name: "F(x)", limits: (0, 1)),
+  ),
+  labs: labs(
+    x: "Highway mpg",
+    y: "F(x)",
+  ),
+  theme: theme-minimal(),
+  width: 7cm,
+  height: 5cm,
 )
 
 #let scatter = (
@@ -37,49 +40,19 @@
   (x: 5, y: 5),
 )
 
-#let panel(title, body) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", title),
-    body,
-  )
-}
+#let dedup = plot(
+  data: scatter,
+  mapping: aes(x: "x", y: "y"),
+  layers: (geom-point(stat: "unique", size: 4pt, fill: accent),),
+  labs: labs(x: "x", y: "y"),
+  theme: theme-minimal(),
+  width: 7cm,
+  height: 5cm,
+)
 
 #grid(
   columns: 2,
   column-gutter: 0.6cm,
-  panel(
-    "ECDF via stat-ecdf",
-    plot(
-      data: raw,
-      mapping: aes(x: "x"),
-      layers: (
-        geom-line(stat: "ecdf", colour: rgb("#4c78a8"), stroke: 1.2pt),
-      ),
-      scales: (
-        scale-x-continuous(name: "x"),
-        scale-y-continuous(name: "F(x)", limits: (0, 1)),
-      ),
-      width: 7cm,
-      height: 5cm,
-    ),
-  ),
-  panel(
-    "Deduped scatter via stat-unique",
-    plot(
-      data: scatter,
-      mapping: aes(x: "x", y: "y"),
-      layers: (
-        geom-point(stat: "unique", size: 4pt, fill: rgb("#4c78a8")),
-      ),
-      scales: (
-        scale-x-continuous(name: "x"),
-        scale-y-continuous(name: "y"),
-      ),
-      width: 7cm,
-      height: 5cm,
-    ),
-  ),
+  panel("ECDF via stat-ecdf", ecdf),
+  panel("Deduped scatter via stat-unique", dedup),
 )

@@ -1,27 +1,36 @@
-// stat-function: same shape as the sin(x) panel of longtail-geoms but the
-// samples are produced by stat-function instead of geom-function.
+// stat-function samples an analytic function and feeds the result into any geom.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let frame-x = (
-  (x: -calc.pi, y: -1),
-  (x: calc.pi, y: 1),
-)
+#let frame = ((x: -calc.pi, y: -1.2), (x: calc.pi, y: 1.2))
 
 #plot(
-  data: frame-x,
+  data: frame,
   mapping: aes(x: "x", y: "y"),
   layers: (
     geom-blank(),
     geom-line(
       stat: stat-function(fun: x => calc.sin(x), xlim: (-calc.pi, calc.pi)),
+      colour: rgb("#1f77b4"),
+      stroke: 1.2pt,
+    ),
+    geom-line(
+      stat: stat-function(fun: x => calc.cos(x), xlim: (-calc.pi, calc.pi)),
       colour: rgb("#d62728"),
-      stroke: 1pt,
+      stroke: 1.2pt,
+      linetype: "dashed",
     ),
   ),
-  labs: labs(title: "stat-function: sin(x) sampled via the stat surface"),
-  width: 9cm,
-  height: 5cm,
+  scales: (scale-x-continuous(breaks: (-3, -1.5, 0, 1.5, 3)),),
+  labs: labs(
+    title: "Two analytic curves over a shared x-range",
+    subtitle: "stat-function samples each function across xlim and routes the points to geom-line",
+    x: "x",
+    y: "f(x)",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

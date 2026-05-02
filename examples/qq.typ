@@ -1,14 +1,11 @@
-// Q-Q plot: 80 samples drawn from the central-limit-theorem sum of 12
-// uniform pseudo-random numbers, plotted against the standard-normal
-// quantiles with the IQR-fitted reference line.
+// Q-Q plot: 80 normal-ish samples (sum of 12 uniforms) against standard-normal quantiles.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
 // Linear-congruential generator: 80 normal-ish draws via the sum of 12
-// uniforms minus 6. Seeded for reproducibility so the rendered example never
-// drifts.
+// uniforms minus 6. Seeded for reproducibility.
 #let _draw-samples(n) = {
   let seed = 1234567
   let out = ()
@@ -27,20 +24,20 @@
   out
 }
 
-#let raw = _draw-samples(80)
-
 #plot(
-  data: raw,
+  data: _draw-samples(80),
   mapping: aes(y: "v"),
   layers: (
     geom-qq-line(stroke: 0.8pt),
-    geom-qq(size: 2pt),
+    geom-qq(size: 2.5pt, alpha: 0.85),
   ),
-  scales: (
-    scale-x-continuous(name: "Theoretical quantile"),
-    scale-y-continuous(name: "Sample quantile"),
+  labs: labs(
+    title: "Normal Q-Q plot of 80 simulated samples",
+    subtitle: "Points hug the IQR-fitted line, indicating the sample is approximately normal",
+    x: "Theoretical quantile",
+    y: "Sample quantile",
   ),
-  labs: labs(title: "Normal Q-Q plot of 80 simulated samples"),
+  theme: theme-minimal(),
   width: 10cm,
-  height: 7cm,
+  height: 6.5cm,
 )
