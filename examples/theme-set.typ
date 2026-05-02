@@ -1,31 +1,51 @@
-// theme-set: install a global default once; subsequent plots inherit it
+// theme-set installs a global default once; subsequent plots inherit it
 // unless they pass an explicit `theme:` argument.
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #theme-set(theme-minimal())
 
-#let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+#let panel(title, body) = {
+  set align(center)
+  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
+}
 
-// Inherits theme-minimal() from theme-set above.
-#plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 2pt),),
-  labs: labs(title: "Inherits global theme-minimal"),
-  width: 10cm,
-  height: 4cm,
-)
-
-// Explicit theme: argument takes precedence over the global state.
-#plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 2pt),),
-  labs: labs(title: "Explicit theme-dark overrides the global"),
-  theme: theme-dark(),
-  width: 10cm,
-  height: 4cm,
+#stack(
+  dir: ttb,
+  spacing: 0.5cm,
+  panel(
+    "Inherits the global theme-minimal",
+    plot(
+      data: penguins,
+      mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
+      layers: (geom-point(size: 2pt, alpha: 0.85),),
+      scales: (scale-y-continuous(labels: label-comma()),),
+      labs: labs(
+        x: "Flipper length (mm)",
+        y: "Body mass (g)",
+        colour: "Species",
+      ),
+      width: 11cm,
+      height: 5cm,
+    ),
+  ),
+  panel(
+    "Explicit theme-dark overrides the global",
+    plot(
+      data: penguins,
+      mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
+      layers: (geom-point(size: 2pt, alpha: 0.85),),
+      scales: (scale-y-continuous(labels: label-comma()),),
+      labs: labs(
+        x: "Flipper length (mm)",
+        y: "Body mass (g)",
+        colour: "Species",
+      ),
+      theme: theme-dark(),
+      width: 11cm,
+      height: 5cm,
+    ),
+  ),
 )

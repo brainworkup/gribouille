@@ -1,4 +1,4 @@
-// Same scatter rendered in three themes side-by-side.
+// Same scatter rendered in three contrasting themes side-by-side.
 
 #import "../lib.typ": *
 
@@ -17,31 +17,28 @@
   (x: 5.5, y: 5.0, g: "b"),
 )
 
+#let panel(title, t) = {
+  set align(center)
+  stack(
+    dir: ttb,
+    spacing: 0.2cm,
+    text(weight: "bold", title),
+    plot(
+      data: pts,
+      mapping: aes(x: "x", y: "y", fill: "g"),
+      layers: (geom-point(size: 2.5pt),),
+      labs: labs(x: "x", y: "y", fill: "Group"),
+      theme: t,
+      width: 6cm,
+      height: 5cm,
+    ),
+  )
+}
+
 #grid(
   columns: 3,
-  column-gutter: 0.3cm,
-  plot(
-    data: pts,
-    mapping: aes(x: "x", y: "y", fill: "g"),
-    layers: (geom-point(size: 2.5pt),),
-    theme: theme-minimal(),
-    width: 6cm,
-    height: 6cm,
-  ),
-  plot(
-    data: pts,
-    mapping: aes(x: "x", y: "y", fill: "g"),
-    layers: (geom-point(size: 2.5pt),),
-    theme: theme-classic(),
-    width: 6cm,
-    height: 6cm,
-  ),
-  plot(
-    data: pts,
-    mapping: aes(x: "x", y: "y", fill: "g"),
-    layers: (geom-point(size: 2.5pt),),
-    theme: theme-void(),
-    width: 6cm,
-    height: 6cm,
-  ),
+  column-gutter: 0.4cm,
+  panel("theme-minimal", theme-minimal()),
+  panel("theme-classic", theme-classic()),
+  panel("theme-void", theme-void()),
 )

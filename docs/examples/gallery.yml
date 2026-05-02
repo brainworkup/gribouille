@@ -470,3 +470,21 @@
   title: "Typst markup in annotations"
   description: '<code>annotate("typst", label: "...")</code> always evaluates the label as Typst markup; <a href="../reference/helpers/typst.qmd"><code>typst()</code></a> forces evaluation inside <code>annotate("text", ...)</code>.'
   alt: "Annotated line and point chart with a bold-italic peak label rendered as Typst markup and a series A label using the typst() forcing tag."
+
+- slug: theme-set
+  section: themes
+  title: "Global theme default"
+  description: '<a href="../reference/themes/theme-set.qmd"><code>theme-set</code></a> installs a global default; explicit <code>theme:</code> arguments still take precedence per plot.'
+  alt: "Two stacked penguin scatter plots: the first inherits a globally-installed theme-minimal, the second overrides it with theme-dark."
+
+- slug: themes-gallery
+  section: themes
+  title: "Theme presets"
+  description: 'Side-by-side gallery of <a href="../reference/themes/theme-bw.qmd"><code>theme-bw</code></a>, <a href="../reference/themes/theme-linedraw.qmd"><code>theme-linedraw</code></a>, <a href="../reference/themes/theme-light.qmd"><code>theme-light</code></a>, <a href="../reference/themes/theme-dark.qmd"><code>theme-dark</code></a>, <a href="../reference/themes/theme-test.qmd"><code>theme-test</code></a>, and <a href="../reference/themes/theme-minimal.qmd"><code>theme-minimal</code></a>.'
+  alt: "Two by three grid of the same two-group scatter rendered with theme-minimal, theme-bw, theme-linedraw, theme-light, theme-dark, and theme-test."
+
+- slug: margin
+  section: themes
+  title: "Plot margins"
+  description: '<a href="../reference/themes/margin.qmd"><code>margin</code></a> sets all four sides; <a href="../reference/themes/margin-part.qmd"><code>margin-part</code></a> overrides only the named sides.'
+  alt: "Three stacked panels of the same scatter, the first with default margins, the second with all four margins pinned via margin(), and the third with only top and left pinned via margin-part()."

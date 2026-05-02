@@ -1,4 +1,4 @@
-// Gallery of the extra theme presets, with theme-minimal for comparison.
+// Gallery of theme presets, side by side, on the same data.
 
 #import "../lib.typ": *
 
@@ -17,19 +17,20 @@
   (x: 5.5, y: 5.0, g: "b"),
 )
 
-#let make-plot(label, t) = {
+#let panel(title, t) = {
   set align(center)
   stack(
     dir: ttb,
     spacing: 0.2cm,
-    text(weight: "bold", label),
+    text(weight: "bold", title),
     plot(
       data: pts,
       mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 2.5pt),),
+      labs: labs(x: "x", y: "y", fill: "Group"),
       theme: t,
-      width: 5.5cm,
-      height: 4.5cm,
+      width: 6cm,
+      height: 4.8cm,
     ),
   )
 }
@@ -38,9 +39,11 @@
   columns: 3,
   column-gutter: 0.4cm,
   row-gutter: 0.4cm,
-  make-plot("theme-minimal", theme-minimal()),
-  make-plot("theme-bw", theme-bw()),
-  make-plot("theme-linedraw", theme-linedraw()),
+  panel("theme-minimal", theme-minimal()),
+  panel("theme-bw", theme-bw()),
+  panel("theme-linedraw", theme-linedraw()),
 
-  make-plot("theme-light", theme-light()), make-plot("theme-dark", theme-dark()), make-plot("theme-test", theme-test()),
+  panel("theme-light", theme-light()),
+  panel("theme-dark", theme-dark()),
+  panel("theme-test", theme-test()),
 )
