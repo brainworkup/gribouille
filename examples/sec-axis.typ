@@ -16,7 +16,7 @@
     scale-y-continuous(
       name: "Highway mpg",
       secondary: sec-axis(
-        trans: v => v * 0.4251,
+        transform: v => v * 0.4251,
         name: "Highway km/L",
       ),
     ),

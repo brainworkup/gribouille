@@ -2,11 +2,11 @@
 
 /// Transform the displayed coordinates after statistics have run.
 ///
-/// Sets the per-axis `trans` so the trained scale's view is warped at
+/// Sets the per-axis `transform` so the trained scale's view is warped at
 /// mapping time. Accepts the same keywords as `scale-x-continuous`'s
-/// `trans:` parameter: `"identity"`, `"log10"`, `"sqrt"`, `"reverse"`.
+/// `transform:` parameter: `"identity"`, `"log10"`, `"sqrt"`, `"reverse"`.
 ///
-/// When a positional scale already sets `trans:`, `coord-transform`
+/// When a positional scale already sets `transform:`, `coord-transform`
 /// overrides it for that axis.
 ///
 /// \@category Coord
@@ -18,7 +18,7 @@
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.
 ///
-/// \@examples Log10 the x and y axes without setting `trans:` on each scale.
+/// \@examples Log10 the x and y axes without setting `transform:` on each scale.
 /// ```
 /// #let d = (
 ///   (x: 1, y: 1),

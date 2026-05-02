@@ -179,7 +179,7 @@
     return true
   }
   if a.domain != b.domain { return false }
-  if a.trans != b.trans { return false }
+  if a.transform != b.transform { return false }
   if a.temporal != b.temporal { return false }
   true
 }
@@ -276,7 +276,7 @@
     cand.insert("labels", labels)
   } else {
     cand.insert("domain", t.domain)
-    cand.insert("trans", t.at("trans", default: "identity"))
+    cand.insert("transform", t.at("transform", default: "identity"))
     cand.insert("temporal", t.at("temporal", default: none))
   }
   cand

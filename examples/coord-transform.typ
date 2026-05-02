@@ -1,6 +1,6 @@
-// coord-transform: warp the displayed coordinates without setting trans on
-// each scale. Equivalent to scale-x-continuous(trans: ...) in the current
-// implementation; provided for ggplot2 v4 API parity.
+// coord-transform: warp the displayed coordinates without setting transform
+// on each scale. Equivalent to scale-x-continuous(transform: ...) in the
+// current implementation; provided for ggplot2 v4 API parity.
 
 #import "../lib.typ": *
 
@@ -28,13 +28,13 @@
   height: 6cm,
 )
 
-// Mixing with scale-level trans: coord-transform overrides the scale's trans
-// so the final visual reflects the coord setting.
+// Mixing with scale-level transform: coord-transform overrides the scale's
+// transform so the final visual reflects the coord setting.
 #plot(
   data: d,
   mapping: aes(x: "x", y: "y"),
   layers: (geom-point(size: 3pt),),
-  scales: (scale-y-continuous(trans: "sqrt"),),
+  scales: (scale-y-continuous(transform: "sqrt"),),
   coord: coord-transform(x: "log10"),
   labs: labs(title: "scale-y sqrt + coord-transform x log10"),
   theme: theme-minimal(),

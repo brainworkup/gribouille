@@ -4,7 +4,7 @@
 #import "deps.typ": cetz
 #import "scale/train.typ": (
   map-axis, map-continuous, map-position, mapping-ref-col,
-  positional-aesthetics, train, trans-fwd, trans-inv,
+  positional-aesthetics, train, transform-fwd, transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, stat-default-params
@@ -297,10 +297,11 @@
   }
 }
 
-// Trans-aware axis break dispatch. Honours the trained scale's `trans` so log10
-// and sqrt panels get geometry-aware ticks instead of bunched linear ticks. If
-// the user spec carries `binned: true`, ticks are placed at bin midpoints so
-// labels sit under each `n-breaks`-wide quantised interval.
+// Transform-aware axis break dispatch. Honours the trained scale's
+// `transform` so log10 and sqrt panels get geometry-aware ticks instead of
+// bunched linear ticks. If the user spec carries `binned: true`, ticks are
+// placed at bin midpoints so labels sit under each `n-breaks`-wide
+// quantised interval.
 #let _axis-breaks(trained) = {
   let spec = trained.at("spec", default: none)
   let binned = if spec == none { false } else {
@@ -315,15 +316,18 @@
     let step = span / count
     return range(count).map(i => lo + (i + 0.5) * step)
   }
-  let trans = trained.at("trans", default: none)
-  let view-trans = trained.at("view-trans", default: none)
-  let (lo, hi) = if view-trans != none {
-    (trans-inv(trans, view-trans.at(0)), trans-inv(trans, view-trans.at(1)))
+  let transform = trained.at("transform", default: none)
+  let view-transform = trained.at("view-transform", default: none)
+  let (lo, hi) = if view-transform != none {
+    (
+      transform-inv(transform, view-transform.at(0)),
+      transform-inv(transform, view-transform.at(1)),
+    )
   } else {
     trained.domain
   }
-  if trans == "log10" { return pretty-log10(lo, hi) }
-  if trans == "sqrt" { return pretty-sqrt(lo, hi) }
+  if transform == "log10" { return pretty-log10(lo, hi) }
+  if transform == "sqrt" { return pretty-sqrt(lo, hi) }
   pretty(lo, hi, n: 5)
 }
 
@@ -788,13 +792,13 @@
     if not guide.logticks { return }
     if trained == none { return }
     if trained.type != "continuous" { return }
-    if trained.at("trans", default: "identity") != "log10" { return }
+    if trained.at("transform", default: "identity") != "log10" { return }
     if axis-stroke == none or tick-len <= 0 { return }
-    let view-trans = trained.at("view-trans", default: none)
-    let (lo, hi) = if view-trans != none {
+    let view-transform = trained.at("view-transform", default: none)
+    let (lo, hi) = if view-transform != none {
       (
-        trans-inv("log10", view-trans.at(0)),
-        trans-inv("log10", view-trans.at(1)),
+        transform-inv("log10", view-transform.at(0)),
+        transform-inv("log10", view-transform.at(1)),
       )
     } else { trained.domain }
     if lo <= 0 or hi <= 0 { return }
@@ -842,7 +846,7 @@
         line((cx, py-hi), (cx, py-hi + tick-len), stroke: axis-stroke)
       }
       if theme.tick-labels {
-        let mapped = secondary-mod.apply-trans(_x-sec, b)
+        let mapped = secondary-mod.apply-transform(_x-sec, b)
         content(
           (cx, py-hi + tick-len + 0.05),
           text(
@@ -892,7 +896,7 @@
         line((px-hi, cy), (px-hi + tick-len, cy), stroke: axis-stroke)
       }
       if theme.tick-labels {
-        let mapped = secondary-mod.apply-trans(_y-sec, b)
+        let mapped = secondary-mod.apply-transform(_y-sec, b)
         content(
           (px-hi + tick-len + 0.05, cy),
           text(
@@ -1017,7 +1021,7 @@
     let entry = trained.at(axis, default: none)
     if entry == none or entry.type != "continuous" { continue }
     let new-entry = entry
-    new-entry.insert("trans", t)
+    new-entry.insert("transform", t)
     trained.insert(axis, new-entry)
   }
   trained
@@ -1116,7 +1120,7 @@
 
 // Apply scale expansion on top of the already-padded domain produced by
 // `_post-train`. Multiplicative breathing room (ratio) is folded into
-// `view-trans` (continuous) / `view-index` (discrete); absolute additive
+// `view-transform` (continuous) / `view-index` (discrete); absolute additive
 // padding (length) is recorded as `view-pad-cm` and applied later by
 // `_draw-axis-and-layers` as a canvas-cm inset on the data area.
 // `coord-cartesian(expand: false)` zeroes everything.
@@ -1148,12 +1152,12 @@
     let new-entry = entry
     if entry.type == "continuous" {
       let (lo, hi) = entry.domain
-      let trans = entry.at("trans", default: "identity")
-      let t-lo = trans-fwd(trans, lo)
-      let t-hi = trans-fwd(trans, hi)
+      let transform = entry.at("transform", default: "identity")
+      let t-lo = transform-fwd(transform, lo)
+      let t-hi = transform-fwd(transform, hi)
       let span = t-hi - t-lo
       new-entry.insert(
-        "view-trans",
+        "view-transform",
         (t-lo - mult-lo * span, t-hi + mult-hi * span),
       )
     } else if entry.type == "discrete" {
@@ -1248,7 +1252,7 @@
         type: "continuous",
         domain: (lo-extra, hi-extra),
         spec: none,
-        trans: "identity",
+        transform: "identity",
         typst-mark: false,
       ))
       t

@@ -56,7 +56,7 @@
 /// \@see \@sec-axis, \@scale-x-continuous, \@scale-y-continuous
 #let dup-axis(name: none, breaks: auto, labels: auto) = (
   kind: "secondary-axis",
-  trans: "identity",
+  transform: "identity",
   name: name,
   breaks: breaks,
   labels: labels,
@@ -64,15 +64,15 @@
 
 /// Secondary axis derived from the primary through a transformation.
 ///
-/// `trans` is a function mapping a primary-axis value to its secondary-axis
-/// value. Use `"identity"` to mirror the primary axis exactly, or pass any
-/// callable, e.g. `x => x * 9 / 5 + 32` for Celsius to Fahrenheit.
+/// `transform` is a function mapping a primary-axis value to its
+/// secondary-axis value. Use `"identity"` to mirror the primary axis exactly,
+/// or pass any callable, e.g. `x => x * 9 / 5 + 32` for Celsius to Fahrenheit.
 ///
 /// \@category Scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param trans Function or `"identity"` mapping primary values to secondary values.
+/// \@param transform Function or `"identity"` mapping primary values to secondary values.
 /// \@param name Title shown above or beside the secondary axis, or `none`.
 /// \@param breaks Array of break values in primary units, or `auto`.
 /// \@param labels Array of labels aligned with `breaks`, or `auto`.
@@ -90,7 +90,7 @@
 ///   scales: (
 ///     scale-x-continuous(
 ///       name: "Celsius",
-///       secondary: sec-axis(trans: x => x * 9 / 5 + 32, name: "Fahrenheit"),
+///       secondary: sec-axis(transform: x => x * 9 / 5 + 32, name: "Fahrenheit"),
 ///     ),
 ///   ),
 ///   width: 10cm,
@@ -109,7 +109,7 @@
 ///   scales: (
 ///     scale-y-continuous(
 ///       name: "Metres",
-///       secondary: sec-axis(trans: m => m * 3.281, name: "Feet"),
+///       secondary: sec-axis(transform: m => m * 3.281, name: "Feet"),
 ///     ),
 ///   ),
 ///   width: 10cm,
@@ -118,17 +118,22 @@
 /// ```
 ///
 /// \@see \@dup-axis, \@scale-x-continuous, \@scale-y-continuous
-#let sec-axis(trans: "identity", name: none, breaks: auto, labels: auto) = (
+#let sec-axis(
+  transform: "identity",
+  name: none,
+  breaks: auto,
+  labels: auto,
+) = (
   kind: "secondary-axis",
-  trans: trans,
+  transform: transform,
   name: name,
   breaks: breaks,
   labels: labels,
 )
 
 // Map a primary value through the secondary's transformation.
-#let apply-trans(sec, value) = {
-  let t = sec.trans
+#let apply-transform(sec, value) = {
+  let t = sec.transform
   if t == "identity" or t == none { return value }
   t(value)
 }

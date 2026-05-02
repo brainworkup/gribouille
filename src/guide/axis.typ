@@ -77,7 +77,7 @@
   n-dodge: n-dodge,
 )
 
-/// Add minor tick marks at log-scale subdivisions on a `trans: "log10"` axis.
+/// Add minor tick marks at log-scale subdivisions on a `transform: "log10"` axis.
 ///
 /// Inherits the `angle` / `n-dodge` controls from \@guide-axis and additionally
 /// emits short, unlabelled tick marks at the sub-decade positions
@@ -105,8 +105,8 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 3pt),),
 ///   scales: (
-///     scale-x-continuous(trans: "log10"),
-///     scale-y-continuous(trans: "log10"),
+///     scale-x-continuous(transform: "log10"),
+///     scale-y-continuous(transform: "log10"),
 ///   ),
 ///   guides: guides(
 ///     x: guide-axis-logticks(),

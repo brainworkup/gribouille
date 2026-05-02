@@ -263,14 +263,14 @@
       }
       domain = (lo, hi)
     }
-    let trans = if user-scale != none {
-      user-scale.at("trans", default: "identity")
+    let transform = if user-scale != none {
+      user-scale.at("transform", default: "identity")
     } else { "identity" }
     let entry = (
       type: scale-type,
       domain: domain,
       spec: user-scale,
-      trans: trans,
+      transform: transform,
       typst-mark: typst-mark,
     )
     if user-scale != none and user-scale.at("temporal", default: none) != none {
@@ -307,7 +307,7 @@
       type: "continuous",
       domain: (lo, hi),
       spec: spec,
-      trans: _scale-param(target, spec, "trans", "identity"),
+      transform: _scale-param(target, spec, "transform", "identity"),
       typst-mark: _scale-param(target, none, "typst-mark", false),
     )
     let temporal = _scale-param(target, spec, "temporal", none)
@@ -368,42 +368,44 @@
 // Forward axis transformation for `log10` and `sqrt`: warps coordinates so
 // equal visual distances correspond to equal multiplicative or square-root
 // steps. `reverse` is handled separately by swapping the range endpoints.
-#let trans-fwd(name, x) = {
+#let transform-fwd(name, x) = {
   if name == none or name == "identity" or name == "reverse" { return x }
   if name == "log10" { return calc.log(x, base: 10) }
   if name == "sqrt" { return calc.sqrt(x) }
   x
 }
 
-// Inverse of `trans-fwd`: convert a transformed-space coordinate back to
+// Inverse of `transform-fwd`: convert a transformed-space coordinate back to
 // data space. Used to back-translate a padded view range so axis breaks
 // can be picked in data units.
-#let trans-inv(name, x) = {
+#let transform-inv(name, x) = {
   if name == none or name == "identity" or name == "reverse" { return x }
   if name == "log10" { return calc.pow(10, x) }
   if name == "sqrt" { return x * x }
   x
 }
 
-#let _map-trans(trained, value, range) = {
-  let trans = trained.at("trans", default: "identity")
-  let view-trans = trained.at("view-trans", default: none)
-  let (t-lo, t-hi) = if view-trans != none {
-    view-trans
+#let _map-transform(trained, value, range) = {
+  let transform = trained.at("transform", default: "identity")
+  let view-transform = trained.at("view-transform", default: none)
+  let (t-lo, t-hi) = if view-transform != none {
+    view-transform
   } else {
     let (d-lo, d-hi) = trained.domain
-    (trans-fwd(trans, d-lo), trans-fwd(trans, d-hi))
+    (transform-fwd(transform, d-lo), transform-fwd(transform, d-hi))
   }
   let (r-lo, r-hi) = range
-  let target = if trans == "reverse" { (r-hi, r-lo) } else { (r-lo, r-hi) }
-  map-continuous(trans-fwd(trans, value), (t-lo, t-hi), target)
+  let target = if transform == "reverse" {
+    (r-hi, r-lo)
+  } else { (r-lo, r-hi) }
+  map-continuous(transform-fwd(transform, value), (t-lo, t-hi), target)
 }
 
 #let map-position(trained, value, range) = {
   if trained.type == "continuous" {
     let v = parse-number(value)
     if v == none { return none }
-    _map-trans(trained, v, range)
+    _map-transform(trained, v, range)
   } else {
     map-discrete(
       value,
@@ -414,10 +416,10 @@
   }
 }
 
-// Trans-aware wrapper for callers that already hold a numeric axis value
+// Transform-aware wrapper for callers that already hold a numeric axis value
 // (renderer break placement, reference-line geoms). Equivalent to
 // `map-position` but skips the `parse-number` round-trip.
 #let map-axis(trained, value, range) = {
   if trained.type != "continuous" { return none }
-  _map-trans(trained, value, range)
+  _map-transform(trained, value, range)
 }

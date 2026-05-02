@@ -22,8 +22,8 @@
     geom-point(size: 3pt),
   ),
   scales: (
-    scale-x-continuous(trans: "log10", labels: label-comma()),
-    scale-y-continuous(trans: "log10", labels: label-comma()),
+    scale-x-continuous(transform: "log10", labels: label-comma()),
+    scale-y-continuous(transform: "log10", labels: label-comma()),
   ),
   guides: gs,
   labs: labs(title: title, x: "Inputs (log10)", y: "Outputs (log10)"),

@@ -67,7 +67,7 @@
 #import "../../src/render.typ": _apply-expand, _post-train, _prepare-layer
 #import "../../src/geom/col.typ": geom-col
 #import "../../src/aes.typ": aes
-#import "../../src/scale/train.typ": _map-trans
+#import "../../src/scale/train.typ": _map-transform
 
 #let bar-data = (
   (cat: "a", y: 3),
@@ -90,14 +90,14 @@
 
 #let bar-trained = _apply-expand(bar-trained, none)
 // Lower-side mult collapsed to 0; upper side still gets the 5% default.
-#let (vt-lo, vt-hi) = bar-trained.y.view-trans
+#let (vt-lo, vt-hi) = bar-trained.y.view-transform
 #assert.eq(vt-lo, 0)
 #assert(vt-hi > 5)
 // view-pad-cm is zero for an auto continuous scale.
 #assert.eq(bar-trained.y.at("view-pad-cm"), (0, 0))
 
-// `_map-trans` places y=0 exactly at the start of the panel range.
-#assert.eq(_map-trans(bar-trained.y, 0, (0.0, 100.0)), 0.0)
+// `_map-transform` places y=0 exactly at the start of the panel range.
+#assert.eq(_map-transform(bar-trained.y, 0, (0.0, 100.0)), 0.0)
 
 // `geom-col(position: "fill")` anchors both ends: y=0 at the panel bottom
 // and y=1 at the panel top, since fill stacks always live in `[0, 1]`.
@@ -123,9 +123,9 @@
 #assert.eq(fill-trained.y.at("anchor-zero"), "both")
 
 #let fill-trained = _apply-expand(fill-trained, none)
-#assert.eq(fill-trained.y.view-trans, (0, 1))
+#assert.eq(fill-trained.y.view-transform, (0, 1))
 
-// Length on a continuous axis lands in view-pad-cm; view-trans collapses to
+// Length on a continuous axis lands in view-pad-cm; view-transform collapses to
 // the trained domain (no mult component).
 #import "../../src/geom/point.typ": geom-point
 #let pt-data = ((x: 1, y: 1), (x: 5, y: 5))
@@ -139,7 +139,7 @@
   data: pt-data,
 )
 #let pt-trained = _apply-expand(pt-trained, none)
-#assert.eq(pt-trained.x.view-trans, (1, 5))
+#assert.eq(pt-trained.x.view-transform, (1, 5))
 #assert.eq(pt-trained.x.at("view-pad-cm"), (5pt / 1cm, 5pt / 1cm))
 
 Expansion tests passed.

@@ -1,7 +1,7 @@
 ///! Continuous position scales for x and y.
 ///!
 ///! Use these to override the default continuous axis: set `limits` to clip,
-///! `breaks` and `labels` to control tick marks, or `trans` to apply
+///! `breaks` and `labels` to control tick marks, or `transform` to apply
 ///! `"log10"`, `"sqrt"`, or `"reverse"` transformations.
 
 #let _continuous-scale(
@@ -10,7 +10,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
-  trans: "identity",
+  transform: "identity",
   expand: auto,
   secondary: none,
 ) = (
@@ -21,14 +21,14 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
-  trans: trans,
+  transform: transform,
   expand: expand,
   secondary: secondary,
 )
 
-#let _trans-scale(
+#let _transform-scale(
   aesthetic,
-  trans,
+  transform,
   name: none,
   limits: none,
   breaks: auto,
@@ -41,7 +41,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
-  trans: trans,
+  transform: transform,
   expand: auto,
 )
 
@@ -59,7 +59,7 @@
   limits: limits,
   breaks: auto,
   labels: labels,
-  trans: "identity",
+  transform: "identity",
   expand: auto,
   binned: true,
   n-breaks: n-breaks,
@@ -67,7 +67,7 @@
 
 /// Continuous x scale: axis title, limits, breaks, labels, and transformation.
 ///
-/// `trans` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
+/// `transform` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
 ///
 /// \@category Scales
 /// \@stability stable
@@ -77,7 +77,7 @@
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// \@param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
+/// \@param transform Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
 /// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 /// \@param secondary Secondary axis spec from \@dup-axis or \@sec-axis, or `none`.
 ///
@@ -96,7 +96,7 @@
 /// )
 /// ```
 ///
-/// \@examples Switch `trans` to `"sqrt"` and supply explicit `breaks` for a
+/// \@examples Switch `transform` to `"sqrt"` and supply explicit `breaks` for a
 /// custom non-linear axis.
 /// ```
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
@@ -106,7 +106,7 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   scales: (scale-x-continuous(
 ///     name: "x (sqrt)",
-///     trans: "sqrt",
+///     transform: "sqrt",
 ///     breaks: (0, 25, 50, 75, 100),
 ///   ),),
 ///   width: 10cm,
@@ -120,7 +120,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
-  trans: "identity",
+  transform: "identity",
   expand: auto,
   secondary: none,
 ) = _continuous-scale(
@@ -129,14 +129,14 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
-  trans: trans,
+  transform: transform,
   expand: expand,
   secondary: secondary,
 )
 
 /// Continuous y scale: axis title, limits, breaks, labels, and transformation.
 ///
-/// `trans` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
+/// `transform` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
 ///
 /// \@category Scales
 /// \@stability stable
@@ -146,7 +146,7 @@
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
-/// \@param trans Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
+/// \@param transform Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
 /// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 /// \@param secondary Secondary axis spec from \@dup-axis or \@sec-axis, or `none`.
 ///
@@ -160,7 +160,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   scales: (scale-y-continuous(name: "Value", trans: "log10"),),
+///   scales: (scale-y-continuous(name: "Value", transform: "log10"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -174,7 +174,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   scales: (scale-y-continuous(name: "Rank", trans: "reverse"),),
+///   scales: (scale-y-continuous(name: "Rank", transform: "reverse"),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -186,7 +186,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
-  trans: "identity",
+  transform: "identity",
   expand: auto,
   secondary: none,
 ) = _continuous-scale(
@@ -195,14 +195,14 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
-  trans: trans,
+  transform: transform,
   expand: expand,
   secondary: secondary,
 )
 
 /// Continuous x scale on a base-10 log axis.
 ///
-/// Thin wrapper over \@scale-x-continuous with `trans: "log10"`.
+/// Thin wrapper over \@scale-x-continuous with `transform: "log10"`.
 /// All x values must be strictly positive.
 ///
 /// \@category Scales
@@ -248,7 +248,7 @@
 ///
 /// \@see \@scale-x-continuous, \@scale-y-log10
 #let scale-x-log10(name: none, limits: none, breaks: auto, labels: auto) = (
-  _trans-scale(
+  _transform-scale(
     "x",
     "log10",
     name: name,
@@ -260,7 +260,7 @@
 
 /// Continuous y scale on a base-10 log axis.
 ///
-/// Thin wrapper over \@scale-y-continuous with `trans: "log10"`.
+/// Thin wrapper over \@scale-y-continuous with `transform: "log10"`.
 /// All y values must be strictly positive.
 ///
 /// \@category Scales
@@ -307,7 +307,7 @@
 ///
 /// \@see \@scale-y-continuous, \@scale-x-log10
 #let scale-y-log10(name: none, limits: none, breaks: auto, labels: auto) = (
-  _trans-scale(
+  _transform-scale(
     "y",
     "log10",
     name: name,
@@ -319,7 +319,7 @@
 
 /// Continuous x scale on a square-root axis.
 ///
-/// Thin wrapper over \@scale-x-continuous with `trans: "sqrt"`.
+/// Thin wrapper over \@scale-x-continuous with `transform: "sqrt"`.
 /// All x values must be non-negative.
 ///
 /// \@category Scales
@@ -366,7 +366,7 @@
 ///
 /// \@see \@scale-x-continuous, \@scale-y-sqrt
 #let scale-x-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
-  _trans-scale(
+  _transform-scale(
     "x",
     "sqrt",
     name: name,
@@ -378,7 +378,7 @@
 
 /// Continuous y scale on a square-root axis.
 ///
-/// Thin wrapper over \@scale-y-continuous with `trans: "sqrt"`.
+/// Thin wrapper over \@scale-y-continuous with `transform: "sqrt"`.
 /// All y values must be non-negative.
 ///
 /// \@category Scales
@@ -421,7 +421,7 @@
 ///
 /// \@see \@scale-y-continuous, \@scale-x-sqrt
 #let scale-y-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
-  _trans-scale(
+  _transform-scale(
     "y",
     "sqrt",
     name: name,
@@ -433,7 +433,7 @@
 
 /// Continuous x scale flipped left-to-right.
 ///
-/// Thin wrapper over \@scale-x-continuous with `trans: "reverse"`. Tick labels
+/// Thin wrapper over \@scale-x-continuous with `transform: "reverse"`. Tick labels
 /// stay in data units; only the axis direction reverses.
 ///
 /// \@category Scales
@@ -476,7 +476,7 @@
 ///
 /// \@see \@scale-x-continuous, \@scale-y-reverse
 #let scale-x-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
-  _trans-scale(
+  _transform-scale(
     "x",
     "reverse",
     name: name,
@@ -602,7 +602,7 @@
 
 /// Continuous y scale flipped bottom-to-top.
 ///
-/// Thin wrapper over \@scale-y-continuous with `trans: "reverse"`. Tick labels
+/// Thin wrapper over \@scale-y-continuous with `transform: "reverse"`. Tick labels
 /// stay in data units; only the axis direction reverses.
 ///
 /// \@category Scales
@@ -649,7 +649,7 @@
 ///
 /// \@see \@scale-y-continuous, \@scale-x-reverse
 #let scale-y-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
-  _trans-scale(
+  _transform-scale(
     "y",
     "reverse",
     name: name,

@@ -137,9 +137,9 @@
       map-axis(user-y-trained, uy, ctx.py-range),
     )
   }
-  let x-trans = user-x-trained.at("trans", default: "identity")
-  let y-trans = user-y-trained.at("trans", default: "identity")
-  if x-trans != "identity" or y-trans != "identity" {
+  let x-transform = user-x-trained.at("transform", default: "identity")
+  let y-transform = user-y-trained.at("transform", default: "identity")
+  if x-transform != "identity" or y-transform != "identity" {
     let n = 64
     let pts = range(0, n).map(i => {
       let t = i / (n - 1)

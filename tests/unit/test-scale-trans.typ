@@ -17,27 +17,27 @@
 #assert.eq(xs-log.kind, "scale")
 #assert.eq(xs-log.aesthetic, "x")
 #assert.eq(xs-log.type, "continuous")
-#assert.eq(xs-log.trans, "log10")
+#assert.eq(xs-log.transform, "log10")
 
 #let ys-log = scale-y-log10()
 #assert.eq(ys-log.aesthetic, "y")
-#assert.eq(ys-log.trans, "log10")
+#assert.eq(ys-log.transform, "log10")
 
 #let xs-sqrt = scale-x-sqrt()
 #assert.eq(xs-sqrt.aesthetic, "x")
-#assert.eq(xs-sqrt.trans, "sqrt")
+#assert.eq(xs-sqrt.transform, "sqrt")
 
 #let ys-sqrt = scale-y-sqrt()
 #assert.eq(ys-sqrt.aesthetic, "y")
-#assert.eq(ys-sqrt.trans, "sqrt")
+#assert.eq(ys-sqrt.transform, "sqrt")
 
 #let xs-rev = scale-x-reverse()
 #assert.eq(xs-rev.aesthetic, "x")
-#assert.eq(xs-rev.trans, "reverse")
+#assert.eq(xs-rev.transform, "reverse")
 
 #let ys-rev = scale-y-reverse()
 #assert.eq(ys-rev.aesthetic, "y")
-#assert.eq(ys-rev.trans, "reverse")
+#assert.eq(ys-rev.transform, "reverse")
 
 // --- map-position honours each trans keyword ---
 
@@ -45,7 +45,7 @@
   type: "continuous",
   domain: (1.0, 100.0),
   spec: xs-log,
-  trans: "log10",
+  transform: "log10",
 )
 // log10 of 10 is the midpoint between log10(1) and log10(100), so the value
 // 10 sits at the centre of the range.
@@ -57,7 +57,7 @@
   type: "continuous",
   domain: (0.0, 100.0),
   spec: xs-sqrt,
-  trans: "sqrt",
+  transform: "sqrt",
 )
 // sqrt(25) is half of sqrt(100), so 25 lands at the midpoint.
 #assert.eq(map-position(sqrt-trained, 25, (0.0, 10.0)), 5.0)
@@ -68,7 +68,7 @@
   type: "continuous",
   domain: (0.0, 10.0),
   spec: xs-rev,
-  trans: "reverse",
+  transform: "reverse",
 )
 // Reversed: domain low maps to range high.
 #assert.eq(map-position(rev-trained, 0, (0.0, 10.0)), 10.0)
