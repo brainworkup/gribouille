@@ -19,7 +19,7 @@
   data: pts,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (
-    geom-mark(method: "hull", expand: 0.3, alpha: 0.25),
+    geom-mark(method: "hull", expand: 8pt, alpha: 0.25),
     geom-point(size: 3pt),
   ),
   labs: labs(title: "geom-mark, method = \"hull\""),
@@ -31,7 +31,7 @@
   data: pts,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (
-    geom-mark(method: "ellipse", expand: 0.4, alpha: 0.25),
+    geom-mark(method: "ellipse", expand: 10pt, alpha: 0.25),
     geom-point(size: 3pt),
   ),
   labs: labs(title: "geom-mark, method = \"ellipse\""),
@@ -43,7 +43,7 @@
   data: pts,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (
-    geom-mark(method: "rect", expand: 0.3, alpha: 0.2),
+    geom-mark(method: "rect", expand: 8pt, alpha: 0.2),
     geom-point(size: 3pt),
   ),
   labs: labs(title: "geom-mark, method = \"rect\""),
@@ -55,7 +55,7 @@
   data: pts,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (
-    geom-mark(method: "circle", expand: 0.3, alpha: 0.2),
+    geom-mark(method: "circle", expand: 8pt, alpha: 0.2),
     geom-point(size: 3pt),
   ),
   labs: labs(title: "geom-mark, method = \"circle\""),

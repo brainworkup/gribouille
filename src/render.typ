@@ -6,7 +6,7 @@
   map-axis, map-continuous, map-position, mapping-ref-col,
   positional-aesthetics, train, trans-fwd, trans-inv,
 )
-#import "scale/expansion.typ": normalise-expansion
+#import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, stat-default-params
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour
@@ -562,8 +562,18 @@
   let px-hi = ox + iw
   let py-lo = oy
   let py-hi = oy + ih
-  let px-range = (px-lo, px-hi)
-  let py-range = (py-lo, py-hi)
+  // `px-range`/`py-range` carry the inset *data area* (panel bounds shrunk by
+  // any canvas-cm padding from `view-pad-cm`), so geoms and ticks land on the
+  // correct data positions. Bare `px-lo`/`py-lo`/`px-hi`/`py-hi` keep the
+  // outer panel bounds and are used for axis lines, panel fill, and gridline
+  // endpoints that span the full panel.
+  let _read-pad(t) = if t == none { (0, 0) } else {
+    t.at("view-pad-cm", default: (0, 0))
+  }
+  let (x-pad-lo, x-pad-hi) = _read-pad(trained.at("x", default: none))
+  let (y-pad-lo, y-pad-hi) = _read-pad(trained.at("y", default: none))
+  let px-range = (px-lo + x-pad-lo, px-hi - x-pad-hi)
+  let py-range = (py-lo + y-pad-lo, py-hi - y-pad-hi)
 
   let _ink = resolve-colour(theme, "ink")
   let _ax-text = _text-style(theme, "axis-text")
@@ -1083,11 +1093,12 @@
   }
 }
 
-// Apply scale expansion (mirror of ggplot2's `expansion()`) on top of the
-// already-padded domain produced by `_post-train`. For continuous scales the
-// expansion is computed in the transformed space and stored as `view-trans`;
-// for discrete scales it is stored as `view-index` against integer level
-// positions `0..n-1`. `coord-cartesian(expand: false)` zeroes everything.
+// Apply scale expansion on top of the already-padded domain produced by
+// `_post-train`. Multiplicative breathing room (ratio) is folded into
+// `view-trans` (continuous) / `view-index` (discrete); absolute additive
+// padding (length) is recorded as `view-pad-cm` and applied later by
+// `_draw-axis-and-layers` as a canvas-cm inset on the data area.
+// `coord-cartesian(expand: false)` zeroes everything.
 #let _apply-expand(trained, coord) = {
   let coord-no-expand = (
     coord != none
@@ -1100,39 +1111,43 @@
     let spec = entry.at("spec", default: none)
     let raw = if spec == none { auto } else { spec.at("expand", default: auto) }
     let expand = if coord-no-expand { false } else { raw }
-    let (mult-lo, add-lo, mult-hi, add-hi) = normalise-expansion(
+    let (mult-lo, add-cm-lo, mult-hi, add-cm-hi) = normalise-expansion(
       expand,
       entry.type,
     )
     // Bars / areas anchor at y=0: when the user did not pin `expand`
     // explicitly, drop the multiplicative expansion on the anchored side so
-    // the baseline sits flush against the axis line.
+    // the baseline sits flush against the axis line. Length-add is always
+    // honoured.
     let anchor = entry.at("anchor-zero", default: none)
     if anchor != none and raw == auto {
       if anchor == "lo" or anchor == "both" { mult-lo = 0 }
       if anchor == "hi" or anchor == "both" { mult-hi = 0 }
     }
+    let new-entry = entry
     if entry.type == "continuous" {
       let (lo, hi) = entry.domain
       let trans = entry.at("trans", default: "identity")
       let t-lo = trans-fwd(trans, lo)
       let t-hi = trans-fwd(trans, hi)
       let span = t-hi - t-lo
-      let pad-lo = mult-lo * span + add-lo
-      let pad-hi = mult-hi * span + add-hi
-      let new-entry = entry
-      new-entry.insert("view-trans", (t-lo - pad-lo, t-hi + pad-hi))
-      trained.insert(axis, new-entry)
+      new-entry.insert(
+        "view-trans",
+        (t-lo - mult-lo * span, t-hi + mult-hi * span),
+      )
     } else if entry.type == "discrete" {
       let n = entry.domain.len()
       let span = if n > 1 { n - 1 } else { 0 }
+      // Discrete `auto` gets a default 0.6-slot data-unit pad on each side;
+      // any explicit `expand:` value supersedes it.
+      let auto-data-pad = if raw == auto { DISCRETE-AUTO-DATA-PAD } else { 0 }
       let geom-min = entry.at("geom-min-pad", default: 0)
-      let pad-lo = calc.max(mult-lo * span + add-lo, geom-min)
-      let pad-hi = calc.max(mult-hi * span + add-hi, geom-min)
-      let new-entry = entry
+      let pad-lo = calc.max(mult-lo * span + auto-data-pad, geom-min)
+      let pad-hi = calc.max(mult-hi * span + auto-data-pad, geom-min)
       new-entry.insert("view-index", (0 - pad-lo, (n - 1) + pad-hi))
-      trained.insert(axis, new-entry)
     }
+    new-entry.insert("view-pad-cm", (add-cm-lo, add-cm-hi))
+    trained.insert(axis, new-entry)
   }
   trained
 }

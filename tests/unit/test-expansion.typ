@@ -1,45 +1,48 @@
-// Scale expansion helper and renderer plumbing.
+// Scale expansion plumbing.
 
-#import "../../src/scale/expansion.typ": expansion, normalise-expansion
+#import "../../src/scale/expansion.typ": (
+  DISCRETE-AUTO-DATA-PAD, normalise-expansion,
+)
 #import "../../src/scale/train.typ": map-discrete, map-position, train
 #import "../../src/scale/continuous.typ": scale-x-continuous
 #import "../../src/scale/discrete.typ": scale-x-discrete
 #import "../../src/coord/cartesian.typ": coord-cartesian
 
-#let e1 = expansion(mult: 0.05)
-#assert.eq(e1.kind, "expansion")
-#assert.eq(e1.mult, 0.05)
-#assert.eq(e1.add, 0)
-
-#let e2 = expansion(add: 0.6)
-#assert.eq(e2.mult, 0)
-#assert.eq(e2.add, 0.6)
-
-// Auto resolves to ggplot2 defaults per scale type.
+// Auto resolves to the per-scale-type defaults: 5% mult on continuous, no
+// mult or canvas-cm pad on discrete (the renderer adds the data-unit slot
+// pad separately when `expand: auto`).
 #assert.eq(normalise-expansion(auto, "continuous"), (0.05, 0, 0.05, 0))
-#assert.eq(normalise-expansion(auto, "discrete"), (0, 0.6, 0, 0.6))
+#assert.eq(normalise-expansion(auto, "discrete"), (0, 0, 0, 0))
 
-// expansion() dict normalises.
+// Ratios resolve to mult-only.
+#assert.eq(normalise-expansion(5%, "continuous"), (0.05, 0, 0.05, 0))
+#assert.eq(normalise-expansion((0%, 10%), "continuous"), (0, 0, 0.1, 0))
+
+// Lengths resolve to canvas-cm-only.
+#assert.eq(normalise-expansion(1cm, "continuous"), (0, 1, 0, 1))
 #assert.eq(
-  normalise-expansion(expansion(mult: 0.1, add: 1), "continuous"),
-  (0.1, 1, 0.1, 1),
+  normalise-expansion((5pt, 10pt), "continuous"),
+  (0, 5pt / 1cm, 0, 10pt / 1cm),
 )
 
-// Pair inputs split lo/hi.
-#assert.eq(
-  normalise-expansion(expansion(mult: (0.0, 0.1)), "continuous"),
-  (0.0, 0, 0.1, 0),
-)
+// Relative (length + ratio) carries both components per side.
+#let r = normalise-expansion(5pt + 5%, "continuous")
+#assert.eq(r.at(0), 0.05)
+#assert.eq(r.at(1), 5pt / 1cm)
+#assert.eq(r.at(2), 0.05)
+#assert.eq(r.at(3), 5pt / 1cm)
 
-// 4-tuple shorthand passes through.
+// Mixed sides: ratio on one, length on the other.
 #assert.eq(
-  normalise-expansion((0.05, 0, 0.1, 0), "continuous"),
-  (0.05, 0, 0.1, 0),
+  normalise-expansion((0%, 10pt), "continuous"),
+  (0, 0, 0, 10pt / 1cm),
 )
 
 // false / none collapse to zero.
 #assert.eq(normalise-expansion(false, "continuous"), (0, 0, 0, 0))
 #assert.eq(normalise-expansion(none, "discrete"), (0, 0, 0, 0))
+
+#assert.eq(DISCRETE-AUTO-DATA-PAD, 0.6)
 
 // Discrete mapping with view-index places level i at integer position i,
 // linearly interpolated through the supplied viewport.
@@ -90,6 +93,8 @@
 #let (vt-lo, vt-hi) = bar-trained.y.view-trans
 #assert.eq(vt-lo, 0)
 #assert(vt-hi > 5)
+// view-pad-cm is zero for an auto continuous scale.
+#assert.eq(bar-trained.y.at("view-pad-cm"), (0, 0))
 
 // `_map-trans` places y=0 exactly at the start of the panel range.
 #assert.eq(_map-trans(bar-trained.y, 0, (0.0, 100.0)), 0.0)
@@ -119,5 +124,22 @@
 
 #let fill-trained = _apply-expand(fill-trained, none)
 #assert.eq(fill-trained.y.view-trans, (0, 1))
+
+// Length on a continuous axis lands in view-pad-cm; view-trans collapses to
+// the trained domain (no mult component).
+#import "../../src/geom/point.typ": geom-point
+#let pt-data = ((x: 1, y: 1), (x: 5, y: 5))
+#let pt-mapping = aes(x: "x", y: "y")
+#let pt-layers = (geom-point(),)
+#let pt-prepared = pt-layers.map(l => _prepare-layer(l, pt-mapping, pt-data))
+#let pt-trained = train(
+  scales: (scale-x-continuous(expand: 5pt),),
+  layers: pt-prepared,
+  mapping: pt-mapping,
+  data: pt-data,
+)
+#let pt-trained = _apply-expand(pt-trained, none)
+#assert.eq(pt-trained.x.view-trans, (1, 5))
+#assert.eq(pt-trained.x.at("view-pad-cm"), (5pt / 1cm, 5pt / 1cm))
 
 Expansion tests passed.

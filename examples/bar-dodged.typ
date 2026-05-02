@@ -22,7 +22,7 @@
   layers: (geom-col(position: "dodge"),),
   scales: (
     scale-x-discrete(expand: false),
-    scale-y-continuous(expand: expansion(mult: (0, 0.1))),
+    scale-y-continuous(expand: (0%, 10%)),
   ),
   labs: labs(
     title: "Revenue by quarter (dodged)",

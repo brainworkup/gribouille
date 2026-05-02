@@ -12,7 +12,7 @@
 #assert.eq(g.stat, "identity")
 #assert.eq(g.position, "identity")
 #assert.eq(g.params.method, "circle")
-#assert.eq(g.params.expand, 0.1)
+#assert.eq(g.params.expand, 0pt)
 #assert.eq(g.params.n, 64)
 #assert.eq(g.params.alpha, auto)
 
@@ -20,6 +20,9 @@
 #assert.eq(geom-mark(method: "rect").params.method, "rect")
 #assert.eq(geom-mark(method: "ellipse").params.method, "ellipse")
 #assert.eq(geom-mark(method: "hull").params.method, "hull")
+
+// Length expand passes through.
+#assert.eq(geom-mark(expand: 5pt).params.expand, 5pt)
 
 // Bbox of a five-point cluster.
 #let pts = ((0, 0), (1, 0), (0, 1), (1, 1), (0.5, 0.5))

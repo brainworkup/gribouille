@@ -1,5 +1,7 @@
 // scale-x-continuous(expand:) and coord-cartesian(expand: false) tune the
-// breathing room around the data, mirroring ggplot2's expansion() semantics.
+// breathing room around the data. `expand:` accepts a ratio (5%) for
+// proportional padding, a length (5pt) for canvas-space padding, or a
+// 2-tuple `(lo, hi)` to set the sides independently.
 
 #import "../lib.typ": *
 
@@ -27,14 +29,14 @@
     ),
   ),
   make-plot(
-    "expand: expansion(mult: 0)",
+    "expand: false",
     plot(
       data: pts,
       mapping: aes(x: "x", y: "y"),
       layers: (geom-point(size: 2.5pt),),
       scales: (
-        scale-x-continuous(expand: expansion(mult: 0)),
-        scale-y-continuous(expand: expansion(mult: 0)),
+        scale-x-continuous(expand: false),
+        scale-y-continuous(expand: false),
       ),
       width: 6cm,
       height: 5cm,

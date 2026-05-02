@@ -16,12 +16,14 @@
   layers: (
     geom-point(size: 2pt, alpha: 0.25, stroke: 0.5pt, colour: rgb("#ffffff")),
     geom-smooth(method: "lm", se: true, alpha: 0.2),
+    // geom-ellipse(stat: stat-ellipse(level: 0.95), alpha: 0.1),
+    geom-mark(method: "hull", expand: 5pt, alpha: 0.25),
     geom-errorbar(stat: stat-summary(fun: "mean-sd"), width: 5pt),
     geom-errorbarh(stat: stat-summary(fun: "mean-sd"), height: 5pt),
     geom-label(
       data: (
-        "flipper-len": (180, 210, 205),
-        "body-mass": (4250, 3250, 5750),
+        "flipper-len": (175, 207, 205),
+        "body-mass": (4250, 3150, 5750),
         "species": ("Adelie", "Chinstrap", "Gentoo"),
       ),
       // stat: stat-summary(fun: "mean"),

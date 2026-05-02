@@ -47,7 +47,7 @@
 /// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
-/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -116,7 +116,7 @@
 /// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
-/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -174,7 +174,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
-/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -228,7 +228,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
-/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -286,7 +286,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
-/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -342,7 +342,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
-/// \@param expand Expansion added to each side of the domain, or `auto`.
+/// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps the per-scale default; `false` collapses to zero.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///

@@ -25,7 +25,7 @@
   data: items,
   mapping: aes(x: "cat"),
   layers: (geom-bar(),),
-  scales: (scale-y-continuous(expand: expansion(mult: (0, 0.2))),),
+  scales: (scale-y-continuous(expand: (0%, 20%)),),
   labs: labs(title: "Category counts", x: "Category", y: "Count"),
   width: 10cm,
   height: 7cm,
