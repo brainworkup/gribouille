@@ -1,29 +1,32 @@
-// Secondary x-axis duplicated on top via `dup-axis`.
-// The same ticks appear on the bottom and the top edge of the panel.
+// dup-axis duplicates an axis; sec-axis derives a transformed companion.
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
-
-#let d = range(0, 11).map(i => (x: i, y: i * i))
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 2pt),),
+  data: mpg,
+  mapping: aes(x: "displ", y: "hwy", colour: "class"),
+  layers: (geom-point(size: 3pt, alpha: 0.8),),
   scales: (
     scale-x-continuous(
-      name: "x",
-      secondary: dup-axis(name: "x (top)"),
+      name: "Engine displacement (L)",
+      secondary: dup-axis(name: "Displacement (L)"),
     ),
     scale-y-continuous(
-      name: "y",
+      name: "Highway mpg",
       secondary: sec-axis(
-        trans: v => v / 10,
-        name: "y / 10",
+        trans: v => v * 0.4251,
+        name: "Highway km/L",
       ),
     ),
   ),
-  width: 10cm,
-  height: 6cm,
+  labs: labs(
+    title: "Fuel economy with a derived secondary axis",
+    subtitle: "Right axis converts mpg to km/L (× 0.4251)",
+    colour: "Class",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

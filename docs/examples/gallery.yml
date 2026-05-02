@@ -146,3 +146,33 @@
   title: "Theme overrides"
   description: 'Custom text sizes, panel fill, and grid colour passed through <a href="../reference/themes/theme.qmd"><code>theme</code></a>.'
   alt: "Line and point chart of the curve y equals 0.1 times x squared over 12 steps, rendered with enlarged axis titles and a cream panel background."
+
+- slug: guide-axis
+  section: guides
+  title: "Rotating axis tick labels"
+  description: '<a href="../reference/guides/guide-axis.qmd"><code>guide-axis</code></a> rotates or dodges discrete tick labels so long category names stay readable.'
+  alt: "Three stacked bar charts of vehicle counts per manufacturer: the first overlaps the manufacturer labels, the second rotates them by 30 degrees, the third dodges them onto two rows."
+
+- slug: guide-axis-logticks
+  section: guides
+  title: "Log-scale minor ticks"
+  description: '<a href="../reference/guides/guide-axis-logticks.qmd"><code>guide-axis-logticks</code></a> draws minor ticks at log-scale subdivisions on a log10-transformed axis.'
+  alt: "Two log-log scatter and line panels of the same seven points, the first showing only decade-aligned ticks and the second adding minor ticks at intermediate log-scale subdivisions."
+
+- slug: guide-legend
+  section: guides
+  title: "Customising legends"
+  description: 'Layout knobs on <a href="../reference/guides/guide-legend.qmd"><code>guide-legend</code></a>: <code>reverse</code> flips the key order, <code>ncol</code> wraps it onto multiple columns.'
+  alt: "Three scatter plots of highway mpg against displacement coloured by vehicle class, contrasting the default legend with a reversed key order and a two-column legend layout."
+
+- slug: axis-lims
+  section: guides
+  title: "Axis limits and tick rotation"
+  description: 'Pair <a href="../reference/scales/scale-x-continuous.qmd"><code>scale-x-continuous(limits:)</code></a> with <a href="../reference/guides/guide-axis.qmd"><code>guide-axis</code></a> to set explicit domains and tidy up tick text.'
+  alt: "Three scatter plots of highway mpg against displacement showing the default view, the same view with rotated tick labels, and the view with explicit zero-anchored axis limits."
+
+- slug: sec-axis
+  section: guides
+  title: "Secondary axes"
+  description: 'Add a duplicate axis with <a href="../reference/scales/dup-axis.qmd"><code>dup-axis</code></a> or a derived axis via <code>sec-axis</code> on a continuous scale.'
+  alt: "Scatter plot of highway mpg against displacement coloured by class, with the bottom and top edges sharing the displacement axis and the right edge showing the same scale converted to kilometres per litre."

@@ -1,9 +1,8 @@
-// guide-axis-logticks adds minor ticks at log-scale subdivisions on a
-// log10-trans axis. Without it, only decade-aligned major ticks render.
+// guide-axis-logticks adds minor ticks at log-scale subdivisions on a log10 axis.
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let d = (
   (x: 1, y: 1),
@@ -15,43 +14,30 @@
   (x: 1000, y: 10000),
 )
 
-#plot(
+#let panel(title, gs) = plot(
   data: d,
   mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 3pt),),
-  scales: (
-    scale-x-continuous(trans: "log10"),
-    scale-y-continuous(trans: "log10"),
+  layers: (
+    geom-line(stroke: 0.6pt, alpha: 0.4),
+    geom-point(size: 3pt),
   ),
-  labs: labs(title: "Log10 axes, no logticks (decade ticks only)"),
-  width: 10cm,
+  scales: (
+    scale-x-continuous(trans: "log10", labels: label-comma()),
+    scale-y-continuous(trans: "log10", labels: label-comma()),
+  ),
+  guides: gs,
+  labs: labs(title: title, x: "Inputs (log10)", y: "Outputs (log10)"),
+  theme: theme-minimal(),
+  width: 9cm,
   height: 6cm,
 )
 
-#plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 3pt),),
-  scales: (
-    scale-x-continuous(trans: "log10"),
-    scale-y-continuous(trans: "log10"),
+#stack(
+  dir: ttb,
+  spacing: 0.5cm,
+  panel("Decade ticks only", (:)),
+  panel(
+    "guide-axis-logticks() on x and y",
+    guides(x: guide-axis-logticks(), y: guide-axis-logticks()),
   ),
-  guides: guides(
-    x: guide-axis-logticks(),
-    y: guide-axis-logticks(),
-  ),
-  labs: labs(title: "guide-axis-logticks() on x and y"),
-  width: 10cm,
-  height: 6cm,
-)
-
-// Logticks on a non-log axis is a no-op (silent fallback to plain ticks).
-#plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 3pt),),
-  guides: guides(x: guide-axis-logticks()),
-  labs: labs(title: "logticks ignored on a linear axis"),
-  width: 10cm,
-  height: 6cm,
 )
