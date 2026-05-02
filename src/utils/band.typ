@@ -1,13 +1,14 @@
 ///! Helper for the symmetric x-band shared by boxplot/errorbar/crossbar.
 
-#import "../scale/train.typ": map-continuous, map-position
+#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "types.typ": parse-number
 
 /// Compute the panel x-coordinate range of a band centred on `raw-x`.
 ///
-/// For continuous x the band edges are mapped through `map-continuous` so the
-/// half-width is interpreted in x data units. For discrete x the band is sized
-/// as a fraction of the per-category slot width.
+/// For continuous x the band edges are mapped through `map-axis` so the
+/// half-width is interpreted in x data units and any scale `view-trans`
+/// expansion is honoured. For discrete x the band is sized as a fraction
+/// of the per-category slot width, accounting for `view-index` expansion.
 ///
 /// \@internal
 ///
@@ -22,17 +23,13 @@
     let raw-num = parse-number(raw-x)
     if raw-num == none { return none }
     (
-      map-continuous(raw-num - half-width, x-trained.domain, px-range),
-      map-continuous(raw-num + half-width, x-trained.domain, px-range),
+      map-axis(x-trained, raw-num - half-width, px-range),
+      map-axis(x-trained, raw-num + half-width, px-range),
     )
   } else {
     let cx = map-position(x-trained, raw-x, px-range)
     if cx == none { return none }
-    let n = x-trained.domain.len()
-    if n == 0 { return none }
-    let (px-lo, px-hi) = px-range
-    let slot = (px-hi - px-lo) / n
-    let half-px = slot * half-width
+    let half-px = discrete-slot-width(x-trained, px-range) * half-width
     (cx - half-px, cx + half-px)
   }
 }

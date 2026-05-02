@@ -5,7 +5,7 @@
 ///! `"dodge"`, and `"fill"` via the matching position adjustments.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous, map-position
+#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -153,9 +153,9 @@
     neutral-fill,
   )
 
-  let baseline-vc = map-continuous(
+  let baseline-vc = map-axis(
+    value-trained,
     calc.max(0.0, value-trained.domain.at(0)),
-    value-trained.domain,
     value-range,
   )
 
@@ -163,7 +163,7 @@
   let category-span = if (
     cat-trained.type == "discrete" and cat-trained.domain.len() > 0
   ) {
-    (cat-hi - cat-lo) / cat-trained.domain.len()
+    discrete-slot-width(cat-trained, cat-range)
   } else {
     // Continuous category axis: infer from minimum gap between unique values.
     let xs = data
@@ -174,11 +174,11 @@
       (cat-hi - cat-lo) / 10
     } else {
       let sorted = xs.dedup().sorted()
-      let gaps = range(sorted.len() - 1).map(i => (
-        sorted.at(i + 1) - sorted.at(i)
+      let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
+        map-axis(cat-trained, sorted.at(i + 1), cat-range)
+          - map-axis(cat-trained, sorted.at(i), cat-range),
       ))
-      let min-gap = calc.min(..gaps)
-      min-gap * (cat-hi - cat-lo) / (d-hi - d-lo)
+      calc.min(..panel-gaps)
     }
   }
   let bar-width-fraction = layer.params.width
@@ -197,13 +197,13 @@
       let hi-v = parse-number(row.at(vmax-col, default: none))
       if lo-v == none or hi-v == none { continue }
       (
-        map-continuous(lo-v, value-trained.domain, value-range),
-        map-continuous(hi-v, value-trained.domain, value-range),
+        map-axis(value-trained, lo-v, value-range),
+        map-axis(value-trained, hi-v, value-range),
       )
     } else {
       let raw = parse-number(row.at(value-col, default: none))
       if raw == none { continue }
-      let vc = map-continuous(raw, value-trained.domain, value-range)
+      let vc = map-axis(value-trained, raw, value-range)
       if vc >= baseline-vc { (baseline-vc, vc) } else { (vc, baseline-vc) }
     }
 

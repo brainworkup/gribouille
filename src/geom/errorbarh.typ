@@ -1,7 +1,7 @@
 ///! Horizontal line from `xmin` to `xmax` with vertical caps at each `y`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous, map-position
+#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
@@ -96,17 +96,13 @@
     let raw-num = parse-number(raw-y)
     if raw-num == none { return none }
     (
-      map-continuous(raw-num - half-height, y-trained.domain, py-range),
-      map-continuous(raw-num + half-height, y-trained.domain, py-range),
+      map-axis(y-trained, raw-num - half-height, py-range),
+      map-axis(y-trained, raw-num + half-height, py-range),
     )
   } else {
     let cy = map-position(y-trained, raw-y, py-range)
     if cy == none { return none }
-    let n = y-trained.domain.len()
-    if n == 0 { return none }
-    let (py-lo, py-hi) = py-range
-    let slot = (py-hi - py-lo) / n
-    let half-px = slot * half-height
+    let half-px = discrete-slot-width(y-trained, py-range) * half-height
     (cy - half-px, cy + half-px)
   }
 }

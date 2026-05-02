@@ -20,6 +20,10 @@
   data: sales,
   mapping: aes(x: "q", y: "revenue", fill: "product"),
   layers: (geom-col(position: "dodge"),),
+  scales: (
+    scale-x-discrete(expand: false),
+    scale-y-continuous(expand: expansion(mult: (0, 0.1))),
+  ),
   labs: labs(
     title: "Revenue by quarter (dodged)",
     x: "Quarter",

@@ -6,7 +6,7 @@
 ///! `ymin`, `ymax`, optional `outliers`).
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-continuous, map-position
+#import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": x-band
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-stroke-colour
@@ -176,19 +176,11 @@
     if whisker-lo == none { whisker-lo = ymin }
     if whisker-hi == none { whisker-hi = ymax }
 
-    let cy-lower = map-continuous(lower, y-trained.domain, ctx.py-range)
-    let cy-middle = map-continuous(middle, y-trained.domain, ctx.py-range)
-    let cy-upper = map-continuous(upper, y-trained.domain, ctx.py-range)
-    let cy-whisker-lo = map-continuous(
-      whisker-lo,
-      y-trained.domain,
-      ctx.py-range,
-    )
-    let cy-whisker-hi = map-continuous(
-      whisker-hi,
-      y-trained.domain,
-      ctx.py-range,
-    )
+    let cy-lower = map-axis(y-trained, lower, ctx.py-range)
+    let cy-middle = map-axis(y-trained, middle, ctx.py-range)
+    let cy-upper = map-axis(y-trained, upper, ctx.py-range)
+    let cy-whisker-lo = map-axis(y-trained, whisker-lo, ctx.py-range)
+    let cy-whisker-hi = map-axis(y-trained, whisker-hi, ctx.py-range)
 
     let box-band = x-band(x-trained, raw-x, half-width, ctx.px-range)
     let cap-band = x-band(x-trained, raw-x, cap-half, ctx.px-range)
@@ -248,7 +240,7 @@
     for ov in outliers {
       let v = parse-number(ov)
       if v == none { continue }
-      let cy = map-continuous(v, y-trained.domain, ctx.py-range)
+      let cy = map-axis(y-trained, v, ctx.py-range)
       cetz.draw.circle(
         (cx, cy),
         radius: layer.params.outlier-size,

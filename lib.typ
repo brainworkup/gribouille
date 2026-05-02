@@ -146,6 +146,7 @@
 )
 #import "src/utils/colour.typ": col-mix
 #import "src/limits.typ": expand-limits
+#import "src/scale/expansion.typ": expansion
 
 // Coord.
 #import "src/coord/cartesian.typ": coord-cartesian

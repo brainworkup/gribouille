@@ -3,8 +3,10 @@
 
 #import "deps.typ": cetz
 #import "scale/train.typ": (
-  map-axis, map-continuous, map-position, mapping-ref-col, train,
+  map-axis, map-continuous, map-position, mapping-ref-col, train, trans-fwd,
+  trans-inv,
 )
+#import "scale/expansion.typ": normalise-expansion
 #import "stat/apply.typ": apply-stat, stat-default-params
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour
@@ -271,12 +273,12 @@
 // the user spec carries `binned: true`, ticks are placed at bin midpoints so
 // labels sit under each `n-breaks`-wide quantised interval.
 #let _axis-breaks(trained) = {
-  let (lo, hi) = trained.domain
   let spec = trained.at("spec", default: none)
   let binned = if spec == none { false } else {
     spec.at("binned", default: false)
   }
   if binned {
+    let (lo, hi) = trained.domain
     let n = if spec == none { 10 } else { spec.at("n-breaks", default: 10) }
     let count = calc.max(1, int(n))
     let span = hi - lo
@@ -285,6 +287,12 @@
     return range(count).map(i => lo + (i + 0.5) * step)
   }
   let trans = trained.at("trans", default: none)
+  let view-trans = trained.at("view-trans", default: none)
+  let (lo, hi) = if view-trans != none {
+    (trans-inv(trans, view-trans.at(0)), trans-inv(trans, view-trans.at(1)))
+  } else {
+    trained.domain
+  }
   if trans == "log10" { return pretty-log10(lo, hi) }
   if trans == "sqrt" { return pretty-sqrt(lo, hi) }
   pretty(lo, hi, n: 5)
@@ -584,9 +592,8 @@
       )
     }
   } else if x-trained != none and x-trained.type == "discrete" {
-    let n = x-trained.domain.len()
     for (idx, level) in x-trained.domain.enumerate() {
-      let cx = px-lo + (idx + 0.5) * (px-hi - px-lo) / n
+      let cx = map-position(x-trained, level, px-range)
       if axis-stroke != none and tick-len > 0 {
         line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
       }
@@ -642,9 +649,8 @@
       }
     }
   } else if y-trained != none and y-trained.type == "discrete" {
-    let n = y-trained.domain.len()
     for (idx, level) in y-trained.domain.enumerate() {
-      let cy = py-lo + (idx + 0.5) * (py-hi - py-lo) / n
+      let cy = map-position(y-trained, level, py-range)
       if axis-stroke != none and tick-len > 0 {
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
@@ -996,6 +1002,60 @@
   }
 }
 
+// Apply scale expansion (mirror of ggplot2's `expansion()`) on top of the
+// already-padded domain produced by `_post-train`. For continuous scales the
+// expansion is computed in the transformed space and stored as `view-trans`;
+// for discrete scales it is stored as `view-index` against integer level
+// positions `0..n-1`. `coord-cartesian(expand: false)` zeroes everything.
+#let _apply-expand(trained, coord) = {
+  let coord-no-expand = (
+    coord != none
+      and coord.at("coord", default: none) == "cartesian"
+      and coord.at("expand", default: true) == false
+  )
+  for axis in ("x", "y") {
+    let entry = trained.at(axis, default: none)
+    if entry == none { continue }
+    let spec = entry.at("spec", default: none)
+    let raw = if spec == none { auto } else { spec.at("expand", default: auto) }
+    let expand = if coord-no-expand { false } else { raw }
+    let (mult-lo, add-lo, mult-hi, add-hi) = normalise-expansion(
+      expand,
+      entry.type,
+    )
+    // Bars / areas anchor at y=0: when the user did not pin `expand`
+    // explicitly, drop the multiplicative expansion on the anchored side so
+    // the baseline sits flush against the axis line.
+    let anchor = entry.at("anchor-zero", default: none)
+    if anchor != none and raw == auto {
+      if anchor == "lo" or anchor == "both" { mult-lo = 0 }
+      if anchor == "hi" or anchor == "both" { mult-hi = 0 }
+    }
+    if entry.type == "continuous" {
+      let (lo, hi) = entry.domain
+      let trans = entry.at("trans", default: "identity")
+      let t-lo = trans-fwd(trans, lo)
+      let t-hi = trans-fwd(trans, hi)
+      let span = t-hi - t-lo
+      let pad-lo = mult-lo * span + add-lo
+      let pad-hi = mult-hi * span + add-hi
+      let new-entry = entry
+      new-entry.insert("view-trans", (t-lo - pad-lo, t-hi + pad-hi))
+      trained.insert(axis, new-entry)
+    } else if entry.type == "discrete" {
+      let n = entry.domain.len()
+      let span = if n > 1 { n - 1 } else { 0 }
+      let geom-min = entry.at("geom-min-pad", default: 0)
+      let pad-lo = calc.max(mult-lo * span + add-lo, geom-min)
+      let pad-hi = calc.max(mult-hi * span + add-hi, geom-min)
+      let new-entry = entry
+      new-entry.insert("view-index", (0 - pad-lo, (n - 1) + pad-hi))
+      trained.insert(axis, new-entry)
+    }
+  }
+  trained
+}
+
 // Apply post-training domain fix-ups (bar-zero floor, bin width padding,
 // ribbon ymin/ymax padding). Called once globally and once per panel under
 // free scales so each panel's domain reflects its own subset.
@@ -1009,12 +1069,49 @@
     let (lo, hi) = trained.y.domain
     let new-y = trained.y
     new-y.insert("domain", (calc.min(lo, 0.0), calc.max(hi, 0.0)))
+    // Bars and areas live against a y=0 baseline; tag the side that touches
+    // it so `_apply-expand` collapses that side's auto expansion to zero,
+    // matching ggplot2's `expansion(mult = c(0, 0.05))` default for these
+    // geoms. `position: "fill"` normalises every stack to `[0, 1]`, so
+    // anchor both sides; mixed-sign data (data straddles 0) keeps symmetric
+    // expansion.
+    let any-fill = layers.any(l => (
+      l.at("geom", default: none) == "col"
+        and l.at("position", default: "identity") == "fill"
+    ))
+    let anchor = if any-fill {
+      "both"
+    } else if lo >= 0 {
+      "lo"
+    } else if hi <= 0 {
+      "hi"
+    } else { none }
+    if anchor != none { new-y.insert("anchor-zero", anchor) }
     trained.insert("y", new-y)
   }
   trained = _extend-x-for-bins(trained, layers)
   trained = _extend-axis-for-cols(trained, layers, "x")
-  trained = _extend-axis-for-cols(trained, layers, "y")
   trained = _extend-y-for-ribbon(trained, layers)
+  // For discrete category axes, record the bar half-width (in level-index
+  // units) so `_apply-expand` keeps the outer bars inside the panel even
+  // when the user passes a small `expand:`. Continuous category axes are
+  // already handled by `_extend-axis-for-cols` above, which folds the bar
+  // half-width into the trained domain.
+  let bar-half = 0
+  for layer in layers {
+    if layer.at("geom", default: none) != "col" { continue }
+    let bar-frac = layer.at("params", default: (:)).at("width", default: 0.9)
+    let half = bar-frac / 2
+    if half > bar-half { bar-half = half }
+  }
+  if bar-half > 0 {
+    let xt = trained.at("x", default: none)
+    if xt != none and xt.type == "discrete" {
+      let new-x = xt
+      new-x.insert("geom-min-pad", bar-half)
+      trained.insert("x", new-x)
+    }
+  }
   trained
 }
 
@@ -1107,6 +1204,7 @@
     )
     pt = _apply-labs(pt, labs)
     pt = _post-train(pt, p.layers)
+    pt = _apply-expand(pt, coord)
     pt = _apply-coord(pt, coord)
     pt = _apply-flip(pt, coord)
     let merged = trained
@@ -1598,6 +1696,7 @@
   // clip limits so axis ticks and marks follow them. Data outside the limits
   // is preserved for stats and training but may render outside the panel.
   let coord = spec.at("coord", default: none)
+  trained = _apply-expand(trained, coord)
   trained = _apply-coord(trained, coord)
   // coord-flip swaps trained x and y so axis labels swap automatically;
   // direction-sensitive geoms branch on `ctx.flipped` inside their draw.

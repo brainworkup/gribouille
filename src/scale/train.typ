@@ -91,6 +91,19 @@
   )
 }
 
+// Synthetic feeder axes (xmin/xmax/ymin/ymax/xend/yend) only contribute
+// their raw min/max to the main x or y axis; they should not get the
+// singleton-domain expansion that would otherwise turn `ymin: 0` for every
+// bar into `(-0.5, 0.5)` and bleed below the y=0 baseline.
+#let _SYNTHETIC-FEEDERS = (
+  "xmin",
+  "xmax",
+  "ymin",
+  "ymax",
+  "xend",
+  "yend",
+)
+
 #let train-continuous(layers, aesthetic, plot-mapping, plot-data) = {
   let all-vals = ()
   for layer in layers {
@@ -102,7 +115,9 @@
   if all-vals.len() == 0 { return (0.0, 1.0) }
   let lo = calc.min(..all-vals)
   let hi = calc.max(..all-vals)
-  if lo == hi { return (lo - 0.5, hi + 0.5) }
+  if lo == hi and not _SYNTHETIC-FEEDERS.contains(aesthetic) {
+    return (lo - 0.5, hi + 0.5)
+  }
   (lo, hi)
 }
 
@@ -288,14 +303,37 @@
   r-lo + t * (r-hi - r-lo)
 }
 
-#let map-discrete(value, domain, range) = {
+// `view-index` overrides the default midpoint placement: levels sit at
+// integer positions `0..n-1` and map linearly through the supplied viewport.
+// Used by positional discrete scales after expansion is applied. The default
+// viewport `(-0.5, n - 0.5)` reproduces the midpoint-of-equal-slots layout
+// used by non-positional discrete scales (colour, fill, shape, ...).
+#let map-discrete(value, domain, range, view-index: none) = {
   let s = str(value)
   let idx = domain.position(v => v == s)
   let n = domain.len()
   if idx == none or n == 0 { return none }
   let (r-lo, r-hi) = range
-  if n == 1 { return (r-lo + r-hi) / 2 }
-  r-lo + (idx + 0.5) * (r-hi - r-lo) / n
+  let (v-lo, v-hi) = if view-index == none {
+    (-0.5, n - 0.5)
+  } else { view-index }
+  if v-hi == v-lo { return (r-lo + r-hi) / 2 }
+  r-lo + (idx - v-lo) * (r-hi - r-lo) / (v-hi - v-lo)
+}
+
+// Panel-units span between adjacent levels for a discrete trained scale,
+// honouring `view-index` expansion. Returns `0` for an empty domain.
+#let discrete-slot-width(trained, range) = {
+  let (lo, hi) = range
+  let view = trained.at("view-index", default: none)
+  if view != none {
+    let (v-lo, v-hi) = view
+    if v-hi == v-lo { return hi - lo }
+    return (hi - lo) / (v-hi - v-lo)
+  }
+  let n = trained.domain.len()
+  if n == 0 { return 0 }
+  (hi - lo) / n
 }
 
 // Forward axis transformation for `log10` and `sqrt`: warps coordinates so
@@ -308,16 +346,28 @@
   x
 }
 
+// Inverse of `trans-fwd`: convert a transformed-space coordinate back to
+// data space. Used to back-translate a padded view range so axis breaks
+// can be picked in data units.
+#let trans-inv(name, x) = {
+  if name == none or name == "identity" or name == "reverse" { return x }
+  if name == "log10" { return calc.pow(10, x) }
+  if name == "sqrt" { return x * x }
+  x
+}
+
 #let _map-trans(trained, value, range) = {
   let trans = trained.at("trans", default: "identity")
-  let (d-lo, d-hi) = trained.domain
+  let view-trans = trained.at("view-trans", default: none)
+  let (t-lo, t-hi) = if view-trans != none {
+    view-trans
+  } else {
+    let (d-lo, d-hi) = trained.domain
+    (trans-fwd(trans, d-lo), trans-fwd(trans, d-hi))
+  }
   let (r-lo, r-hi) = range
   let target = if trans == "reverse" { (r-hi, r-lo) } else { (r-lo, r-hi) }
-  map-continuous(
-    trans-fwd(trans, value),
-    (trans-fwd(trans, d-lo), trans-fwd(trans, d-hi)),
-    target,
-  )
+  map-continuous(trans-fwd(trans, value), (t-lo, t-hi), target)
 }
 
 #let map-position(trained, value, range) = {
@@ -326,7 +376,12 @@
     if v == none { return none }
     _map-trans(trained, v, range)
   } else {
-    map-discrete(value, trained.domain, range)
+    map-discrete(
+      value,
+      trained.domain,
+      range,
+      view-index: trained.at("view-index", default: none),
+    )
   }
 }
 

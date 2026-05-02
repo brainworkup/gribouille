@@ -16,6 +16,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: none,
 ) = (
   kind: "scale",
@@ -27,6 +28,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
 )
 
 /// Continuous x scale that formats axis labels as dates.
@@ -45,6 +47,7 @@
 /// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -86,6 +89,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: "[year]-[month repr:numerical]-[day]",
 ) = _temporal-scale(
   "x",
@@ -94,6 +98,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
   date-format: date-format,
 )
 
@@ -111,6 +116,7 @@
 /// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -138,6 +144,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: "[year]-[month repr:numerical]-[day]",
 ) = _temporal-scale(
   "y",
@@ -146,6 +153,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
   date-format: date-format,
 )
 
@@ -166,6 +174,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -191,6 +200,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: "[year]-[month repr:numerical]-[day] [hour]:[minute]",
 ) = _temporal-scale(
   "x",
@@ -199,6 +209,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
   date-format: date-format,
 )
 
@@ -217,6 +228,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -243,6 +255,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: "[year]-[month repr:numerical]-[day] [hour]:[minute]",
 ) = _temporal-scale(
   "y",
@@ -251,6 +264,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
   date-format: date-format,
 )
 
@@ -272,6 +286,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -300,6 +315,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: "[hour]:[minute]",
 ) = _temporal-scale(
   "x",
@@ -308,6 +324,7 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
   date-format: date-format,
 )
 
@@ -325,6 +342,7 @@
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
+/// \@param expand Expansion added to each side of the domain, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
@@ -352,6 +370,7 @@
   limits: none,
   breaks: auto,
   labels: auto,
+  expand: auto,
   date-format: "[hour]:[minute]",
 ) = _temporal-scale(
   "y",
@@ -360,5 +379,6 @@
   limits: limits,
   breaks: breaks,
   labels: labels,
+  expand: expand,
   date-format: date-format,
 )
