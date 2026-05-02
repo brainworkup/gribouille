@@ -35,7 +35,8 @@
 /// \@param y0 Column name for the y centre of an ellipse.
 /// \@param a Column name for the ellipse semi-major radius in data units.
 /// \@param b Column name for the ellipse semi-minor radius in data units.
-/// \@param angle Column name for the ellipse rotation in radians.
+/// \@param angle Column name for the ellipse rotation in radians (\@geom-ellipse) or the spoke direction in radians (\@geom-spoke).
+/// \@param radius Column name for the spoke length in data units (\@geom-spoke).
 ///
 /// \@returns Dictionary tagged `kind: "aes"`, consumed by \@plot and geom layers.
 ///
@@ -103,6 +104,7 @@
   a: none,
   b: none,
   angle: none,
+  radius: none,
 ) = (
   kind: "aes",
   x: x,
@@ -133,4 +135,5 @@
   a: a,
   b: b,
   angle: angle,
+  radius: radius,
 )

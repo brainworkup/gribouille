@@ -28,6 +28,7 @@
 #import "geom/tile.typ" as tile-geom
 #import "geom/segment.typ" as segment-geom
 #import "geom/curve.typ" as curve-geom
+#import "geom/spoke.typ" as spoke-geom
 #import "geom/polygon.typ" as polygon-geom
 #import "geom/ellipse.typ" as ellipse-geom
 #import "geom/mark.typ" as mark-geom
@@ -63,6 +64,7 @@
   tile: tile-geom.draw,
   segment: segment-geom.draw,
   curve: curve-geom.draw,
+  spoke: spoke-geom.draw,
   polygon: polygon-geom.draw,
   ellipse: ellipse-geom.draw,
   mark: mark-geom.draw,

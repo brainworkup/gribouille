@@ -33,6 +33,7 @@
 #import "src/geom/tile.typ": geom-tile
 #import "src/geom/segment.typ": geom-segment
 #import "src/geom/curve.typ": geom-curve
+#import "src/geom/spoke.typ": geom-spoke
 #import "src/geom/polygon.typ": geom-polygon
 #import "src/geom/ellipse.typ": geom-ellipse
 #import "src/geom/mark.typ": geom-mark
