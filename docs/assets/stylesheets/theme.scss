@@ -227,6 +227,36 @@ a:hover, a:focus-visible {
   text-decoration-thickness: 2px;
 }
 
+// Hand-drawn underline on text-link hover; scoped to body prose so it never
+// interferes with navbar, sidebar, buttons, image links, or icon-only links.
+main p a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)),
+main li a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)) {
+  position: relative;
+}
+
+main p a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):hover,
+main p a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):focus-visible,
+main li a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):hover,
+main li a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):focus-visible {
+  text-decoration: none;
+}
+
+main p a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):hover::after,
+main p a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):focus-visible::after,
+main li a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):hover::after,
+main li a:not(.btn):not(:has(img)):not(:has(svg)):not(:has(iconify-icon)):focus-visible::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.18em;
+  height: 0.4em;
+  background: var(--gb-primary);
+  -webkit-mask: var(--gb-underline) no-repeat center / 100% 100%;
+          mask: var(--gb-underline) no-repeat center / 100% 100%;
+  pointer-events: none;
+}
+
 // --- Navbar. -------------------------------------------------------------
 .navbar {
   background: var(--gb-paper) !important;
@@ -263,12 +293,64 @@ a.navbar-brand {
 .navbar .nav-link.active::after {
   content: "";
   position: absolute;
-  left: 0.8rem;
-  right: 0.8rem;
-  bottom: 0.15rem;
-  height: 2px;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: -0.05rem;
+  height: 0.4em;
   background: var(--gb-primary);
-  border-radius: 2px;
+  -webkit-mask: var(--gb-underline) no-repeat center / 100% 100%;
+          mask: var(--gb-underline) no-repeat center / 100% 100%;
+}
+
+// --- Right-side navbar widgets. -----------------------------------------
+// assets/scripts/navbar-widgets.html re-parents the search box and the
+// colour-scheme toggle into the existing .navbar-nav.ms-auto so Bootstrap
+// keeps its right-alignment.
+#gb-navbar-widgets {
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#gb-navbar-widgets .nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+}
+
+#gb-navbar-widgets #quarto-search {
+  display: inline-flex;
+  align-items: center;
+}
+
+// --- Navbar dropdown (version selector). --------------------------------
+.navbar .dropdown-menu {
+  background: var(--gb-paper);
+  border: 1px solid var(--gb-hairline);
+  border-radius: var(--gb-radius-md);
+  box-shadow: var(--gb-shadow-soft);
+  font-family: $font-family-sans-serif;
+  padding: 0.35rem;
+  min-width: 12rem;
+}
+
+.navbar .dropdown-item {
+  color: var(--gb-ink);
+  border-radius: var(--gb-radius-sm);
+  padding: 0.4rem 0.7rem;
+  transition: background 150ms var(--gb-ease), color 150ms var(--gb-ease);
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus,
+.navbar .dropdown-item:focus-visible {
+  background: var(--gb-tint-primary);
+  color: var(--gb-primary);
+}
+
+.navbar .dropdown-item.active,
+.navbar .dropdown-item:active {
+  background: var(--gb-primary);
+  color: var(--gb-paper);
 }
 
 // --- Colour-scheme toggle (sun/moon). -----------------------------------
@@ -985,18 +1067,6 @@ blockquote {
   color: var(--gb-muted);
   font-size: 0.9rem;
   margin: 2rem 0;
-}
-
-// --- Hand-drawn underline under home-page h2 headings. ------------------
-main .hero + * h2,
-main .showcase ~ h2,
-.page-columns main > h2 {
-  border-bottom: none;
-  padding-bottom: 0.6rem;
-  background-image: var(--gb-underline);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 180px 0.5em;
 }
 
 // --- Announcement banner. -----------------------------------------------

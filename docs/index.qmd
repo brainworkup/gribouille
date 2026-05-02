@@ -38,21 +38,21 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 ::: {.steps}
 ::: {.step}
 
-### 1. Data.
+### 1. Data. {.no-anchor}
 
 Bring a CSV, a list of dictionaries, or an inline table.
 :::
 
 ::: {.step}
 
-### 2. Mapping.
+### 2. Mapping. {.no-anchor}
 
 Declare which column drives `x`, `y`, `colour`, `fill`, or `size`.
 :::
 
 ::: {.step}
 
-### 3. Layers.
+### 3. Layers. {.no-anchor}
 
 Stack geoms, scales, facets, and a theme until the plot is right.
 :::
@@ -104,21 +104,21 @@ Stack geoms, scales, facets, and a theme until the plot is right.
 
 ::: {.feature}
 
-#### [Geoms.](reference/geoms/index.qmd)
+#### [Geoms.](reference/geoms/index.qmd) {.no-anchor}
 
 Points, lines, bars, histograms, smoothers, ribbons, boxplots, text, labels, and reference lines.
 :::
 
 ::: {.feature}
 
-#### [Scales.](reference/scales/index.qmd)
+#### [Scales.](reference/scales/index.qmd) {.no-anchor}
 
 Continuous and discrete x, y, colour, fill, size, shape, linetype, with Viridis and manual palettes.
 :::
 
 ::: {.feature}
 
-#### [Positions and stats.](reference/index.qmd)
+#### [Positions and stats.](reference/index.qmd) {.no-anchor}
 
 Identity, stack, dodge, and fill positions.
 Bin, count, identity, and smooth stats.
@@ -126,21 +126,21 @@ Bin, count, identity, and smooth stats.
 
 ::: {.feature}
 
-#### [Facets.](reference/facets/index.qmd)
+#### [Facets.](reference/facets/index.qmd) {.no-anchor}
 
 `facet-wrap` and `facet-grid` with shared or free scales.
 :::
 
 ::: {.feature}
 
-#### [Themes.](reference/themes/index.qmd)
+#### [Themes.](reference/themes/index.qmd) {.no-anchor}
 
 `theme-minimal`, `theme-classic`, `theme-void`, plus `theme()` element overrides.
 :::
 
 ::: {.feature}
 
-#### [Composable.](examples/index.qmd)
+#### [Composable.](examples/index.qmd) {.no-anchor}
 
 Everything is data you can `let`, extend, and reuse across a Typst document.
 :::
