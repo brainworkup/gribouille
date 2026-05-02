@@ -610,10 +610,11 @@
 
   let _read-axis-guide(aes) = {
     let g = spec.at("guides", default: (:)).at(aes, default: none)
-    if g == none { (angle: 0, n-dodge: 1) } else {
+    if g == none { (angle: 0, n-dodge: 1, logticks: false) } else {
       (
         angle: g.at("angle", default: 0),
         n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
+        logticks: g.at("logticks", default: false),
       )
     }
   }
@@ -767,6 +768,47 @@
       )
     }
   }
+
+  // Minor log ticks: opt-in via guide-axis-logticks() on a log10-trans axis.
+  // Emits half-length, unlabelled ticks at sub-decade positions (2, 3, ..., 9
+  // within each decade) covered by the visible domain.
+  let _draw-log-minors(trained, guide, axis, range) = {
+    if not guide.logticks { return }
+    if trained == none { return }
+    if trained.type != "continuous" { return }
+    if trained.at("trans", default: "identity") != "log10" { return }
+    if axis-stroke == none or tick-len <= 0 { return }
+    let view-trans = trained.at("view-trans", default: none)
+    let (lo, hi) = if view-trans != none {
+      (
+        trans-inv("log10", view-trans.at(0)),
+        trans-inv("log10", view-trans.at(1)),
+      )
+    } else { trained.domain }
+    if lo <= 0 or hi <= 0 { return }
+    let minor-len = tick-len * 0.5
+    let k-lo = int(calc.floor(calc.log(lo, base: 10)))
+    let k-hi = int(calc.ceil(calc.log(hi, base: 10)))
+    let k = k-lo
+    while k <= k-hi {
+      let scale = calc.pow(10.0, k)
+      for c in (2, 3, 4, 5, 6, 7, 8, 9) {
+        let v = c * scale
+        if v >= lo and v <= hi {
+          if axis == "x" {
+            let cx = map-axis(trained, v, range)
+            line((cx, py-lo), (cx, py-lo - minor-len), stroke: axis-stroke)
+          } else {
+            let cy = map-axis(trained, v, range)
+            line((px-lo - minor-len, cy), (px-lo, cy), stroke: axis-stroke)
+          }
+        }
+      }
+      k = k + 1
+    }
+  }
+  _draw-log-minors(x-trained, x-guide, "x", px-range)
+  _draw-log-minors(y-trained, y-guide, "y", py-range)
 
   // Secondary x-axis: draw on top edge if the trained x scale carries a
   // secondary spec. Breaks reuse the primary axis grid; their labels go

@@ -76,3 +76,52 @@
   angle: angle,
   n-dodge: n-dodge,
 )
+
+/// Add minor tick marks at log-scale subdivisions on a `trans: "log10"` axis.
+///
+/// Inherits the `angle` / `n-dodge` controls from \@guide-axis and additionally
+/// emits short, unlabelled tick marks at the sub-decade positions
+/// (2, 3, ..., 9 within each decade). Has no effect when the axis is not
+/// log10-transformed.
+///
+/// \@category Guides
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param angle Tick-label rotation in degrees.
+/// \@param n-dodge Number of rows/columns across which to stagger labels.
+///
+/// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.
+///
+/// \@examples Major ticks at decade boundaries plus minor ticks at 2, 3, ..., 9.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1),
+///   (x: 10, y: 100),
+///   (x: 100, y: 10000),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (
+///     scale-x-continuous(trans: "log10"),
+///     scale-y-continuous(trans: "log10"),
+///   ),
+///   guides: guides(
+///     x: guide-axis-logticks(),
+///     y: guide-axis-logticks(),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@guide-axis, \@guides
+#let guide-axis-logticks(angle: 0, n-dodge: 1) = (
+  kind: "guide",
+  aesthetic: none,
+  angle: angle,
+  n-dodge: n-dodge,
+  logticks: true,
+)
