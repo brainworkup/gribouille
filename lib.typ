@@ -77,6 +77,7 @@
 #import "src/stat/unique.typ": stat-unique
 #import "src/stat/qq.typ": stat-qq
 #import "src/stat/qq-line.typ": stat-qq-line
+#import "src/stat/ellipse.typ": stat-ellipse
 
 // Helpers.
 #import "src/plot.typ": get-alt-text
