@@ -11,7 +11,7 @@
 ///! closed-form `−2 · ln(1 − level)`, no numerical inversion required.
 
 #import "../utils/types.typ": parse-number
-#import "../utils/group.typ": group-key
+#import "../utils/group.typ": group-aesthetics, group-key
 
 /// Covariance-ellipse statistic: one ellipse per group from the sample
 /// covariance of `(x, y)`.
@@ -63,12 +63,8 @@
   params: (level: level),
 )
 
-#let _group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
-
 #let apply(data, mapping, params: (:)) = {
   let base-mapping = (
-    x: "x",
-    y: "y",
     x0: "x0",
     y0: "y0",
     a: "a",
@@ -104,9 +100,8 @@
     }
   }
 
-  let pass-aesthetics = _group-aesthetics + ("label",)
   let out-mapping = base-mapping
-  for aes in pass-aesthetics {
+  for aes in group-aesthetics {
     let col = mapping.at(aes, default: none)
     if col != none { out-mapping.insert(aes, col) }
   }
@@ -164,8 +159,6 @@
     }
 
     let row = (
-      x: x-mean,
-      y: y-mean,
       x0: x-mean,
       y0: y-mean,
       a: a,
@@ -173,7 +166,7 @@
       angle: angle,
     )
     let sample = proto.at(key)
-    for col in pass-aesthetics {
+    for col in group-aesthetics {
       let m-col = mapping.at(col, default: none)
       if m-col != none {
         row.insert(m-col, sample.at(m-col, default: ""))
