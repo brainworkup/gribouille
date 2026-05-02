@@ -608,8 +608,8 @@
   let axis-stroke = _line-stroke(theme, "axis-line", fallback-colour: _ink)
   let tick-len = theme.tick-length
 
-  let x-guide = {
-    let g = spec.at("guides", default: (:)).at("x", default: none)
+  let _read-axis-guide(aes) = {
+    let g = spec.at("guides", default: (:)).at(aes, default: none)
     if g == none { (angle: 0, n-dodge: 1) } else {
       (
         angle: g.at("angle", default: 0),
@@ -617,6 +617,8 @@
       )
     }
   }
+  let x-guide = _read-axis-guide("x")
+  let y-guide = _read-axis-guide("y")
   let _x-label-anchor(angle) = {
     if angle == 0 { "north" } else if angle > 0 { "north-east" } else {
       "north-west"
@@ -636,6 +638,22 @@
       )[#label-text],
       anchor: _x-label-anchor(x-guide.angle),
       angle: x-guide.angle * 1deg,
+    )
+  }
+  let _draw-y-label(cy, label-text, idx) = {
+    if not (show-y-labels and theme.tick-labels) { return }
+    let dodge-col = calc.rem(idx, y-guide.n-dodge)
+    let col-gap = 0.5
+    let cx = px-lo - 0.2 - dodge-col * col-gap
+    content(
+      (cx, cy),
+      text(
+        size: _ax-text.size,
+        fill: _ax-text.fill,
+        weight: _ax-text.weight,
+      )[#label-text],
+      anchor: "east",
+      angle: y-guide.angle * 1deg,
     )
   }
 
@@ -712,8 +730,9 @@
       if axis-stroke != none and tick-len > 0 {
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
-      if show-y-labels and theme.tick-labels {
-        let txt = resolve-prose(
+      _draw-y-label(
+        cy,
+        resolve-prose(
           resolve-label(
             _y-disp.labels,
             b,
@@ -722,17 +741,9 @@
             typst-mark: _y-disp.typst-mark,
           ),
           eval-strings: _ax-text.typst,
-        )
-        content(
-          (px-lo - 0.2, cy),
-          text(
-            size: _ax-text.size,
-            fill: _ax-text.fill,
-            weight: _ax-text.weight,
-          )[#txt],
-          anchor: "east",
-        )
-      }
+        ),
+        idx,
+      )
     }
   } else if y-trained != none and y-trained.type == "discrete" {
     for (idx, level) in y-trained.domain.enumerate() {
@@ -740,8 +751,9 @@
       if axis-stroke != none and tick-len > 0 {
         line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
       }
-      if show-y-labels and theme.tick-labels {
-        let txt = resolve-prose(
+      _draw-y-label(
+        cy,
+        resolve-prose(
           resolve-label(
             _y-disp.labels,
             level,
@@ -750,17 +762,9 @@
             typst-mark: _y-disp.typst-mark,
           ),
           eval-strings: _ax-text.typst,
-        )
-        content(
-          (px-lo - 0.2, cy),
-          text(
-            size: _ax-text.size,
-            fill: _ax-text.fill,
-            weight: _ax-text.weight,
-          )[#txt],
-          anchor: "east",
-        )
-      }
+        ),
+        idx,
+      )
     }
   }
 

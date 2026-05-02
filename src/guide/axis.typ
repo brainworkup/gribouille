@@ -1,22 +1,24 @@
 ///! Axis guide customisation.
 ///!
-///! Build a guide spec the axis renderer respects when bound to the `x`
-///! aesthetic via \@guides. Rotate tick labels with `angle` or stagger them
-///! across multiple rows with `n-dodge` to prevent overlap.
+///! Build a guide spec the axis renderer respects when bound to the `x` or
+///! `y` aesthetic via \@guides. Rotate tick labels with `angle` or stagger
+///! them across multiple rows (x) or columns (y) with `n-dodge` to prevent
+///! overlap.
 
-/// Customise the x-axis tick labels.
+/// Customise the x- or y-axis tick labels.
 ///
 /// The returned spec carries customisation only; it is bound to an aesthetic
-/// when passed through \@guides as `x: guide-axis(...)`, and applied by the
-/// axis renderer when drawing tick labels. v1 only honours these options on
-/// the x-axis; the y-axis ignores `guide-axis` for now.
+/// when passed through \@guides as `x: guide-axis(...)` or `y: guide-axis(...)`,
+/// and applied by the axis renderer when drawing tick labels. On the x-axis
+/// `n-dodge` staggers labels across rows; on the y-axis it staggers them
+/// across columns receding from the axis.
 ///
 /// \@category Guides
 /// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param angle Tick-label rotation in degrees: 0 horizontal, 45 readable diagonal, 90 vertical.
-/// \@param n-dodge Number of rows across which to stagger tick labels; 1 keeps them on a single row.
+/// \@param n-dodge Number of rows (x-axis) or columns (y-axis) across which to stagger tick labels; 1 keeps them on a single row/column.
 ///
 /// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.
 ///
@@ -48,6 +50,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-col(),),
 ///   guides: guides(x: guide-axis(n-dodge: 2)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples Rotate long y tick labels.
+/// ```
+/// #let cities = ("Anvers", "Bruxelles", "Charleroi", "Liège")
+/// #let d = cities.enumerate().map(((i, c)) => (x: i + 1, y: c))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   guides: guides(y: guide-axis(angle: 30)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

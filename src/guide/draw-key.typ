@@ -241,14 +241,21 @@
 // Default key kind for a geom name. Returns one of "point", "line", "rect",
 // or "blank" so the legend can pick a glyph automatically.
 #let default-key-for(geom) = {
-  if geom == "point" { return "point" }
-  if geom == "jitter" { return "point" }
+  if (
+    "point",
+    "jitter",
+    "pointrange",
+  ).contains(geom) {
+    return "point"
+  }
   if (
     "line",
     "path",
     "step",
     "smooth",
     "segment",
+    "curve",
+    "spoke",
     "abline",
     "hline",
     "vline",
@@ -275,10 +282,18 @@
     "boxplot",
     "crossbar",
     "label",
+    "ellipse",
+    "mark",
   ).contains(geom) {
     return "rect"
   }
-  if geom == "blank" { return "blank" }
+  if (
+    "blank",
+    "text",
+    "typst",
+  ).contains(geom) {
+    return "blank"
+  }
   "rect"
 }
 
