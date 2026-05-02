@@ -1,4 +1,4 @@
-// shape and linetype aesthetics: one mark and dash style per group.
+// shape and linetype aesthetics: one mark and one dash style per group.
 
 #import "../lib.typ": *
 
@@ -21,10 +21,20 @@
     colour: "group",
   ),
   layers: (
-    geom-line(),
-    geom-point(size: 5pt),
+    geom-line(stroke: 1pt),
+    geom-point(size: 4pt),
   ),
-  labs: labs(title: "Shapes and linetypes per group"),
-  width: 10cm,
-  height: 7cm,
+  scales: (scale-colour-brewer(palette: "Dark2"),),
+  labs: labs(
+    title: "One shape and one linetype per group",
+    subtitle: "Using shape + linetype + colour together makes groups legible without colour alone",
+    x: "t",
+    y: "Value",
+    colour: "Group",
+    shape: "Group",
+    linetype: "Group",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

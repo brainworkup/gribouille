@@ -11,26 +11,44 @@
   (x: 8.0, y: 4.1, name: "Delta"),
 )
 
-#plot(
-  data: cities,
-  mapping: aes(x: "x", y: "y", label: "name"),
-  layers: (
-    geom-point(size: 4pt, fill: rgb("#1f77b4")),
-    geom-text(size: 9pt, dy: 0.3, anchor: "south"),
-  ),
-  labs: labs(title: "Labelled points"),
-  width: 10cm,
-  height: 7cm,
-)
+#let panel(title, body) = {
+  set align(center)
+  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
+}
 
-#plot(
-  data: cities,
-  mapping: aes(x: "x", y: "y", label: "name"),
-  layers: (
-    geom-point(size: 4pt, fill: rgb("#1f77b4")),
-    geom-label(size: 9pt, dy: 0.35, anchor: "south"),
+#let accent = rgb("#1f77b4")
+
+#stack(
+  dir: ttb,
+  spacing: 0.5cm,
+  panel(
+    "geom-text (plain)",
+    plot(
+      data: cities,
+      mapping: aes(x: "x", y: "y", label: "name"),
+      layers: (
+        geom-point(size: 4pt, fill: accent),
+        geom-text(size: 9pt, dy: 0.3, anchor: "south"),
+      ),
+      labs: labs(x: "x", y: "y"),
+      theme: theme-minimal(),
+      width: 11cm,
+      height: 5cm,
+    ),
   ),
-  labs: labs(title: "Boxed labels"),
-  width: 10cm,
-  height: 7cm,
+  panel(
+    "geom-label (boxed)",
+    plot(
+      data: cities,
+      mapping: aes(x: "x", y: "y", label: "name"),
+      layers: (
+        geom-point(size: 4pt, fill: accent),
+        geom-label(size: 9pt, dy: 0.35, anchor: "south"),
+      ),
+      labs: labs(x: "x", y: "y"),
+      theme: theme-minimal(),
+      width: 11cm,
+      height: 5cm,
+    ),
+  ),
 )

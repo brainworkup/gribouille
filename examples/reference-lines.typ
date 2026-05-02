@@ -1,4 +1,4 @@
-// Reference lines: hline, vline and abline overlaid on a scatter plot.
+// Reference lines: hline, vline, and abline overlaid on a scatter plot.
 
 #import "../lib.typ": *
 
@@ -10,12 +10,18 @@
   data: df,
   mapping: aes(x: "x", y: "y"),
   layers: (
-    geom-point(size: 3pt),
+    geom-point(size: 2.5pt, alpha: 0.85),
     geom-abline(slope: 2, intercept: 3, colour: rgb("#d62728")),
     geom-hline(yintercept: 20, colour: rgb("#2ca02c")),
     geom-vline(xintercept: 10, colour: rgb("#1f77b4")),
   ),
-  labs: labs(title: "Trend with reference lines"),
-  width: 10cm,
-  height: 7cm,
+  labs: labs(
+    title: "Trend with reference lines",
+    subtitle: "abline, hline, and vline highlight expected values without joining the data",
+    x: "x",
+    y: "y",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

@@ -458,3 +458,15 @@
   title: "Fixed ratio with facets"
   description: '<a href="../reference/coord/coord-fixed.qmd"><code>coord-fixed</code></a> applies inside every <a href="../reference/facets/facet-wrap.qmd"><code>facet-wrap</code></a> panel.'
   alt: "Three facet panels of three parallel lines (y equals x, y equals x plus 1, y equals x minus 1), each panel locked to a 1:1 unit ratio."
+
+- slug: annotate
+  section: annotations
+  title: "Ad-hoc annotations"
+  description: '<a href="../reference/geoms/annotate.qmd"><code>annotate</code></a> places extra layers (text, vline) without joining them to the data table.'
+  alt: "Annotated line and point chart with a red dashed vertical reference line at x equals 5, a peak label above the curve, and a series A label tucked into the upper left."
+
+- slug: annotate-typst
+  section: annotations
+  title: "Typst markup in annotations"
+  description: '<code>annotate("typst", label: "...")</code> always evaluates the label as Typst markup; <a href="../reference/helpers/typst.qmd"><code>typst()</code></a> forces evaluation inside <code>annotate("text", ...)</code>.'
+  alt: "Annotated line and point chart with a bold-italic peak label rendered as Typst markup and a series A label using the typst() forcing tag."

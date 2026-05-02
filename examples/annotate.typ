@@ -1,43 +1,47 @@
-// annotate(): add ad-hoc text labels and a reference line to a base plot.
+// annotate() adds ad-hoc text labels and reference lines to a base plot.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let df = range(0, 11).map(i => (
-  x: i,
-  y: 4 + 2 * calc.sin(i * 0.7) + i * 0.15,
-))
+#let accent = rgb("#1f77b4")
+#let alert = rgb("#d62728")
+
+#let df = range(0, 11).map(i => (x: i, y: 4 + 2 * calc.sin(i * 0.7) + i * 0.15))
 
 #plot(
   data: df,
   mapping: aes(x: "x", y: "y"),
   layers: (
-    geom-point(size: 3pt, fill: rgb("#1f77b4")),
+    geom-line(stroke: 1pt, colour: accent, alpha: 0.5),
+    geom-point(size: 3pt, fill: accent),
+    annotate("vline", xintercept: 5, colour: alert, stroke: 0.8pt),
     annotate(
       "text",
       x: 5,
-      y: 6,
+      y: 6.4,
       label: "peak",
       anchor: "south",
       dy: 0.3,
       size: 10pt,
+      colour: alert,
     ),
     annotate(
       "text",
-      x: 0.5,
+      x: 0.4,
       y: 7.5,
       label: "Series A",
       anchor: "west",
       size: 12pt,
     ),
-    annotate("vline", xintercept: 5, colour: rgb("#cc0000"), stroke: 0.8pt),
   ),
   labs: labs(
     title: "Annotated series",
+    subtitle: "annotate() places ad-hoc layers without joining the data table",
     x: "Index",
     y: "Value",
   ),
+  theme: theme-minimal(),
   width: 11cm,
-  height: 7cm,
+  height: 6.5cm,
 )
