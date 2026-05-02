@@ -109,6 +109,12 @@
   if aesthetic == "alpha" {
     let range = spec-range(trained, (0.1, 1))
     if trained.type == "discrete" {
+      let pal = spec-palette(trained, none)
+      if pal != none and pal.len() > 0 {
+        let idx = discrete-index(trained, value)
+        if idx == none { return none }
+        return palette-at(pal, idx)
+      }
       return discrete-numeric(trained, value, range)
     }
     return continuous-numeric(trained, value, range)

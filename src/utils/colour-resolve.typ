@@ -60,7 +60,14 @@
     if v == none { return fallback }
     continuous-numeric(trained, v, range)
   } else {
-    discrete-numeric(trained, raw, range)
+    let pal = spec-palette(trained, none)
+    if pal != none and pal.len() > 0 {
+      let idx = discrete-index(trained, raw)
+      if idx == none { return fallback }
+      pal.at(calc.rem(idx, pal.len()))
+    } else {
+      discrete-numeric(trained, raw, range)
+    }
   }
   if resolved == none { return fallback }
   _clamp(resolved, 0, 1)

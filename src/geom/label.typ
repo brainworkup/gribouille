@@ -26,6 +26,7 @@
 /// \@param colour Paint applied to both the box outline and the label text. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 /// \@param fill Box fill colour. `auto` resolves via the fill scale, falling back to the theme `paper` only when neither `colour` nor `fill` is set.
 /// \@param stroke Box outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
+/// \@param alpha Box and text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
 /// \@param inset Padding between text and box border (a Typst length).
 /// \@param radius Corner radius of the box (a Typst length).
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
@@ -90,6 +91,7 @@
   colour: auto,
   fill: auto,
   stroke: 0.4pt,
+  alpha: auto,
   inset: 2pt,
   radius: 1pt,
   anchor: "center",
@@ -108,6 +110,7 @@
     colour: colour,
     fill: fill,
     stroke: stroke,
+    alpha: alpha,
     inset: inset,
     radius: radius,
     anchor: anchor,

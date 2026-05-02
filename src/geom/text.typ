@@ -5,6 +5,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
+#import "../utils/colour-resolve.typ": resolve-stroke-colour
 #import "../utils/typst-markup.typ": eval-as-markup
 
 /// Text label layer reading strings from the `label` aesthetic.
@@ -20,6 +21,7 @@
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param size Text size (a Typst length).
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
+/// \@param alpha Text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
@@ -74,6 +76,7 @@
   data: none,
   size: 8pt,
   colour: auto,
+  alpha: auto,
   anchor: "center",
   dx: 0,
   dy: 0,
@@ -88,6 +91,7 @@
   params: (
     size: size,
     colour: colour,
+    alpha: alpha,
     anchor: anchor,
     dx: dx,
     dy: dy,
@@ -108,12 +112,10 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
-  let resolve-colour = if colour-trained != none {
-    (ctx.resolve-colour)(colour-trained, ctx.palette)
-  } else { none }
-  let label-typst = layer.at("typst-marks", default: (:)).at("label", default: false)
+  let ink = ctx.theme.at("ink", default: black)
+  let label-typst = layer
+    .at("typst-marks", default: (:))
+    .at("label", default: false)
 
   for row in data {
     let cx = map-position(
@@ -130,11 +132,7 @@
     let label = row.at(label-col, default: none)
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
-    let colour = if colour-col != none and resolve-colour != none {
-      resolve-colour(row.at(colour-col, default: none))
-    } else if layer.params.colour == auto {
-      ctx.theme.at("ink", default: black)
-    } else { layer.params.colour }
+    let colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
     let dx = if type(layer.params.dx) == length {
       layer.params.dx / 1cm
     } else { layer.params.dx }

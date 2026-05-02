@@ -16,6 +16,7 @@
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param size Text size (a Typst length).
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
+/// \@param alpha Text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length.
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length.
@@ -48,6 +49,7 @@
   data: none,
   size: 10pt,
   colour: auto,
+  alpha: auto,
   anchor: "center",
   dx: 0,
   dy: 0,
@@ -62,6 +64,7 @@
   params: (
     size: size,
     colour: colour,
+    alpha: alpha,
     anchor: anchor,
     dx: dx,
     dy: dy,

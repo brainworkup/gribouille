@@ -109,7 +109,10 @@
 #import "src/scale/colour.typ": scale-fill-continuous, scale-fill-discrete
 #import "src/scale/colour.typ": scale-colour-manual, scale-fill-manual
 #import "src/scale/colour.typ": scale-colour-identity, scale-fill-identity
-#import "src/scale/colour.typ": scale-alpha-continuous, scale-alpha-identity
+#import "src/scale/colour.typ": (
+  scale-alpha-binned, scale-alpha-continuous, scale-alpha-identity,
+  scale-alpha-manual,
+)
 #import "src/scale/colour.typ": (
   scale-colour-viridis-b, scale-colour-viridis-c, scale-colour-viridis-d,
 )
