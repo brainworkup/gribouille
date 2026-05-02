@@ -22,13 +22,19 @@
   layers: (geom-col(position: "dodge"),),
   scales: (
     scale-x-discrete(expand: false),
-    scale-y-continuous(expand: (0%, 10%)),
+    scale-y-continuous(expand: (0%, 10%), labels: label-currency(
+      symbol: "$",
+      digits: 0,
+    )),
   ),
   labs: labs(
-    title: "Revenue by quarter (dodged)",
+    title: "Revenue by quarter, dodged",
+    subtitle: "Side-by-side bars compare products within each quarter",
     x: "Quarter",
-    y: "Revenue (k$)",
+    y: "Revenue (M)",
+    fill: "Product",
   ),
-  width: 10cm,
-  height: 7cm,
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

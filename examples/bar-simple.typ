@@ -14,13 +14,10 @@
 #plot(
   data: fruits,
   mapping: aes(x: "fruit", y: "count", fill: "fruit"),
-  layers: (
-    geom-col(),
-  ),
-  scales: (
-    scale-x-discrete(name: "Fruit"),
-    scale-y-continuous(name: "Count"),
-  ),
-  width: 10cm,
-  height: 7cm,
+  layers: (geom-col(),),
+  guides: guides(fill: guide-none()),
+  labs: labs(title: "Counts per fruit", x: "Fruit", y: "Count"),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

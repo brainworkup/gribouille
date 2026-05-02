@@ -20,7 +20,15 @@
   data: sales,
   mapping: aes(x: "q", y: "revenue", fill: "product"),
   layers: (geom-col(position: "stack"),),
-  labs: labs(title: "Revenue by quarter", x: "Quarter", y: "Revenue (k$)"),
-  width: 10cm,
-  height: 7cm,
+  scales: (scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),),
+  labs: labs(
+    title: "Revenue by quarter",
+    subtitle: "Stacked bars highlight per-quarter totals",
+    x: "Quarter",
+    y: "Revenue (M)",
+    fill: "Product",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

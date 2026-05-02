@@ -1,4 +1,4 @@
-// Mixed-width dodge: per-row width column makes one product wider than the others.
+// Mixed-width dodge: per-row `width` column makes one product wider than the others.
 
 #import "../lib.typ": *
 
@@ -17,11 +17,15 @@
   data: sales,
   mapping: aes(x: "q", y: "revenue", fill: "product"),
   layers: (geom-col(position: "dodge"),),
+  scales: (scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),),
   labs: labs(
-    title: "Revenue with uneven dodge slots",
+    title: "Revenue with mixed-width dodge slots",
+    subtitle: "Each row supplies its own dodge slot width via the width column",
     x: "Quarter",
-    y: "Revenue (k$)",
+    y: "Revenue (M)",
+    fill: "Product",
   ),
-  width: 14cm,
-  height: 8cm,
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

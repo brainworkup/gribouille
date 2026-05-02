@@ -23,10 +23,16 @@
 
 #plot(
   data: items,
-  mapping: aes(x: "cat"),
+  mapping: aes(x: "cat", fill: "cat"),
   layers: (geom-bar(),),
   scales: (scale-y-continuous(expand: (0%, 20%)),),
-  labs: labs(title: "Category counts", x: "Category", y: "Count"),
-  width: 10cm,
-  height: 7cm,
+  guides: guides(fill: guide-none()),
+  labs: labs(
+    title: "Category counts via stat-count",
+    x: "Category",
+    y: "Count",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

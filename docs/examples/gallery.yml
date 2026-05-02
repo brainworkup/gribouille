@@ -488,3 +488,9 @@
   title: "Plot margins"
   description: '<a href="../reference/themes/margin.qmd"><code>margin</code></a> sets all four sides; <a href="../reference/themes/margin-part.qmd"><code>margin-part</code></a> overrides only the named sides.'
   alt: "Three stacked panels of the same scatter, the first with default margins, the second with all four margins pinned via margin(), and the third with only top and left pinned via margin-part()."
+
+- slug: dodge-mixed
+  section: bars
+  title: "Mixed-width dodge"
+  description: 'Per-row <code>width</code> column lets <a href="../reference/positions/position-dodge.qmd"><code>position-dodge</code></a> give one product a wider slot than another.'
+  alt: "Dodged bar chart of revenue per quarter where product A bars are visibly wider than product B bars within each quarter."
