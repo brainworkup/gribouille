@@ -1,5 +1,6 @@
 ---
-title: "Gribouille {{< env VERSION >}}"
+title: "Gribouille"
+subtitle: "A layered grammar of graphics for Typst."
 toc: false
 sidebar: false
 image: /assets/typst-render/examples/penguins-light.svg
@@ -17,7 +18,7 @@ include-in-header:
 
 ::: {.hero-content}
 
-## {{< brand logo medium >}} [{{< env VERSION >}}]{.pill}
+## {{< brand logo medium >}}
 
 ### A layered grammar of graphics for [Typst]{.ink}.
 

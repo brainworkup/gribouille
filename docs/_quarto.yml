@@ -17,7 +17,7 @@ lang: en-GB
 date-format: "dddd[, the] Do [of] MMMM, YYYY"
 
 website:
-  title: "Gribouille {{< env VERSION >}}"
+  title: "Gribouille"
   description: "A layered grammar of graphics for Typst."
   favicon: assets/images/favicon.svg
   site-url: https://m.canouil.dev/gribouille/
