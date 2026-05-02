@@ -201,9 +201,9 @@ Legend for **Priority** (used to order future work):
 | ggplot2                           | gribouille symbol                                                 | Status | Priority | Notes                                                                               |
 | --------------------------------- | ----------------------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------------------- |
 | `labs()`                          | `labs(title:, subtitle:, caption:, x:, y:, colour:, fill:, ...)`. | ✅     | —        | Axis names are injected into trained scale specs. Covers the role of `xlab` / `ylab` / `ggtitle`. |
-| `get_labs()`                      | —                                                                 | ⬜     | P3       | —                                                                                   |
+| `get_labs()`                      | —                                                                 | ❌     | ∅        | Out of scope. ggplot2 introspects a lazy plot object; gribouille has no equivalent — `labs()` is a plain dict the user already holds. |
 | `lims()` / `xlim()` / `ylim()`    | —                                                                 | ❌     | ∅        | Use `scale-x-continuous(limits:)` / `scale-y-continuous(limits:)` directly.         |
-| `expansion()` / `expand_scale()`  | via scale `expand:`.                                              | 🟡     | P3       | Expose helper.                                                                      |
+| `expansion()` / `expand_scale()`  | `expansion(mult:, add:)` plus per-scale `expand:` argument.       | ✅     | —        | Returns an expansion dict consumed by every positional scale's `expand:`. Accepts scalar or `(lo, hi)` pair for both `mult` and `add`. |
 | `expand_limits()`                 | `expand-limits`.                                                  | ✅     | —        | Folds extension values into the trained continuous domain rather than replacing it. |
 
 ### Guides
