@@ -4,7 +4,7 @@
 // `resolve-element` in `theme.typ`; user themes override individual records or
 // pass spot-overrides via the master `text` / `line` / `rect` keys.
 
-#import "elements.typ": element-line, element-rect, element-text
+#import "elements.typ": element-line, element-rect, element-text, margin-auto
 
 // Read document colours injected by the typst-render Quarto extension via
 // --input flags. Falls back to black/white when rendering standalone.
@@ -48,6 +48,10 @@
   // Per-surface rect records
   panel-background: element-rect(),
   strip-background: element-rect(),
+
+  // Plot canvas margin (each side: a Typst length or `auto` for the
+  // renderer's dynamic default).
+  plot-margin: margin-auto(),
 
   // Bare scalars
   tick-length: 0.1,
