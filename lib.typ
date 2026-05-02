@@ -34,6 +34,7 @@
 #import "src/geom/segment.typ": geom-segment
 #import "src/geom/polygon.typ": geom-polygon
 #import "src/geom/ellipse.typ": geom-ellipse
+#import "src/geom/mark.typ": geom-mark
 #import "src/geom/col.typ": geom-col
 #import "src/geom/bar.typ": geom-bar
 #import "src/geom/histogram.typ": geom-histogram

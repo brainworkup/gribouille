@@ -29,6 +29,7 @@
 #import "geom/segment.typ" as segment-geom
 #import "geom/polygon.typ" as polygon-geom
 #import "geom/ellipse.typ" as ellipse-geom
+#import "geom/mark.typ" as mark-geom
 #import "geom/col.typ" as col-geom
 #import "geom/ribbon.typ" as ribbon-geom
 #import "geom/smooth.typ" as smooth-geom
@@ -62,6 +63,7 @@
   segment: segment-geom.draw,
   polygon: polygon-geom.draw,
   ellipse: ellipse-geom.draw,
+  mark: mark-geom.draw,
   col: col-geom.draw,
   ribbon: ribbon-geom.draw,
   smooth: smooth-geom.draw,
