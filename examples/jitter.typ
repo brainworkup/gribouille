@@ -1,20 +1,30 @@
-// position-jitter and position-nudge: jittered scatter plus offset labels.
+// geom-jitter spreads overlapping points so density per category is visible.
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
-
-#let d = ()
-#for x in (1, 2, 3, 4) {
-  for _ in range(0, 14) {
-    d.push((x: x, y: 1, lab: "x=" + str(x)))
-  }
-}
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-jitter(size: 2pt),),
-  width: 9cm,
-  height: 4cm,
+  data: mpg,
+  mapping: aes(x: "class", y: "hwy", colour: "class"),
+  layers: (
+    geom-jitter(
+      size: 2.5pt,
+      alpha: 0.85,
+      position: position-jitter(width: 0.25),
+    ),
+  ),
+  scales: (
+    scale-y-continuous(breaks: (15, 20, 25, 30, 35, 40)),
+  ),
+  guides: guides(colour: guide-none()),
+  labs: labs(
+    title: "Highway mpg per vehicle class",
+    subtitle: "Jitter spreads coincident points so cluster density reads",
+    x: "Class",
+    y: "Highway mpg",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

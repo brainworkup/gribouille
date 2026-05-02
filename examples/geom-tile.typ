@@ -2,20 +2,38 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = ()
-#for x in range(0, 6) {
-  for y in range(0, 5) {
-    d.push((x: x, y: y, v: x + y + calc.rem(x * y, 3)))
+#let weeks = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+#let hours = ("06", "09", "12", "15", "18", "21")
+
+#let traffic = ()
+#for (i, day) in weeks.enumerate() {
+  for (j, hour) in hours.enumerate() {
+    let weekend = day == "Sat" or day == "Sun"
+    let peak = if weekend { 60 } else { 100 }
+    let request-count = (
+      peak * (1.0 - calc.abs(j - 2.5) / 5.0) + calc.rem(i * 7 + j * 3, 17)
+    )
+    traffic.push((day: day, hour: hour, requests: request-count))
   }
 }
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y", fill: "v"),
-  layers: (geom-tile(),),
-  scales: (scale-fill-viridis-c(),),
-  width: 9cm,
-  height: 5cm,
+  data: traffic,
+  mapping: aes(x: "hour", y: "day", fill: "requests"),
+  layers: (geom-tile(stroke: 0.5pt + rgb("#ffffff")),),
+  scales: (
+    scale-fill-viridis-c(name: "Requests / min"),
+    scale-y-discrete(limits: weeks.rev()),
+  ),
+  labs: labs(
+    title: "Hourly request volume by day",
+    subtitle: "Peak load lands midday on weekdays",
+    x: "Hour of day",
+    y: "Day",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

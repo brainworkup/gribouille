@@ -2,26 +2,36 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (x0: 0, y0: 0, a: 2, b: 1, angle: 0, k: "wide"),
-  (x0: 1, y0: 1, a: 1, b: 0.5, angle: calc.pi / 4, k: "tilt"),
-  (x0: -1, y0: 1.5, a: 0.8, b: 0.8, angle: 0, k: "round"),
+#let regions = (
+  (x0: 0.5, y0: 0.5, a: 1.4, b: 0.7, angle: 0, region: "Coastal"),
+  (x0: 1.8, y0: 1.6, a: 0.9, b: 0.5, angle: calc.pi / 6, region: "Mountain"),
+  (x0: -0.6, y0: 1.8, a: 0.7, b: 0.7, angle: 0, region: "Plateau"),
+  (x0: 1.0, y0: -0.6, a: 1.1, b: 0.4, angle: -calc.pi / 8, region: "Valley"),
 )
 
 #plot(
-  data: d,
+  data: regions,
   mapping: aes(
     x0: "x0",
     y0: "y0",
     a: "a",
     b: "b",
     angle: "angle",
-    fill: "k",
+    fill: "region",
   ),
-  layers: (geom-ellipse(alpha: 0.5),),
-  labs: labs(title: "Mapped ellipses", fill: "Shape"),
+  layers: (geom-ellipse(alpha: 0.5, stroke: 0.6pt),),
+  scales: (scale-fill-brewer(palette: "Set2"),),
+  coord: coord-fixed(),
+  labs: labs(
+    title: "Catchment regions sketched as ellipses",
+    subtitle: "Each ellipse is parameterised by centre, semi-axes, and rotation",
+    x: "Easting (km)",
+    y: "Northing (km)",
+    fill: "Region",
+  ),
+  theme: theme-minimal(),
   width: 10cm,
   height: 6cm,
 )

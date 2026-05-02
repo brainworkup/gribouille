@@ -1,33 +1,42 @@
-// Per-geom legend glyphs: a `colour` aesthetic driven by a line layer
-// renders as a stroke in the legend, while `fill` driven by a ribbon
-// renders as a small rectangle.
+// Per-geom legend glyphs: line layers contribute strokes, ribbon layers
+// contribute filled rectangles, so the `colour` and `fill` aesthetics each
+// resolve to the right glyph automatically.
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (x: 1, y: 2.0, ymin: 1.4, ymax: 2.6, band: "centre", series: "main"),
-  (x: 2, y: 3.2, ymin: 2.6, ymax: 3.8, band: "centre", series: "main"),
-  (x: 3, y: 2.7, ymin: 2.0, ymax: 3.4, band: "centre", series: "main"),
-  (x: 4, y: 4.1, ymin: 3.4, ymax: 4.7, band: "centre", series: "main"),
+#let forecast = (
+  (week: 1, fit: 12.0, lo: 10.6, hi: 13.4, band: "95% CI", series: "Baseline"),
+  (week: 2, fit: 13.2, lo: 11.8, hi: 14.6, band: "95% CI", series: "Baseline"),
+  (week: 3, fit: 13.7, lo: 12.0, hi: 15.4, band: "95% CI", series: "Baseline"),
+  (week: 4, fit: 15.1, lo: 13.0, hi: 17.2, band: "95% CI", series: "Baseline"),
+  (week: 5, fit: 16.4, lo: 14.0, hi: 18.8, band: "95% CI", series: "Baseline"),
+  (week: 6, fit: 17.0, lo: 14.2, hi: 19.8, band: "95% CI", series: "Baseline"),
 )
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y", colour: "series", fill: "band"),
+  data: forecast,
+  mapping: aes(x: "week", y: "fit", colour: "series", fill: "band"),
   layers: (
     geom-ribbon(
-      mapping: aes(ymin: "ymin", ymax: "ymax"),
+      mapping: aes(ymin: "lo", ymax: "hi"),
       alpha: 0.3,
       inherit-aes: true,
     ),
-    geom-line(),
+    geom-line(stroke: 1.2pt),
   ),
   scales: (
-    scale-x-continuous(name: "x"),
-    scale-y-continuous(name: "y"),
+    scale-x-continuous(name: "Week"),
+    scale-y-continuous(name: "Forecast", labels: label-comma()),
   ),
-  width: 10cm,
+  labs: labs(
+    title: "Forecast with confidence band",
+    subtitle: "Line legend uses a stroke glyph; ribbon legend uses a rectangle",
+    colour: "Series",
+    fill: "Band",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
   height: 6cm,
 )

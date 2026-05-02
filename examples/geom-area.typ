@@ -2,17 +2,27 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
-
-#let d = range(0, 24).map(i => (
-  x: i,
-  y: calc.sin(i * 0.5) + 1.5,
-))
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-area(alpha: 0.5),),
-  width: 9cm,
-  height: 5cm,
+  data: economics,
+  mapping: aes(x: "date", y: "unemploy"),
+  layers: (
+    geom-area(alpha: 0.35, fill: rgb("#1f77b4")),
+    geom-line(stroke: 1pt, colour: rgb("#1f77b4")),
+  ),
+  scales: (
+    scale-x-date(),
+    scale-y-continuous(labels: label-comma()),
+  ),
+  labs: labs(
+    title: "Monthly US unemployment, 2008-2009",
+    subtitle: "Area under the curve highlights the climb during the recession",
+    x: "Month",
+    y: "Unemployed (thousands)",
+    caption: "Source: bundled economics dataset",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

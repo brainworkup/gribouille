@@ -2,63 +2,43 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let pts = ()
-#for (cx, cy, k) in ((1, 1, "a"), (4, 1.5, "b"), (2.5, 4, "c")) {
-  for i in range(0, 8) {
-    pts.push((
-      x: cx + 0.6 * calc.cos(i * 0.7),
-      y: cy + 0.6 * calc.sin(i * 0.7),
-      k: k,
-    ))
-  }
+#let panel(title, method, expand) = {
+  set align(center)
+  stack(
+    dir: ttb,
+    spacing: 0.2cm,
+    text(weight: "bold", title),
+    plot(
+      data: penguins,
+      mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),
+      layers: (
+        geom-mark(method: method, expand: expand, alpha: 0.25),
+        geom-point(size: 2pt, alpha: 0.85),
+      ),
+      scales: (
+        scale-y-continuous(labels: label-comma()),
+      ),
+      labs: labs(
+        x: "Flipper length (mm)",
+        y: "Body mass (g)",
+        fill: "Species",
+      ),
+      theme: theme-minimal(),
+      width: 7cm,
+      height: 5cm,
+    ),
+  )
 }
 
-#plot(
-  data: pts,
-  mapping: aes(x: "x", y: "y", fill: "k"),
-  layers: (
-    geom-mark(method: "hull", expand: 8pt, alpha: 0.25),
-    geom-point(size: 3pt),
-  ),
-  labs: labs(title: "geom-mark, method = \"hull\""),
-  width: 10cm,
-  height: 5cm,
-)
+#grid(
+  columns: 2,
+  column-gutter: 0.5cm,
+  row-gutter: 0.5cm,
+  panel(`method: "hull"`, "hull", 8pt),
+  panel(`method: "ellipse"`, "ellipse", 10pt),
 
-#plot(
-  data: pts,
-  mapping: aes(x: "x", y: "y", fill: "k"),
-  layers: (
-    geom-mark(method: "ellipse", expand: 10pt, alpha: 0.25),
-    geom-point(size: 3pt),
-  ),
-  labs: labs(title: "geom-mark, method = \"ellipse\""),
-  width: 10cm,
-  height: 5cm,
-)
-
-#plot(
-  data: pts,
-  mapping: aes(x: "x", y: "y", fill: "k"),
-  layers: (
-    geom-mark(method: "rect", expand: 8pt, alpha: 0.2),
-    geom-point(size: 3pt),
-  ),
-  labs: labs(title: "geom-mark, method = \"rect\""),
-  width: 10cm,
-  height: 5cm,
-)
-
-#plot(
-  data: pts,
-  mapping: aes(x: "x", y: "y", fill: "k"),
-  layers: (
-    geom-mark(method: "circle", expand: 8pt, alpha: 0.2),
-    geom-point(size: 3pt),
-  ),
-  labs: labs(title: "geom-mark, method = \"circle\""),
-  width: 10cm,
-  height: 5cm,
+  panel(`method: "rect"`, "rect", 8pt),
+  panel(`method: "circle"`, "circle", 8pt),
 )

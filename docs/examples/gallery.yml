@@ -176,3 +176,117 @@
   title: "Secondary axes"
   description: 'Add a duplicate axis with <a href="../reference/scales/dup-axis.qmd"><code>dup-axis</code></a> or a derived axis via <code>sec-axis</code> on a continuous scale.'
   alt: "Scatter plot of highway mpg against displacement coloured by class, with the bottom and top edges sharing the displacement axis and the right edge showing the same scale converted to kilometres per litre."
+
+- slug: geom-area
+  section: geoms
+  title: "Area chart"
+  description: 'Filled polygon from y = 0 to y, drawn by <a href="../reference/geoms/geom-area.qmd"><code>geom-area</code></a>.'
+  alt: "Area and line chart of monthly US unemployment from 2008 to 2009, with the area shaded blue under the rising line."
+
+- slug: geom-step
+  section: geoms
+  title: "Stair-step interpolation"
+  description: 'Discrete jumps between consecutive points via <a href="../reference/geoms/geom-step.qmd"><code>geom-step</code></a>.'
+  alt: "Step chart of active users at each release from 2018 to 2024, with horizontal segments rising at every release year."
+
+- slug: geom-path
+  section: geoms
+  title: "Paths follow row order"
+  description: '<a href="../reference/geoms/geom-path.qmd"><code>geom-path</code></a> connects rows in input order, useful for trajectories.'
+  alt: "Spiral path traced over a cartesian plane, with colour encoding traversal time from purple at the centre to yellow at the outer edge."
+
+- slug: geom-polygon
+  section: geoms
+  title: "Filled polygons"
+  description: 'Closed filled regions, one per group, drawn by <a href="../reference/geoms/geom-polygon.qmd"><code>geom-polygon</code></a>.'
+  alt: "Three stacked polygons sketching altitude zones (lowlands, hills, peak) in green, orange, and blue."
+
+- slug: geom-rect
+  section: geoms
+  title: "Rectangles from corners"
+  description: '<a href="../reference/geoms/geom-rect.qmd"><code>geom-rect</code></a> draws filled boxes from <code>xmin</code>/<code>xmax</code>/<code>ymin</code>/<code>ymax</code>.'
+  alt: "Four rectangles laid along a 2018-2024 timeline, each spanning a major version's lifetime with height encoding cumulative releases."
+
+- slug: geom-segment
+  section: geoms
+  title: "Straight segments"
+  description: 'Lines from (<code>x</code>, <code>y</code>) to (<code>xend</code>, <code>yend</code>) via <a href="../reference/geoms/geom-segment.qmd"><code>geom-segment</code></a>.'
+  alt: "Four segments connecting team headcounts in 2020 to their 2024 values, each labelled by team in a distinct colour."
+
+- slug: geom-curve
+  section: geoms
+  title: "Curved connectors"
+  description: 'Quadratic bezier connectors with mapped colour via <a href="../reference/geoms/geom-curve.qmd"><code>geom-curve</code></a>.'
+  alt: "Two side-by-side panels of the same source-to-sink connections, one with positive curvature bowing upward and the other flipped."
+
+- slug: geom-spoke
+  section: geoms
+  title: "Vector field"
+  description: '<a href="../reference/geoms/geom-spoke.qmd"><code>geom-spoke</code></a> draws short oriented segments from an angle and a radius.'
+  alt: "Seven by seven grid of arrows pointing radially outward, with colour encoding distance from the origin via the Viridis palette."
+
+- slug: geom-ellipse
+  section: geoms
+  title: "Parametric ellipses"
+  description: 'Ellipses with mapped centre, semi-axes, and rotation via <a href="../reference/geoms/geom-ellipse.qmd"><code>geom-ellipse</code></a>.'
+  alt: "Four overlapping ellipses sketching catchment regions, each tinted from a Set2 palette and labelled coastal, mountain, plateau, and valley."
+
+- slug: geom-mark
+  section: geoms
+  title: "Cluster annotations"
+  description: 'Enclose each cluster with a chosen shape via <a href="../reference/geoms/geom-mark.qmd"><code>geom-mark</code></a> (hull, ellipse, rect, circle).'
+  alt: "Four scatter plots of penguin flipper length against body mass coloured by species, each surrounded by a different cluster shape (convex hull, ellipse, rectangle, circle)."
+
+- slug: geom-tile
+  section: geoms
+  title: "Heatmap"
+  description: '<a href="../reference/geoms/geom-tile.qmd"><code>geom-tile</code></a> renders an x/y/fill grid as filled rectangles.'
+  alt: "Heatmap of hourly request volume across seven days and six hours of day, with the Viridis palette highlighting weekday midday peaks."
+
+- slug: geom-count
+  section: geoms
+  title: "Counts as marker size"
+  description: '<a href="../reference/geoms/geom-count.qmd"><code>geom-count</code></a> uses <a href="../reference/stats/stat-sum.qmd"><code>stat-sum</code></a> to draw one marker per unique (x, y) sized by count.'
+  alt: "Bubble chart of vehicle frequency by cylinder count and class, with marker area scaled to the number of rows in each cell."
+
+- slug: geom-freqpoly
+  section: geoms
+  title: "Frequency polygons"
+  description: 'Line through binned counts via <a href="../reference/geoms/geom-freqpoly.qmd"><code>geom-freqpoly</code></a>, the line counterpart to a histogram.'
+  alt: "Overlaid frequency-polygon lines of highway mpg distributions split by cylinder count, making the per-group shapes easy to compare."
+
+- slug: geom-errorbarh
+  section: geoms
+  title: "Horizontal error bars"
+  description: 'Per-category horizontal ranges via <a href="../reference/geoms/geom-errorbarh.qmd"><code>geom-errorbarh</code></a> with point estimates.'
+  alt: "Forest-plot-style chart of seven vehicle classes with horizontal error bars spanning the 95% confidence interval around each highway mpg mean."
+
+- slug: errorbar-family
+  section: geoms
+  title: "Errorbar geom family"
+  description: 'Side-by-side comparison of <a href="../reference/geoms/geom-errorbar.qmd"><code>geom-errorbar</code></a>, <a href="../reference/geoms/geom-linerange.qmd"><code>geom-linerange</code></a>, <a href="../reference/geoms/geom-crossbar.qmd"><code>geom-crossbar</code></a>, and <a href="../reference/geoms/geom-pointrange.qmd"><code>geom-pointrange</code></a>.'
+  alt: "Two by two grid of revenue-per-quarter charts rendered with four different range geoms: errorbar with whiskers, linerange, crossbar with a filled box, and pointrange with a centre dot."
+
+- slug: longtail-geoms
+  section: geoms
+  title: "Rug, blank, and function"
+  description: '<a href="../reference/geoms/geom-rug.qmd"><code>geom-rug</code></a> for marginal density, <a href="../reference/geoms/geom-blank.qmd"><code>geom-blank</code></a> for empty frames, <a href="../reference/geoms/geom-function.qmd"><code>geom-function</code></a> for analytic curves.'
+  alt: "Three stacked panels: a coloured scatter with marginal rug ticks, a sin(x) curve drawn over an empty frame, and a strip of rug ticks marking highway mpg observations."
+
+- slug: draw-keys
+  section: geoms
+  title: "Per-geom legend glyphs"
+  description: 'Layer geoms drive different legend glyphs: lines render as strokes, ribbons as filled rectangles.'
+  alt: "Forecast line with a confidence ribbon, with the legend showing a stroke glyph for the line series and a filled rectangle glyph for the confidence band."
+
+- slug: jitter
+  section: geoms
+  title: "Jittered scatter"
+  description: '<a href="../reference/geoms/geom-jitter.qmd"><code>geom-jitter</code></a> spreads coincident points using <a href="../reference/positions/position-jitter.qmd"><code>position-jitter</code></a>.'
+  alt: "Scatter of highway mpg per vehicle class with horizontal jitter spreading overlapping points so the cluster density per class reads."
+
+- slug: jitterdodge
+  section: geoms
+  title: "Jitter within dodged groups"
+  description: '<a href="../reference/positions/position-jitterdodge.qmd"><code>position-jitterdodge</code></a> dodges colour groups apart, then jitters within each.'
+  alt: "Scatter of trial responses across four weeks with three dose arms shown side by side, each arm dodged off the week and jittered inside its column."

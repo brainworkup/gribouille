@@ -2,24 +2,44 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (x: 0, y: 0, k: "a"),
-  (x: 2, y: 0, k: "a"),
-  (x: 2, y: 2, k: "a"),
-  (x: 0, y: 2, k: "a"),
-  (x: 3, y: 1, k: "b"),
-  (x: 5, y: 1, k: "b"),
-  (x: 5, y: 4, k: "b"),
-  (x: 4, y: 5, k: "b"),
-  (x: 3, y: 4, k: "b"),
+#let zones = (
+  (x: 0, y: 0, zone: "Lowlands"),
+  (x: 4, y: 0, zone: "Lowlands"),
+  (x: 4, y: 1.5, zone: "Lowlands"),
+  (x: 0, y: 1.5, zone: "Lowlands"),
+
+  (x: 0.5, y: 1.5, zone: "Hills"),
+  (x: 3.5, y: 1.5, zone: "Hills"),
+  (x: 3, y: 3.5, zone: "Hills"),
+  (x: 1, y: 3.5, zone: "Hills"),
+
+  (x: 1.4, y: 3.5, zone: "Peak"),
+  (x: 2.6, y: 3.5, zone: "Peak"),
+  (x: 2, y: 5, zone: "Peak"),
 )
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y", fill: "k"),
-  layers: (geom-polygon(alpha: 0.6),),
-  width: 9cm,
-  height: 5cm,
+  data: zones,
+  mapping: aes(x: "x", y: "y", fill: "zone"),
+  layers: (geom-polygon(alpha: 0.6, stroke: 0.6pt),),
+  scales: (
+    scale-fill-manual(values: (
+      rgb("#a1d99b"),
+      rgb("#fdae6b"),
+      rgb("#9ecae1"),
+    )),
+  ),
+  coord: coord-fixed(),
+  labs: labs(
+    title: "Stylised altitude zones",
+    subtitle: "One filled polygon per zone, drawn from row order",
+    x: "x",
+    y: "y",
+    fill: "Zone",
+  ),
+  theme: theme-minimal(),
+  width: 10cm,
+  height: 6cm,
 )

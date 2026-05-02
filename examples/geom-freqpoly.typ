@@ -2,16 +2,20 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
-
-#let d = range(0, 60).map(i => (
-  x: calc.sin(i * 0.27) * 4 + i * 0.15,
-))
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #plot(
-  data: d,
-  mapping: aes(x: "x"),
-  layers: (geom-freqpoly(bins: 12, stroke: 1pt),),
-  width: 9cm,
-  height: 5cm,
+  data: mpg,
+  mapping: aes(x: "hwy", colour: as-factor("cyl")),
+  layers: (geom-freqpoly(bins: 10, stroke: 1.2pt),),
+  labs: labs(
+    title: "Highway fuel economy by cylinder count",
+    subtitle: "Frequency polygons make the per-group shapes easy to compare",
+    x: "Highway mpg",
+    y: "Vehicles",
+    colour: "Cylinders",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

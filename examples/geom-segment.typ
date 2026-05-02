@@ -2,19 +2,63 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (x: 0, y: 0, xend: 4, yend: 3, k: "a"),
-  (x: 0, y: 3, xend: 4, yend: 0, k: "b"),
-  (x: 2, y: 0, xend: 2, yend: 3, k: "c"),
-  (x: 0, y: 1.5, xend: 4, yend: 1.5, k: "a"),
+#let changes = (
+  (
+    team: "Engineering",
+    year-start: 2020,
+    headcount-start: 14,
+    year-end: 2024,
+    headcount-end: 38,
+  ),
+  (
+    team: "Design",
+    year-start: 2020,
+    headcount-start: 4,
+    year-end: 2024,
+    headcount-end: 11,
+  ),
+  (
+    team: "Product",
+    year-start: 2020,
+    headcount-start: 6,
+    year-end: 2024,
+    headcount-end: 18,
+  ),
+  (
+    team: "Sales",
+    year-start: 2020,
+    headcount-start: 8,
+    year-end: 2024,
+    headcount-end: 22,
+  ),
 )
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y", xend: "xend", yend: "yend", colour: "k"),
-  layers: (geom-segment(stroke: 1pt),),
-  width: 9cm,
-  height: 5cm,
+  data: changes,
+  mapping: aes(
+    x: "year-start",
+    y: "headcount-start",
+    xend: "year-end",
+    yend: "headcount-end",
+    colour: "team",
+  ),
+  layers: (
+    geom-segment(stroke: 1.4pt),
+    geom-point(size: 3pt),
+  ),
+  scales: (
+    scale-x-continuous(breaks: (2020, 2022, 2024)),
+  ),
+  labs: labs(
+    title: "Team headcount, 2020 to 2024",
+    subtitle: "Each segment connects start and end values per team",
+    x: "Year",
+    y: "Headcount",
+    colour: "Team",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

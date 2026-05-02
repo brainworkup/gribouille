@@ -2,20 +2,36 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (x: 1, y: 1, dir: "hv"),
-  (x: 2, y: 3, dir: "hv"),
-  (x: 3, y: 2, dir: "hv"),
-  (x: 4, y: 5, dir: "hv"),
-  (x: 5, y: 4, dir: "hv"),
+#let releases = (
+  (version: 1, year: 2018, users: 120),
+  (version: 2, year: 2019, users: 220),
+  (version: 3, year: 2020, users: 360),
+  (version: 4, year: 2021, users: 410),
+  (version: 5, year: 2022, users: 580),
+  (version: 6, year: 2023, users: 760),
+  (version: 7, year: 2024, users: 940),
 )
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-step(stroke: 1pt, direction: "hv"),),
-  width: 9cm,
-  height: 5cm,
+  data: releases,
+  mapping: aes(x: "year", y: "users"),
+  layers: (
+    geom-step(stroke: 1.2pt, direction: "hv", colour: rgb("#1f77b4")),
+    geom-point(size: 3pt, fill: rgb("#1f77b4")),
+  ),
+  scales: (
+    scale-x-continuous(breaks: (2018, 2020, 2022, 2024)),
+    scale-y-continuous(labels: label-comma()),
+  ),
+  labs: labs(
+    title: "Active users at each release",
+    subtitle: "Step interpolation reflects discrete release events",
+    x: "Year",
+    y: "Active users",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

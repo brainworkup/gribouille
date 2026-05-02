@@ -2,28 +2,41 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = ()
-#for i in range(0, 6) {
-  for j in range(0, 6) {
-    d.push((
+#let field = ()
+#for i in range(0, 7) {
+  for j in range(0, 7) {
+    let dx = i - 3
+    let dy = j - 3
+    let mag = calc.sqrt(dx * dx + dy * dy)
+    field.push((
       x: i,
       y: j,
-      angle: calc.atan2(j - 2.5, i - 2.5),
-      r: 0.4,
+      angle: calc.atan2(dy, dx),
+      r: 0.35 + 0.05 * mag,
+      mag: mag,
     ))
   }
 }
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y", angle: "angle", radius: "r"),
+  data: field,
+  mapping: aes(x: "x", y: "y", angle: "angle", radius: "r", colour: "mag"),
   layers: (
-    geom-spoke(stroke: 0.6pt),
-    geom-point(size: 1.5pt, fill: rgb("#1f77b4")),
+    geom-spoke(stroke: 0.8pt),
+    geom-point(size: 1.5pt),
   ),
-  labs: labs(title: "geom-spoke vector field"),
+  scales: (scale-colour-viridis-c(),),
+  coord: coord-fixed(),
+  labs: labs(
+    title: "Radial vector field",
+    subtitle: "Spoke direction = atan2(Δy, Δx); colour = distance from origin",
+    x: "x",
+    y: "y",
+    colour: "Magnitude",
+  ),
+  theme: theme-minimal(),
   width: 8cm,
-  height: 8cm,
+  height: 7cm,
 )

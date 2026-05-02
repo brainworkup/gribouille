@@ -4,24 +4,30 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let df = ()
-#for (i, cat) in ("alpha", "beta", "gamma", "delta", "epsilon").enumerate() {
-  let mid = 2 + i + calc.sin(i) * 0.6
-  df.push((cat: cat, x: mid, lo: mid - 0.7, hi: mid + 0.5))
-}
+#let summary = (
+  (class: "compact", mean: 28.7, lo: 26.4, hi: 31.0),
+  (class: "midsize", mean: 27.2, lo: 24.6, hi: 29.8),
+  (class: "subcompact", mean: 28.1, lo: 25.0, hi: 31.2),
+  (class: "suv", mean: 18.1, lo: 15.4, hi: 20.8),
+  (class: "pickup", mean: 16.9, lo: 14.5, hi: 19.3),
+  (class: "minivan", mean: 22.2, lo: 19.7, hi: 24.7),
+  (class: "2seater", mean: 24.8, lo: 22.0, hi: 27.6),
+)
 
 #plot(
-  data: df,
-  mapping: aes(y: "cat", x: "x", xmin: "lo", xmax: "hi"),
+  data: summary,
+  mapping: aes(y: "class", x: "mean", xmin: "lo", xmax: "hi"),
   layers: (
-    geom-errorbarh(height: 0.4, stroke: 1pt, colour: rgb("#1f77b4")),
-    geom-point(size: 3pt, fill: rgb("#1f77b4")),
+    geom-errorbarh(height: 0.35, stroke: 1.2pt, colour: rgb("#1f77b4")),
+    geom-point(size: 3.5pt, fill: rgb("#1f77b4")),
   ),
-  scales: (
-    scale-x-continuous(name: "estimate"),
-    scale-y-discrete(name: "category"),
+  labs: labs(
+    title: "Highway fuel economy by vehicle class",
+    subtitle: "Horizontal error bars span the 95% confidence interval around each mean",
+    x: "Highway mpg",
+    y: "Class",
   ),
-  labs: labs(title: "Per-category horizontal error bars"),
-  width: 10cm,
-  height: 5cm,
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

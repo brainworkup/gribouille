@@ -2,18 +2,33 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = ()
+#let spiral = ()
 #for i in range(0, 60) {
   let t = i * 0.2
-  d.push((x: calc.cos(t) * (3 + t * 0.05), y: calc.sin(t) * (3 + t * 0.05)))
+  let r = 3 + t * 0.05
+  spiral.push((x: calc.cos(t) * r, y: calc.sin(t) * r, t: t))
 }
 
 #plot(
-  data: d,
-  mapping: aes(x: "x", y: "y"),
-  layers: (geom-path(stroke: 1pt),),
+  data: spiral,
+  mapping: aes(x: "x", y: "y", colour: "t"),
+  layers: (geom-path(stroke: 1.2pt),),
+  scales: (
+    scale-colour-viridis-c(),
+    scale-x-continuous(breaks: (-6, -3, 0, 3, 6)),
+    scale-y-continuous(breaks: (-6, -3, 0, 3, 6)),
+  ),
+  coord: coord-fixed(),
+  labs: labs(
+    title: "geom-path follows row order",
+    subtitle: "Colour encodes traversal time along the spiral",
+    x: "x",
+    y: "y",
+    colour: "t",
+  ),
+  theme: theme-minimal(),
   width: 9cm,
-  height: 5cm,
+  height: 7cm,
 )

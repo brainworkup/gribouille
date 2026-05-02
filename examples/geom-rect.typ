@@ -2,25 +2,36 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (xmin: 0.0, xmax: 1.0, ymin: 0.0, ymax: 2.0, k: "a"),
-  (xmin: 1.5, xmax: 3.0, ymin: 0.5, ymax: 3.0, k: "b"),
-  (xmin: 3.5, xmax: 5.0, ymin: 1.0, ymax: 4.0, k: "c"),
-  (xmin: 0.5, xmax: 2.0, ymin: 2.5, ymax: 4.5, k: "a"),
+#let releases = (
+  (xmin: 2018, xmax: 2019.5, ymin: 0, ymax: 2, version: "v1"),
+  (xmin: 2019.5, xmax: 2021, ymin: 0, ymax: 4, version: "v2"),
+  (xmin: 2021, xmax: 2023, ymin: 0, ymax: 7, version: "v3"),
+  (xmin: 2023, xmax: 2025, ymin: 0, ymax: 11, version: "v4"),
 )
 
 #plot(
-  data: d,
+  data: releases,
   mapping: aes(
     xmin: "xmin",
     xmax: "xmax",
     ymin: "ymin",
     ymax: "ymax",
-    fill: "k",
+    fill: "version",
   ),
-  layers: (geom-rect(alpha: 0.5),),
-  width: 9cm,
-  height: 5cm,
+  layers: (geom-rect(alpha: 0.5, stroke: 0.5pt),),
+  scales: (
+    scale-x-continuous(breaks: (2018, 2020, 2022, 2024)),
+  ),
+  labs: labs(
+    title: "Cumulative releases per major version",
+    subtitle: "Each box spans the version's lifetime on the timeline",
+    x: "Year",
+    y: "Releases shipped",
+    fill: "Version",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

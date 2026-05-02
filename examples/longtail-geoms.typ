@@ -4,35 +4,28 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let scatter = range(0, 30).map(i => (
-  x: i / 3 + calc.sin(i * 0.7),
-  y: calc.cos(i * 0.4) * 2 + i / 6,
-))
-
-#let frame-x = (
-  (x: -calc.pi, y: -1),
-  (x: calc.pi, y: 1),
-)
-
-#let observations = range(0, 40).map(i => (
-  x: calc.sin(i * 0.3) * 4 + 5,
-  y: 0,
-))
+#let panel(title, plot-body) = {
+  set align(center)
+  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), plot-body)
+}
 
 #let p1 = plot(
-  data: scatter,
-  mapping: aes(x: "x", y: "y"),
+  data: mpg,
+  mapping: aes(x: "displ", y: "hwy", colour: "class"),
   layers: (
-    geom-point(size: 2.5pt),
-    geom-rug(sides: "bl", colour: rgb("#1f77b4")),
+    geom-point(size: 2.5pt, alpha: 0.85),
+    geom-rug(sides: "bl"),
   ),
-  labs: labs(title: "Scatter with rug"),
+  labs: labs(x: "Displacement (L)", y: "Highway mpg", colour: "Class"),
+  theme: theme-minimal(),
   width: 8cm,
   height: 5cm,
 )
 
+#let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
+
 #let p2 = plot(
-  data: frame-x,
+  data: frame,
   mapping: aes(x: "x", y: "y"),
   layers: (
     geom-blank(),
@@ -40,28 +33,38 @@
       fun: x => calc.sin(x),
       xlim: (-calc.pi, calc.pi),
       colour: rgb("#d62728"),
-      stroke: 1pt,
+      stroke: 1.2pt,
     ),
   ),
-  labs: labs(title: "sin(x) over geom-blank frame"),
+  scales: (scale-x-continuous(breaks: (-3, -1.5, 0, 1.5, 3)),),
+  labs: labs(x: "x", y: "sin(x)"),
+  theme: theme-minimal(),
   width: 8cm,
   height: 5cm,
 )
 
 #let p3 = plot(
-  data: observations,
-  mapping: aes(x: "x", y: "y"),
+  data: mpg,
+  mapping: aes(x: "hwy"),
   layers: (
     geom-blank(
-      data: ((x: 0, y: 0), (x: 10, y: 10)),
-      inherit-aes: false,
+      data: ((x: 10, y: 0), (x: 50, y: 1)),
       mapping: aes(x: "x", y: "y"),
+      inherit-aes: false,
     ),
-    geom-rug(sides: "b", colour: rgb("#2ca02c"), length: 0.3),
+    geom-rug(sides: "b", colour: rgb("#2ca02c"), length: 0.4),
   ),
-  labs: labs(title: "Forced y-range with rug density"),
+  scales: (scale-x-continuous(name: "Highway mpg"),),
+  labs: labs(y: ""),
+  theme: theme-minimal(),
   width: 8cm,
   height: 5cm,
 )
 
-#stack(dir: ttb, spacing: 0.6cm, p1, p2, p3)
+#stack(
+  dir: ttb,
+  spacing: 0.5cm,
+  panel("geom-rug for marginal observations", p1),
+  panel("geom-blank as a frame for geom-function", p2),
+  panel("Forced x-range to highlight rug density", p3),
+)
