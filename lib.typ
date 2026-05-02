@@ -61,6 +61,7 @@
 #import "src/geom/rug.typ": geom-rug
 #import "src/geom/function.typ": geom-function
 #import "src/geom/dotplot.typ": geom-dotplot
+#import "src/geom/quantile.typ": geom-quantile
 #import "src/geom/qq.typ": geom-qq
 #import "src/geom/qq-line.typ": geom-qq-line
 
@@ -80,6 +81,7 @@
 #import "src/stat/qq.typ": stat-qq
 #import "src/stat/qq-line.typ": stat-qq-line
 #import "src/stat/ellipse.typ": stat-ellipse
+#import "src/stat/quantile.typ": stat-quantile
 
 // Helpers.
 #import "src/plot.typ": get-alt-text

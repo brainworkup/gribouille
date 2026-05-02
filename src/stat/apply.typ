@@ -16,6 +16,7 @@
 #import "qq-line.typ" as qq-line-stat
 #import "function.typ" as function-stat
 #import "ellipse.typ" as ellipse-stat
+#import "quantile.typ" as quantile-stat
 
 #let _stat-constructors = (
   bin: bin-stat.stat-bin,
@@ -26,6 +27,7 @@
   summary_bin: summary-bin-stat.stat-summary-bin,
   function: function-stat.stat-function,
   ellipse: ellipse-stat.stat-ellipse,
+  quantile: quantile-stat.stat-quantile,
 )
 
 #let stat-default-params(name) = {
@@ -64,6 +66,8 @@
     function-stat.apply(data, mapping, params: params)
   } else if name == "ellipse" {
     ellipse-stat.apply(data, mapping, params: params)
+  } else if name == "quantile" {
+    quantile-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }
