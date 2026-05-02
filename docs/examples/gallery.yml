@@ -168,7 +168,7 @@
 - slug: axis-lims
   section: guides
   title: "Axis limits and tick rotation"
-  description: 'Pair <a href="../reference/scales/scale-x-continuous.qmd"><code>scale-x-continuous(limits:)</code></a> with <a href="../reference/guides/guide-axis.qmd"><code>guide-axis</code></a> to set explicit domains and tidy up tick text.'
+  description: 'Explicit domains set by <a href="../reference/scales/scale-x-continuous.qmd"><code>scale-x-continuous(limits:)</code></a> alongside tidied tick text from <a href="../reference/guides/guide-axis.qmd"><code>guide-axis</code></a>.'
   alt: "Three scatter plots of highway mpg against displacement showing the default view, the same view with rotated tick labels, and the view with explicit zero-anchored axis limits."
 
 - slug: sec-axis
