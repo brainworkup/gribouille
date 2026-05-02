@@ -79,24 +79,19 @@
   inherit-aes: inherit-aes,
 )
 
-#let _row-angle(row, col, fallback) = {
-  if col == none {
-    if type(fallback) == angle { return fallback }
-    return fallback * 1rad
-  }
-  let raw = row.at(col, default: none)
-  let v = parse-number(raw)
-  if v == none {
-    if type(fallback) == angle { return fallback }
-    return fallback * 1rad
-  }
-  v * 1rad
+#let _to-angle(v) = if type(v) == angle { v } else { v * 1rad }
+
+#let _row-angle(row, col, fallback-angle) = {
+  if col == none { return fallback-angle }
+  let v = parse-number(row.at(col, default: none))
+  if v == none { fallback-angle } else { v * 1rad }
 }
 
 #let _row-radius(row, col, fallback) = {
   if col == none { return fallback }
   let v = parse-number(row.at(col, default: none))
-  if v == none { fallback } else { v }
+  if v == none { return fallback }
+  v
 }
 
 #let draw(layer, ctx) = {
@@ -112,8 +107,12 @@
 
   let angle-col = mapping.at("angle", default: none)
   let radius-col = mapping.at("radius", default: none)
-  let angle-fallback = layer.params.angle
+  let angle-fallback = _to-angle(layer.params.angle)
   let radius-fallback = layer.params.radius
+  // Constant-angle layers compute the trig once and reuse it per row;
+  // mapped-angle layers fall back to the per-row branch below.
+  let cos-fb = calc.cos(angle-fallback)
+  let sin-fb = calc.sin(angle-fallback)
 
   let ink = ctx.theme.at("ink", default: black)
 
@@ -121,10 +120,15 @@
     let x0 = parse-number(row.at(x-col, default: none))
     let y0 = parse-number(row.at(y-col, default: none))
     if x0 == none or y0 == none { continue }
-    let theta = _row-angle(row, angle-col, angle-fallback)
     let r = _row-radius(row, radius-col, radius-fallback)
-    let x1 = x0 + r * calc.cos(theta)
-    let y1 = y0 + r * calc.sin(theta)
+    let (cos-t, sin-t) = if angle-col == none {
+      (cos-fb, sin-fb)
+    } else {
+      let theta = _row-angle(row, angle-col, angle-fallback)
+      (calc.cos(theta), calc.sin(theta))
+    }
+    let x1 = x0 + r * cos-t
+    let y1 = y0 + r * sin-t
     let cx0 = map-position(x-trained, x0, ctx.px-range)
     let cy0 = map-position(y-trained, y0, ctx.py-range)
     let cx1 = map-position(x-trained, x1, ctx.px-range)
