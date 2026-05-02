@@ -3,6 +3,7 @@
 // and the documented defaults for `stat`, `position`, and `alpha`.
 
 #import "../../src/geom/errorbar.typ": geom-errorbar
+#import "../../src/geom/errorbarh.typ": geom-errorbarh
 #import "../../src/geom/linerange.typ": geom-linerange
 #import "../../src/geom/crossbar.typ": geom-crossbar
 #import "../../src/geom/pointrange.typ": geom-pointrange
@@ -15,6 +16,15 @@
 #assert.eq(eb.params.width, 0.4)
 #assert.eq(eb.params.alpha, auto)
 #assert.eq(eb.params.linetype, "solid")
+
+#let ebh = geom-errorbarh()
+#assert.eq(ebh.kind, "layer")
+#assert.eq(ebh.geom, "errorbarh")
+#assert.eq(ebh.stat, "identity")
+#assert.eq(ebh.position, "identity")
+#assert.eq(ebh.params.height, 0.4)
+#assert.eq(ebh.params.alpha, auto)
+#assert.eq(ebh.params.linetype, "solid")
 
 #let lr = geom-linerange()
 #assert.eq(lr.kind, "layer")
@@ -45,5 +55,10 @@
 #assert.eq(eb2.params.width, 0.2)
 #assert.eq(eb2.params.colour, red)
 #assert.eq(eb2.params.alpha, 0.5)
+
+#let ebh2 = geom-errorbarh(height: 0.2, colour: red, alpha: 0.5)
+#assert.eq(ebh2.params.height, 0.2)
+#assert.eq(ebh2.params.colour, red)
+#assert.eq(ebh2.params.alpha, 0.5)
 
 Errorbar family smoke tests passed.

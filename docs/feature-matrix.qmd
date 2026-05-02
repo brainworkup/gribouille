@@ -76,7 +76,8 @@ Legend for **Priority** (used to order future work):
 | `geom_polygon()`                                                    | `geom-polygon`.                                       | ✅     | —        | One closed polygon per group; fill via `fill` or scale.                                                                 |
 | `geom_segment()`                                                    | `geom-segment`.                                       | ✅     | —        | Maps `x`/`y`/`xend`/`yend`.                                                                                             |
 | `geom_curve()`                                                      | —                                                     | ⬜     | P3       | Curved variant of segment; deferred until a real use case appears.                                                      |
-| `geom_errorbar()`                                                   | `geom-errorbar`.                                      | ✅     | —        | Vertical range with horizontal end caps. `geom_errorbarh` deferred.                                                     |
+| `geom_errorbar()`                                                   | `geom-errorbar`.                                      | ✅     | —        | Vertical range with horizontal end caps.                                                                                |
+| `geom_errorbarh()`                                                  | `geom-errorbarh`.                                     | ✅     | —        | Horizontal range with vertical caps; mirrors `geom-errorbar` over `(y, xmin, xmax)`.                                    |
 | `geom_linerange()` / `geom_crossbar()` / `geom_pointrange()`        | `geom-linerange`, `geom-crossbar`, `geom-pointrange`. | ✅     | —        | linerange has no caps, crossbar is a filled box with a thick median bar, pointrange is a marker plus linerange.         |
 | `geom_abline()` / `geom_hline()` / `geom_vline()`                   | `geom-abline`, `geom-hline`, `geom-vline`.            | ✅     | —        | Scalar or array intercepts. Trans-aware: under log10/sqrt, abline samples 64 points so the line follows the warp.       |
 | `geom_blank()`                                                      | `geom-blank`.                                         | ✅     | —        | No-op draw; trains scales from its data.                                                                                |
@@ -123,7 +124,7 @@ Legend for **Priority** (used to order future work):
 | `position_fill()`        | `position-fill`.              | ✅     | —        | Stack normalised to 1 per x bucket.                                                                                                     |
 | `position_jitter()`      | `position-jitter`.            | ✅     | —        | Deterministic seed-based offsets; only continuous columns are jittered.                                                                 |
 | `position_nudge()`       | `position-nudge`.             | ✅     | —        | Fixed `(x, y)` shift on every row.                                                                                                      |
-| `position_jitterdodge()` | —                             | ⬜     | P3       | Dodge then jitter; defer until a real bar+jitter use case appears.                                                                      |
+| `position_jitterdodge()` | `position-jitterdodge`.       | ✅     | —        | Groups dodge then jitter within their slot; pair with `geom-jitter` via `position: position-jitterdodge(...)`.                          |
 
 ### Annotations
 
@@ -293,9 +294,9 @@ Items outside the ggplot2 surface: ggforce ports and gribouille-native convenien
 ## Coverage at a glance
 
 - **Plot basics**: `plot()` and `aes()` covering `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`.
-- **Geoms**: `point`, `line`, `path`, `step`, `col`, `bar`, `histogram`, `freqpoly`, `ribbon`, `area`, `boxplot`, `jitter`, `rug`, `text`, `label`, `rect`, `tile`, `polygon`, `segment`, `errorbar`, `linerange`, `crossbar`, `pointrange`, `abline`, `hline`, `vline`, `blank`, `function`, `qq`, `qq-line`; `geom-smooth` covers `method = "lm"` only.
-- **Stats**: `stat-identity`, `stat-count`, `stat-bin`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-ecdf`, `stat-qq`, `stat-qq-line`, `stat-unique`; `stat-smooth` covers `method = "lm"` only.
-- **Positions**: `identity`, `stack`, `fill`, `jitter`, `nudge`; `position-dodge` covers the uniform-width case.
+- **Geoms**: `point`, `line`, `path`, `step`, `col`, `bar`, `histogram`, `freqpoly`, `ribbon`, `area`, `boxplot`, `jitter`, `rug`, `text`, `label`, `rect`, `tile`, `polygon`, `segment`, `errorbar`, `errorbarh`, `linerange`, `crossbar`, `pointrange`, `abline`, `hline`, `vline`, `blank`, `function`, `qq`, `qq-line`, `count`; `geom-smooth` covers `method = "lm"` only.
+- **Stats**: `stat-identity`, `stat-count`, `stat-bin`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-ecdf`, `stat-qq`, `stat-qq-line`, `stat-unique`, `stat-function`; `stat-smooth` covers `method = "lm"` only.
+- **Positions**: `identity`, `stack`, `fill`, `jitter`, `jitterdodge`, `nudge`; `position-dodge` covers the uniform-width case.
 - **Annotations**: `annotate()` with `text`, `point`, `label`, `segment`, `rect`, `vline`, `hline`, `abline`.
 - **Positional scales**: continuous, discrete, log10, sqrt, reverse, date, datetime, time, on x and y.
 - **Colour and fill scales**: continuous, discrete, manual, viridis (c/d/b), brewer, gradient, gradient2, gradientn, grey, hue, distiller, identity.
