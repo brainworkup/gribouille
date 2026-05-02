@@ -384,19 +384,33 @@
       // A colour/fill continuous member governs rendering; any size/alpha
       // members in the same group are intentionally dropped from the bar
       // because compositing them on a smooth gradient is awkward and rare.
-      // Pre-compute the tick breaks once so width estimation and the
-      // colourbar drawer share a single `pretty()` call.
-      let user-labels = if (
-        first.t.at("spec", default: none) != none
-      ) { first.t.spec.at("labels", default: auto) } else { auto }
+      // Stepped scales (binned: true) emit n-breaks discrete patches with
+      // ticks at the bin boundaries; smooth scales fall back to pretty().
+      let spec = first.t.at("spec", default: none)
+      let user-labels = if spec != none {
+        spec.at("labels", default: auto)
+      } else { auto }
+      let binned = if spec != none {
+        spec.at("binned", default: false)
+      } else { false }
+      let n-breaks = if spec != none {
+        spec.at("n-breaks", default: 5)
+      } else { 5 }
+      let lo = first.domain.first()
+      let hi = first.domain.last()
+      let breaks = if binned {
+        range(n-breaks + 1).map(i => lo + i * (hi - lo) / n-breaks)
+      } else { pretty(lo, hi, n: 5) }
       (
         kind: "colourbar",
         aesthetics: aesthetics,
         title: first.title,
         domain: first.domain,
-        breaks: pretty(first.domain.first(), first.domain.last(), n: 5),
+        breaks: breaks,
         labels: user-labels,
         typst-mark: typst-mark,
+        binned: binned,
+        n-breaks: n-breaks,
       )
     } else {
       let breaks = pretty(first.domain.first(), first.domain.last(), n: 5)
@@ -600,7 +614,9 @@
   _draw-title(ox, cursor, theme, guide.title)
   let bar-top = cursor - title-h
   let bar-bottom = bar-top - bar-h
-  let steps = 40
+  let steps = if guide.at("binned", default: false) {
+    guide.at("n-breaks", default: 5)
+  } else { 40 }
   let step-h = bar-h / steps
   for i in range(steps) {
     let t = (i + 0.5) / steps
