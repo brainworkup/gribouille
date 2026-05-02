@@ -32,10 +32,16 @@
     geom-line(stroke: 1pt),
     geom-point(size: 3pt),
   ),
-  scales: (
-    scale-x-continuous(name: "Month"),
-    scale-y-continuous(name: "Sales"),
+  scales: (scale-x-continuous(breaks: (1, 2, 3, 4, 5, 6)),),
+  labs: labs(
+    title: "Monthly sales by region",
+    subtitle: "Line and point layers share a single colour mapping",
+    x: "Month",
+    y: "Sales",
+    colour: "Region",
+    fill: "Region",
   ),
+  theme: theme-minimal(),
   width: 11cm,
-  height: 7cm,
+  height: 6.5cm,
 )

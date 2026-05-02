@@ -7,18 +7,15 @@
 #plot(
   data: mpg,
   mapping: aes(x: "displ", y: "hwy", fill: "class"),
-  layers: (
-    geom-point(size: 3pt),
-  ),
-  scales: (
-    scale-x-continuous(name: "Engine displacement (L)"),
-    scale-y-continuous(name: "Highway mpg"),
-  ),
+  layers: (geom-point(size: 3pt, alpha: 0.85),),
   labs: labs(
     title: "Fuel economy by vehicle class",
+    subtitle: "Highway mpg falls as engine displacement rises",
+    x: "Engine displacement (L)",
+    y: "Highway mpg",
     fill: "Class",
   ),
-  alt: "Scatter plot of highway miles per gallon against engine displacement, with points filled by vehicle class. Highway mpg falls as engine displacement rises.",
-  width: 12cm,
-  height: 7cm,
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

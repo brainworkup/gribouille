@@ -9,7 +9,10 @@
 #plot(
   data: df,
   mapping: aes(x: "x", y: "y"),
-  layers: (geom-point(size: 3pt), geom-line()),
+  layers: (
+    geom-line(stroke: 1pt, colour: rgb("#1f77b4")),
+    geom-point(size: 3pt, fill: rgb("#1f77b4")),
+  ),
   labs: labs(
     title: "Monthly counts",
     subtitle: "First half of the experiment",
@@ -17,6 +20,7 @@
     x: "Month",
     y: "Count",
   ),
-  width: 10cm,
-  height: 7cm,
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

@@ -14,7 +14,14 @@
   data: obs,
   mapping: aes(x: "x", y: "y", fill: as-factor("cluster")),
   layers: (geom-point(size: 4pt),),
-  labs: labs(title: "cluster forced to factor on fill"),
-  width: 10cm,
-  height: 7cm,
+  labs: labs(
+    title: "Numeric column coerced to factor",
+    subtitle: "as-factor() forces fill onto a discrete scale without changing the data",
+    x: "x",
+    y: "y",
+    fill: "Cluster",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

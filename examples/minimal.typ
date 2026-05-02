@@ -19,13 +19,14 @@
 #plot(
   data: iris,
   mapping: aes(x: "sepal-length", y: "sepal-width", fill: "species"),
-  layers: (
-    geom-point(size: 3pt),
+  layers: (geom-point(size: 3pt),),
+  labs: labs(
+    title: "Iris sepal dimensions",
+    x: "Sepal length (cm)",
+    y: "Sepal width (cm)",
+    fill: "Species",
   ),
-  scales: (
-    scale-x-continuous(name: "Sepal length (cm)"),
-    scale-y-continuous(name: "Sepal width (cm)"),
-  ),
-  width: 10cm,
-  height: 7cm,
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

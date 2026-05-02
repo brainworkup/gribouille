@@ -33,6 +33,24 @@
   description: "CSV-loaded dataset: flipper length versus body mass, coloured by species."
   alt: "Scatter plot of penguin body mass against flipper length, with points coloured by species revealing three separated clusters."
 
+- slug: showcase
+  section: basics
+  title: "Showcase"
+  description: 'Faceted penguins with a per-island linear smoother — the same plot used as the documentation site hero.'
+  alt: "Three side-by-side facet panels (one per island) of penguin flipper length against body mass, each with points coloured by species and a per-species linear smoother."
+
+- slug: dataset-mpg
+  section: basics
+  title: "Bundled mpg dataset"
+  description: 'Highway mpg against engine displacement, filled by class — a quick look at the bundled <a href="../reference/datasets/mpg.qmd"><code>mpg</code></a> dataset.'
+  alt: "Scatter plot of highway mpg against engine displacement, with points filled by vehicle class, showing highway mpg falling as displacement rises."
+
+- slug: aes-promote
+  section: basics
+  title: "Continuous alpha and linewidth"
+  description: 'Promoted aesthetics: <code>alpha</code> and <code>linewidth</code> map directly to numeric columns through <a href="../reference/scales/scale-alpha-continuous.qmd"><code>scale-alpha-continuous</code></a> and <a href="../reference/scales/scale-linewidth-continuous.qmd"><code>scale-linewidth-continuous</code></a>.'
+  alt: "Two stacked panels: a scatter where point opacity scales with a numeric score, and a line chart where stroke thickness scales with a numeric weight per group."
+
 - slug: bar-simple
   section: bars
   title: "Simple bars"
