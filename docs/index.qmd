@@ -51,9 +51,9 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
     }
     image(
       if dark-bg {
-        "assets/images/logo-stacked-dark.svg"
+        "/docs/assets/images/logo-stacked-dark.svg"
       } else {
-        "assets/images/logo-stacked.svg"
+        "/docs/assets/images/logo-stacked.svg"
       },
       height: 2cm,
     )
