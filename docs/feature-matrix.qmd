@@ -289,7 +289,7 @@ Items outside the ggplot2 surface: ggforce ports and gribouille-native convenien
 | ------------------------------------ | --------------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ggforce::geom_ellipse()`            | `geom-ellipse`.             | ✅     | —        | Standalone ellipse from `(x0, y0, a, b, angle)` parameters; samples 64 vertices per row and renders through the polygon draw path. Axes auto-extend to enclose every ellipse. |
 | `ggforce::geom_mark_*()` family      | `geom-mark` (planned).      | ⬜     | P3       | Unified annotation geom with `method: "circle" / "ellipse" / "hull" / "rect"` covering `_circle`/`_ellipse`/`_hull`/`_rect`. `method` avoids clash with `shape` aesthetic. |
-| native (no upstream)                 | `geom-typst` (planned).     | ⬜     | P2       | Sibling of `geom-text`; the geom always evaluates the `label` aesthetic as Typst markup via `eval-as-markup`. No call-site `typst()` tag needed. Must support `annotate("typst", ...)` and `annotate("text", label: typst(...))` (existing tag must survive `annotate`'s per-row dataset and be honoured by `geom-text`). |
+| native (no upstream)                 | `geom-typst`.               | ✅     | —        | Sibling of `geom-text` that always evaluates the `label` aesthetic as Typst markup. Both routings work: `annotate("typst", label: "...")` and `annotate("text", label: typst("..."))` (the `typst()` tag survives `annotate`'s per-row dataset by being preserved on the mapping column reference). |
 
 ## Coverage at a glance
 

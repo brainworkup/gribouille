@@ -8,6 +8,7 @@
 
 #import "aes.typ": aes
 #import "geom/text.typ": geom-text
+#import "geom/typst.typ": geom-typst
 #import "geom/point.typ": geom-point
 #import "geom/label.typ": geom-label
 #import "geom/segment.typ": geom-segment
@@ -15,6 +16,7 @@
 #import "geom/vline.typ": geom-vline
 #import "geom/hline.typ": geom-hline
 #import "geom/abline.typ": geom-abline
+#import "utils/typst-markup.typ": is-typst-markup, typst
 
 // Default kwarg names treated as aesthetic mappings (everything else is
 // forwarded to the geom constructor as a layer parameter, e.g. `stroke`,
@@ -43,7 +45,7 @@
 // `text` and `label` geoms take `size` as a Typst length layer parameter
 // (the text size), not an aesthetic mapping; route it accordingly.
 #let _aes-keys-for(geom) = {
-  if geom == "text" or geom == "label" {
+  if geom == "text" or geom == "label" or geom == "typst" {
     _default-aes-keys.filter(k => k != "size")
   } else {
     _default-aes-keys
@@ -52,6 +54,7 @@
 
 #let _geom-table = (
   text: geom-text,
+  typst: geom-typst,
   point: geom-point,
   label: geom-label,
   segment: geom-segment,
@@ -158,8 +161,16 @@
   let layer-args = (:)
   for (k, v) in fields.named().pairs() {
     if k in aes-keys {
-      row.insert(k, v)
-      mapping-args.insert(k, k)
+      // Preserve a `typst()` tag on the column reference so the geom
+      // evaluates the value as Typst markup; the row stores the unwrapped
+      // source string.
+      if is-typst-markup(v) {
+        row.insert(k, v.source)
+        mapping-args.insert(k, typst(k))
+      } else {
+        row.insert(k, v)
+        mapping-args.insert(k, k)
+      }
     } else {
       layer-args.insert(k, v)
     }

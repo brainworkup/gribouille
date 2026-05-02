@@ -36,6 +36,7 @@
 #import "geom/vline.typ" as vline-geom
 #import "geom/abline.typ" as abline-geom
 #import "geom/text.typ" as text-geom
+#import "geom/typst.typ" as typst-geom
 #import "geom/label.typ" as label-geom
 #import "geom/boxplot.typ" as boxplot-geom
 #import "geom/errorbar.typ" as errorbar-geom
@@ -68,6 +69,7 @@
   vline: vline-geom.draw,
   abline: abline-geom.draw,
   text: text-geom.draw,
+  typst: typst-geom.draw,
   label: label-geom.draw,
   boxplot: boxplot-geom.draw,
   errorbar: errorbar-geom.draw,

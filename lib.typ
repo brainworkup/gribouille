@@ -51,6 +51,7 @@
 #import "src/geom/vline.typ": geom-vline
 #import "src/geom/abline.typ": geom-abline
 #import "src/geom/text.typ": geom-text
+#import "src/geom/typst.typ": geom-typst
 #import "src/geom/label.typ": geom-label
 #import "src/geom/jitter.typ": geom-jitter
 #import "src/geom/blank.typ": geom-blank
