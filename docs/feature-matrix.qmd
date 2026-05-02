@@ -119,7 +119,7 @@ Legend for **Priority** (used to order future work):
 | ------------------------ | ----------------------------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `position_identity()`    | implicit default.             | ✅     | —        | —                                                                                                                                       |
 | `position_stack()`       | `position-stack`.             | ✅     | —        | Consumed by `geom-col`.                                                                                                                 |
-| `position_dodge()`       | `position-dodge`.             | 🟡     | P2       | Uniform-width case implemented; widening to handle variable-width and overlapping marks (the ggplot2 `dodge2` use case) is in Slice 2D. |
+| `position_dodge()`       | `position-dodge`.             | ✅     | —        | Uniform and variable-per-row-width cases both supported; per-row `width` column packs side-by-side slots within each bucket and shrinks proportionally if the total exceeds the bucket. Subsumes the ggplot2 `dodge2` case. |
 | `position_dodge2()`      | merged into `position-dodge`. | ❌     | ∅        | Dropped from the surface; `position-dodge` covers both cases.                                                                           |
 | `position_fill()`        | `position-fill`.              | ✅     | —        | Stack normalised to 1 per x bucket.                                                                                                     |
 | `position_jitter()`      | `position-jitter`.            | ✅     | —        | Deterministic seed-based offsets; only continuous columns are jittered.                                                                 |
@@ -228,7 +228,7 @@ Legend for **Priority** (used to order future work):
 | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------- | ------ | -------- | --------------------------------------------------------------------------------------------------------- |
 | `facet_wrap()`                                                                                                                 | `facet-wrap`.               | ✅     | —        | `scales = "fixed"` (default), `"free"`, `"free_x"`, `"free_y"`; per-facet stats via `partition-by-group`. |
 | `facet_grid()`                                                                                                                 | `facet-grid(rows:, cols:)`. | ✅     | —        | Strips on top (columns) and right (rows); shared scales only.                                             |
-| `vars()`                                                                                                                       | —                           | ⬜     | P2       | Helper to quote faceting variables.                                                                       |
+| `vars()`                                                                                                                       | —                           | ❌     | ∅        | Out of scope. ggplot2's `vars()` quotes faceting variables for `facet_wrap()`/`facet_grid()`; gribouille's `facet-wrap("col")` and `facet-grid(rows: "col", cols: "col")` take plain strings, so the wrapper is redundant. |
 | `labeller()` / `label_value()` / `label_both()` / `label_context()` / `label_wrap_gen()` | `labeller`, `label-value`, `label-both`, `label-context`, `label-wrap`. | ✅     | —        | Passed via `labeller:` on `facet-wrap` / `facet-grid`. `label_parsed`/`label_bquote` deferred. |
 
 ### Coordinates
@@ -296,7 +296,7 @@ Items outside the ggplot2 surface: ggforce ports and gribouille-native convenien
 - **Plot basics**: `plot()` and `aes()` covering `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`.
 - **Geoms**: `point`, `line`, `path`, `step`, `col`, `bar`, `histogram`, `freqpoly`, `ribbon`, `area`, `boxplot`, `jitter`, `rug`, `text`, `label`, `rect`, `tile`, `polygon`, `segment`, `errorbar`, `errorbarh`, `linerange`, `crossbar`, `pointrange`, `abline`, `hline`, `vline`, `blank`, `function`, `qq`, `qq-line`, `count`; `geom-smooth` covers `method = "lm"` only.
 - **Stats**: `stat-identity`, `stat-count`, `stat-bin`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-ecdf`, `stat-qq`, `stat-qq-line`, `stat-unique`, `stat-function`; `stat-smooth` covers `method = "lm"` only.
-- **Positions**: `identity`, `stack`, `fill`, `jitter`, `jitterdodge`, `nudge`; `position-dodge` covers the uniform-width case.
+- **Positions**: `identity`, `stack`, `fill`, `dodge` (uniform and variable widths), `jitter`, `jitterdodge`, `nudge`.
 - **Annotations**: `annotate()` with `text`, `point`, `label`, `segment`, `rect`, `vline`, `hline`, `abline`.
 - **Positional scales**: continuous, discrete, log10, sqrt, reverse, date, datetime, time, on x and y.
 - **Colour and fill scales**: continuous, discrete, manual, viridis (c/d/b), brewer, gradient, gradient2, gradientn, grey, hue, distiller, identity.
