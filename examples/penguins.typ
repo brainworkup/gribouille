@@ -63,27 +63,3 @@
   width: 11cm,
   height: 7cm,
 )
-
-#place(
-  bottom + right,
-  dx: 0.5cm,
-  dy: 0.5cm,
-  context {
-    let bg = page.fill
-    let dark-bg = if bg == auto or bg == none {
-      false
-    } else if type(bg) == color {
-      luma(bg).components().at(0) < 50%
-    } else {
-      false
-    }
-    image(
-      if dark-bg {
-        "../docs/assets/images/logo-stacked-dark.svg"
-      } else {
-        "../docs/assets/images/logo-stacked.svg"
-      },
-      height: 2cm,
-    )
-  },
-)
