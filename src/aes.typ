@@ -30,6 +30,11 @@
 /// \@param slope Slope for oblique reference lines (\@geom-abline).
 /// \@param intercept Intercept for oblique reference lines.
 /// \@param weight Column name carrying per-row statistical weights.
+/// \@param x0 Column name for the x centre of an ellipse (\@geom-ellipse).
+/// \@param y0 Column name for the y centre of an ellipse.
+/// \@param a Column name for the ellipse semi-major radius in data units.
+/// \@param b Column name for the ellipse semi-minor radius in data units.
+/// \@param angle Column name for the ellipse rotation in radians.
 ///
 /// \@returns Dictionary tagged `kind: "aes"`, consumed by \@plot and geom layers.
 ///
@@ -91,6 +96,11 @@
   slope: none,
   intercept: none,
   weight: none,
+  x0: none,
+  y0: none,
+  a: none,
+  b: none,
+  angle: none,
 ) = (
   kind: "aes",
   x: x,
@@ -115,4 +125,9 @@
   slope: slope,
   intercept: intercept,
   weight: weight,
+  x0: x0,
+  y0: y0,
+  a: a,
+  b: b,
+  angle: angle,
 )

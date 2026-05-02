@@ -28,6 +28,7 @@
 #import "geom/tile.typ" as tile-geom
 #import "geom/segment.typ" as segment-geom
 #import "geom/polygon.typ" as polygon-geom
+#import "geom/ellipse.typ" as ellipse-geom
 #import "geom/col.typ" as col-geom
 #import "geom/ribbon.typ" as ribbon-geom
 #import "geom/smooth.typ" as smooth-geom
@@ -59,6 +60,7 @@
   tile: tile-geom.draw,
   segment: segment-geom.draw,
   polygon: polygon-geom.draw,
+  ellipse: ellipse-geom.draw,
   col: col-geom.draw,
   ribbon: ribbon-geom.draw,
   smooth: smooth-geom.draw,
@@ -364,12 +366,54 @@
   let bin-half-max = 0.0
   let ribbon-y-min = none
   let ribbon-y-max = none
+  let ellipse-x-min = none
+  let ellipse-x-max = none
+  let ellipse-y-min = none
+  let ellipse-y-max = none
   for layer in layers {
     let geom = layer.at("geom", default: none)
     if geom == "col" or geom == "area" { needs-y-zero = true }
 
     let mapping = layer.at("mapping", default: none)
     let layer-data = layer.at("data", default: ())
+
+    if geom == "ellipse" and mapping != none {
+      let x0-col = mapping.at("x0", default: none)
+      let y0-col = mapping.at("y0", default: none)
+      let a-col = mapping.at("a", default: none)
+      let b-col = mapping.at("b", default: none)
+      if x0-col != none and y0-col != none {
+        let params = layer.at("params", default: (:))
+        let a-fb = params.at("a", default: 1)
+        let b-fb = params.at("b", default: 1)
+        for row in layer-data {
+          let x0 = parse-number(row.at(x0-col, default: none))
+          let y0 = parse-number(row.at(y0-col, default: none))
+          if x0 == none or y0 == none { continue }
+          let a = if a-col == none { a-fb } else {
+            let v = parse-number(row.at(a-col, default: none))
+            if v == none { a-fb } else { v }
+          }
+          let b = if b-col == none { b-fb } else {
+            let v = parse-number(row.at(b-col, default: none))
+            if v == none { b-fb } else { v }
+          }
+          let r = calc.max(calc.abs(a), calc.abs(b))
+          ellipse-x-min = if ellipse-x-min == none { x0 - r } else {
+            calc.min(ellipse-x-min, x0 - r)
+          }
+          ellipse-x-max = if ellipse-x-max == none { x0 + r } else {
+            calc.max(ellipse-x-max, x0 + r)
+          }
+          ellipse-y-min = if ellipse-y-min == none { y0 - r } else {
+            calc.min(ellipse-y-min, y0 - r)
+          }
+          ellipse-y-max = if ellipse-y-max == none { y0 + r } else {
+            calc.max(ellipse-y-max, y0 + r)
+          }
+        }
+      }
+    }
     let ymin-col = if mapping != none {
       mapping.at("ymin", default: none)
     } else { none }
@@ -427,6 +471,10 @@
     bin-half-max: bin-half-max,
     ribbon-y-min: ribbon-y-min,
     ribbon-y-max: ribbon-y-max,
+    ellipse-x-min: ellipse-x-min,
+    ellipse-x-max: ellipse-x-max,
+    ellipse-y-min: ellipse-y-min,
+    ellipse-y-max: ellipse-y-max,
   )
 }
 
@@ -1102,6 +1150,40 @@
       calc.min(lo, lo-extra),
       calc.max(hi, hi-extra),
     ))
+  }
+
+  let _seed-or-extend(t, axis, lo-extra, hi-extra) = {
+    if t.at(axis, default: none) == none {
+      t.insert(axis, (
+        type: "continuous",
+        domain: (lo-extra, hi-extra),
+        spec: none,
+        trans: "identity",
+        typst-mark: false,
+      ))
+      t
+    } else {
+      _rewrite-continuous-domain(t, axis, ((lo, hi)) => (
+        calc.min(lo, lo-extra),
+        calc.max(hi, hi-extra),
+      ))
+    }
+  }
+  if scan.ellipse-x-min != none {
+    trained = _seed-or-extend(
+      trained,
+      "x",
+      scan.ellipse-x-min,
+      scan.ellipse-x-max,
+    )
+  }
+  if scan.ellipse-y-min != none {
+    trained = _seed-or-extend(
+      trained,
+      "y",
+      scan.ellipse-y-min,
+      scan.ellipse-y-max,
+    )
   }
 
   // Discrete category axes get `geom-min-pad` so `_apply-expand` keeps outer
