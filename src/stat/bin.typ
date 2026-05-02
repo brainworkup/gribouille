@@ -4,6 +4,7 @@
 ///! bin midpoint as x, the count as y, and the bin `width` for reference.
 
 #import "../utils/types.typ": parse-number
+#import "../utils/summaries.typ": read-weight
 
 /// Bin statistic: partition x into uniform-width bins, count rows per bin.
 ///
@@ -62,13 +63,7 @@
     .map(r => {
       let xv = parse-number(r.at(x-col, default: none))
       if xv == none { return none }
-      let w = if weight-col == none { 1 } else {
-        let raw = r.at(weight-col, default: none)
-        if raw == none { 0 } else if type(raw) == str { float(raw) } else {
-          raw
-        }
-      }
-      (x: xv, w: w)
+      (x: xv, w: read-weight(r, weight-col))
     })
     .filter(p => p != none)
   if pairs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }

@@ -4,6 +4,8 @@
 ///! the layer mapping and emits one row per unique pair carrying the count
 ///! and proportion as new aesthetics.
 
+#import "../utils/summaries.typ": read-weight
+
 /// Sum statistic: one output row per unique `(x, y)` pair with `n` and `prop`.
 ///
 /// Output rows preserve first-seen pair order. The stat re-maps `size` to the
@@ -75,10 +77,7 @@
       order.push(key)
       proto.insert(key, (x: xv, y: yv))
     }
-    let w = if weight-col == none { 1 } else {
-      let v = row.at(weight-col, default: none)
-      if v == none { 0 } else if type(v) == str { float(v) } else { v }
-    }
+    let w = read-weight(row, weight-col)
     counts.insert(key, counts.at(key, default: 0) + w)
     total += w
   }

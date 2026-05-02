@@ -3,6 +3,8 @@
 ///! Backing statistic for \@geom-bar. Groups rows by the x column and returns
 ///! one row per level with the count as y.
 
+#import "../utils/summaries.typ": read-weight
+
 /// Count statistic: one output row per distinct x level with `y = count`.
 ///
 /// Empty strings and `none` x values are dropped. Output rows preserve the
@@ -70,11 +72,10 @@
     let key = str(raw)
     if key == "" { continue }
     if not order.contains(key) { order.push(key) }
-    let w = if weight-col == none { 1 } else {
-      let v = row.at(weight-col, default: none)
-      if v == none { 0 } else if type(v) == str { float(v) } else { v }
-    }
-    counts.insert(key, counts.at(key, default: 0) + w)
+    counts.insert(
+      key,
+      counts.at(key, default: 0) + read-weight(row, weight-col),
+    )
   }
   // Use the original x column name so the per-group framework can re-inject
   // group column values without column-name mismatches. y maps to "_count"

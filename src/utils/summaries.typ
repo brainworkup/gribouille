@@ -12,6 +12,17 @@
   values.map(v => parse-number(v)).filter(v => v != none)
 }
 
+// Read a weight value from a row, coercing strings via `float`. Treats a
+// `none` weight column as unit weight; treats a missing/`none` cell as
+// zero so the row is filtered out by the weighted helpers' `w > 0` test.
+#let read-weight(row, weight-col) = {
+  if weight-col == none { return 1 }
+  let raw = row.at(weight-col, default: none)
+  if raw == none { return 0 }
+  if type(raw) == str { return float(raw) }
+  raw
+}
+
 // Pair each value with its weight, drop non-numeric values, and treat
 // missing weights as 1. Returns `(xs, ws)` arrays with matching lengths;
 // when `weights` is `none`, every entry weights as 1.
@@ -46,7 +57,9 @@
 #let _mean(xs) = _sum(xs) / xs.len()
 
 // Weighted mean with non-negative weights. Returns `none` when the total
-// weight is zero (caller handles as empty bucket).
+// weight is zero so the caller can treat the bucket as empty (matching the
+// `_empty-summary` shape). The companion `_wsd` returns `0.0` for the
+// degenerate cases instead, mirroring `_sd`'s contract for unit weights.
 #let _wmean(xs, ws) = {
   let total = _sum(ws)
   if total == 0 { return none }

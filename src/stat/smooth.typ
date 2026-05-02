@@ -4,6 +4,7 @@
 ///! `(x, y, ymin, ymax)` for the fitted line and pointwise confidence band.
 
 #import "../utils/types.typ": parse-number
+#import "../utils/summaries.typ": read-weight
 
 /// Smoother statistic: closed-form linear fit with a pointwise confidence band.
 ///
@@ -130,13 +131,7 @@
         let x = parse-number(r.at(x-col, default: none))
         let y = parse-number(r.at(y-col, default: none))
         if x == none or y == none { return none }
-        let w = if weight-col == none { 1 } else {
-          let raw = r.at(weight-col, default: none)
-          if raw == none { 0 } else if type(raw) == str { float(raw) } else {
-            raw
-          }
-        }
-        (x: x, y: y, w: w)
+        (x: x, y: y, w: read-weight(r, weight-col))
       })
       .filter(p => p != none and p.w > 0)
     let n = pairs.len()
