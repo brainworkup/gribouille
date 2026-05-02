@@ -170,6 +170,7 @@
 #import "src/coord/cartesian.typ": coord-cartesian
 #import "src/coord/fixed.typ": coord-fixed
 #import "src/coord/flip.typ": coord-flip
+#import "src/coord/transform.typ": coord-transform
 
 // Positions.
 #import "src/position/stack.typ": position-stack

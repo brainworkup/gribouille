@@ -1004,6 +1004,25 @@
   trained
 }
 
+// coord-transform overrides each axis's `trans` so the trained view is
+// warped at mapping time. Runs before `_apply-expand` so expansion uses the
+// final transformation. Identity values are no-ops.
+#let _apply-coord-transform(trained, coord) = {
+  if coord == none or coord.at("coord", default: none) != "transform" {
+    return trained
+  }
+  for axis in ("x", "y") {
+    let t = coord.at(axis, default: "identity")
+    if t == "identity" { continue }
+    let entry = trained.at(axis, default: none)
+    if entry == none or entry.type != "continuous" { continue }
+    let new-entry = entry
+    new-entry.insert("trans", t)
+    trained.insert(axis, new-entry)
+  }
+  trained
+}
+
 // coord-cartesian xlim/ylim overrides take precedence over scale training,
 // so re-apply them after any per-panel retraining.
 #let _apply-coord(trained, coord) = {
@@ -1446,6 +1465,7 @@
     )
     pt = _apply-labs(pt, labs)
     pt = _post-train(pt, p.layers)
+    pt = _apply-coord-transform(pt, coord)
     pt = _apply-expand(pt, coord)
     pt = _apply-coord(pt, coord)
     pt = _apply-flip(pt, coord)
@@ -1949,6 +1969,7 @@
   // clip limits so axis ticks and marks follow them. Data outside the limits
   // is preserved for stats and training but may render outside the panel.
   let coord = spec.at("coord", default: none)
+  trained = _apply-coord-transform(trained, coord)
   trained = _apply-expand(trained, coord)
   trained = _apply-coord(trained, coord)
   // coord-flip swaps trained x and y so axis labels swap automatically;

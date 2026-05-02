@@ -1,0 +1,43 @@
+// coord-transform: warp the displayed coordinates without setting trans on
+// each scale. Equivalent to scale-x-continuous(trans: ...) in the current
+// implementation; provided for ggplot2 v4 API parity.
+
+#import "../lib.typ": *
+
+#set page(width: auto, height: auto, margin: 0.5cm)
+
+#let d = (
+  (x: 1, y: 1),
+  (x: 3, y: 5),
+  (x: 10, y: 25),
+  (x: 30, y: 100),
+  (x: 100, y: 500),
+  (x: 300, y: 2500),
+  (x: 1000, y: 10000),
+)
+
+#plot(
+  data: d,
+  mapping: aes(x: "x", y: "y"),
+  layers: (geom-line(stroke: 0.6pt, alpha: 0.4), geom-point(size: 3pt)),
+  coord: coord-transform(x: "log10", y: "log10"),
+  guides: guides(x: guide-axis-logticks(), y: guide-axis-logticks()),
+  labs: labs(title: "coord-transform(x: \"log10\", y: \"log10\")"),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
+)
+
+// Mixing with scale-level trans: coord-transform overrides the scale's trans
+// so the final visual reflects the coord setting.
+#plot(
+  data: d,
+  mapping: aes(x: "x", y: "y"),
+  layers: (geom-point(size: 3pt),),
+  scales: (scale-y-continuous(trans: "sqrt"),),
+  coord: coord-transform(x: "log10"),
+  labs: labs(title: "scale-y sqrt + coord-transform x log10"),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 5cm,
+)
