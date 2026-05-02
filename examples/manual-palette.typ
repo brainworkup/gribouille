@@ -4,30 +4,33 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let obs = ()
-#for i in range(0, 10) {
-  obs.push((x: i, y: i, g: "apple"))
-  obs.push((x: i, y: i + 1, g: "berry"))
-  obs.push((x: i, y: i + 2, g: "cherry"))
-}
+#let palette = (rgb("#ff8c00"), rgb("#800080"), rgb("#008B8B"))
 
 #plot(
-  data: obs,
-  mapping: aes(x: "x", y: "y", colour: "g", fill: "g"),
-  layers: (geom-point(size: 4pt), geom-line()),
-  scales: (
-    scale-colour-manual(values: (
-      rgb("#e63946"),
-      rgb("#f4a261"),
-      rgb("#2a9d8f"),
-    )),
-    scale-fill-manual(values: (
-      rgb("#e63946"),
-      rgb("#f4a261"),
-      rgb("#2a9d8f"),
-    )),
+  data: penguins,
+  mapping: aes(
+    x: "flipper-len",
+    y: "body-mass",
+    colour: "species",
+    fill: "species",
   ),
-  labs: labs(title: "Manual palette"),
-  width: 10cm,
-  height: 7cm,
+  layers: (
+    geom-point(size: 2pt, alpha: 0.7),
+    geom-smooth(method: "lm", alpha: 0.15),
+  ),
+  scales: (
+    scale-colour-manual(values: palette),
+    scale-fill-manual(values: palette),
+    scale-y-continuous(labels: label-comma()),
+  ),
+  labs: labs(
+    title: "Penguin species drawn with a custom palette",
+    x: "Flipper length (mm)",
+    y: "Body mass (g)",
+    colour: "Species",
+    fill: "Species",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6.5cm,
 )

@@ -4,17 +4,19 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let df = ()
-#for i in range(0, 30) {
-  df.push((x: i, y: calc.sin(i / 3.0) * 10, z: i * 3.0))
-}
-
 #plot(
-  data: df,
-  mapping: aes(x: "x", y: "y", fill: "z"),
-  layers: (geom-point(size: 5pt),),
+  data: mpg,
+  mapping: aes(x: "displ", y: "hwy", fill: "cty"),
+  layers: (geom-point(size: 4pt, alpha: 0.9),),
   scales: (scale-fill-viridis-c(),),
-  labs: labs(title: "Viridis continuous"),
+  labs: labs(
+    title: "Viridis continuous fill",
+    subtitle: "Colour encodes city mpg across the displacement / highway plane",
+    x: "Displacement (L)",
+    y: "Highway mpg",
+    fill: "City mpg",
+  ),
+  theme: theme-minimal(),
   width: 11cm,
-  height: 7cm,
+  height: 6.5cm,
 )

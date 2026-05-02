@@ -2,20 +2,28 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.4cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
-#let d = (
-  (x: 1, y: 2, c: "#1b9e77", s: "circle"),
-  (x: 2, y: 4, c: "#d95f02", s: "triangle"),
-  (x: 3, y: 3, c: "#7570b3", s: "diamond"),
-  (x: 4, y: 5, c: "#e7298a", s: "square"),
+#let signals = (
+  (x: 1, y: 2.4, c: "#1b9e77", s: "circle"),
+  (x: 2, y: 4.1, c: "#d95f02", s: "triangle"),
+  (x: 3, y: 3.2, c: "#7570b3", s: "diamond"),
+  (x: 4, y: 5.1, c: "#e7298a", s: "square"),
+  (x: 5, y: 4.6, c: "#66a61e", s: "cross"),
 )
 
 #plot(
-  data: d,
+  data: signals,
   mapping: aes(x: "x", y: "y", fill: "c", shape: "s"),
-  layers: (geom-point(size: 3pt),),
+  layers: (geom-point(size: 4pt),),
   scales: (scale-colour-identity(), scale-shape-identity()),
-  width: 9cm,
-  height: 5cm,
+  labs: labs(
+    title: "Identity scales pass column values straight to aesthetics",
+    subtitle: "Hex strings drive fill; shape names drive marker glyphs",
+    x: "x",
+    y: "y",
+  ),
+  theme: theme-minimal(),
+  width: 11cm,
+  height: 6cm,
 )

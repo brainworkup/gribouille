@@ -338,3 +338,81 @@
   title: "ECDF and unique points"
   description: '<a href="../reference/stats/stat-ecdf.qmd"><code>stat-ecdf</code></a> draws an empirical CDF; <a href="../reference/stats/stat-unique.qmd"><code>stat-unique</code></a> collapses repeated rows.'
   alt: "Two side-by-side panels: an empirical CDF of highway mpg drawn as a step-up curve, and a deduplicated scatter where repeated points have been collapsed into a single marker each."
+
+- slug: scale-alpha
+  section: scales
+  title: "Alpha scale family"
+  description: 'Continuous, manual per-level, and binned variants via the <a href="../reference/scales/scale-alpha-continuous.qmd"><code>scale-alpha-*</code></a> family.'
+  alt: "Three stacked scatter panels showing the same blue points with point opacity driven by continuous, manual per-level, and binned alpha scales."
+
+- slug: scale-linewidth
+  section: scales
+  title: "Linewidth scale family"
+  description: 'Continuous, manual per-level, and binned variants via the <a href="../reference/scales/scale-linewidth-continuous.qmd"><code>scale-linewidth-*</code></a> family.'
+  alt: "Three stacked line panels with stroke thickness driven by continuous, manual per-level, and binned linewidth scales."
+
+- slug: scale-stroke
+  section: scales
+  title: "Stroke scale family"
+  description: 'Marker-outline thickness driven by the <code>stroke</code> aesthetic via <a href="../reference/scales/scale-stroke-continuous.qmd"><code>scale-stroke-continuous</code></a> or <a href="../reference/scales/scale-stroke-manual.qmd"><code>scale-stroke-manual</code></a>.'
+  alt: "Two stacked panels of blue circles whose outline thickness is driven by continuous and manual stroke scales."
+
+- slug: scale-size-radius
+  section: scales
+  title: "Size and radius scales"
+  description: '<a href="../reference/scales/scale-radius.qmd"><code>scale-radius</code></a>, <a href="../reference/scales/scale-size-area.qmd"><code>scale-size-area</code></a>, and <a href="../reference/scales/scale-size-manual.qmd"><code>scale-size-manual</code></a> compared on the same data.'
+  alt: "Three stacked scatter panels with marker size driven by linear radius, area-preserving square-root, and manual per-level size scales."
+
+- slug: scale-shape-linetype-binned
+  section: scales
+  title: "Binned shape and linetype"
+  description: 'Cut a continuous variable into bins with <a href="../reference/scales/scale-shape-binned.qmd"><code>scale-shape-binned</code></a> or <a href="../reference/scales/scale-linetype-binned.qmd"><code>scale-linetype-binned</code></a>.'
+  alt: "Three stacked panels: scatters where marker shape is binned by a continuous variable, and a line chart where dash patterns are binned across six groups."
+
+- slug: scale-binned
+  section: scales
+  title: "Binned colour and size"
+  description: 'Stepped colour gradients and area-preserving size scales via <a href="../reference/scales/scale-fill-steps.qmd"><code>scale-fill-steps</code></a>, <a href="../reference/scales/scale-fill-fermenter.qmd"><code>scale-fill-fermenter</code></a>, and <a href="../reference/scales/scale-size-area.qmd"><code>scale-size-area</code></a>.'
+  alt: "Three side-by-side scatter panels comparing a 5-bin stepped fill, a 7-bin Spectral fermenter palette, and a sub-linear size-area scale."
+
+- slug: scale-brewer-gradient
+  section: scales
+  title: "ColorBrewer and gradient fills"
+  description: 'Discrete <a href="../reference/scales/scale-fill-brewer.qmd"><code>scale-fill-brewer</code></a> palettes alongside continuous <a href="../reference/scales/scale-fill-gradient.qmd"><code>scale-fill-gradient</code></a> and <a href="../reference/scales/scale-fill-gradient2.qmd"><code>scale-fill-gradient2</code></a>.'
+  alt: "Two by two grid contrasting Set1 and Spectral discrete brewer palettes with two-stop and diverging continuous gradient fills."
+
+- slug: scale-niche
+  section: scales
+  title: "Grey, hue, and distiller fills"
+  description: 'Niche fill scales: <a href="../reference/scales/scale-fill-grey.qmd"><code>scale-fill-grey</code></a>, <a href="../reference/scales/scale-fill-hue.qmd"><code>scale-fill-hue</code></a>, and <a href="../reference/scales/scale-fill-distiller.qmd"><code>scale-fill-distiller</code></a>.'
+  alt: "Three side-by-side scatter panels rendered with a discrete grey ramp, a discrete hue wheel, and a continuous Spectral distiller palette."
+
+- slug: scale-date
+  section: scales
+  title: "Date axis"
+  description: 'ISO date strings on x parsed and laid out by <a href="../reference/scales/scale-x-date.qmd"><code>scale-x-date</code></a> with year-month tick labels.'
+  alt: "Line and point chart of the US personal savings rate from 2008 to 2009 with year-month axis labels along the bottom."
+
+- slug: scale-log-sqrt-reverse
+  section: scales
+  title: "Log, sqrt, and reverse axes"
+  description: 'Continuous axis transformations via <a href="../reference/scales/scale-y-log10.qmd"><code>scale-y-log10</code></a>, <a href="../reference/scales/scale-y-sqrt.qmd"><code>scale-y-sqrt</code></a>, and <a href="../reference/scales/scale-y-reverse.qmd"><code>scale-y-reverse</code></a>.'
+  alt: "Two by two grid showing the same exponential growth curve under linear, log10, square-root, and reversed y-axis transformations."
+
+- slug: scale-expand
+  section: scales
+  title: "Axis expansion"
+  description: 'Tune axis breathing room via <a href="../reference/scales/scale-x-continuous.qmd"><code>scale-*-continuous(expand:)</code></a> or via <a href="../reference/coord/coord-cartesian.qmd"><code>coord-cartesian(expand: false)</code></a>.'
+  alt: "Three side-by-side scatter panels comparing the default 5% expansion, scales with expand set to false, and coord-cartesian with expand set to false."
+
+- slug: identity-scales
+  section: scales
+  title: "Identity scales"
+  description: '<a href="../reference/scales/scale-colour-identity.qmd"><code>scale-colour-identity</code></a> and <a href="../reference/scales/scale-shape-identity.qmd"><code>scale-shape-identity</code></a> pass column values directly to the visual property.'
+  alt: "Scatter of five points where hex colour strings drive marker fill and shape names drive marker glyph directly via identity scales."
+
+- slug: refs-trans
+  section: scales
+  title: "Reference lines through axis transforms"
+  description: '<a href="../reference/geoms/geom-hline.qmd"><code>geom-hline</code></a> intercepts route through the active y-axis transform so they land at the correct log positions.'
+  alt: "Line and point chart of an exponential curve on a log10 y axis with three dashed red horizontal reference lines at y equals 10, 100, and 1000."

@@ -1,20 +1,20 @@
-// Continuous fill guide: a colourbar appears automatically when the
-// fill aesthetic is trained continuously.
+// A colourbar guide appears automatically when fill is trained continuously.
 
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let df = ()
-#for i in range(0, 40) {
-  df.push((x: i, y: calc.cos(i / 4.0) * 6, temp: i * 1.5))
-}
-
 #plot(
-  data: df,
-  mapping: aes(x: "x", y: "y", fill: "temp"),
-  layers: (geom-point(size: 5pt),),
-  labs: labs(title: "Colourbar guide", fill: "Temperature"),
+  data: mpg,
+  mapping: aes(x: "displ", y: "hwy", fill: "cty"),
+  layers: (geom-point(size: 4pt, alpha: 0.85),),
+  labs: labs(
+    title: "Highway versus engine displacement, coloured by city mpg",
+    x: "Displacement (L)",
+    y: "Highway mpg",
+    fill: "City mpg",
+  ),
+  theme: theme-minimal(),
   width: 11cm,
-  height: 7cm,
+  height: 6.5cm,
 )

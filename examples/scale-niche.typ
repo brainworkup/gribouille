@@ -12,54 +12,54 @@
   (x: 5, y: 5, g: "epsilon"),
 )
 
-#let continuous-d = ()
-#for i in range(0, 16) {
-  continuous-d.push((x: i, y: i, z: i * 1.0))
+#let continuous-d = range(0, 16).map(i => (x: i, y: i, z: i * 1.0))
+
+#let panel(title, body) = {
+  set align(center)
+  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
 }
 
-#let make(label, body) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", label),
-    body,
-  )
-}
+#let theme0 = theme-minimal()
 
 #grid(
   columns: 3,
-  column-gutter: 0.4cm,
+  column-gutter: 0.5cm,
   row-gutter: 0.5cm,
-  make(
-    "grey (discrete)",
+  panel(
+    "scale-fill-grey",
     plot(
       data: discrete-d,
       mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 4pt),),
       scales: (scale-fill-grey(),),
+      labs: labs(x: "x", y: "y", fill: "Group"),
+      theme: theme0,
       width: 6cm,
       height: 5cm,
     ),
   ),
-  make(
-    "hue (discrete)",
+  panel(
+    "scale-fill-hue",
     plot(
       data: discrete-d,
       mapping: aes(x: "x", y: "y", fill: "g"),
       layers: (geom-point(size: 4pt),),
       scales: (scale-fill-hue(),),
+      labs: labs(x: "x", y: "y", fill: "Group"),
+      theme: theme0,
       width: 6cm,
       height: 5cm,
     ),
   ),
-  make(
-    "distiller Spectral (continuous)",
+  panel(
+    "scale-fill-distiller (Spectral)",
     plot(
       data: continuous-d,
       mapping: aes(x: "x", y: "y", fill: "z"),
       layers: (geom-point(size: 4pt),),
       scales: (scale-fill-distiller(palette: "Spectral"),),
+      labs: labs(x: "x", y: "y", fill: "z"),
+      theme: theme0,
       width: 6cm,
       height: 5cm,
     ),
