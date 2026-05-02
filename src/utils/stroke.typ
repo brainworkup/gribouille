@@ -1,4 +1,4 @@
-#import "colour-resolve.typ": resolve-stroke-colour
+#import "colour-resolve.typ": resolve-stroke-colour, resolve-stroke-width
 
 /// Build a CeTZ stroke dictionary by injecting `paint` into a thickness-only stroke spec, or returns `none` when the layer disabled the stroke.
 ///
@@ -40,7 +40,8 @@
 /// \@param default-colour The colour used when no scale resolution applies, or `none` to suppress the stroke entirely.
 /// \@returns A CeTZ stroke dictionary or `none`.
 #let resolve-stroke-spec(layer, mapping, ctx, sample-row, default-colour) = {
-  if layer.params.stroke == none { return none }
+  let stroke-param = layer.params.stroke
+  if stroke-param == none { return none }
   let paint = resolve-stroke-colour(
     layer,
     mapping,
@@ -48,5 +49,11 @@
     sample-row,
     default-colour,
   )
-  build-stroke(layer.params.stroke, paint)
+  // When `stroke:` is `auto`, resolve the thickness via the stroke aesthetic
+  // (mapping or default 0.5pt). Pinned lengths and dictionaries pass through
+  // build-stroke unchanged.
+  let resolved-param = if stroke-param == auto {
+    resolve-stroke-width(layer, mapping, ctx, sample-row, 0.5pt)
+  } else { stroke-param }
+  build-stroke(resolved-param, paint)
 }

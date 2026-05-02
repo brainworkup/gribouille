@@ -128,6 +128,65 @@
   resolved
 }
 
+/// Resolve a per-row marker outline thickness from the `stroke` aesthetic.
+///
+/// Priority order:
+/// 1. Pinned `layer.params.stroke` when set to a non-`auto`, non-`none` length.
+///    A stroke dictionary's `thickness` is used as the pinned value.
+/// 2. The trained stroke scale, if `mapping.stroke` is set.
+/// 3. `default-thickness` otherwise.
+///
+/// \@internal
+/// \@param layer The layer dictionary providing `params.stroke`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the stroke value.
+/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@returns A Typst length suitable for `stroke.thickness`.
+#let resolve-stroke-width(
+  layer,
+  mapping,
+  ctx,
+  sample-row,
+  default-thickness,
+) = {
+  let pinned = layer.params.at("stroke", default: auto)
+  if type(pinned) == length { return pinned }
+  if type(pinned) == dictionary {
+    return pinned.at("thickness", default: default-thickness)
+  }
+  let col = if mapping == none { none } else {
+    mapping.at("stroke", default: none)
+  }
+  let trained = ctx.trained.at("stroke", default: none)
+  if col == none or trained == none { return default-thickness }
+  let raw = sample-row.at(col, default: none)
+  if raw == none { return default-thickness }
+  if trained.type == "identity" {
+    if type(raw) == length { return raw }
+    let v = parse-number(raw)
+    if v == none { return default-thickness }
+    return v * 1pt
+  }
+  let range = spec-range(trained, (0.2pt, 1.4pt))
+  let resolved = if trained.type == "continuous" {
+    let v = parse-number(raw)
+    if v == none { return default-thickness }
+    continuous-numeric(trained, v, range)
+  } else {
+    let pal = spec-palette(trained, none)
+    if pal != none and pal.len() > 0 {
+      let idx = discrete-index(trained, raw)
+      if idx == none { return default-thickness }
+      pal.at(calc.rem(idx, pal.len()))
+    } else {
+      discrete-numeric(trained, raw, range)
+    }
+  }
+  if resolved == none { return default-thickness }
+  resolved
+}
+
 /// Resolve a per-row marker size.
 ///
 /// Priority order:

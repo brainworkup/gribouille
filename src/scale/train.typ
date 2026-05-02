@@ -121,6 +121,7 @@
   "size",
   "alpha",
   "linewidth",
+  "stroke",
   "shape",
   "linetype",
   "xmin",

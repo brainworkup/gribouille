@@ -145,6 +145,10 @@
   scale-linewidth-binned, scale-linewidth-continuous, scale-linewidth-identity,
   scale-linewidth-manual,
 )
+#import "src/scale/stroke.typ": (
+  scale-stroke-binned, scale-stroke-continuous, scale-stroke-identity,
+  scale-stroke-manual,
+)
 #import "src/scale/shape.typ": (
   scale-shape, scale-shape-identity, scale-shape-manual,
 )

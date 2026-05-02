@@ -82,7 +82,7 @@
   size: auto,
   colour: auto,
   fill: auto,
-  stroke: 0.5pt,
+  stroke: auto,
   alpha: auto,
   shape: auto,
   key: auto,
