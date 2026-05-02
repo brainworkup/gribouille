@@ -3,7 +3,9 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
+#import "../utils/colour-resolve.typ": (
+  resolve-linewidth, resolve-size, resolve-stroke-colour,
+)
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
@@ -147,9 +149,16 @@
         dash: layer.params.linetype,
       ),
     )
+    let radius = resolve-size(
+      layer,
+      mapping,
+      ctx,
+      row,
+      layer.params.size,
+    )
     cetz.draw.circle(
       (cx, cy-mid),
-      radius: layer.params.size,
+      radius: radius,
       fill: final-fill,
       stroke: none,
     )

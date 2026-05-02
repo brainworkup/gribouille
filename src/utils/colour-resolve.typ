@@ -161,12 +161,31 @@
     return v * 1pt
   }
   let range = spec-range(trained, (1pt, 6pt))
+  let size-trans = if trained.spec == none { "identity" } else {
+    trained.spec.at("size-trans", default: "identity")
+  }
   let resolved = if trained.type == "continuous" {
     let v = parse-number(raw)
     if v == none { return default-size }
-    continuous-numeric(trained, v, range)
+    if size-trans == "area" {
+      let (d-lo, d-hi) = trained.domain
+      let (r-lo, r-hi) = range
+      if d-hi == d-lo { return (r-lo + r-hi) / 2 }
+      let t = (v - d-lo) / (d-hi - d-lo)
+      let t-clamped = if t < 0 { 0 } else if t > 1 { 1 } else { t }
+      r-lo + calc.sqrt(t-clamped) * (r-hi - r-lo)
+    } else {
+      continuous-numeric(trained, v, range)
+    }
   } else {
-    discrete-numeric(trained, raw, range)
+    let pal = spec-palette(trained, none)
+    if pal != none and pal.len() > 0 {
+      let idx = discrete-index(trained, raw)
+      if idx == none { return default-size }
+      pal.at(calc.rem(idx, pal.len()))
+    } else {
+      discrete-numeric(trained, raw, range)
+    }
   }
   if resolved == none { return default-size }
   resolved

@@ -5,7 +5,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
-#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": build-stroke
@@ -182,12 +182,13 @@
     } else {
       build-stroke(layer.params.stroke, text-paint)
     }
+    let text-size = resolve-size(layer, mapping, ctx, row, layer.params.size)
     let body = box(
       fill: box-fill,
       stroke: stroke-spec,
       inset: layer.params.inset,
       radius: layer.params.radius,
-      text(size: layer.params.size, fill: text-paint)[#label],
+      text(size: text-size, fill: text-paint)[#label],
     )
     let dx = if type(layer.params.dx) == length {
       layer.params.dx / 1cm

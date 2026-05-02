@@ -5,7 +5,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
-#import "../utils/colour-resolve.typ": resolve-stroke-colour
+#import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
 #import "../utils/typst-markup.typ": eval-as-markup
 
 /// Text label layer reading strings from the `label` aesthetic.
@@ -133,6 +133,7 @@
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
     let colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
+    let text-size = resolve-size(layer, mapping, ctx, row, layer.params.size)
     let dx = if type(layer.params.dx) == length {
       layer.params.dx / 1cm
     } else { layer.params.dx }
@@ -141,7 +142,7 @@
     } else { layer.params.dy }
     cetz.draw.content(
       (cx + dx, cy + dy),
-      text(size: layer.params.size, fill: colour)[#label],
+      text(size: text-size, fill: colour)[#label],
       anchor: layer.params.anchor,
     )
   }

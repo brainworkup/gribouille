@@ -138,8 +138,8 @@
 )
 #import "src/utils/palette.typ": brewer-palette
 #import "src/scale/size.typ": (
-  scale-size-area, scale-size-binned, scale-size-binned-area,
-  scale-size-continuous, scale-size-identity,
+  scale-radius, scale-size-area, scale-size-binned, scale-size-binned-area,
+  scale-size-continuous, scale-size-identity, scale-size-manual,
 )
 #import "src/scale/linewidth.typ": (
   scale-linewidth-binned, scale-linewidth-continuous, scale-linewidth-identity,

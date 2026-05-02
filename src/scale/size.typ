@@ -303,3 +303,101 @@
   type: "identity",
   name: name,
 )
+
+/// Manual discrete size scale: supply a per-level array of Typst lengths.
+///
+/// Use when each level should map to a chosen marker radius rather than
+/// the evenly-spaced range that the discrete inference would assign.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param values Array of Typst lengths, one per level (in `limits` order when set, otherwise in first-seen order).
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Three groups assigned small/medium/large markers.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
+///   (x: 1, y: 2, g: "b"), (x: 2, y: 3, g: "b"),
+///   (x: 1, y: 3, g: "c"), (x: 2, y: 4, g: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", size: "g", group: "g"),
+///   layers: (geom-point(fill: rgb("#1f77b4")),),
+///   scales: (scale-size-manual(values: (2pt, 4pt, 7pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-size-continuous, \@scale-radius
+#let scale-size-manual(
+  values: (),
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "size",
+  type: "discrete",
+  name: name,
+  palette: values,
+  limits: limits,
+  labels: labels,
+)
+
+/// Linear-radius continuous size scale.
+///
+/// Alias of \@scale-size-continuous with the more explicit name. ggplot2's
+/// `scale_radius()` provides the linear value-to-radius mapping that gribouille
+/// already uses by default; \@scale-size-area is the area-proportional variant.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param range Pair of Typst lengths `(min, max)` bounding the output radius.
+/// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param breaks Array of break values for the legend, or `auto`.
+/// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Marker radius grows linearly with `w`.
+/// ```
+/// #let d = range(1, 8).map(i => (x: i, y: i, w: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", size: "w"),
+///   layers: (geom-point(fill: rgb("#1f77b4")),),
+///   scales: (scale-radius(range: (1pt, 8pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-size-continuous, \@scale-size-area
+#let scale-radius(
+  name: none,
+  range: (1pt, 6pt),
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: "size",
+  type: "continuous",
+  name: name,
+  range: range,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
