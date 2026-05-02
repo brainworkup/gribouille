@@ -103,14 +103,18 @@
 
 // Quadratic-bezier samples between (cx0, cy0) and (cx1, cy1). The control
 // point sits perpendicular to the chord at a distance proportional to
-// `curvature * chord-length`. `angle` shifts the apex along the chord;
-// 90deg places it at the midpoint.
-#let _curve-points(cx0, cy0, cx1, cy1, curvature, angle, n) = {
+// `curvature * chord-length`. `cos-angle` is the cached `calc.cos(angle)`
+// supplied by the caller (the angle is constant per layer, so the trig is
+// hoisted out of the per-row loop). 90deg places the apex at the midpoint.
+//
+// Returns `n + 1` points to include both endpoints exactly; circle/ellipse
+// samplers wrap and use `n` points instead.
+#let _curve-points(cx0, cy0, cx1, cy1, curvature, cos-angle, n) = {
   let dx = cx1 - cx0
   let dy = cy1 - cy0
   let length = calc.sqrt(dx * dx + dy * dy)
   if length == 0 { return ((cx0, cy0),) }
-  let t-mid = calc.cos(angle) * 0.5 + 0.5
+  let t-mid = cos-angle * 0.5 + 0.5
   let mx = cx0 + t-mid * dx
   let my = cy0 + t-mid * dy
   let perp-x = -dy / length
@@ -144,7 +148,7 @@
 
   let ink = ctx.theme.at("ink", default: black)
   let curvature = layer.params.curvature
-  let angle = layer.params.angle
+  let cos-angle = calc.cos(layer.params.angle)
   let n = layer.params.n
 
   for row in data {
@@ -159,7 +163,7 @@
     let cy1 = map-position(y-trained, y1, ctx.py-range)
     if cx0 == none or cy0 == none or cx1 == none or cy1 == none { continue }
 
-    let pts = _curve-points(cx0, cy0, cx1, cy1, curvature, angle, n)
+    let pts = _curve-points(cx0, cy0, cx1, cy1, curvature, cos-angle, n)
     if pts.len() < 2 { continue }
 
     let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)

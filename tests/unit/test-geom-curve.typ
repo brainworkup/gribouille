@@ -22,7 +22,7 @@
 
 // Curve sampling: with curvature: 0 the bezier collapses to the chord, so
 // every sample lies on the straight line between endpoints.
-#let straight = _curve-points(0, 0, 4, 0, 0, 90deg, 4)
+#let straight = _curve-points(0, 0, 4, 0, 0, calc.cos(90deg), 4)
 #assert.eq(straight.len(), 5)
 #assert.eq(straight.at(0), (0, 0))
 #assert.eq(straight.at(4), (4, 0))
@@ -33,18 +33,18 @@
 // (above) at half the chord length: midpoint y = 0.5 * length / 2 (the
 // bezier apex is half the control-point offset because of the (1-t)t
 // weighting at t = 0.5).
-#let bowed = _curve-points(0, 0, 4, 0, 0.5, 90deg, 4)
+#let bowed = _curve-points(0, 0, 4, 0, 0.5, calc.cos(90deg), 4)
 #let mid = bowed.at(2)
 // Bezier midpoint y = 2 * (1 - 0.5) * 0.5 * cy = 0.5 * cy where cy = 0.5 * 4.
 #assert.eq(mid.at(0), 2)
 #assert.eq(mid.at(1), 1)
 
 // Negative curvature flips the apex to the other side.
-#let bowed-neg = _curve-points(0, 0, 4, 0, -0.5, 90deg, 4)
+#let bowed-neg = _curve-points(0, 0, 4, 0, -0.5, calc.cos(90deg), 4)
 #assert.eq(bowed-neg.at(2).at(1), -1)
 
 // Zero-length chord short-circuits to a single point.
-#let degenerate = _curve-points(1, 2, 1, 2, 0.5, 90deg, 4)
+#let degenerate = _curve-points(1, 2, 1, 2, 0.5, calc.cos(90deg), 4)
 #assert.eq(degenerate.len(), 1)
 
 geom-curve smoke tests passed.
