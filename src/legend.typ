@@ -282,6 +282,20 @@
   cand
 }
 
+// Extract user-labels, binned-flag, and n-breaks from a trained scale's spec.
+// Returns sane defaults when the spec is absent (auto-defaulted scales).
+#let _bin-info(t, default-n: 5) = {
+  let spec = t.at("spec", default: none)
+  if spec == none {
+    return (labels: auto, binned: false, n-breaks: default-n)
+  }
+  (
+    labels: spec.at("labels", default: auto),
+    binned: spec.at("binned", default: false),
+    n-breaks: spec.at("n-breaks", default: default-n),
+  )
+}
+
 #let _format-break(n) = {
   if type(n) == int { return str(n) }
   if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
@@ -386,20 +400,11 @@
       // because compositing them on a smooth gradient is awkward and rare.
       // Stepped scales (binned: true) emit n-breaks discrete patches with
       // ticks at the bin boundaries; smooth scales fall back to pretty().
-      let spec = first.t.at("spec", default: none)
-      let user-labels = if spec != none {
-        spec.at("labels", default: auto)
-      } else { auto }
-      let binned = if spec != none {
-        spec.at("binned", default: false)
-      } else { false }
-      let n-breaks = if spec != none {
-        spec.at("n-breaks", default: 5)
-      } else { 5 }
+      let info = _bin-info(first.t)
       let lo = first.domain.first()
       let hi = first.domain.last()
-      let breaks = if binned {
-        range(n-breaks + 1).map(i => lo + i * (hi - lo) / n-breaks)
+      let breaks = if info.binned {
+        range(info.n-breaks + 1).map(i => lo + i * (hi - lo) / info.n-breaks)
       } else { pretty(lo, hi, n: 5) }
       (
         kind: "colourbar",
@@ -407,25 +412,33 @@
         title: first.title,
         domain: first.domain,
         breaks: breaks,
-        labels: user-labels,
+        labels: info.labels,
         typst-mark: typst-mark,
-        binned: binned,
-        n-breaks: n-breaks,
+        binned: info.binned,
+        n-breaks: info.n-breaks,
       )
     } else {
-      let breaks = pretty(first.domain.first(), first.domain.last(), n: 5)
-      let user-labels = if (
-        first.t.at("spec", default: none) != none
-      ) { first.t.spec.at("labels", default: auto) } else { auto }
+      // Numeric ladder for size/alpha/linewidth/stroke. Binned scales emit
+      // one glyph per bin at the midpoint; smooth scales fall back to pretty().
+      let info = _bin-info(first.t)
+      let lo = first.domain.first()
+      let hi = first.domain.last()
+      let breaks = if info.binned {
+        range(info.n-breaks).map(i => (
+          lo + (i + 0.5) * (hi - lo) / info.n-breaks
+        ))
+      } else { pretty(lo, hi, n: 5) }
       (
         kind: "size-ladder",
         aesthetics: aesthetics,
         title: first.title,
         domain: first.domain,
         breaks: breaks,
-        labels: user-labels,
+        labels: info.labels,
         key: key-kind,
         typst-mark: typst-mark,
+        binned: info.binned,
+        n-breaks: info.n-breaks,
       )
     }
     g.insert("width", _guide-width(g))
