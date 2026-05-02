@@ -283,7 +283,7 @@ Legend for **Priority** (used to order future work):
 | ggplot2                                                                                                                              | gribouille                              | Status | Priority | Notes                                                               |
 | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | ------ | -------- | ------------------------------------------------------------------- |
 | `mpg`, `economics`                                                                                                                   | `mpg` (30 rows), `economics` (24 rows). | ✅     | —        | Small subsets bundled for examples; values plausible but not exact. |
-| Other datasets (`diamonds`, `economics_long`, `faithfuld`, `midwest`, `msleep`, `presidential`, `seals`, `txhousing`, `luv_colours`) | —                                       | ⬜     | P4       | Ship if a real example asks for them.                               |
+| Other datasets (`diamonds`, `economics_long`, `faithfuld`, `midwest`, `msleep`, `presidential`, `seals`, `txhousing`, `luv_colours`) | —                                       | ❌     | ∅        | Bundling additional datasets bloats the package; users can load their own from CSV. The shipped trio (`mpg`, `penguins`, `economics`) covers the docs and tests.                                |
 
 ### Extensions and native
 
