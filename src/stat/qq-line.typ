@@ -8,6 +8,7 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/normal.typ": theoretical-quantile
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 #let _quantile-type-7(sorted, q) = {
   let n = sorted.len()
@@ -69,18 +70,25 @@
 #let stat-qq-line() = (kind: "stat", name: "qq-line")
 
 #let apply(data, mapping, params: (:)) = {
-  let base-mapping = (x: "theoretical", y: "sample")
+  // The input `sample` aesthetic referenced a user column; that column has
+  // been consumed into the synthesised `sample` data column, so the input key
+  // is dropped to avoid pointing at a stale column name.
+  let new-mapping = stat-output-mapping(
+    mapping,
+    (x: "theoretical", y: "sample"),
+  )
+  if "sample" in new-mapping { let _ = new-mapping.remove("sample") }
   let sample-col = if mapping != none {
     let s = mapping.at("sample", default: none)
     if s != none { s } else { mapping.at("y", default: none) }
   } else { none }
-  if sample-col == none { return (data: (), mapping: base-mapping) }
+  if sample-col == none { return (data: (), mapping: new-mapping) }
   let distribution = params.at("distribution", default: "normal")
   let xs = data
     .map(r => parse-number(r.at(sample-col, default: none)))
     .filter(v => v != none)
   let n = xs.len()
-  if n < 2 { return (data: (), mapping: base-mapping) }
+  if n < 2 { return (data: (), mapping: new-mapping) }
   let sorted = xs.sorted()
   let q1 = _quantile-type-7(sorted, 0.25)
   let q3 = _quantile-type-7(sorted, 0.75)
@@ -94,5 +102,5 @@
     (theoretical: t-lo, sample: intercept + slope * t-lo),
     (theoretical: t-hi, sample: intercept + slope * t-hi),
   )
-  (data: rows, mapping: base-mapping)
+  (data: rows, mapping: new-mapping)
 }

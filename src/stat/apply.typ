@@ -17,6 +17,7 @@
 #import "function.typ" as function-stat
 #import "ellipse.typ" as ellipse-stat
 #import "quantile.typ" as quantile-stat
+#import "../utils/bin.typ": panel-bin-grid
 
 #let _stat-constructors = (
   bin: bin-stat.stat-bin,
@@ -33,6 +34,20 @@
 #let stat-default-params(name) = {
   let ctor = _stat-constructors.at(name, default: none)
   if ctor == none { (:) } else { ctor().at("params", default: (:)) }
+}
+
+// Run a stat's optional panel-level setup once, before per-group `apply()`,
+// so any partition shared across groups (currently the bin grid for binning
+// stats) is computed from the full data and reused. Stats not listed here
+// return their input params unchanged.
+#let _binning-stats = ("bin", "bindot", "summary_bin")
+
+#let setup-stat(name, data, mapping, params) = {
+  if _binning-stats.contains(name) {
+    panel-bin-grid(data, mapping, params)
+  } else {
+    params
+  }
 }
 
 #let apply-stat(name, data, mapping, params) = {

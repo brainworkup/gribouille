@@ -22,7 +22,7 @@
 /// \@param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
 /// \@param stroke Bar outline; `none` means no border.
 /// \@param alpha Bar opacity in `[0, 1]`.
-/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param position Position adjustment. Defaults to `"stack"` so a `fill`/`colour` mapping yields stacked contributions per group.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.
@@ -67,7 +67,7 @@
   fill: auto,
   stroke: none,
   alpha: auto,
-  position: "identity",
+  position: "stack",
   inherit-aes: true,
 ) = (
   kind: "layer",

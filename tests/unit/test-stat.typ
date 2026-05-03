@@ -52,4 +52,72 @@
 #assert.eq(r-nones.data.len(), 1)
 #assert.eq(r-nones.data.at(0).at("_count"), 2)
 
+// --- stat-bin: preserves grouping aesthetics in output mapping ---
+//
+// Per-group apply on a single group still publishes the input mapping's
+// `fill` so downstream geoms/positions see per-bin grouping.
+#let df-bin = range(0, 10).map(i => (x: i, g: "a"))
+#let r-bin = apply-stat("bin", df-bin, (x: "x", fill: "g"), (bins: 4))
+#assert.eq(r-bin.mapping.x, "x")
+#assert.eq(r-bin.mapping.y, "y")
+#assert.eq(r-bin.mapping.fill, "g")
+
+// --- stat-bindot: same grouping preservation for dotplot binning ---
+
+#let r-bindot = apply-stat(
+  "bindot",
+  df-bin,
+  (x: "x", colour: "g"),
+  (bins: 4),
+)
+#assert.eq(r-bindot.mapping.x, "x")
+#assert.eq(r-bindot.mapping.y, "y")
+#assert.eq(r-bindot.mapping.colour, "g")
+
+// --- stat-sum: preserves grouping while still publishing size: "n" ---
+
+#let df-sum = (
+  (x: 1, y: 1, g: "a"),
+  (x: 1, y: 1, g: "a"),
+  (x: 2, y: 2, g: "b"),
+)
+#let r-sum = apply-stat("sum", df-sum, (x: "x", y: "y", fill: "g"), (:))
+#assert.eq(r-sum.mapping.x, "x")
+#assert.eq(r-sum.mapping.y, "y")
+#assert.eq(r-sum.mapping.size, "n")
+#assert.eq(r-sum.mapping.fill, "g")
+
+// --- stat-qq / stat-qq-line: preserve grouping; drop stale `sample` key ---
+
+#let df-qq = range(1, 6).map(i => (v: i, g: "a"))
+#let r-qq = apply-stat("qq", df-qq, (y: "v", colour: "g"), (:))
+#assert.eq(r-qq.mapping.x, "theoretical")
+#assert.eq(r-qq.mapping.y, "sample")
+#assert.eq(r-qq.mapping.colour, "g")
+#assert.eq(r-qq.mapping.at("sample", default: none), none)
+
+#let r-qql = apply-stat(
+  "qq-line",
+  df-qq,
+  (sample: "v", colour: "g"),
+  (:),
+)
+#assert.eq(r-qql.mapping.colour, "g")
+#assert.eq(r-qql.mapping.at("sample", default: none), none)
+
+// --- stat-summary_bin: preserves grouping alongside synthesised columns ---
+
+#let df-sb = range(0, 10).map(i => (x: i, y: i * 2.0, g: "a"))
+#let r-sb = apply-stat(
+  "summary_bin",
+  df-sb,
+  (x: "x", y: "y", fill: "g"),
+  (bins: 3, fun: "mean-se"),
+)
+#assert.eq(r-sb.mapping.x, "x")
+#assert.eq(r-sb.mapping.y, "y")
+#assert.eq(r-sb.mapping.ymin, "ymin")
+#assert.eq(r-sb.mapping.ymax, "ymax")
+#assert.eq(r-sb.mapping.fill, "g")
+
 Stat tests passed.

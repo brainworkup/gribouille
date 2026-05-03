@@ -7,7 +7,7 @@
   positional-aesthetics, train, transform-fwd, transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
-#import "stat/apply.typ": apply-stat, stat-default-params
+#import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": _line-stroke, _rect-fill, _text-style
@@ -197,12 +197,20 @@
   if not stat-identity {
     // compute-group pattern: split by discrete-aesthetic groups,
     // apply the stat to each group independently, then recombine.
+    // A panel-level setup pass first lets binning stats compute a shared
+    // partition over the full data so groups end up on the same bin grid.
+    let resolved-params = setup-stat(
+      stat-name,
+      data,
+      stripped,
+      stat-params,
+    )
     let gcols = group-cols(mapping)
     let group-list = partition-by-group(data, mapping)
     let combined = ()
     let last-mapping = stripped
     for g in group-list {
-      let r = apply-stat(stat-name, g.data, stripped, stat-params)
+      let r = apply-stat(stat-name, g.data, stripped, resolved-params)
       last-mapping = r.mapping
       // Re-inject group column values from the first row of this group so
       // scale training and position adjustments can still see them.

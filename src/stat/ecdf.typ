@@ -5,6 +5,7 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": read-weight
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// ECDF statistic: one row per unique x value with the cumulative fraction.
 ///
@@ -57,8 +58,8 @@
   let x-col = if mapping != none { mapping.at("x", default: none) } else {
     none
   }
-  let base-mapping = (x: "x", y: "y")
-  if x-col == none { return (data: (), mapping: base-mapping) }
+  let new-mapping = stat-output-mapping(mapping, (x: "x", y: "y"))
+  if x-col == none { return (data: (), mapping: new-mapping) }
   let weight-col = mapping.at("weight", default: none)
   let pairs = data
     .map(r => {
@@ -67,9 +68,9 @@
       (x: xv, w: read-weight(r, weight-col))
     })
     .filter(p => p != none)
-  if pairs.len() == 0 { return (data: (), mapping: base-mapping) }
+  if pairs.len() == 0 { return (data: (), mapping: new-mapping) }
   let total = pairs.fold(0, (acc, p) => acc + p.w)
-  if total == 0 { return (data: (), mapping: base-mapping) }
+  if total == 0 { return (data: (), mapping: new-mapping) }
   let sorted = pairs.sorted(key: p => p.x)
   let rows = ()
   let cum = 0
@@ -86,5 +87,5 @@
     }
     i = j
   }
-  (data: rows, mapping: base-mapping)
+  (data: rows, mapping: new-mapping)
 }

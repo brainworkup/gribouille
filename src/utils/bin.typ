@@ -2,6 +2,8 @@
 // Computes the canonical `(lo, hi, n-bins, width)` partition from a numeric
 // vector and a `bins`/`binwidth` parameter pair, plus the per-value bin index.
 
+#import "types.typ": parse-number
+
 // Compute `(lo, hi)` from a non-empty numeric vector. Spreads to `(lo, lo+1)`
 // when all values are equal, so downstream computations don't divide by zero.
 #let bin-domain(xs) = {
@@ -31,3 +33,49 @@
 
 // Midpoint of bin `i` over the partition starting at `lo` with bucket `width`.
 #let bin-midpoint(lo, width, i) = lo + (i + 0.5) * width
+
+// Compute a panel-wide bin grid `(lo, n-bins, width)` from the full layer data
+// and stash it under `params.grid`, so per-group `apply()` calls share the
+// same partition. Without this, two groups with different x-ranges end up on
+// different bin midpoints and stacked positions cannot align.
+//
+// `grid` is a reserved internal protocol key on the binning stats' params
+// dict; user-supplied stat params should not collide with it.
+// Returns `params` unchanged when no x column is mapped or the data has no
+// parseable x values.
+#let panel-bin-grid(data, mapping, params) = {
+  let x-col = if mapping != none { mapping.at("x", default: none) } else {
+    none
+  }
+  if x-col == none { return params }
+  let xs = data
+    .map(r => parse-number(r.at(x-col, default: none)))
+    .filter(v => v != none)
+  if xs.len() == 0 { return params }
+  let (lo, hi) = bin-domain(xs)
+  let (n-bins, width) = bin-config(
+    lo,
+    hi,
+    params.at("bins", default: 30),
+    params.at("binwidth", default: none),
+  )
+  let out = params
+  out.insert("grid", (lo: lo, n-bins: n-bins, width: width))
+  out
+}
+
+// Resolve the bin grid for a per-group `apply()`. Prefers a panel-level grid
+// stashed in `params.grid` (set by `panel-bin-grid` during setup); otherwise
+// derives a per-group grid from `xs`.
+#let resolve-bin-grid(xs, params) = {
+  let grid = params.at("grid", default: none)
+  if grid != none { return grid }
+  let (lo, hi) = bin-domain(xs)
+  let (n-bins, width) = bin-config(
+    lo,
+    hi,
+    params.at("bins", default: 30),
+    params.at("binwidth", default: none),
+  )
+  (lo: lo, n-bins: n-bins, width: width)
+}

@@ -5,6 +5,7 @@
 ///! and proportion as new aesthetics.
 
 #import "../utils/summaries.typ": read-weight
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// Sum statistic: one output row per unique `(x, y)` pair with `n` and `prop`.
 ///
@@ -55,12 +56,15 @@
 #let stat-sum() = (kind: "stat", name: "sum")
 
 #let apply(data, mapping, params: (:)) = {
-  let base-mapping = (x: "x", y: "y", size: "n")
-  if mapping == none { return (data: (), mapping: base-mapping) }
+  let new-mapping = stat-output-mapping(
+    mapping,
+    (x: "x", y: "y", size: "n"),
+  )
+  if mapping == none { return (data: (), mapping: new-mapping) }
   let x-col = mapping.at("x", default: none)
   let y-col = mapping.at("y", default: none)
   if x-col == none or y-col == none {
-    return (data: (), mapping: base-mapping)
+    return (data: (), mapping: new-mapping)
   }
 
   let weight-col = mapping.at("weight", default: none)
@@ -90,5 +94,5 @@
     rows.push((x: p.x, y: p.y, n: n, prop: prop))
   }
 
-  (data: rows, mapping: base-mapping)
+  (data: rows, mapping: new-mapping)
 }

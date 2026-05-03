@@ -7,6 +7,7 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/normal.typ": theoretical-quantile
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// Q-Q statistic: theoretical-vs-sample pairs against a reference distribution.
 ///
@@ -53,18 +54,25 @@
 #let stat-qq() = (kind: "stat", name: "qq")
 
 #let apply(data, mapping, params: (:)) = {
-  let base-mapping = (x: "theoretical", y: "sample")
+  // The input `sample` aesthetic referenced a user column; that column has
+  // been consumed into the synthesised `sample` data column, so the input key
+  // is dropped to avoid pointing at a stale column name.
+  let new-mapping = stat-output-mapping(
+    mapping,
+    (x: "theoretical", y: "sample"),
+  )
+  if "sample" in new-mapping { let _ = new-mapping.remove("sample") }
   let sample-col = if mapping != none {
     let s = mapping.at("sample", default: none)
     if s != none { s } else { mapping.at("y", default: none) }
   } else { none }
-  if sample-col == none { return (data: (), mapping: base-mapping) }
+  if sample-col == none { return (data: (), mapping: new-mapping) }
   let distribution = params.at("distribution", default: "normal")
   let xs = data
     .map(r => parse-number(r.at(sample-col, default: none)))
     .filter(v => v != none)
   let n = xs.len()
-  if n == 0 { return (data: (), mapping: base-mapping) }
+  if n == 0 { return (data: (), mapping: new-mapping) }
   let sorted = xs.sorted()
   let rows = ()
   let i = 0
@@ -76,5 +84,5 @@
     ))
     i = i + 1
   }
-  (data: rows, mapping: base-mapping)
+  (data: rows, mapping: new-mapping)
 }

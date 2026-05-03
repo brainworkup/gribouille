@@ -6,7 +6,10 @@
 ///! plus per-bin count for reference.
 
 #import "../utils/types.typ": parse-number
-#import "../utils/bin.typ": bin-config, bin-domain, bin-midpoint, bin-of
+#import "../utils/bin.typ": (
+  bin-midpoint, bin-of, panel-bin-grid, resolve-bin-grid,
+)
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// Dot-density bin statistic: emit one stacked row per observation.
 ///
@@ -36,30 +39,25 @@
     none
   }
   if x-col == none { return (data: data, mapping: mapping) }
+  let new-mapping = stat-output-mapping(mapping, (x: "x", y: "y"))
   let xs = data
     .map(r => parse-number(r.at(x-col, default: none)))
     .filter(v => v != none)
-  if xs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }
-  let (lo, hi) = bin-domain(xs)
-  let (n-bins, width) = bin-config(
-    lo,
-    hi,
-    params.at("bins", default: 30),
-    params.at("binwidth", default: none),
-  )
-  let counts = range(n-bins).map(_ => 0)
+  if xs.len() == 0 { return (data: (), mapping: new-mapping) }
+  let grid = resolve-bin-grid(xs, params)
+  let counts = range(grid.n-bins).map(_ => 0)
   let assignments = ()
   for x in xs {
-    let idx = bin-of(x, lo, width, n-bins)
+    let idx = bin-of(x, grid.lo, grid.width, grid.n-bins)
     assignments.push((bin: idx, stack: counts.at(idx)))
     counts.at(idx) = counts.at(idx) + 1
   }
   let stackratio = params.at("stackratio", default: 1.0)
   let rows = assignments.map(a => (
-    x: bin-midpoint(lo, width, a.bin),
+    x: bin-midpoint(grid.lo, grid.width, a.bin),
     y: (a.stack + 0.5) * stackratio,
     bin-count: counts.at(a.bin),
-    width: width,
+    width: grid.width,
   ))
-  (data: rows, mapping: (x: "x", y: "y"))
+  (data: rows, mapping: new-mapping)
 }

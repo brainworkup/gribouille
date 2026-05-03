@@ -6,6 +6,10 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": summarise
+#import "../utils/bin.typ": (
+  bin-midpoint, bin-of, panel-bin-grid, resolve-bin-grid,
+)
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// Summary statistic over uniform x bins.
 ///
@@ -80,14 +84,17 @@
 )
 
 #let apply(data, mapping, params: (:)) = {
-  let base-mapping = (x: "x", y: "y", ymin: "ymin", ymax: "ymax")
-  if mapping == none { return (data: (), mapping: base-mapping) }
+  let new-mapping = stat-output-mapping(
+    mapping,
+    (x: "x", y: "y", ymin: "ymin", ymax: "ymax"),
+  )
+  if mapping == none { return (data: (), mapping: new-mapping) }
   let x-col = mapping.at("x", default: none)
   let y-col = mapping.at("y", default: none)
   if x-col == none or y-col == none {
-    return (data: (), mapping: base-mapping)
+    return (data: (), mapping: new-mapping)
   }
-  if data.len() == 0 { return (data: (), mapping: base-mapping) }
+  if data.len() == 0 { return (data: (), mapping: new-mapping) }
 
   let weight-col = mapping.at("weight", default: none)
   let pairs = data
@@ -97,26 +104,12 @@
       w: if weight-col == none { 1 } else { r.at(weight-col, default: none) },
     ))
     .filter(p => p.x != none)
-  if pairs.len() == 0 { return (data: (), mapping: base-mapping) }
+  if pairs.len() == 0 { return (data: (), mapping: new-mapping) }
 
-  let xs = pairs.map(p => p.x)
-  let lo = calc.min(..xs)
-  let hi = calc.max(..xs)
-  if hi == lo { hi = lo + 1.0 }
-
-  let binwidth = params.at("binwidth", default: none)
-  let bins = params.at("bins", default: 30)
-  let n-bins = if binwidth != none and binwidth > 0 {
-    calc.max(1, int(calc.ceil((hi - lo) / binwidth)))
-  } else {
-    bins
-  }
-  let width = (hi - lo) / n-bins
-
-  let buckets = range(n-bins).map(_ => (ys: (), ws: ()))
+  let grid = resolve-bin-grid(pairs.map(p => p.x), params)
+  let buckets = range(grid.n-bins).map(_ => (ys: (), ws: ()))
   for p in pairs {
-    let raw = int(calc.floor((p.x - lo) / width))
-    let idx = calc.max(0, calc.min(n-bins - 1, raw))
+    let idx = bin-of(p.x, grid.lo, grid.width, grid.n-bins)
     let bucket = buckets.at(idx)
     bucket.ys.push(p.y)
     bucket.ws.push(p.w)
@@ -127,7 +120,7 @@
   let fun-args = params.at("fun-args", default: (:))
 
   let out = ()
-  for i in range(n-bins) {
+  for i in range(grid.n-bins) {
     let bucket = buckets.at(i)
     if bucket.ys.len() == 0 { continue }
     let weights = if weight-col == none { none } else { bucket.ws }
@@ -139,12 +132,12 @@
     )
     if summary.y == none { continue }
     out.push((
-      x: lo + (i + 0.5) * width,
+      x: bin-midpoint(grid.lo, grid.width, i),
       y: summary.y,
       ymin: summary.ymin,
       ymax: summary.ymax,
     ))
   }
 
-  (data: out, mapping: base-mapping)
+  (data: out, mapping: new-mapping)
 }

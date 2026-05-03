@@ -116,6 +116,26 @@
   value
 }
 
+/// Build a stat output mapping by preserving the input's grouping aesthetics
+/// (`fill`, `colour`, `group`, `linetype`, `shape`, ...) and overriding only
+/// the synthesised columns the stat publishes.
+///
+/// Falls back to an empty dict when `input-mapping` is `none`, so callers can
+/// still publish their synthesised x/y/etc. columns to downstream layers.
+///
+/// \@internal
+/// \@param input-mapping Aesthetic mapping or `none`.
+/// \@param overrides Dictionary of `(aes-name, column-name)` pairs to apply on
+///   top of the preserved mapping.
+/// \@returns Mapping dict suitable for a stat's `apply()` return.
+#let stat-output-mapping(input-mapping, overrides) = {
+  let out = if input-mapping == none { (:) } else { input-mapping }
+  for (key, value) in overrides {
+    out.insert(key, value)
+  }
+  out
+}
+
 /// Resolve a break-display label by combining the scale's `labels:`
 /// override (function or array) and a typst-mark eval pass.
 ///

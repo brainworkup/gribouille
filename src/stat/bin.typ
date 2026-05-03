@@ -5,7 +5,10 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": read-weight
-#import "../utils/bin.typ": bin-config, bin-domain, bin-midpoint, bin-of
+#import "../utils/bin.typ": (
+  bin-midpoint, bin-of, panel-bin-grid, resolve-bin-grid,
+)
+#import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// Bin statistic: partition x into uniform-width bins, count rows per bin.
 ///
@@ -67,23 +70,18 @@
       (x: xv, w: read-weight(r, weight-col))
     })
     .filter(p => p != none)
-  if pairs.len() == 0 { return (data: (), mapping: (x: "x", y: "y")) }
-  let (lo, hi) = bin-domain(pairs.map(p => p.x))
-  let (n-bins, width) = bin-config(
-    lo,
-    hi,
-    params.at("bins", default: 30),
-    params.at("binwidth", default: none),
-  )
-  let counts = range(n-bins).map(_ => 0)
+  let new-mapping = stat-output-mapping(mapping, (x: "x", y: "y"))
+  if pairs.len() == 0 { return (data: (), mapping: new-mapping) }
+  let grid = resolve-bin-grid(pairs.map(p => p.x), params)
+  let counts = range(grid.n-bins).map(_ => 0)
   for p in pairs {
-    let idx = bin-of(p.x, lo, width, n-bins)
+    let idx = bin-of(p.x, grid.lo, grid.width, grid.n-bins)
     counts.at(idx) = counts.at(idx) + p.w
   }
-  let rows = range(n-bins).map(i => (
-    x: bin-midpoint(lo, width, i),
+  let rows = range(grid.n-bins).map(i => (
+    x: bin-midpoint(grid.lo, grid.width, i),
     y: counts.at(i),
-    width: width,
+    width: grid.width,
   ))
-  (data: rows, mapping: (x: "x", y: "y"))
+  (data: rows, mapping: new-mapping)
 }
