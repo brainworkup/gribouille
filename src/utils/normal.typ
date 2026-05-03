@@ -12,7 +12,7 @@
 /// outside the open interval `(0, 1)` panic so callers do not silently
 /// receive an undefined result.
 ///
-/// \@category Utilities
+/// \@category Helpers
 /// \@stability stable
 /// \@since 0.0.1
 ///

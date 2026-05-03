@@ -4,6 +4,8 @@
 // Core.
 #import "src/plot.typ": plot
 #import "src/aes.typ": aes
+#import "src/data.typ": as-factor, as-numeric
+#import "src/utils/typst-markup.typ": typst
 
 // Datasets.
 #import "src/datasets/economics.typ": economics
@@ -91,8 +93,6 @@
 
 // Helpers.
 #import "src/plot.typ": get-alt-text
-#import "src/data.typ": as-factor, as-numeric
-#import "src/utils/typst-markup.typ": typst
 #import "src/utils/format.typ": (
   label-comma, label-currency, label-lower, label-number, label-percent,
   label-scientific, label-title, label-upper, label-wrap,
@@ -103,8 +103,6 @@
 )
 #import "src/utils/cut.typ": cut-interval, cut-number, cut-width
 #import "src/utils/resolution.typ": resolution
-
-// Utilities.
 #import "src/utils/normal.typ": qnorm
 
 // Scales.

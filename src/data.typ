@@ -103,7 +103,7 @@
 /// annotation that \@aes accepts in place of a column name, forcing the scale
 /// system to treat that channel as continuous.
 ///
-/// \@category Helpers
+/// \@category Core
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -172,7 +172,7 @@
 /// that \@aes accepts in place of a column name, forcing the scale system to
 /// treat that channel as discrete.
 ///
-/// \@category Helpers
+/// \@category Core
 /// \@stability stable
 /// \@since 0.0.1
 ///

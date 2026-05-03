@@ -27,6 +27,6 @@
     fill: "Species",
   ),
   theme: theme-minimal(),
-  width: 14cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

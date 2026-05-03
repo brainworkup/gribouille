@@ -29,7 +29,7 @@
 /// the helper composes with other aes coercions; the resolver unwraps
 /// innermost-first.
 ///
-/// \@category Helpers
+/// \@category Core
 /// \@stability stable
 /// \@since 0.1.0
 ///
