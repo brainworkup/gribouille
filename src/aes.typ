@@ -105,10 +105,12 @@
   b: none,
   angle: none,
   radius: none,
+  z: none,
 ) = (
   kind: "aes",
   x: x,
   y: y,
+  z: z,
   colour: colour,
   fill: fill,
   size: size,

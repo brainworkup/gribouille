@@ -11,6 +11,7 @@
 #import "boxplot.typ" as boxplot-stat
 #import "summary.typ" as summary-stat
 #import "summary-bin.typ" as summary-bin-stat
+#import "summary-2d.typ" as summary-2d-stat
 #import "ecdf.typ" as ecdf-stat
 #import "unique.typ" as unique-stat
 #import "qq.typ" as qq-stat
@@ -29,6 +30,7 @@
   boxplot: boxplot-stat.stat-boxplot,
   summary: summary-stat.stat-summary,
   summary_bin: summary-bin-stat.stat-summary-bin,
+  summary_2d: summary-2d-stat.stat-summary-2d,
   function: function-stat.stat-function,
   ellipse: ellipse-stat.stat-ellipse,
   quantile: quantile-stat.stat-quantile,
@@ -44,7 +46,7 @@
 // stats) is computed from the full data and reused. Stats not listed here
 // return their input params unchanged.
 #let _binning-stats = ("bin", "bindot", "summary_bin")
-#let _binning-2d-stats = ("bin_2d",)
+#let _binning-2d-stats = ("bin_2d", "summary_2d")
 
 #let setup-stat(name, data, mapping, params) = {
   if _binning-stats.contains(name) {
@@ -77,6 +79,8 @@
     summary-stat.apply(data, mapping, params: params)
   } else if name == "summary_bin" {
     summary-bin-stat.apply(data, mapping, params: params)
+  } else if name == "summary_2d" {
+    summary-2d-stat.apply(data, mapping, params: params)
   } else if name == "ecdf" {
     ecdf-stat.apply(data, mapping, params: params)
   } else if name == "unique" {
