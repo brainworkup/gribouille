@@ -8,9 +8,9 @@
 
 /// Hex-grid summary statistic.
 ///
-/// Partitions (x, y) into a pointy-top hex grid (same rule as
-/// \@stat-bin-hex), then reduces the `z` values inside each cell to a
-/// single scalar emitted as the `value` column.
+/// Partitions (x, y) into a pointy-top hex grid (same rule as \@stat-bin-hex),
+/// then reduces the `z` values inside each cell to a single scalar emitted
+/// as the `value` column.
 ///
 /// \@category Stats
 /// \@stability stable

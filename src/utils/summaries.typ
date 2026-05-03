@@ -591,6 +591,9 @@
 /// Distinct from `summarise`, which returns a `(y, ymin, ymax)` triple for
 /// 1D bands.
 ///
+/// \@param name Reduction keyword or callable `values => scalar`.
+/// \@param values Sequence of input values to reduce.
+///
 /// \@internal
 #let reduce-scalar(name, values) = {
   if type(name) == function { return name(values) }
