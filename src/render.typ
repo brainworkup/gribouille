@@ -1148,10 +1148,34 @@
     line((px-lo, py-lo), (px-lo, py-hi), stroke: axis-stroke)
   }
 
-  for layer in prepared {
-    let draw = _geom-draw.at(layer.geom, default: none)
-    if draw != none { draw(layer, ctx) }
-  }
+  // Render geoms into a sibling cetz canvas whose origin is (0, 0) and whose
+  // bounds match the panel rectangle, then clip via Typst's `box(clip: true)`
+  // before placing it back at the panel's south-west corner. cetz 0.5.0 has
+  // no native clip primitive, so this nested-canvas hop is the only way to
+  // bound geom marks to the panel.
+  let panel-w = px-hi - px-lo
+  let panel-h = py-hi - py-lo
+  let inner-ctx = ctx
+  inner-ctx.px-range = (x-pad-lo, panel-w - x-pad-hi)
+  inner-ctx.py-range = (y-pad-lo, panel-h - y-pad-hi)
+  let geoms = cetz.canvas({
+    import cetz.draw: hide, rect
+    hide(rect((0, 0), (panel-w, panel-h)))
+    for layer in prepared {
+      let draw = _geom-draw.at(layer.geom, default: none)
+      if draw != none { draw(layer, inner-ctx) }
+    }
+  })
+  content(
+    (px-lo, py-lo),
+    box(
+      clip: true,
+      width: panel-w * 1cm,
+      height: panel-h * 1cm,
+      geoms,
+    ),
+    anchor: "south-west",
+  )
 
   // When flipped, the bottom axis shows the user's original y mapping and
   // the left axis shows the user's original x mapping; trained.x and
