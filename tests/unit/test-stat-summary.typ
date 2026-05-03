@@ -3,8 +3,8 @@
 #import "../../src/stat/apply.typ": apply-stat
 #import "../../src/utils/normal.typ": qnorm
 #import "../../src/utils/summaries.typ": (
-  mean, mean-cl-normal, mean-sd, mean-se, median, median-hilow, quantile,
-  quantiles, summarise,
+  mean, mean-cl-boot, mean-cl-normal, mean-sd, mean-se, median, median-hilow,
+  quantile, quantiles, summarise,
 )
 
 // --- qnorm: Acklam's inverse-normal -----------------------------------------
@@ -334,5 +334,93 @@
 )
 #assert.eq(r-callable.data.at(0).y, 15)
 #assert.eq(r-callable.data.at(1).y, 36)
+
+// --- weighted summary helpers ---------------------------------------------
+// Reference values from R for x = (1, 2, 3, 4, 5), w = (1, 2, 3, 2, 1):
+//   m  <- weighted.mean(x, w)                                  # 3
+//   sd <- sqrt(sum(w*(x-m)^2) / (sum(w) * (n-1)/n))            # 1.2909944
+//   se <- sd / sqrt(sum(w))                                    # 0.4303315
+// Gribouille uses the frequency-weight Bessel correction
+// (divisor `total * (n-1) / n`); see src/utils/summaries.typ:73-87.
+
+#let close(a, b, tol: 1e-9) = calc.abs(a - b) < tol
+
+#let w-vals = (1, 2, 3, 4, 5)
+#let w-w = (1, 2, 3, 2, 1)
+
+#let r-w-mean = mean(w-vals, weights: w-w)
+#assert.eq(r-w-mean.y, 3.0)
+#assert.eq(r-w-mean.ymin, r-w-mean.y)
+#assert.eq(r-w-mean.ymax, r-w-mean.y)
+
+#let r-w-se = mean-se(w-vals, weights: w-w)
+#assert.eq(r-w-se.y, 3.0)
+#assert(close(r-w-se.ymin, 2.569668517088065))
+#assert(close(r-w-se.ymax, 3.430331482911935))
+
+#let r-w-sd = mean-sd(w-vals, weights: w-w)
+#assert.eq(r-w-sd.y, 3.0)
+#assert(close(r-w-sd.ymin, 1.709005551264194))
+#assert(close(r-w-sd.ymax, 4.290994448735806))
+
+// z_{0.975} = qnorm(0.975) ~= 1.959964; band = m +/- z * se.
+#let r-w-cl = mean-cl-normal(w-vals, weights: w-w)
+#assert.eq(r-w-cl.y, 3.0)
+#assert(close(r-w-cl.ymin, 2.156565792078894, tol: 1e-6))
+#assert(close(r-w-cl.ymax, 3.843434207921106, tol: 1e-6))
+
+// All-zero weight collapses to the empty summary.
+#assert.eq(mean(w-vals, weights: (0, 0, 0, 0, 0)).y, none)
+#assert.eq(mean-se(w-vals, weights: (0, 0, 0, 0, 0)).y, none)
+
+// Unit weights match the unweighted helper exactly.
+#let r-w-unit = mean-se(w-vals, weights: (1, 1, 1, 1, 1))
+#assert(close(r-w-unit.ymin, r-mse.ymin, tol: 1e-12))
+#assert(close(r-w-unit.ymax, r-mse.ymax, tol: 1e-12))
+
+// --- summarise dispatcher: weights forwarded -------------------------------
+
+#let r-w-disp-se = summarise("mean-se", w-vals, weights: w-w)
+#assert.eq(r-w-disp-se.ymin, r-w-se.ymin)
+#assert.eq(r-w-disp-se.ymax, r-w-se.ymax)
+
+#let r-w-disp-sd = summarise("mean-sd", w-vals, weights: w-w)
+#assert.eq(r-w-disp-sd.ymin, r-w-sd.ymin)
+#assert.eq(r-w-disp-sd.ymax, r-w-sd.ymax)
+
+#let r-w-disp-cl = summarise("mean-cl-normal", w-vals, weights: w-w)
+#assert.eq(r-w-disp-cl.ymin, r-w-cl.ymin)
+#assert.eq(r-w-disp-cl.ymax, r-w-cl.ymax)
+
+// --- mean-cl-boot self-consistency ----------------------------------------
+// Bootstrap percentiles cannot be derived from R because the resampler is a
+// deterministic sin-noise sequence specific to Gribouille
+// (src/utils/summaries.typ:422-425). Bounds below are pinned to the resampler
+// output for the listed seed/n-boot/conf; any change to `_rand01` or the
+// resampling loop must be reflected here intentionally.
+
+#let boot-vals = (2, 3, 4, 5, 6, 7)
+#let r-boot-95 = mean-cl-boot(boot-vals, conf: 0.95, n-boot: 200, seed: 42)
+#assert.eq(r-boot-95.y, 4.5)
+#assert.eq(r-boot-95.ymin, 19.0 / 6.0)
+#assert.eq(r-boot-95.ymax, 35.0 / 6.0)
+
+#let r-boot-50 = mean-cl-boot(boot-vals, conf: 0.5, n-boot: 200, seed: 42)
+#assert.eq(r-boot-50.y, 4.5)
+#assert.eq(r-boot-50.ymin, 4.0)
+#assert.eq(r-boot-50.ymax, 4.875)
+// Tighter conf -> narrower band.
+#assert((r-boot-50.ymax - r-boot-50.ymin) < (r-boot-95.ymax - r-boot-95.ymin))
+
+// Idempotence: identical seed and inputs reproduce identical bounds.
+#let r-boot-95-bis = mean-cl-boot(boot-vals, conf: 0.95, n-boot: 200, seed: 42)
+#assert.eq(r-boot-95.ymin, r-boot-95-bis.ymin)
+#assert.eq(r-boot-95.ymax, r-boot-95-bis.ymax)
+
+// n=1 collapses to a degenerate triple.
+#let r-boot-one = mean-cl-boot((7,))
+#assert.eq(r-boot-one.y, 7.0)
+#assert.eq(r-boot-one.ymin, 7.0)
+#assert.eq(r-boot-one.ymax, 7.0)
 
 Stat summary tests passed.

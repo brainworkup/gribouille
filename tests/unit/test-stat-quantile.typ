@@ -50,4 +50,52 @@
 #assert.eq(mid.x, 2)
 #assert.eq(mid.y, 5)
 
+// Noisy linear cloud. References from R `quantreg::rq(y ~ x, tau)`:
+//   tau = 0.25 -> intercept = 0, slope = 0.98   (line through (0,0)-(5,4.9))
+//   tau = 0.50 -> intercept = 0, slope = 1.0    (line through (0,0)-(1,1))
+//   tau = 0.75 -> intercept = 0, slope = 1.025  (line through (0,0)-(4,4.1))
+#let close-q(a, b) = calc.abs(a - b) < 1e-9
+#let noisy = (
+  (x: 0, y: 0.0),
+  (x: 1, y: 1.0),
+  (x: 2, y: 1.8),
+  (x: 3, y: 3.2),
+  (x: 4, y: 4.1),
+  (x: 5, y: 4.9),
+  (x: 6, y: 6.0),
+)
+#let r-noisy = apply(
+  noisy,
+  (x: "x", y: "y"),
+  params: (quantiles: (0.25, 0.5, 0.75), n-samples: 2),
+)
+// 3 quantiles * (n-samples + 1) rows.
+#assert.eq(r-noisy.data.len(), 9)
+
+// Per-tau slope from the first and last sampled points (x = 0 and x = 6).
+#let line-of(rows, tau) = {
+  let pts = rows.filter(p => p.quantile == tau)
+  let lo = pts.first()
+  let hi = pts.last()
+  let slope = (hi.y - lo.y) / (hi.x - lo.x)
+  (intercept: lo.y - slope * lo.x, slope: slope)
+}
+
+#let f25 = line-of(r-noisy.data, 0.25)
+#assert(close-q(f25.intercept, 0.0))
+#assert(close-q(f25.slope, 0.98))
+
+#let f50 = line-of(r-noisy.data, 0.5)
+#assert(close-q(f50.intercept, 0.0))
+#assert(close-q(f50.slope, 1.0))
+
+#let f75 = line-of(r-noisy.data, 0.75)
+#assert(close-q(f75.intercept, 0.0))
+#assert(close-q(f75.slope, 1.025))
+
+// Slopes should rise monotonically through the central tau range on a
+// roughly linear cloud.
+#assert(f25.slope < f50.slope)
+#assert(f50.slope < f75.slope)
+
 stat-quantile tests passed.
