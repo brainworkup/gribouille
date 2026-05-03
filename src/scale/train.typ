@@ -321,8 +321,17 @@
     let sources = _SYNTHETIC-FEEDERS.filter(s => s.starts-with(axis))
     let target = trained.at(axis, default: none)
     if target != none and target.type != "continuous" { continue }
-    let lo = if target != none { target.domain.at(0) } else { none }
-    let hi = if target != none { target.domain.at(1) } else { none }
+    // Discard the (0, 1) fallback from `_continuous-domain-from-cache` when
+    // the axis itself has no aesthetic mapping; otherwise that fallback would
+    // contaminate a domain that should be defined entirely by the feeders
+    // (e.g. `geom-rect()` with only xmin/xmax mapped).
+    let target-mapped = cache.at(axis).cols.len() > 0
+    let lo = if target != none and target-mapped {
+      target.domain.at(0)
+    } else { none }
+    let hi = if target != none and target-mapped {
+      target.domain.at(1)
+    } else { none }
     for s in sources {
       let t = trained.at(s, default: none)
       if t == none or t.type != "continuous" { continue }
