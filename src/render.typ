@@ -18,6 +18,10 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
+#import "utils/margin.typ": (
+  length-to-cm, resolve-margin-side, resolve-margin-side-cm,
+)
+#import "utils/measure.typ": measure-labels-cm, measure-text-cm
 #import "data.typ": _normalise-data, group-by
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
@@ -560,62 +564,77 @@
   )
 }
 
-// Approximate per-character horizontal extent at 8pt; matches legend.typ's
-// `_char-width` so legend and axis label sizing stay consistent.
-#let _ax-char-cm-8pt = 0.18
+// Convert the axis-text font size in pt to cm. Used as a fallback ink-height
+// when no actual labels are measured (e.g. an axis with no breaks).
 #let _ax-text-cm(size-pt) = size-pt / 1pt * 0.0353
-#let _ax-char-cm(size-pt) = _ax-char-cm-8pt * (size-pt / 8pt)
 
-// Longest tick-label string for the trained scale, used to estimate how
-// much room rotated or dodged labels need.
-#let _max-axis-label-chars(trained) = {
-  if trained == none { return 0 }
-  let n = 0
+// Resolve a margin side on a text-style record to a cm float, falling back to
+// the supplied default length when the user has not overridden the side. The
+// surface's font size is forwarded so em values scale with it.
+#let _text-margin-cm(style, side, default-length) = {
+  resolve-margin-side-cm(
+    style.margin.at(side),
+    default-length,
+    size-pt: style.size / 1pt,
+  )
+}
+
+// Default extents for an axis without labels: zero width, font-height as a
+// safe fallback so layouts that ask for a depth before measurement is
+// possible still leave room for a single line of text.
+#let _empty-extents(size) = (
+  width: 0.0,
+  height: _ax-text-cm(size),
+)
+
+// Either the supplied extents record or `_empty-extents(size)` when caller
+// did not measure any labels (e.g. legacy code paths or absent secondary axis).
+#let _resolve-extents(extents, size) = if extents != none {
+  extents
+} else { _empty-extents(size) }
+
+// Collect the formatted tick labels for the trained scale and measure them
+// via Typst. Returns `(width, height)` in cm of the longest label's ink box.
+// Caller must already be inside a `context { ... }` block.
+#let _axis-label-extents(trained, size) = {
+  if trained == none { return _empty-extents(size) }
+  let labels = ()
   if trained.type == "discrete" {
-    for level in trained.domain {
-      n = calc.max(n, str(level).len())
-    }
+    labels = trained.domain.map(level => str(level))
   } else if trained.type == "continuous" {
-    let breaks = _axis-breaks(trained)
-    for b in breaks {
-      n = calc.max(n, str(_axis-label(trained, b)).len())
-    }
+    labels = _axis-breaks(trained).map(b => _axis-label(trained, b))
   }
-  n
+  if labels.len() == 0 { return _empty-extents(size) }
+  measure-labels-cm(labels, size)
 }
 
-// Char count of the longest *secondary*-axis tick label after applying the
-// user's transformation. Mirrors `_max-axis-label-chars` but routes each
-// break through `secondary-mod.apply-transform` first.
-#let _max-secondary-label-chars(trained, sec) = {
-  if trained == none or sec == none { return 0 }
-  if trained.type != "continuous" { return 0 }
-  let n = 0
-  for b in _axis-breaks(trained) {
-    let mapped = secondary-mod.apply-transform(sec, b)
-    n = calc.max(n, _format-break(mapped).len())
-  }
-  n
+// Same as `_axis-label-extents` but for the secondary axis: each break is
+// routed through the user's transformation before formatting. Returns zero
+// extents when no secondary axis is configured.
+#let _secondary-label-extents(trained, sec, size) = {
+  if trained == none or sec == none { return (width: 0.0, height: 0.0) }
+  if trained.type != "continuous" { return (width: 0.0, height: 0.0) }
+  let labels = _axis-breaks(trained).map(b => (
+    _format-break(secondary-mod.apply-transform(sec, b))
+  ))
+  if labels.len() == 0 { return (width: 0.0, height: 0.0) }
+  measure-labels-cm(labels, size)
 }
 
-// Perpendicular extent of x-axis tick labels (cm). At angle 0 the labels
-// hang vertically from py-lo by their text height; rotating widens the
-// rotated bounding box, and `n-dodge > 1` adds the staggered rows.
-#let _x-label-depth(angle, n-dodge, max-chars, size-pt) = {
+// Perpendicular extent of x-axis tick labels (cm). Inputs are the measured
+// ink-bbox width and height of the longest label; rotating composes them
+// trigonometrically, and `n-dodge > 1` adds the staggered rows.
+#let _x-label-depth(angle, n-dodge, label-w-cm, label-h-cm) = {
   let a = calc.abs(angle) * 1deg
-  let label-w = max-chars * _ax-char-cm(size-pt)
-  let label-h = _ax-text-cm(size-pt)
-  label-w * calc.sin(a) + label-h * calc.cos(a) + (n-dodge - 1) * 0.35
+  label-w-cm * calc.sin(a) + label-h-cm * calc.cos(a) + (n-dodge - 1) * 0.35
 }
 
 // Perpendicular extent of y-axis tick labels (cm). At angle 0 the labels
-// extend leftward by their full width; rotating narrows that to text
-// height, and `n-dodge > 1` adds the staggered columns.
-#let _y-label-width(angle, n-dodge, max-chars, size-pt) = {
+// extend leftward by their full measured width; rotating swaps the extents
+// according to the rotated bounding box, and `n-dodge > 1` adds dodge cols.
+#let _y-label-width(angle, n-dodge, label-w-cm, label-h-cm) = {
   let a = calc.abs(angle) * 1deg
-  let label-w = max-chars * _ax-char-cm(size-pt)
-  let label-h = _ax-text-cm(size-pt)
-  label-w * calc.cos(a) + label-h * calc.sin(a) + (n-dodge - 1) * 0.5
+  label-w-cm * calc.cos(a) + label-h-cm * calc.sin(a) + (n-dodge - 1) * 0.5
 }
 
 #let _draw-axis-and-layers(
@@ -636,6 +655,10 @@
   show-y-sec: true,
   flipped: false,
   axis-breaks: none,
+  x-extents: none,
+  y-extents: none,
+  x-sec-extents: none,
+  y-sec-extents: none,
 ) = {
   import cetz.draw: *
   let (ox, oy) = origin
@@ -925,16 +948,18 @@
       line((px-lo, py-hi), (px-hi, py-hi), stroke: axis-stroke)
     }
     if _x-sec.name != none and _ax-title.size > 0pt {
+      let _x-sec-ext = _resolve-extents(x-sec-extents, _ax-text.size)
       let x-sec-depth = _x-label-depth(
         0,
         1,
-        _max-secondary-label-chars(x-trained, _x-sec),
-        _ax-text.size,
+        _x-sec-ext.width,
+        _x-sec-ext.height,
       )
+      let x-sec-gap = _text-margin-cm(_ax-title, "bottom", 0.25em)
       content(
         (
           (px-lo + px-hi) / 2,
-          py-hi + tick-len + 0.1 + x-sec-depth + 0.4,
+          py-hi + tick-len + 0.1 + x-sec-depth + x-sec-gap,
         ),
         text(
           size: _ax-title.size,
@@ -978,16 +1003,18 @@
       line((px-hi, py-lo), (px-hi, py-hi), stroke: axis-stroke)
     }
     if _y-sec.name != none and _ax-title.size > 0pt {
+      let _y-sec-ext = _resolve-extents(y-sec-extents, _ax-text.size)
       let y-sec-width = _y-label-width(
         0,
         1,
-        _max-secondary-label-chars(y-trained, _y-sec),
-        _ax-text.size,
+        _y-sec-ext.width,
+        _y-sec-ext.height,
       )
       let title-text-cm = _ax-text-cm(_ax-title.size)
+      let y-sec-gap = _text-margin-cm(_ax-title, "left", 0.25em)
       content(
         (
-          px-hi + tick-len + 0.1 + y-sec-width + 0.4 + title-text-cm / 2,
+          px-hi + tick-len + 0.1 + y-sec-width + y-sec-gap + title-text-cm / 2,
           (py-lo + py-hi) / 2,
         ),
         text(
@@ -1032,22 +1059,25 @@
     } else { none }
     if from-scale != none { from-scale } else { _mapping-y-name }
   }
+  let _x-ext = _resolve-extents(x-extents, _ax-text.size)
+  let _y-ext = _resolve-extents(y-extents, _ax-text.size)
   let x-label-depth = _x-label-depth(
     x-guide.angle,
     x-guide.n-dodge,
-    _max-axis-label-chars(x-trained),
-    _ax-text.size,
+    _x-ext.width,
+    _x-ext.height,
   )
   let y-label-width = _y-label-width(
     y-guide.angle,
     y-guide.n-dodge,
-    _max-axis-label-chars(y-trained),
-    _ax-text.size,
+    _y-ext.width,
+    _y-ext.height,
   )
   let title-text-cm = _ax-text-cm(_ax-title.size)
-  let _gap = 0.4
-  let x-edge-offset = tick-len + 0.1 + x-label-depth + _gap
-  let y-edge-offset = tick-len + 0.1 + y-label-width + _gap
+  let x-title-gap = _text-margin-cm(_ax-title, "top", 0.25em)
+  let y-title-gap = _text-margin-cm(_ax-title, "right", 0.25em)
+  let x-edge-offset = tick-len + 0.1 + x-label-depth + x-title-gap
+  let y-edge-offset = tick-len + 0.1 + y-label-width + y-title-gap
   if show-x-title and x-title != none and _ax-title.size > 0pt {
     content(
       ((px-lo + px-hi) / 2, oy - (x-edge-offset + title-text-cm)),
@@ -1399,34 +1429,26 @@
 // Width reserved between the panel right edge and the legend (or canvas edge)
 // for the secondary y-axis ticks, labels, and title. Matches the primary
 // formula so the title-to-label gap is symmetric on left and right.
-#let _sec-y-extent(trained, sec, tick-len, ax-text-pt, ax-title-pt) = {
+#let _sec-y-extent(sec, tick-len, sec-extents, ax-title) = {
   if sec == none { return 0.0 }
-  let chars = _max-secondary-label-chars(trained, sec)
-  let label-w = _y-label-width(0, 1, chars, ax-text-pt)
+  let label-w = _y-label-width(0, 1, sec-extents.width, sec-extents.height)
   let title-cm = if sec.at("name", default: none) != none {
-    _ax-text-cm(ax-title-pt)
+    _ax-text-cm(ax-title.size)
   } else { 0.0 }
-  tick-len + 0.1 + label-w + 0.4 + title-cm + 0.05
+  let gap = _text-margin-cm(ax-title, "left", 0.25em)
+  tick-len + 0.1 + label-w + gap + title-cm + 0.05
 }
 
 // Height reserved between the panel top edge and the canvas top for the
 // secondary x-axis ticks, labels, and title.
-#let _sec-x-extent(trained, sec, tick-len, ax-text-pt, ax-title-pt) = {
+#let _sec-x-extent(sec, tick-len, sec-extents, ax-title) = {
   if sec == none { return 0.0 }
-  let chars = _max-secondary-label-chars(trained, sec)
-  let label-d = _x-label-depth(0, 1, chars, ax-text-pt)
+  let label-d = _x-label-depth(0, 1, sec-extents.width, sec-extents.height)
   let title-cm = if sec.at("name", default: none) != none {
-    _ax-text-cm(ax-title-pt)
+    _ax-text-cm(ax-title.size)
   } else { 0.0 }
-  tick-len + 0.1 + label-d + 0.4 + title-cm + 0.05
-}
-
-// Resolve a per-side margin value to canvas units (cm). Typst lengths are
-// converted via `/1cm`; `auto` falls through to the dynamic default.
-#let _resolve-margin-side(value, fallback) = {
-  if value == auto { return fallback }
-  if type(value) == length { return value / 1cm }
-  fallback
+  let gap = _text-margin-cm(ax-title, "bottom", 0.25em)
+  tick-len + 0.1 + label-d + gap + title-cm + 0.05
 }
 
 // Build the four-sided margin used by the canvas layout. `theme-margin` may
@@ -1441,10 +1463,10 @@
     return auto-margin
   }
   (
-    top: _resolve-margin-side(theme-margin.top, auto-margin.top),
-    right: _resolve-margin-side(theme-margin.right, auto-margin.right),
-    bottom: _resolve-margin-side(theme-margin.bottom, auto-margin.bottom),
-    left: _resolve-margin-side(theme-margin.left, auto-margin.left),
+    top: resolve-margin-side(theme-margin.top, auto-margin.top),
+    right: resolve-margin-side(theme-margin.right, auto-margin.right),
+    bottom: resolve-margin-side(theme-margin.bottom, auto-margin.bottom),
+    left: resolve-margin-side(theme-margin.left, auto-margin.left),
   )
 }
 
@@ -1621,6 +1643,36 @@
   let free-y = ctx.free-y
   let style = ctx.style
   let _ax-title = style.ax-title
+  let x-extents = ctx.x-extents
+  let y-extents = ctx.y-extents
+  let x-sec-extents = ctx.x-sec-extents
+  let y-sec-extents = ctx.y-sec-extents
+  let ax-text-pt = ctx.ax-text-pt
+
+  // Per-panel extents under free scales: each panel's trained scale carries
+  // its own break/level set, so the longest label can differ panel-to-panel.
+  // Measured here (still inside the outer `context`) before the canvas
+  // closure, since cetz canvas does not expose layout measurement.
+  let panel-extents = if not (free-x or free-y) {
+    none
+  } else {
+    panel-trained-list.map(pt => {
+      let xt = pt.at("x", default: none)
+      let yt = pt.at("y", default: none)
+      let xs = _sec-spec(xt)
+      let ys = _sec-spec(yt)
+      (
+        x: if free-x { _axis-label-extents(xt, ax-text-pt) } else { x-extents },
+        y: if free-y { _axis-label-extents(yt, ax-text-pt) } else { y-extents },
+        x-sec: if free-x {
+          _secondary-label-extents(xt, xs, ax-text-pt)
+        } else { x-sec-extents },
+        y-sec: if free-y {
+          _secondary-label-extents(yt, ys, ax-text-pt)
+        } else { y-sec-extents },
+      )
+    })
+  }
 
   let levels = wrap-levels
   let n = levels.len()
@@ -1699,6 +1751,16 @@
         panel-h,
       )
       let inner-y0 = y0 + (panel-h - inner-h)
+      let _pe = if panel-extents != none {
+        panel-extents.at(i)
+      } else {
+        (
+          x: x-extents,
+          y: y-extents,
+          x-sec: x-sec-extents,
+          y-sec: y-sec-extents,
+        )
+      }
       _draw-axis-and-layers(
         panel-layers,
         panel-trained,
@@ -1714,6 +1776,10 @@
         show-y-sec: free-y or col == ncol - 1,
         flipped: _is-flipped(coord),
         axis-breaks: shared-breaks,
+        x-extents: _pe.x,
+        y-extents: _pe.y,
+        x-sec-extents: _pe.x-sec,
+        y-sec-extents: _pe.y-sec,
       )
     }
 
@@ -1791,6 +1857,10 @@
   let height-units = ctx.height-units
   let style = ctx.style
   let _ax-title = style.ax-title
+  let x-extents = ctx.x-extents
+  let y-extents = ctx.y-extents
+  let x-sec-extents = ctx.x-sec-extents
+  let y-sec-extents = ctx.y-sec-extents
 
   let row-var = spec.facet.rows
   let col-var = spec.facet.cols
@@ -1841,6 +1911,10 @@
           show-y-sec: c == n-cols - 1,
           flipped: _is-flipped(coord),
           axis-breaks: shared-breaks,
+          x-extents: x-extents,
+          y-extents: y-extents,
+          x-sec-extents: x-sec-extents,
+          y-sec-extents: y-sec-extents,
         )
       }
     }
@@ -1989,6 +2063,10 @@
   margin,
   width-units,
   height-units,
+  x-extents,
+  y-extents,
+  x-sec-extents,
+  y-sec-extents,
 ) = {
   let px-lo = margin.left
   let px-hi = width-units - margin.right
@@ -2011,6 +2089,10 @@
       legend-origin: (px-lo + inner-w + sec-y-extent + legend-gap, py-lo),
       legend-height: inner-h,
       flipped: _is-flipped(coord),
+      x-extents: x-extents,
+      y-extents: y-extents,
+      x-sec-extents: x-sec-extents,
+      y-sec-extents: y-sec-extents,
     )
   })
 }
@@ -2041,13 +2123,32 @@
     )[#resolve-prose(labs.caption, eval-strings: caption.typst)]
   } else { none }
 
-  let parts = ()
-  if title-block != none { parts.push(title-block) }
-  if subtitle-block != none { parts.push(subtitle-block) }
-  parts.push(canvas)
-  if caption-block != none { parts.push(caption-block) }
-  if parts.len() == 1 { return canvas }
-  block(stack(dir: ttb, spacing: 0.6em, ..parts))
+  // Multiplied by 1cm so the resolved em is baked in against the upstream
+  // text style, not re-resolved against the surrounding document font size.
+  let _gap-length(style, side) = {
+    _text-margin-cm(style, side, 0.6em) * 1cm
+  }
+
+  let above-canvas = if subtitle-block != none {
+    subtitle
+  } else if title-block != none { title } else { none }
+
+  let items = ()
+  if title-block != none { items.push(title-block) }
+  if subtitle-block != none {
+    if items.len() > 0 { items.push(v(_gap-length(title, "bottom"))) }
+    items.push(subtitle-block)
+  }
+  if above-canvas != none {
+    items.push(v(_gap-length(above-canvas, "bottom")))
+  }
+  items.push(canvas)
+  if caption-block != none {
+    items.push(v(_gap-length(caption, "top")))
+    items.push(caption-block)
+  }
+  if items.len() == 1 { return canvas }
+  block(stack(dir: ttb, spacing: 0pt, ..items))
 }
 
 #let render-plot(spec) = {
@@ -2137,30 +2238,46 @@
 
   let guides = legend-mod.guides-for(spec, trained)
   let legend-width = legend-mod.estimate-width(guides)
-  let legend-gap = if legend-width > 0 { 0.4 } else { 0.0 }
+  let legend-title-style = _text-style(theme, "legend-title")
+  let legend-gap = if legend-width > 0 {
+    _text-margin-cm(legend-title-style, "left", 1.6em)
+  } else { 0.0 }
 
   let x-trained-top = trained.at("x", default: none)
   let y-trained-top = trained.at("y", default: none)
   let x-sec = _sec-spec(x-trained-top)
   let y-sec = _sec-spec(y-trained-top)
   let tick-len = theme.tick-length / 1cm
-  let ax-text-pt = _text-style(theme, "axis-text").size
-  let ax-title-pt = _text-style(theme, "axis-title").size
+  let ax-text-style = _text-style(theme, "axis-text")
+  let ax-title-style = _text-style(theme, "axis-title")
+  let ax-text-pt = ax-text-style.size
+  let ax-title-pt = ax-title-style.size
   let title-text-cm = _ax-text-cm(ax-title-pt)
 
-  let sec-x-extent = _sec-x-extent(
+  let x-extents = _axis-label-extents(x-trained-top, ax-text-pt)
+  let y-extents = _axis-label-extents(y-trained-top, ax-text-pt)
+  let x-sec-extents = _secondary-label-extents(
     x-trained-top,
     x-sec,
-    tick-len,
     ax-text-pt,
-    ax-title-pt,
   )
-  let sec-y-extent = _sec-y-extent(
+  let y-sec-extents = _secondary-label-extents(
     y-trained-top,
     y-sec,
-    tick-len,
     ax-text-pt,
-    ax-title-pt,
+  )
+
+  let sec-x-extent = _sec-x-extent(
+    x-sec,
+    tick-len,
+    x-sec-extents,
+    ax-title-style,
+  )
+  let sec-y-extent = _sec-y-extent(
+    y-sec,
+    tick-len,
+    y-sec-extents,
+    ax-title-style,
   )
 
   let x-guide = _read-axis-guide(spec, "x")
@@ -2168,20 +2285,22 @@
   let x-label-depth = _x-label-depth(
     x-guide.angle,
     x-guide.n-dodge,
-    _max-axis-label-chars(x-trained-top),
-    ax-text-pt,
+    x-extents.width,
+    x-extents.height,
   )
   let y-label-width = _y-label-width(
     y-guide.angle,
     y-guide.n-dodge,
-    _max-axis-label-chars(y-trained-top),
-    ax-text-pt,
+    y-extents.width,
+    y-extents.height,
   )
+  let bottom-gap = _text-margin-cm(ax-title-style, "top", 0.25em)
+  let left-gap = _text-margin-cm(ax-title-style, "right", 0.25em)
   let bottom-extent = (
-    tick-len + 0.1 + x-label-depth + 0.4 + title-text-cm + 0.05
+    tick-len + 0.1 + x-label-depth + bottom-gap + title-text-cm + 0.05
   )
   let left-extent = (
-    tick-len + 0.1 + y-label-width + 0.4 + title-text-cm + 0.05
+    tick-len + 0.1 + y-label-width + left-gap + title-text-cm + 0.05
   )
 
   let auto-margin = (
@@ -2213,6 +2332,11 @@
       free-x: free-x,
       free-y: free-y,
       style: style,
+      x-extents: x-extents,
+      y-extents: y-extents,
+      x-sec-extents: x-sec-extents,
+      y-sec-extents: y-sec-extents,
+      ax-text-pt: ax-text-pt,
     ))
   } else if facet-grid-mode {
     _render-canvas-grid((
@@ -2230,6 +2354,10 @@
       width-units: width-units,
       height-units: height-units,
       style: style,
+      x-extents: x-extents,
+      y-extents: y-extents,
+      x-sec-extents: x-sec-extents,
+      y-sec-extents: y-sec-extents,
     ))
   } else {
     _render-canvas-single(
@@ -2244,6 +2372,10 @@
       margin,
       width-units,
       height-units,
+      x-extents,
+      y-extents,
+      x-sec-extents,
+      y-sec-extents,
     )
   }
 

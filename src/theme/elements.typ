@@ -17,6 +17,10 @@
 /// \@param colour Text colour, or `none` to inherit.
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 /// \@param family Font family (e.g. `"sans"`, `"serif"`), or `none` to inherit.
+/// \@param margin Per-side spacing built with \@margin-part. Each side accepts
+///   a Typst length (absolute or relative); `em` is preferred so spacing scales
+///   with the surface font size. Sides left at `auto` fall through to the
+///   renderer default. `none` keeps every side at the default.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -53,13 +57,31 @@
 /// )
 /// ```
 ///
-/// \@see \@theme, \@element-line, \@element-rect, \@element-blank, \@element-typst
+/// \@examples Widen the gap between the axis tick labels and the axis title
+/// using a relative margin that tracks the title font size.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(axis-title: element-text(
+///     size: 11pt,
+///     margin: margin-part(top: 1.6em, right: 1.6em),
+///   )),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@theme, \@element-line, \@element-rect, \@element-blank, \@element-typst, \@margin-part
 #let element-text(
   size: none,
   weight: none,
   colour: none,
   angle: none,
   family: none,
+  margin: none,
 ) = (
   kind: "element-text",
   size: size,
@@ -67,6 +89,7 @@
   colour: colour,
   angle: angle,
   family: family,
+  margin: margin,
 )
 
 /// Typst-markup text element: same fields as \@element-text plus
@@ -88,6 +111,10 @@
 /// \@param colour Text colour, or `none` to inherit.
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 /// \@param family Font family, or `none` to inherit.
+/// \@param margin Per-side spacing built with \@margin-part. Each side accepts
+///   a Typst length (absolute or relative); `em` is preferred so spacing scales
+///   with the surface font size. Sides left at `auto` fall through to the
+///   renderer default. `none` keeps every side at the default.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -123,13 +150,14 @@
 /// )
 /// ```
 ///
-/// \@see \@theme, \@element-text, \@typst
+/// \@see \@theme, \@element-text, \@typst, \@margin-part
 #let element-typst(
   size: none,
   weight: none,
   colour: none,
   angle: none,
   family: none,
+  margin: none,
 ) = (
   kind: "element-typst",
   size: size,
@@ -137,6 +165,7 @@
   colour: colour,
   angle: angle,
   family: family,
+  margin: margin,
 )
 
 /// Line element: colour and thickness.

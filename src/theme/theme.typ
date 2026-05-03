@@ -72,12 +72,42 @@
   el.at("kind", default: none) == "element-typst"
 }
 
+// Default per-side text margin: every side `auto` so each consumption site
+// supplies its own renderer fallback.
+#let _empty-margin = (
+  kind: "margin",
+  top: auto,
+  right: auto,
+  bottom: auto,
+  left: auto,
+)
+
+// Normalise a `margin` field on a text element to the four-side dict shape
+// the renderer expects. Accepts `none`, a `margin(...)` record, or any other
+// value (treated as `none`). Missing sides default to `auto`.
+#let _normalise-text-margin(value) = {
+  if (
+    value == none
+      or type(value) != dictionary
+      or value.at("kind", default: none) != "margin"
+  ) {
+    return _empty-margin
+  }
+  (
+    kind: "margin",
+    top: value.at("top", default: auto),
+    right: value.at("right", default: auto),
+    bottom: value.at("bottom", default: auto),
+    left: value.at("left", default: auto),
+  )
+}
+
 /// Resolve a text surface into a flat dict ready for `text(...)` arguments.
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
 /// \@param surface Text surface key, e.g. `"axis-text"`.
-/// \@returns Dict with `size`, `fill`, `weight`, `typst`.
+/// \@returns Dict with `size`, `fill`, `weight`, `typst`, `margin`.
 #let _text-style(theme, surface) = {
   let el = resolve-element(theme, surface)
   let colour = el.at("colour", default: none)
@@ -87,6 +117,7 @@
     fill: if colour != none { colour } else { theme.ink },
     weight: if weight != none { weight } else { "regular" },
     typst: el.at("kind", default: none) == "element-typst",
+    margin: _normalise-text-margin(el.at("margin", default: none)),
   )
 }
 
@@ -153,7 +184,7 @@
 /// Surfaces:
 ///
 /// - Base elements: `text`, `line`, `rect`. Set inherited parents that descendants fall back to.
-/// - Text surfaces: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`.
+/// - Text surfaces: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`. Pass `margin: margin-part(...)` on either constructor to widen or tighten the gap between the surface and its neighbours; em values track the surface font size.
 /// - Line surfaces: `panel-grid`, `axis-line`. Each accepts `element-line()` or `element-blank()`.
 /// - Rect surfaces: `panel-background`, `strip-background`. Each accepts `element-rect()` or `element-blank()`.
 ///

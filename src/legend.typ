@@ -16,6 +16,7 @@
 #import "scale/train.typ": mapping-ref-col
 #import "utils/typst-markup.typ": resolve-prose
 #import "utils/aes-resolve.typ": resolve-label
+#import "utils/margin.typ": resolve-margin-side-cm
 
 // Aesthetic emission order. `x` and `y` train but never produce a guide; the
 // rest are emitted in this fixed order so merged guides land at the position
@@ -477,21 +478,29 @@
   max-width
 }
 
-#let _swatch-height(guide) = {
-  let title-h = 0.45
+// Vertical gap between the legend title and the first guide entry, resolved
+// against the `legend-title` surface so em values track its font size.
+#let _legend-title-h(theme) = {
+  let s = _text-style(theme, "legend-title")
+  resolve-margin-side-cm(
+    s.margin.bottom,
+    1.6em,
+    size-pt: s.size / 1pt,
+  )
+}
+
+#let _swatch-height(guide, title-h) = {
   let line-h = 0.4
   let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
   title-h + line-h * shape.rows + 0.2
 }
 
-#let _size-ladder-height(guide) = {
-  let title-h = 0.45
+#let _size-ladder-height(guide, title-h) = {
   let line-h = 0.45
   title-h + line-h * guide.breaks.len() + 0.2
 }
 
-#let _colourbar-height() = {
-  let title-h = 0.45
+#let _colourbar-height(title-h) = {
   let bar-h = 3.0
   title-h + bar-h + 0.3
 }
@@ -509,8 +518,7 @@
   )
 }
 
-#let _draw-swatch(guide, ctx, ox, cursor, theme) = {
-  let title-h = 0.45
+#let _draw-swatch(guide, ctx, ox, cursor, theme, title-h) = {
   let line-h = 0.4
   let glyph-size = 0.12
   let ink = resolve-colour(theme, "ink")
@@ -561,8 +569,7 @@
   }
 }
 
-#let _draw-size-ladder(guide, ctx, ox, cursor, theme) = {
-  let title-h = 0.45
+#let _draw-size-ladder(guide, ctx, ox, cursor, theme, title-h) = {
   let line-h = 0.45
   let glyph-size = 0.16
   let ink = resolve-colour(theme, "ink")
@@ -609,8 +616,7 @@
   resolve-continuous-colour(trained, value, pal, ink)
 }
 
-#let _draw-colourbar(guide, ctx, ox, cursor, theme) = {
-  let title-h = 0.45
+#let _draw-colourbar(guide, ctx, ox, cursor, theme, title-h) = {
   let bar-w = 0.35
   let bar-h = 3.0
   let tick-gap = 0.08
@@ -685,16 +691,17 @@
   if guides.len() == 0 { return }
   let (ox, oy) = origin
   let cursor = oy + height
+  let title-h = _legend-title-h(theme)
   for g in guides {
     if g.kind == "swatch" {
-      _draw-swatch(g, ctx, ox, cursor, theme)
-      cursor -= _swatch-height(g)
+      _draw-swatch(g, ctx, ox, cursor, theme, title-h)
+      cursor -= _swatch-height(g, title-h)
     } else if g.kind == "size-ladder" {
-      _draw-size-ladder(g, ctx, ox, cursor, theme)
-      cursor -= _size-ladder-height(g)
+      _draw-size-ladder(g, ctx, ox, cursor, theme, title-h)
+      cursor -= _size-ladder-height(g, title-h)
     } else if g.kind == "colourbar" {
-      _draw-colourbar(g, ctx, ox, cursor, theme)
-      cursor -= _colourbar-height()
+      _draw-colourbar(g, ctx, ox, cursor, theme, title-h)
+      cursor -= _colourbar-height(title-h)
     }
   }
 }
