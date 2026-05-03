@@ -6,6 +6,8 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
@@ -20,8 +22,9 @@
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param width Default tile width in data units when not mapped.
 /// \@param height Default tile height in data units when not mapped.
+/// \@param colour Fixed outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 /// \@param fill Fixed fill colour. `auto` resolves via the fill scale or a neutral default.
-/// \@param stroke Outline; `none` means no border.
+/// \@param stroke Outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
 /// \@param alpha Fill opacity in `[0, 1]`.
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`.
@@ -71,6 +74,7 @@
   data: none,
   width: 1,
   height: 1,
+  colour: auto,
   fill: auto,
   stroke: none,
   alpha: auto,
@@ -85,6 +89,7 @@
   params: (
     width: width,
     height: height,
+    colour: colour,
     fill: fill,
     stroke: stroke,
     alpha: alpha,
@@ -113,6 +118,13 @@
   let width-col = mapping.at("width", default: none)
   let height-col = mapping.at("height", default: none)
   let neutral-fill = rgb("#4c78a8")
+  let ink = ctx.theme.at("ink", default: black)
+  let (default-colour, default-fill) = resolve-pair-defaults(
+    layer,
+    mapping,
+    ink,
+    neutral-fill,
+  )
 
   for row in data {
     let x = parse-number(row.at(x-col, default: none))
@@ -136,17 +148,22 @@
       mapping,
       ctx,
       row,
-      neutral-fill,
+      default-fill,
       colour-fallback: false,
+    )
+    let stroke-spec = resolve-stroke-spec(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
     )
 
     cetz.draw.rect(
       (cx0, cy0),
       (cx1, cy1),
       fill: final-fill,
-      stroke: if layer.params.stroke == none { none } else {
-        layer.params.stroke
-      },
+      stroke: stroke-spec,
     )
   }
 }
