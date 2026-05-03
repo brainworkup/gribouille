@@ -109,8 +109,7 @@
   ) {
     return
   }
-  // Sample slope/intercept in data space so the line equation matches the
-  // user's expectation regardless of any pre-transform on the x scale.
+  // Sample slope/intercept in data space, regardless of any pre-stat warp.
   let _data-domain(t) = if t.at("pre-transformed", default: false) {
     let n = t.at("transform", default: "identity")
     (transform-inv(n, t.domain.at(0)), transform-inv(n, t.domain.at(1)))

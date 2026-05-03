@@ -286,18 +286,14 @@
     let transform = if user-scale != none {
       user-scale.at("transform", default: "identity")
     } else { "identity" }
-    // log10 / sqrt scales pre-transform data before stats run, matching
-    // ggplot2 v4 / plotnine semantics. Domain values cached above are
-    // already in transformed space when the renderer's preprocess pass has
-    // run. `reverse` and `identity` stay as visual-only warps applied at
-    // mapping time.
+    // Domain values cached above are already in stat space when the
+    // renderer's preprocess pass has run for this transform.
     let pre-transformed = (
       scale-type == "continuous"
         and (transform == "log10" or transform == "sqrt")
     )
-    if pre-transformed and scale-type == "continuous" {
-      // Apply pre-transform to user-supplied limits so they live in the same
-      // (stat) space as cached domain values.
+    if pre-transformed {
+      // User-supplied limits come in data space; lift them to stat space.
       if user-scale != none and user-scale.at("limits", default: none) != none {
         let (lo, hi) = domain
         domain = (transform-fwd(transform, lo), transform-fwd(transform, hi))
@@ -404,30 +400,26 @@
   (hi - lo) / n
 }
 
-// `pre-transformed` scales already store transformed values on rows and in
-// `domain` (set by the renderer's preprocess pass); mapping a row value is a
-// straight linear interpolation. Other scales hold data-space values, so the
-// `transform` warp is applied at mapping time.
+// Forward-warp `value` to stat space unless the scale is already
+// `pre-transformed` (in which case row values, the trained domain, and
+// `view-transform` already live there).
+#let _to-stat(trained, value) = {
+  if trained.at("pre-transformed", default: false) { return value }
+  transform-fwd(trained.at("transform", default: "identity"), value)
+}
+
 #let _map-transform(trained, value, range) = {
   let transform = trained.at("transform", default: "identity")
-  let pre = trained.at("pre-transformed", default: false)
   let view-transform = trained.at("view-transform", default: none)
-  let (t-lo, t-hi) = if view-transform != none {
-    view-transform
-  } else {
+  let (t-lo, t-hi) = if view-transform != none { view-transform } else {
     let (d-lo, d-hi) = trained.domain
-    if pre {
-      (d-lo, d-hi)
-    } else {
-      (transform-fwd(transform, d-lo), transform-fwd(transform, d-hi))
-    }
+    (_to-stat(trained, d-lo), _to-stat(trained, d-hi))
   }
   let (r-lo, r-hi) = range
   let target = if transform == "reverse" {
     (r-hi, r-lo)
   } else { (r-lo, r-hi) }
-  let v = if pre { value } else { transform-fwd(transform, value) }
-  map-continuous(v, (t-lo, t-hi), target)
+  map-continuous(_to-stat(trained, value), (t-lo, t-hi), target)
 }
 
 #let map-position(trained, value, range) = {
@@ -445,19 +437,14 @@
   }
 }
 
-// Transform-aware wrapper for callers that already hold a numeric axis value
-// in stat-space (post-pre-transform). Geoms read row values that have been
-// pre-transformed by the renderer's preprocess pass and call this directly.
+// Numeric fast path: `value` is already in stat space (geom row values).
 #let map-axis(trained, value, range) = {
   if trained.type != "continuous" { return none }
   _map-transform(trained, value, range)
 }
 
-// Wrapper for callers holding a value in original *data-space*: axis tick
-// rendering, secondary-axis ticks, vline/hline/abline reference geoms, and
-// cartesian xlim/ylim. When the trained scale is `pre-transformed`, the
-// value is forward-transformed to stat-space first; otherwise it falls
-// through to `map-axis` as-is.
+// `value` is in original data space (axis ticks, secondary-axis ticks,
+// vline/hline/abline reference geoms, cartesian xlim/ylim).
 #let map-axis-data(trained, value, range) = {
   if trained.type != "continuous" { return none }
   let pre = trained.at("pre-transformed", default: false)

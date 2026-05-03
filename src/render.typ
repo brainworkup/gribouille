@@ -3,8 +3,9 @@
 
 #import "deps.typ": cetz
 #import "scale/train.typ": (
-  map-axis, map-axis-data, map-continuous, map-position, mapping-ref-col,
-  positional-aesthetics, train, transform-fwd, transform-inv,
+  _SYNTHETIC-FEEDERS, _find-user-scale, map-axis, map-axis-data, map-continuous,
+  map-position, mapping-ref-col, positional-aesthetics, train, transform-fwd,
+  transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
@@ -174,78 +175,58 @@
   seen
 }
 
-// Collect per-axis pre-transform names from a `scales:` list. Mirrors the
-// rule in `train()`: only continuous scales with `transform: "log10"` or
-// `"sqrt"` carry a pre-stat transform; `reverse` and `identity` are no-ops
-// at this stage.
+// Continuous transforms that warp data before stats run. `reverse` and
+// `identity` stay as visual-only warps applied at mapping time.
+#let _PRE-STAT-TRANSFORMS = ("log10", "sqrt")
+
 #let _scale-pre-transforms(scales) = {
   let result = (:)
   for axis in ("x", "y") {
-    for scale in scales {
-      if scale.at("aesthetic", default: none) != axis { continue }
-      if scale.at("type", default: none) != "continuous" { continue }
-      let t = scale.at("transform", default: "identity")
-      if t == "log10" or t == "sqrt" { result.insert(axis, t) }
-      break
-    }
+    let s = _find-user-scale(scales, axis)
+    if s == none { continue }
+    if s.at("type", default: none) != "continuous" { continue }
+    let t = s.at("transform", default: "identity")
+    if _PRE-STAT-TRANSFORMS.contains(t) { result.insert(axis, t) }
   }
   result
 }
 
-// Columns the renderer must transform on a row when an axis has a pre-stat
-// transform. Synthetic feeders (`xmin`/`xmax`/`xend`) share the axis they
-// belong to, so they need the same forward warp as the primary `x` column.
-#let _axis-feeder-cols(axis, mapping) = {
+// (column, transform) pairs to rewrite on each row of a layer. Synthetic
+// feeders share the axis's pre-stat transform.
+#let _pre-transform-cols(mapping, pre) = {
   if mapping == none { return () }
-  let feeders = if axis == "x" { ("x", "xmin", "xmax", "xend") } else {
-    ("y", "ymin", "ymax", "yend")
-  }
-  feeders
-    .map(f => {
+  let pairs = ()
+  for (axis, t) in pre.pairs() {
+    let feeders = (axis,) + _SYNTHETIC-FEEDERS.filter(s => s.starts-with(axis))
+    for f in feeders {
       let raw = mapping.at(f, default: none)
-      if raw == none { return none }
-      mapping-ref-col(raw)
-    })
-    .filter(c => c != none)
+      if raw == none { continue }
+      pairs.push((mapping-ref-col(raw), t))
+    }
+  }
+  pairs
 }
 
-// Forward-transform a single row's positional columns to stat-space. Skips
-// rows missing a column or carrying a non-numeric value (string / none); the
-// row keeps its raw cell so downstream stat / training can flag it normally.
-#let _pre-transform-row(row, axes-cols-trans) = {
+#let _pre-transform-row(row, col-trans) = {
   let new-row = row
-  for entry in axes-cols-trans {
-    let (cols, transform) = entry
-    for col in cols {
-      let v = parse-number(row.at(col, default: none))
-      if v == none { continue }
-      new-row.insert(col, transform-fwd(transform, v))
-    }
+  for (col, transform) in col-trans {
+    let v = parse-number(row.at(col, default: none))
+    if v == none { continue }
+    new-row.insert(col, transform-fwd(transform, v))
   }
   new-row
 }
 
-// Apply pre-stat transforms (log10 / sqrt) to every row that feeds a
-// pre-transformed positional axis. Each layer's resolved data is rewritten
-// in place and pinned with `data-trusted: true` so subsequent normalisation
-// passes skip it. The plot-level data is left alone: layers without their
-// own data already pulled their rows here.
 #let _preprocess-data(spec) = {
-  let scales = spec.at("scales", default: ())
-  let pre = _scale-pre-transforms(scales)
+  let pre = _scale-pre-transforms(spec.at("scales", default: ()))
   if pre.len() == 0 { return spec }
   let new-layers = spec.layers.map(layer => {
     let mapping = _merge-mapping(layer, spec.mapping)
-    if mapping == none { return layer }
-    let cols-trans = pre
-      .pairs()
-      .map(((axis, t)) => (_axis-feeder-cols(axis, mapping), t))
-      .filter(((cols, _)) => cols.len() > 0)
-    if cols-trans.len() == 0 { return layer }
+    let col-trans = _pre-transform-cols(mapping, pre)
+    if col-trans.len() == 0 { return layer }
     let data = _resolve-data(layer, spec.data)
-    let new-data = data.map(row => _pre-transform-row(row, cols-trans))
     let new = layer
-    new.data = new-data
+    new.data = data.map(row => _pre-transform-row(row, col-trans))
     new.insert("data-trusted", true)
     new
   })
@@ -1213,11 +1194,8 @@
   trained
 }
 
-// coord-transform overrides each axis's `transform` so the trained view is
-// warped at mapping time. Runs before `_apply-expand` so expansion uses the
-// final transformation. Identity values are no-ops. Skips axes already
-// pre-transformed by their scale; pre- and post-stat transforms are not
-// composed.
+// coord-transform warps the view at mapping time. Skips axes whose scale
+// already pre-transformed the data: pre- and post-stat warps don't compose.
 #let _apply-coord-transform(trained, coord) = {
   if coord == none or coord.at("coord", default: none) != "transform" {
     return trained
@@ -1235,9 +1213,7 @@
   trained
 }
 
-// User-supplied limits live in data space; pre-transformed scales hold
-// their domain in stat space, so the limits need the forward warp before
-// they overwrite the trained domain.
+// xlim/ylim arrive in data space; pre-transformed domains live in stat space.
 #let _coord-limits-to-domain(entry, lim) = {
   if not entry.at("pre-transformed", default: false) { return lim }
   let t = entry.at("transform", default: "identity")
@@ -1372,9 +1348,8 @@
       let (lo, hi) = entry.domain
       let transform = entry.at("transform", default: "identity")
       let pre = entry.at("pre-transformed", default: false)
-      // Pre-transformed domains already live in transformed space, so the
-      // forward warp would double-apply. The post-stat warp path keeps the
-      // existing behaviour.
+      // Pre-transformed domains already live in stat space; warping again
+      // would double-apply.
       let t-lo = if pre { lo } else { transform-fwd(transform, lo) }
       let t-hi = if pre { hi } else { transform-fwd(transform, hi) }
       let span = t-hi - t-lo
@@ -2260,9 +2235,6 @@
 
   let style = _render-style(theme)
 
-  // Pre-stat scale transforms (log10 / sqrt) rewrite each layer's resolved
-  // data in place so stats and training run in stat space, matching ggplot2
-  // v4 / plotnine semantics.
   let spec = _preprocess-data(spec)
 
   // Faceted plots prepare layers per panel so stats (smooth, bin, count) fit
