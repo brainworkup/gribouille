@@ -13,6 +13,7 @@
 #import "summary.typ" as summary-stat
 #import "summary-bin.typ" as summary-bin-stat
 #import "summary-2d.typ" as summary-2d-stat
+#import "summary-hex.typ" as summary-hex-stat
 #import "ecdf.typ" as ecdf-stat
 #import "unique.typ" as unique-stat
 #import "qq.typ" as qq-stat
@@ -34,6 +35,7 @@
   summary: summary-stat.stat-summary,
   summary_bin: summary-bin-stat.stat-summary-bin,
   summary_2d: summary-2d-stat.stat-summary-2d,
+  summary_hex: summary-hex-stat.stat-summary-hex,
   function: function-stat.stat-function,
   ellipse: ellipse-stat.stat-ellipse,
   quantile: quantile-stat.stat-quantile,
@@ -50,7 +52,7 @@
 // return their input params unchanged.
 #let _binning-stats = ("bin", "bindot", "summary_bin")
 #let _binning-2d-stats = ("bin_2d", "summary_2d")
-#let _binning-hex-stats = ("bin_hex",)
+#let _binning-hex-stats = ("bin_hex", "summary_hex")
 
 #let setup-stat(name, data, mapping, params) = {
   if _binning-stats.contains(name) {
@@ -89,6 +91,8 @@
     summary-bin-stat.apply(data, mapping, params: params)
   } else if name == "summary_2d" {
     summary-2d-stat.apply(data, mapping, params: params)
+  } else if name == "summary_hex" {
+    summary-hex-stat.apply(data, mapping, params: params)
   } else if name == "ecdf" {
     ecdf-stat.apply(data, mapping, params: params)
   } else if name == "unique" {

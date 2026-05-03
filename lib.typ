@@ -81,6 +81,7 @@
 #import "src/stat/summary.typ": stat-summary
 #import "src/stat/summary-bin.typ": stat-summary-bin
 #import "src/stat/summary-2d.typ": stat-summary-2d
+#import "src/stat/summary-hex.typ": stat-summary-hex
 #import "src/stat/ecdf.typ": stat-ecdf
 #import "src/stat/unique.typ": stat-unique
 #import "src/stat/qq.typ": stat-qq

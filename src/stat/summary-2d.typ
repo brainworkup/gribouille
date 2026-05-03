@@ -1,37 +1,7 @@
 #import "../utils/aes-resolve.typ": stat-output-mapping
 #import "../utils/bin2d.typ": bin-midpoint-2d, bin-of-2d, resolve-bin-grid-2d
-#import "../utils/summaries.typ": mean, median
+#import "../utils/summaries.typ": reduce-scalar
 #import "../utils/types.typ": parse-number
-
-#let _numeric(values) = {
-  values.map(parse-number).filter(v => v != none)
-}
-
-#let _scalar-reducers = (
-  mean: values => mean(values).y,
-  median: values => median(values).y,
-  sum: values => {
-    let xs = _numeric(values)
-    if xs.len() == 0 { none } else { xs.sum() }
-  },
-  min: values => {
-    let xs = _numeric(values)
-    if xs.len() == 0 { none } else { calc.min(..xs) }
-  },
-  max: values => {
-    let xs = _numeric(values)
-    if xs.len() == 0 { none } else { calc.max(..xs) }
-  },
-)
-
-#let _reduce(name, values) = {
-  if type(name) == function { return name(values) }
-  let fn = _scalar-reducers.at(name, default: none)
-  if fn == none {
-    panic("stat-summary-2d: unknown fun " + repr(name))
-  }
-  fn(values)
-}
 
 /// Two-dimensional summary statistic.
 ///
@@ -108,7 +78,7 @@
   for k in range(buckets.len()) {
     let bucket = buckets.at(k)
     if bucket.len() == 0 { continue }
-    let value = _reduce(fun, bucket)
+    let value = reduce-scalar(fun, bucket)
     if value == none { continue }
     let (xm, ym) = bin-midpoint-2d(grid, calc.quo(k, ny), calc.rem(k, ny))
     rows.push((

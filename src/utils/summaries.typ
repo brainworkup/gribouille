@@ -567,3 +567,36 @@
       + "quantiles.",
   )
 }
+
+#let _scalar-reducers = (
+  mean: values => mean(values).y,
+  median: values => median(values).y,
+  sum: values => {
+    let xs = _to-numeric(values)
+    if xs.len() == 0 { none } else { xs.sum() }
+  },
+  min: values => {
+    let xs = _to-numeric(values)
+    if xs.len() == 0 { none } else { calc.min(..xs) }
+  },
+  max: values => {
+    let xs = _to-numeric(values)
+    if xs.len() == 0 { none } else { calc.max(..xs) }
+  },
+)
+
+/// Apply a reduction by keyword (`"mean"`, `"median"`, `"sum"`, `"min"`,
+/// `"max"`) or a callable `values => scalar`. Used by 2D summary stats.
+///
+/// Distinct from `summarise`, which returns a `(y, ymin, ymax)` triple for
+/// 1D bands.
+///
+/// \@internal
+#let reduce-scalar(name, values) = {
+  if type(name) == function { return name(values) }
+  let fn = _scalar-reducers.at(name, default: none)
+  if fn == none {
+    panic("reduce-scalar: unknown reduction " + repr(name))
+  }
+  fn(values)
+}
