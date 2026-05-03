@@ -1,8 +1,4 @@
-///! Rectangular two-dimensional binning.
-///!
-///! Backing statistic for \@geom-bin-2d. Emits one row per non-empty bin
-///! with `x` and `y` at the bin centre, the corner positions, the count, and
-///! the area density.
+///! Rectangular two-dimensional binning. Backing statistic for \@geom-bin-2d.
 
 #import "../utils/aes-resolve.typ": stat-output-mapping
 #import "../utils/bin2d.typ": (
@@ -70,32 +66,31 @@
     triples.map(t => t.y),
     params,
   )
-  // Flat counts table indexed by `ix * y-n-bins + iy` so nested-array
-  // assignment isn't needed (Typst arrays are value-typed).
-  let counts = range(grid.x-n-bins * grid.y-n-bins).map(_ => 0)
+  // Flat counts table: Typst arrays are value-typed, so nested-array
+  // assignment doesn't propagate.
+  let ny = grid.y-n-bins
+  let counts = range(grid.x-n-bins * ny).map(_ => 0)
   for t in triples {
     let (ix, iy) = bin-of-2d(t.x, t.y, grid)
-    let k = ix * grid.y-n-bins + iy
+    let k = ix * ny + iy
     counts.at(k) = counts.at(k) + t.w
   }
   let cell-area = grid.x-width * grid.y-width
   let rows = ()
-  for ix in range(grid.x-n-bins) {
-    for iy in range(grid.y-n-bins) {
-      let n = counts.at(ix * grid.y-n-bins + iy)
-      if n == 0 { continue }
-      let (xm, ym) = bin-midpoint-2d(grid, ix, iy)
-      rows.push((
-        x: xm,
-        y: ym,
-        xmin: xm - grid.x-width / 2,
-        xmax: xm + grid.x-width / 2,
-        ymin: ym - grid.y-width / 2,
-        ymax: ym + grid.y-width / 2,
-        count: n,
-        density: n / cell-area,
-      ))
-    }
+  for k in range(counts.len()) {
+    let n = counts.at(k)
+    if n == 0 { continue }
+    let (xm, ym) = bin-midpoint-2d(grid, calc.quo(k, ny), calc.rem(k, ny))
+    rows.push((
+      x: xm,
+      y: ym,
+      xmin: xm - grid.x-width / 2,
+      xmax: xm + grid.x-width / 2,
+      ymin: ym - grid.y-width / 2,
+      ymax: ym + grid.y-width / 2,
+      count: n,
+      density: n / cell-area,
+    ))
   }
   (data: rows, mapping: new-mapping)
 }

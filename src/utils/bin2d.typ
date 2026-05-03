@@ -1,12 +1,9 @@
-// Two-dimensional uniform-grid binning helpers used by stat-bin-2d and
-// stat-summary-2d. A 2D grid is a dict
+// Two-dimensional grid binning helpers. A grid is
 // `(x-lo, x-n-bins, x-width, y-lo, y-n-bins, y-width)`.
 
 #import "bin.typ": bin-config, bin-domain, bin-midpoint, bin-of
 #import "types.typ": parse-number
 
-// Resolve a `bins` / `binwidth` parameter that is either a scalar (applied
-// to both axes) or an `(x, y)` pair into the per-axis pair.
 #let _split-pair(value, fallback: none) = {
   if value == none { return (fallback, fallback) }
   if type(value) == array { return (value.at(0), value.at(1)) }
@@ -30,8 +27,8 @@
   )
 }
 
-// Stash a panel-wide grid in `params.grid` so per-group `apply()` calls share
-// the partition (mirrors `panel-bin-grid` for 1D).
+// Stash a panel-wide grid in `params.grid` so per-group `apply()` calls
+// share the partition (mirrors `panel-bin-grid` for 1D).
 #let panel-bin-grid-2d(data, mapping, params) = {
   if mapping == none { return params }
   let x-col = mapping.at("x", default: none)

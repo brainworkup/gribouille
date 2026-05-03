@@ -1,7 +1,4 @@
-///! Rectangular two-dimensional binning.
-///!
-///! Partitions (x, y) into a grid and draws one filled rectangle per
-///! non-empty cell. Default fill encodes the count via the fill scale.
+///! Rectangular two-dimensional binning. Wraps \@stat-bin-2d over rect output.
 
 #import "../stat/bin2d.typ": stat-bin-2d
 
