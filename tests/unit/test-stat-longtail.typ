@@ -7,9 +7,11 @@
 #let df-ecdf = (3, 1, 2, 1).map(v => (x: v))
 #let r-ecdf = apply-stat("ecdf", df-ecdf, (x: "x"), (:))
 
+// On sorted x (1, 1, 2, 3) the cumulative fraction at each unique value is
+// 2/4, 3/4, 4/4 - matching `R`'s `ecdf(x)`.
 #assert.eq(r-ecdf.data.len(), 3)
 #assert.eq(r-ecdf.data.at(0).x, 1.0)
-#assert.eq(r-ecdf.data.at(0).y, 1 / 4)
+#assert.eq(r-ecdf.data.at(0).y, 2 / 4)
 #assert.eq(r-ecdf.data.at(1).x, 2.0)
 #assert.eq(r-ecdf.data.at(1).y, 3 / 4)
 #assert.eq(r-ecdf.data.at(2).x, 3.0)

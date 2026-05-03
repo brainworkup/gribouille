@@ -11,8 +11,9 @@
 ///
 /// Numeric x values are parsed via `parse-number`; `none` and unparseable
 /// inputs are dropped. For each unique value `v` in the sorted sample, y is
-/// the 1-indexed position of `v`'s first occurrence divided by `n`. Output
-/// rows are sorted by x ascending.
+/// the cumulative weighted count of observations less than or equal to `v`
+/// divided by the total weight, matching `R`'s `ecdf(x)(v)`. Output rows are
+/// sorted by x ascending.
 ///
 /// \@category Stats
 /// \@stability stable
@@ -79,12 +80,12 @@
   while i < n {
     let v = sorted.at(i).x
     cum += sorted.at(i).w
-    rows.push((x: v, y: cum / total))
     let j = i + 1
     while j < n and sorted.at(j).x == v {
       cum += sorted.at(j).w
       j = j + 1
     }
+    rows.push((x: v, y: cum / total))
     i = j
   }
   (data: rows, mapping: new-mapping)
