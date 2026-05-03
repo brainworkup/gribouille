@@ -477,10 +477,12 @@
       let y0-col = mapping.at("y0", default: none)
       let a-col = mapping.at("a", default: none)
       let b-col = mapping.at("b", default: none)
+      let angle-col = mapping.at("angle", default: none)
       if x0-col != none and y0-col != none {
         let params = layer.at("params", default: (:))
         let a-fb = params.at("a", default: 1)
         let b-fb = params.at("b", default: 1)
+        let angle-fb = params.at("angle", default: 0)
         for row in layer-data {
           let x0 = parse-number(row.at(x0-col, default: none))
           let y0 = parse-number(row.at(y0-col, default: none))
@@ -493,18 +495,33 @@
             let v = parse-number(row.at(b-col, default: none))
             if v == none { b-fb } else { v }
           }
-          let r = calc.max(calc.abs(a), calc.abs(b))
-          ellipse-x-min = if ellipse-x-min == none { x0 - r } else {
-            calc.min(ellipse-x-min, x0 - r)
+          let theta = if angle-col == none { angle-fb } else {
+            let v = parse-number(row.at(angle-col, default: none))
+            if v == none { angle-fb } else { v }
           }
-          ellipse-x-max = if ellipse-x-max == none { x0 + r } else {
-            calc.max(ellipse-x-max, x0 + r)
+          // Axis-aligned bounding box of an ellipse with semi-axes a, b and
+          // major-axis rotation theta (radians from the x-axis). Using the
+          // circular max(|a|, |b|) blows the box up by an order of magnitude
+          // when units differ between axes (e.g. flipper-len mm vs body-mass g).
+          let cos-t = calc.cos(theta)
+          let sin-t = calc.sin(theta)
+          let x-half = calc.sqrt(
+            (a * cos-t) * (a * cos-t) + (b * sin-t) * (b * sin-t),
+          )
+          let y-half = calc.sqrt(
+            (a * sin-t) * (a * sin-t) + (b * cos-t) * (b * cos-t),
+          )
+          ellipse-x-min = if ellipse-x-min == none { x0 - x-half } else {
+            calc.min(ellipse-x-min, x0 - x-half)
           }
-          ellipse-y-min = if ellipse-y-min == none { y0 - r } else {
-            calc.min(ellipse-y-min, y0 - r)
+          ellipse-x-max = if ellipse-x-max == none { x0 + x-half } else {
+            calc.max(ellipse-x-max, x0 + x-half)
           }
-          ellipse-y-max = if ellipse-y-max == none { y0 + r } else {
-            calc.max(ellipse-y-max, y0 + r)
+          ellipse-y-min = if ellipse-y-min == none { y0 - y-half } else {
+            calc.min(ellipse-y-min, y0 - y-half)
+          }
+          ellipse-y-max = if ellipse-y-max == none { y0 + y-half } else {
+            calc.max(ellipse-y-max, y0 + y-half)
           }
         }
       }
