@@ -44,16 +44,16 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
     false
   }
   place(
-    bottom + right,
-    dx: -0.5cm,
-    dy: -0.5cm,
+    top + right,
+    dx: -0.25cm,
+    dy: 0.25cm,
     image(
       if dark-bg {
         "/docs/assets/images/logo-stacked-dark.svg"
       } else {
         "/docs/assets/images/logo-stacked.svg"
       },
-      height: 2cm,
+      height: 1.5cm,
     ),
   )
 })
