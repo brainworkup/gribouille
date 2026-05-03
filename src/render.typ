@@ -522,6 +522,14 @@
   max-half
 }
 
+#let _sec-spec(scale) = if (
+  scale != none
+    and scale.type == "continuous"
+    and scale.at("spec", default: none) != none
+) {
+  scale.spec.at("secondary", default: none)
+} else { none }
+
 // Pre-compute primary and secondary x/y axis breaks for a trained scale set.
 // Callers that share `trained` across panels (e.g. grid facets without free
 // scales) build this once and pass it down so per-panel renders skip the
@@ -535,19 +543,79 @@
   let y-breaks = if yt != none and yt.type == "continuous" {
     _axis-breaks(yt)
   } else { none }
-  let x-sec-breaks = if xt != none and xt.type == "continuous" {
-    let spec = xt.at("spec", default: none)
-    if spec != none and spec.at("secondary", default: none) != none {
-      x-breaks
-    } else { none }
-  } else { none }
-  let y-sec-breaks = if yt != none and yt.type == "continuous" {
-    let spec = yt.at("spec", default: none)
-    if spec != none and spec.at("secondary", default: none) != none {
-      y-breaks
-    } else { none }
-  } else { none }
+  let x-sec-breaks = if _sec-spec(xt) != none { x-breaks } else { none }
+  let y-sec-breaks = if _sec-spec(yt) != none { y-breaks } else { none }
   (x: x-breaks, y: y-breaks, x-sec: x-sec-breaks, y-sec: y-sec-breaks)
+}
+
+// Read a `guide-axis(...)` configuration off the plot spec, falling back
+// to defaults (no rotation, no dodge) when none is set.
+#let _read-axis-guide(spec, aes) = {
+  let g = spec.at("guides", default: (:)).at(aes, default: none)
+  if g == none { return (angle: 0, n-dodge: 1, logticks: false) }
+  (
+    angle: g.at("angle", default: 0),
+    n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
+    logticks: g.at("logticks", default: false),
+  )
+}
+
+// Approximate per-character horizontal extent at 8pt; matches legend.typ's
+// `_char-width` so legend and axis label sizing stay consistent.
+#let _ax-char-cm-8pt = 0.18
+#let _ax-text-cm(size-pt) = size-pt / 1pt * 0.0353
+#let _ax-char-cm(size-pt) = _ax-char-cm-8pt * (size-pt / 8pt)
+
+// Longest tick-label string for the trained scale, used to estimate how
+// much room rotated or dodged labels need.
+#let _max-axis-label-chars(trained) = {
+  if trained == none { return 0 }
+  let n = 0
+  if trained.type == "discrete" {
+    for level in trained.domain {
+      n = calc.max(n, str(level).len())
+    }
+  } else if trained.type == "continuous" {
+    let breaks = _axis-breaks(trained)
+    for b in breaks {
+      n = calc.max(n, str(_axis-label(trained, b)).len())
+    }
+  }
+  n
+}
+
+// Char count of the longest *secondary*-axis tick label after applying the
+// user's transformation. Mirrors `_max-axis-label-chars` but routes each
+// break through `secondary-mod.apply-transform` first.
+#let _max-secondary-label-chars(trained, sec) = {
+  if trained == none or sec == none { return 0 }
+  if trained.type != "continuous" { return 0 }
+  let n = 0
+  for b in _axis-breaks(trained) {
+    let mapped = secondary-mod.apply-transform(sec, b)
+    n = calc.max(n, _format-break(mapped).len())
+  }
+  n
+}
+
+// Perpendicular extent of x-axis tick labels (cm). At angle 0 the labels
+// hang vertically from py-lo by their text height; rotating widens the
+// rotated bounding box, and `n-dodge > 1` adds the staggered rows.
+#let _x-label-depth(angle, n-dodge, max-chars, size-pt) = {
+  let a = calc.abs(angle) * 1deg
+  let label-w = max-chars * _ax-char-cm(size-pt)
+  let label-h = _ax-text-cm(size-pt)
+  label-w * calc.sin(a) + label-h * calc.cos(a) + (n-dodge - 1) * 0.35
+}
+
+// Perpendicular extent of y-axis tick labels (cm). At angle 0 the labels
+// extend leftward by their full width; rotating narrows that to text
+// height, and `n-dodge > 1` adds the staggered columns.
+#let _y-label-width(angle, n-dodge, max-chars, size-pt) = {
+  let a = calc.abs(angle) * 1deg
+  let label-w = max-chars * _ax-char-cm(size-pt)
+  let label-h = _ax-text-cm(size-pt)
+  label-w * calc.cos(a) + label-h * calc.sin(a) + (n-dodge - 1) * 0.5
 }
 
 #let _draw-axis-and-layers(
@@ -632,18 +700,8 @@
   let axis-stroke = _line-stroke(theme, "axis-line", fallback-colour: _ink)
   let tick-len = theme.tick-length
 
-  let _read-axis-guide(aes) = {
-    let g = spec.at("guides", default: (:)).at(aes, default: none)
-    if g == none { (angle: 0, n-dodge: 1, logticks: false) } else {
-      (
-        angle: g.at("angle", default: 0),
-        n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
-        logticks: g.at("logticks", default: false),
-      )
-    }
-  }
-  let x-guide = _read-axis-guide("x")
-  let y-guide = _read-axis-guide("y")
+  let x-guide = _read-axis-guide(spec, "x")
+  let y-guide = _read-axis-guide(spec, "y")
   let _x-label-anchor(angle) = {
     if angle == 0 { "north" } else if angle > 0 { "north-east" } else {
       "north-west"
@@ -653,7 +711,7 @@
     if not (show-x-labels and theme.tick-labels) { return }
     let dodge-row = calc.rem(idx, x-guide.n-dodge)
     let row-gap = 0.35
-    let cy = py-lo - 0.25 - dodge-row * row-gap
+    let cy = py-lo - tick-len - 0.1 - dodge-row * row-gap
     content(
       (cx, cy),
       text(
@@ -669,7 +727,7 @@
     if not (show-y-labels and theme.tick-labels) { return }
     let dodge-col = calc.rem(idx, y-guide.n-dodge)
     let col-gap = 0.5
-    let cx = px-lo - 0.2 - dodge-col * col-gap
+    let cx = px-lo - tick-len - 0.1 - dodge-col * col-gap
     content(
       (cx, cy),
       text(
@@ -837,13 +895,7 @@
   // Secondary x-axis: draw on top edge if the trained x scale carries a
   // secondary spec. Breaks reuse the primary axis grid; their labels go
   // through the user's transformation function.
-  let _x-sec = if (
-    x-trained != none
-      and x-trained.type == "continuous"
-      and x-trained.at("spec", default: none) != none
-  ) {
-    x-trained.spec.at("secondary", default: none)
-  } else { none }
+  let _x-sec = _sec-spec(x-trained)
   if _x-sec != none and show-x-sec {
     let breaks = if axis-breaks != none and axis-breaks.x-sec != none {
       axis-breaks.x-sec
@@ -856,7 +908,7 @@
       if theme.tick-labels {
         let mapped = secondary-mod.apply-transform(_x-sec, b)
         content(
-          (cx, py-hi + tick-len + 0.05),
+          (cx, py-hi + tick-len + 0.1),
           text(
             size: _ax-text.size,
             fill: _ax-text.fill,
@@ -873,8 +925,17 @@
       line((px-lo, py-hi), (px-hi, py-hi), stroke: axis-stroke)
     }
     if _x-sec.name != none and _ax-title.size > 0pt {
+      let x-sec-depth = _x-label-depth(
+        0,
+        1,
+        _max-secondary-label-chars(x-trained, _x-sec),
+        _ax-text.size,
+      )
       content(
-        ((px-lo + px-hi) / 2, py-hi + tick-len + 0.55),
+        (
+          (px-lo + px-hi) / 2,
+          py-hi + tick-len + 0.1 + x-sec-depth + 0.4,
+        ),
         text(
           size: _ax-title.size,
           fill: _ax-title.fill,
@@ -887,13 +948,7 @@
 
   // Secondary y-axis: draw on right edge if the trained y scale carries a
   // secondary spec.
-  let _y-sec = if (
-    y-trained != none
-      and y-trained.type == "continuous"
-      and y-trained.at("spec", default: none) != none
-  ) {
-    y-trained.spec.at("secondary", default: none)
-  } else { none }
+  let _y-sec = _sec-spec(y-trained)
   if _y-sec != none and show-y-sec {
     let breaks = if axis-breaks != none and axis-breaks.y-sec != none {
       axis-breaks.y-sec
@@ -906,7 +961,7 @@
       if theme.tick-labels {
         let mapped = secondary-mod.apply-transform(_y-sec, b)
         content(
-          (px-hi + tick-len + 0.05, cy),
+          (px-hi + tick-len + 0.1, cy),
           text(
             size: _ax-text.size,
             fill: _ax-text.fill,
@@ -923,8 +978,18 @@
       line((px-hi, py-lo), (px-hi, py-hi), stroke: axis-stroke)
     }
     if _y-sec.name != none and _ax-title.size > 0pt {
+      let y-sec-width = _y-label-width(
+        0,
+        1,
+        _max-secondary-label-chars(y-trained, _y-sec),
+        _ax-text.size,
+      )
+      let title-text-cm = _ax-text-cm(_ax-title.size)
       content(
-        (px-hi + tick-len + 0.7, (py-lo + py-hi) / 2),
+        (
+          px-hi + tick-len + 0.1 + y-sec-width + 0.4 + title-text-cm / 2,
+          (py-lo + py-hi) / 2,
+        ),
         text(
           size: _ax-title.size,
           fill: _ax-title.fill,
@@ -967,9 +1032,25 @@
     } else { none }
     if from-scale != none { from-scale } else { _mapping-y-name }
   }
+  let x-label-depth = _x-label-depth(
+    x-guide.angle,
+    x-guide.n-dodge,
+    _max-axis-label-chars(x-trained),
+    _ax-text.size,
+  )
+  let y-label-width = _y-label-width(
+    y-guide.angle,
+    y-guide.n-dodge,
+    _max-axis-label-chars(y-trained),
+    _ax-text.size,
+  )
+  let title-text-cm = _ax-text-cm(_ax-title.size)
+  let _gap = 0.4
+  let x-edge-offset = tick-len + 0.1 + x-label-depth + _gap
+  let y-edge-offset = tick-len + 0.1 + y-label-width + _gap
   if show-x-title and x-title != none and _ax-title.size > 0pt {
     content(
-      ((px-lo + px-hi) / 2, oy - 0.8),
+      ((px-lo + px-hi) / 2, oy - (x-edge-offset + title-text-cm)),
       text(
         size: _ax-title.size,
         fill: _ax-title.fill,
@@ -980,7 +1061,7 @@
   }
   if show-y-title and y-title != none and _ax-title.size > 0pt {
     content(
-      (px-lo - 1.1, (py-lo + py-hi) / 2),
+      (px-lo - (y-edge-offset + title-text-cm / 2), (py-lo + py-hi) / 2),
       text(
         size: _ax-title.size,
         fill: _ax-title.fill,
@@ -1315,6 +1396,31 @@
   ax-title: _text-style(theme, "axis-title"),
 )
 
+// Width reserved between the panel right edge and the legend (or canvas edge)
+// for the secondary y-axis ticks, labels, and title. Matches the primary
+// formula so the title-to-label gap is symmetric on left and right.
+#let _sec-y-extent(trained, sec, tick-len, ax-text-pt, ax-title-pt) = {
+  if sec == none { return 0.0 }
+  let chars = _max-secondary-label-chars(trained, sec)
+  let label-w = _y-label-width(0, 1, chars, ax-text-pt)
+  let title-cm = if sec.at("name", default: none) != none {
+    _ax-text-cm(ax-title-pt)
+  } else { 0.0 }
+  tick-len + 0.1 + label-w + 0.4 + title-cm + 0.05
+}
+
+// Height reserved between the panel top edge and the canvas top for the
+// secondary x-axis ticks, labels, and title.
+#let _sec-x-extent(trained, sec, tick-len, ax-text-pt, ax-title-pt) = {
+  if sec == none { return 0.0 }
+  let chars = _max-secondary-label-chars(trained, sec)
+  let label-d = _x-label-depth(0, 1, chars, ax-text-pt)
+  let title-cm = if sec.at("name", default: none) != none {
+    _ax-text-cm(ax-title-pt)
+  } else { 0.0 }
+  tick-len + 0.1 + label-d + 0.4 + title-cm + 0.05
+}
+
 // Resolve a per-side margin value to canvas units (cm). Typst lengths are
 // converted via `/1cm`; `auto` falls through to the dynamic default.
 #let _resolve-margin-side(value, fallback) = {
@@ -1507,6 +1613,7 @@
   let wrap-levels = ctx.wrap-levels
   let guides = ctx.guides
   let legend-gap = ctx.legend-gap
+  let sec-y-extent = ctx.sec-y-extent
   let margin = ctx.margin
   let width-units = ctx.width-units
   let height-units = ctx.height-units
@@ -1660,7 +1767,7 @@
       legend-mod.draw(
         guides,
         lctx,
-        (margin.left + grid-w + legend-gap, margin.bottom),
+        (margin.left + grid-w + sec-y-extent + legend-gap, margin.bottom),
         grid-h,
         theme,
       )
@@ -1678,6 +1785,7 @@
   let grid-col-levels = ctx.grid-col-levels
   let guides = ctx.guides
   let legend-gap = ctx.legend-gap
+  let sec-y-extent = ctx.sec-y-extent
   let margin = ctx.margin
   let width-units = ctx.width-units
   let height-units = ctx.height-units
@@ -1858,7 +1966,10 @@
       legend-mod.draw(
         guides,
         lctx,
-        (margin.left + grid-w + right-strip + legend-gap, margin.bottom),
+        (
+          margin.left + grid-w + right-strip + sec-y-extent + legend-gap,
+          margin.bottom,
+        ),
         grid-h,
         theme,
       )
@@ -1874,6 +1985,7 @@
   coord,
   guides,
   legend-gap,
+  sec-y-extent,
   margin,
   width-units,
   height-units,
@@ -1896,7 +2008,7 @@
       (px-lo, py-lo),
       (inner-w, inner-h),
       guides: guides,
-      legend-origin: (px-lo + inner-w + legend-gap, py-lo),
+      legend-origin: (px-lo + inner-w + sec-y-extent + legend-gap, py-lo),
       legend-height: inner-h,
       flipped: _is-flipped(coord),
     )
@@ -1935,7 +2047,7 @@
   parts.push(canvas)
   if caption-block != none { parts.push(caption-block) }
   if parts.len() == 1 { return canvas }
-  block(stack(dir: ttb, spacing: 0.3em, ..parts))
+  block(stack(dir: ttb, spacing: 0.6em, ..parts))
 }
 
 #let render-plot(spec) = {
@@ -2025,13 +2137,58 @@
 
   let guides = legend-mod.guides-for(spec, trained)
   let legend-width = legend-mod.estimate-width(guides)
-  let legend-gap = if legend-width > 0 { 0.25 } else { 0.0 }
+  let legend-gap = if legend-width > 0 { 0.4 } else { 0.0 }
+
+  let x-trained-top = trained.at("x", default: none)
+  let y-trained-top = trained.at("y", default: none)
+  let x-sec = _sec-spec(x-trained-top)
+  let y-sec = _sec-spec(y-trained-top)
+  let tick-len = theme.tick-length
+  let ax-text-pt = _text-style(theme, "axis-text").size
+  let ax-title-pt = _text-style(theme, "axis-title").size
+  let title-text-cm = _ax-text-cm(ax-title-pt)
+
+  let sec-x-extent = _sec-x-extent(
+    x-trained-top,
+    x-sec,
+    tick-len,
+    ax-text-pt,
+    ax-title-pt,
+  )
+  let sec-y-extent = _sec-y-extent(
+    y-trained-top,
+    y-sec,
+    tick-len,
+    ax-text-pt,
+    ax-title-pt,
+  )
+
+  let x-guide = _read-axis-guide(spec, "x")
+  let y-guide = _read-axis-guide(spec, "y")
+  let x-label-depth = _x-label-depth(
+    x-guide.angle,
+    x-guide.n-dodge,
+    _max-axis-label-chars(x-trained-top),
+    ax-text-pt,
+  )
+  let y-label-width = _y-label-width(
+    y-guide.angle,
+    y-guide.n-dodge,
+    _max-axis-label-chars(y-trained-top),
+    ax-text-pt,
+  )
+  let bottom-extent = (
+    tick-len + 0.1 + x-label-depth + 0.4 + title-text-cm + 0.05
+  )
+  let left-extent = (
+    tick-len + 0.1 + y-label-width + 0.4 + title-text-cm + 0.05
+  )
 
   let auto-margin = (
-    left: 1.3,
-    bottom: 0.9,
-    top: 0.3,
-    right: 0.3 + legend-gap + legend-width,
+    left: calc.max(1.5, left-extent),
+    bottom: calc.max(1.1, bottom-extent),
+    top: 0.3 + sec-x-extent,
+    right: 0.3 + sec-y-extent + legend-gap + legend-width,
   )
   let margin = _resolve-margin(
     theme.at("plot-margin", default: none),
@@ -2049,6 +2206,7 @@
       wrap-levels: wrap-levels,
       guides: guides,
       legend-gap: legend-gap,
+      sec-y-extent: sec-y-extent,
       margin: margin,
       width-units: width-units,
       height-units: height-units,
@@ -2067,6 +2225,7 @@
       grid-col-levels: grid-col-levels,
       guides: guides,
       legend-gap: legend-gap,
+      sec-y-extent: sec-y-extent,
       margin: margin,
       width-units: width-units,
       height-units: height-units,
@@ -2081,6 +2240,7 @@
       coord,
       guides,
       legend-gap,
+      sec-y-extent,
       margin,
       width-units,
       height-units,
