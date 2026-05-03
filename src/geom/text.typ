@@ -106,8 +106,10 @@
   let data = (ctx.resolve-data)(layer)
   if mapping == none or mapping.at("x", default: none) == none { return }
   if mapping.at("y", default: none) == none { return }
+  let const-label = layer.params.at("label", default: none)
+  let use-const = const-label != none
   let label-col = mapping.at("label", default: none)
-  if label-col == none { return }
+  if not use-const and label-col == none { return }
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
@@ -129,7 +131,9 @@
       ctx.py-range,
     )
     if cx == none or cy == none { continue }
-    let label = row.at(label-col, default: none)
+    let label = if use-const { const-label } else {
+      row.at(label-col, default: none)
+    }
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
     let colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)

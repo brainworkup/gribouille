@@ -12,7 +12,7 @@
 /// \@stability stable
 /// \@since 0.4.0
 ///
-/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `label`.
+/// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x` and `y`. Map `label` to a column when each row carries its own label, or pass `label:` directly to use a single constant value for every row.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param size Text size (a Typst length).
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
@@ -20,6 +20,7 @@
 /// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length.
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length.
+/// \@param label Constant label drawn at every row's `(x, y)`. Accepts a Typst content block (`[#math.alpha]`, `[*bold*]`) or a markup string (`"$alpha$"`) eval'd as Typst at render time. When `none`, the label is read from the `label` aesthetic mapping.
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -43,6 +44,22 @@
 /// )
 /// ```
 ///
+/// \@examples Use a constant content block as the label at every row.
+/// ```
+/// #let d = (
+///   (x: 1, y: 1),
+///   (x: 2, y: 2),
+///   (x: 3, y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-typst(label: [#math.alpha]),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-text, \@typst, \@annotate
 #let geom-typst(
   mapping: none,
@@ -53,6 +70,7 @@
   anchor: "center",
   dx: 0,
   dy: 0,
+  label: none,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -68,6 +86,7 @@
     anchor: anchor,
     dx: dx,
     dy: dy,
+    label: label,
   ),
   stat: stat,
   position: position,

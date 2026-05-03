@@ -14,6 +14,16 @@
 #assert.eq(g.params.anchor, "center")
 #assert.eq(g.params.dx, 0)
 #assert.eq(g.params.dy, 0)
+#assert.eq(g.params.label, none)
+
+// Constant `label:` accepts content blocks for direct Typst rendering.
+#let g-content = geom-typst(label: [#math.alpha])
+#assert.eq(g-content.params.label, [#math.alpha])
+
+// Constant `label:` also accepts a markup string; `geom-typst` always
+// evaluates labels as Typst.
+#let g-string = geom-typst(label: "$alpha$")
+#assert.eq(g-string.params.label, "$alpha$")
 
 // annotate("typst", ...) routes through geom-typst.
 #let a-typst = annotate("typst", x: 1, y: 2, label: "*hello*", anchor: "west")
@@ -22,6 +32,14 @@
 #assert.eq(a-typst.data.len(), 1)
 #assert.eq(a-typst.data.at(0).label, "*hello*")
 #assert.eq(a-typst.params.anchor, "west")
+
+// annotate("typst", label: [content]) stores the content verbatim in the
+// synthetic row; the geom's typst-mark forces eval-as-markup, which returns
+// content unchanged so the block renders directly.
+#let a-typst-content = annotate("typst", x: 1, y: 2, label: [#math.alpha])
+#assert.eq(a-typst-content.geom, "typst")
+#assert.eq(a-typst-content.data.at(0).label, [#math.alpha])
+#assert.eq(a-typst-content.mapping.label, "label")
 
 // annotate("text", label: typst("...")) preserves the typst tag on the column
 // reference so geom-text knows to evaluate the value as Typst markup; the
