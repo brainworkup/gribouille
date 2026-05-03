@@ -312,18 +312,35 @@
 // available space.
 #let _label-width(chars) = calc.min(2.5, 0.6 + chars * _char-width)
 
+// Per-column widths, gap, cumulative left-offsets, and total grid width for a
+// column-major swatch layout. Each column sizes to its own widest label so a
+// single oversized level doesn't pad every other column unnecessarily.
+#let _swatch-layout(levels, shape) = {
+  let widths = range(shape.cols).map(col => {
+    let chars = 0
+    for row in range(shape.rows) {
+      let i = col * shape.rows + row
+      if i >= levels.len() { break }
+      chars = calc.max(chars, levels.at(i).len())
+    }
+    _label-width(chars)
+  })
+  let gap = calc.max(0.15, 0.1 * calc.max(..widths))
+  let offsets = ()
+  let acc = 0.0
+  for w in widths {
+    offsets.push(acc)
+    acc += w + gap
+  }
+  (widths: widths, gap: gap, offsets: offsets, total: acc - gap)
+}
+
 // Per-guide width estimate. Stored on each guide so `estimate-width` is O(1).
 #let _guide-width(g) = {
   if g.kind == "swatch" {
-    let level-chars = 0
-    for level in g.levels {
-      level-chars = calc.max(level-chars, level.len())
-    }
     let shape = _grid-shape(g.levels.len(), g.nrow, g.ncol)
-    let col-w = _label-width(level-chars)
-    let col-gap = calc.max(0.15, 0.1 * col-w)
-    let grid-w = col-w * shape.cols + col-gap * (shape.cols - 1)
-    return calc.max(_label-width(_title-chars(g)), grid-w)
+    let layout = _swatch-layout(g.levels, shape)
+    return calc.max(_label-width(_title-chars(g)), layout.total)
   }
   if g.kind == "size-ladder" {
     let label-chars = 0
@@ -529,18 +546,13 @@
   _draw-title(ox, cursor, theme, guide.title)
   let top = cursor - title-h
   let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
-  let level-chars = 0
-  for level in guide.levels {
-    level-chars = calc.max(level-chars, level.len())
-  }
-  let col-w = _label-width(level-chars)
-  let col-gap = calc.max(0.15, 0.1 * col-w)
+  let layout = _swatch-layout(guide.levels, shape)
   let key-kind = guide.at("key", default: "rect")
   let labels = guide.at("labels", default: auto)
   for (i, level) in guide.levels.enumerate() {
     let col = calc.quo(i, shape.rows)
     let row = calc.rem(i, shape.rows)
-    let cx = ox + col * (col-w + col-gap)
+    let cx = ox + layout.offsets.at(col)
     let cy = top - row * line-h
     let bundle = _bundle-for(level, guide.aesthetics, ctx, ink)
     draw-glyph(

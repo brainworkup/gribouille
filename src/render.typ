@@ -2499,11 +2499,16 @@
     tick-len + 0.1 + y-label-width + left-gap + title-text-cm + 0.05
   )
 
+  // Cap the right margin so the legend can never push panel width below the
+  // single-tick minimum. Without the cap, `px-hi - px-lo` goes negative and
+  // axis labels render reversed (panel becomes mirror-imaged into the legend).
+  let max-right-margin = calc.max(0.0, width-units - left-extent - 0.5)
+  let right-extent = 0.3 + sec-y-extent + legend-gap + legend-width
   let auto-margin = (
     left: calc.max(1.5, left-extent),
     bottom: calc.max(1.1, bottom-extent),
     top: 0.3 + sec-x-extent,
-    right: 0.3 + sec-y-extent + legend-gap + legend-width,
+    right: calc.min(right-extent, max-right-margin),
   )
   let margin = _resolve-margin(
     theme.at("plot-margin", default: none),
