@@ -56,6 +56,7 @@
 #import "geom/rug.typ" as rug-geom
 #import "geom/function.typ" as function-geom
 #import "geom/dotplot.typ" as dotplot-geom
+#import "geom/hex.typ" as hex-geom
 
 // Single source of truth for layer dispatch in `_draw-axis-and-layers`.
 // Each entry maps a layer's `geom` string to its `draw(layer, ctx)` function.
@@ -93,6 +94,7 @@
   rug: rug-geom.draw,
   function: function-geom.draw,
   dotplot: dotplot-geom.draw,
+  hex: hex-geom.draw,
 )
 #import "legend.typ" as legend-mod
 #import "facet/labellers.typ" as labellers

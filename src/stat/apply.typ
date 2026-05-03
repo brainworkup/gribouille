@@ -4,6 +4,7 @@
 #import "identity.typ" as identity-stat
 #import "bin.typ" as bin-stat
 #import "bin2d.typ" as bin2d-stat
+#import "bin-hex.typ" as bin-hex-stat
 #import "bindot.typ" as bindot-stat
 #import "count.typ" as count-stat
 #import "sum.typ" as sum-stat
@@ -21,10 +22,12 @@
 #import "quantile.typ" as quantile-stat
 #import "../utils/bin.typ": panel-bin-grid
 #import "../utils/bin2d.typ": panel-bin-grid-2d
+#import "../utils/hex.typ": panel-hex-grid
 
 #let _stat-constructors = (
   bin: bin-stat.stat-bin,
   bin_2d: bin2d-stat.stat-bin-2d,
+  bin_hex: bin-hex-stat.stat-bin-hex,
   bindot: bindot-stat.stat-bindot,
   smooth: smooth-stat.stat-smooth,
   boxplot: boxplot-stat.stat-boxplot,
@@ -47,12 +50,15 @@
 // return their input params unchanged.
 #let _binning-stats = ("bin", "bindot", "summary_bin")
 #let _binning-2d-stats = ("bin_2d", "summary_2d")
+#let _binning-hex-stats = ("bin_hex",)
 
 #let setup-stat(name, data, mapping, params) = {
   if _binning-stats.contains(name) {
     panel-bin-grid(data, mapping, params)
   } else if _binning-2d-stats.contains(name) {
     panel-bin-grid-2d(data, mapping, params)
+  } else if _binning-hex-stats.contains(name) {
+    panel-hex-grid(data, mapping, params)
   } else {
     params
   }
@@ -65,6 +71,8 @@
     bin-stat.apply(data, mapping, params: params)
   } else if name == "bin_2d" {
     bin2d-stat.apply(data, mapping, params: params)
+  } else if name == "bin_hex" {
+    bin-hex-stat.apply(data, mapping, params: params)
   } else if name == "bindot" {
     bindot-stat.apply(data, mapping, params: params)
   } else if name == "count" {

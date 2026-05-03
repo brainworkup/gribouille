@@ -32,6 +32,7 @@
 #import "src/geom/rect.typ": geom-rect
 #import "src/geom/tile.typ": geom-tile
 #import "src/geom/bin2d.typ": geom-bin-2d
+#import "src/geom/hex.typ": geom-hex
 #import "src/geom/segment.typ": geom-segment
 #import "src/geom/curve.typ": geom-curve
 #import "src/geom/spoke.typ": geom-spoke
@@ -73,6 +74,7 @@
 #import "src/stat/function.typ": stat-function
 #import "src/stat/bin.typ": stat-bin
 #import "src/stat/bin2d.typ": stat-bin-2d
+#import "src/stat/bin-hex.typ": stat-bin-hex
 #import "src/stat/bindot.typ": stat-bindot
 #import "src/stat/smooth.typ": stat-smooth
 #import "src/stat/boxplot.typ": stat-boxplot
