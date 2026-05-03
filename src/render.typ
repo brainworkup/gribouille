@@ -662,16 +662,51 @@
   extents
 } else { _empty-extents(size) }
 
+// Resolve a single tick label to its rendered form so measurement matches
+// what the axis-draw path will emit.
+#let _resolve-tick(labels-cb, typst-mark, idx, value, fallback, typst-eval) = (
+  resolve-prose(
+    resolve-label(labels-cb, value, idx, fallback, typst-mark: typst-mark),
+    eval-strings: typst-eval,
+  )
+)
+
+#let _trained-labels-cb(trained) = if (
+  trained.at("spec", default: none) != none
+) {
+  trained.spec.at("labels", default: auto)
+} else { auto }
+
 // Collect the formatted tick labels for the trained scale and measure them
 // via Typst. Returns `(width, height)` in cm of the longest label's ink box.
 // Caller must already be inside a `context { ... }` block.
-#let _axis-label-extents(trained, size) = {
+// `typst-eval` mirrors the axis-text style's `typst` flag so typst-marked
+// labels measure at their rendered width.
+#let _axis-label-extents(trained, size, typst-eval: false) = {
   if trained == none { return _empty-extents(size) }
+  let labels-cb = _trained-labels-cb(trained)
+  let typst-mark = trained.at("typst-mark", default: false)
   let labels = ()
   if trained.type == "discrete" {
-    labels = trained.domain.map(level => str(level))
+    labels = trained
+      .domain
+      .enumerate()
+      .map(((idx, level)) => (
+        _resolve-tick(labels-cb, typst-mark, idx, level, level, typst-eval)
+      ))
   } else if trained.type == "continuous" {
-    labels = _axis-breaks(trained).map(b => _axis-label(trained, b))
+    labels = _axis-breaks(trained)
+      .enumerate()
+      .map(((idx, b)) => (
+        _resolve-tick(
+          labels-cb,
+          typst-mark,
+          idx,
+          b,
+          _axis-label(trained, b),
+          typst-eval,
+        )
+      ))
   }
   if labels.len() == 0 { return _empty-extents(size) }
   measure-labels-cm(labels, size)
@@ -680,12 +715,24 @@
 // Same as `_axis-label-extents` but for the secondary axis: each break is
 // routed through the user's transformation before formatting. Returns zero
 // extents when no secondary axis is configured.
-#let _secondary-label-extents(trained, sec, size) = {
+#let _secondary-label-extents(trained, sec, size, typst-eval: false) = {
   if trained == none or sec == none { return (width: 0.0, height: 0.0) }
   if trained.type != "continuous" { return (width: 0.0, height: 0.0) }
-  let labels = _axis-breaks(trained).map(b => (
-    _format-break(secondary-mod.apply-transform(sec, b))
-  ))
+  let labels-cb = _trained-labels-cb(trained)
+  let typst-mark = trained.at("typst-mark", default: false)
+  let labels = _axis-breaks(trained)
+    .enumerate()
+    .map(((idx, b)) => {
+      let transformed = secondary-mod.apply-transform(sec, b)
+      _resolve-tick(
+        labels-cb,
+        typst-mark,
+        idx,
+        transformed,
+        _format-break(transformed),
+        typst-eval,
+      )
+    })
   if labels.len() == 0 { return (width: 0.0, height: 0.0) }
   measure-labels-cm(labels, size)
 }
@@ -1728,6 +1775,7 @@
   let x-sec-extents = ctx.x-sec-extents
   let y-sec-extents = ctx.y-sec-extents
   let ax-text-pt = ctx.ax-text-pt
+  let ax-text-typst = ctx.ax-text-typst
 
   // Per-panel extents under free scales: each panel's trained scale carries
   // its own break/level set, so the longest label can differ panel-to-panel.
@@ -1742,13 +1790,27 @@
       let xs = _sec-spec(xt)
       let ys = _sec-spec(yt)
       (
-        x: if free-x { _axis-label-extents(xt, ax-text-pt) } else { x-extents },
-        y: if free-y { _axis-label-extents(yt, ax-text-pt) } else { y-extents },
+        x: if free-x {
+          _axis-label-extents(xt, ax-text-pt, typst-eval: ax-text-typst)
+        } else { x-extents },
+        y: if free-y {
+          _axis-label-extents(yt, ax-text-pt, typst-eval: ax-text-typst)
+        } else { y-extents },
         x-sec: if free-x {
-          _secondary-label-extents(xt, xs, ax-text-pt)
+          _secondary-label-extents(
+            xt,
+            xs,
+            ax-text-pt,
+            typst-eval: ax-text-typst,
+          )
         } else { x-sec-extents },
         y-sec: if free-y {
-          _secondary-label-extents(yt, ys, ax-text-pt)
+          _secondary-label-extents(
+            yt,
+            ys,
+            ax-text-pt,
+            typst-eval: ax-text-typst,
+          )
         } else { y-sec-extents },
       )
     })
@@ -2336,17 +2398,28 @@
   let ax-title-pt = ax-title-style.size
   let title-text-cm = _ax-text-cm(ax-title-pt)
 
-  let x-extents = _axis-label-extents(x-trained-top, ax-text-pt)
-  let y-extents = _axis-label-extents(y-trained-top, ax-text-pt)
+  let ax-text-typst = ax-text-style.typst
+  let x-extents = _axis-label-extents(
+    x-trained-top,
+    ax-text-pt,
+    typst-eval: ax-text-typst,
+  )
+  let y-extents = _axis-label-extents(
+    y-trained-top,
+    ax-text-pt,
+    typst-eval: ax-text-typst,
+  )
   let x-sec-extents = _secondary-label-extents(
     x-trained-top,
     x-sec,
     ax-text-pt,
+    typst-eval: ax-text-typst,
   )
   let y-sec-extents = _secondary-label-extents(
     y-trained-top,
     y-sec,
     ax-text-pt,
+    typst-eval: ax-text-typst,
   )
 
   let sec-x-extent = _sec-x-extent(
@@ -2419,6 +2492,7 @@
       x-sec-extents: x-sec-extents,
       y-sec-extents: y-sec-extents,
       ax-text-pt: ax-text-pt,
+      ax-text-typst: ax-text-typst,
     ))
   } else if facet-grid-mode {
     _render-canvas-grid((
