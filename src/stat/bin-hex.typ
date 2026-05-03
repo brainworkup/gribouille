@@ -55,31 +55,32 @@
     triples.map(t => t.y),
     params,
   )
-  // Sparse counts dict keyed by "ix,iy" — hex grids are sparser than
-  // their rectangular bounding box and a flat array would over-allocate.
-  let counts = (:)
-  let centres = (:)
+  // Sparse cell dict keyed by "ix,iy" — hex grids are sparser than their
+  // rectangular bounding box and a flat array would over-allocate. Each
+  // entry stores (count, cx, cy) so the centre is captured once per cell
+  // without a parallel dict.
+  let cells = (:)
   for t in triples {
     let cell = hex-bin-of(t.x, t.y, grid)
     let key = str(cell.ix) + "," + str(cell.iy)
-    counts.insert(key, counts.at(key, default: 0) + t.w)
-    if not centres.keys().contains(key) {
-      centres.insert(key, (cx: cell.cx, cy: cell.cy))
+    let prev = cells.at(key, default: none)
+    if prev == none {
+      cells.insert(key, (count: t.w, cx: cell.cx, cy: cell.cy))
+    } else {
+      prev.count += t.w
+      cells.insert(key, prev)
     }
   }
   let cell-area = grid.dx * grid.dy * 2
-  let rows = counts
-    .pairs()
-    .map(((key, n)) => {
-      let c = centres.at(key)
-      (
-        x: c.cx,
-        y: c.cy,
-        count: n,
-        density: n / cell-area,
-        _hex-dx: grid.dx,
-        _hex-dy: grid.dy,
-      )
-    })
+  let rows = cells
+    .values()
+    .map(c => (
+      x: c.cx,
+      y: c.cy,
+      count: c.count,
+      density: c.count / cell-area,
+      _hex-dx: grid.dx,
+      _hex-dy: grid.dy,
+    ))
   (data: rows, mapping: new-mapping)
 }

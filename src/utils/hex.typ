@@ -1,19 +1,11 @@
-// Pointy-top hexagonal binning.
-//
-// Two interleaved rectangular lattices form a single hex grid. Lattice A
-// has centres at `(x0 + ix * dx, y0 + iy * dy * 2)`; lattice B is offset
-// by `(dx / 2, dy)`. The closer centre of the two candidates wins, which
-// matches Voronoi regions of the combined hex lattice.
-//
-// `dx` is the horizontal pitch (centre-to-centre) and `dy = dx * sqrt(3) / 2`
-// for a regular hex; callers may override `dy` when data axes have very
-// different scales.
+// Pointy-top hexagonal binning. Two interleaved rectangular lattices form a
+// single hex grid; the nearest-centre rule matches the Voronoi regions of the
+// combined lattice.
 
 #import "bin.typ": bin-domain
 #import "types.typ": parse-number
 
-#let _SQRT3 = calc.sqrt(3)
-#let _SQRT3-OVER-2 = _SQRT3 / 2
+#let _SQRT3-OVER-2 = calc.sqrt(3) / 2
 
 #let _split-pair(value, fallback: none) = {
   if value == none { return (fallback, fallback) }
@@ -21,9 +13,10 @@
   (value, value)
 }
 
-// Build a hex grid from `(xs, ys)` extents and a `bins` / `binwidth` pair.
-// `bins` accepts a scalar (applied to both axes) or an `(x, y)` pair.
-// `binwidth` overrides each axis where set.
+// Build a hex grid from extents. `bins` and `binwidth` accept either a
+// scalar (applied to both axes) or an `(x, y)` pair. The default `dy`
+// gives a regular hex; callers may override it when axes have very
+// different scales (which produces oblong cells that no longer tile).
 #let hex-grid(xs, ys, bins, binwidth) = {
   let (bx, by) = _split-pair(bins, fallback: 30)
   let (wx, wy) = _split-pair(binwidth)
@@ -68,25 +61,25 @@
   ))
 }
 
-// Assign `(x, y)` to the closest hex centre. Returns `(ix, iy, cx, cy)`
-// where `(ix, iy)` is the integer cell key and `(cx, cy)` is the centre
-// in data space. `iy` is even on lattice A and odd on lattice B.
+// Assign `(x, y)` to the closest hex centre. `iy` is even on lattice A and
+// odd on lattice B (offset by `(dx/2, dy)`).
 #let hex-bin-of(x, y, grid) = {
   let dx = grid.dx
   let dy = grid.dy
-  // Lattice A centre (even rows).
-  let ia = calc.round((x - grid.x-lo) / dx)
-  let ja = calc.round((y - grid.y-lo) / (2 * dy))
+  let two-dy = 2 * dy
+  let xrel = x - grid.x-lo
+  let yrel = y - grid.y-lo
+  let ia = calc.round(xrel / dx)
+  let ja = calc.round(yrel / two-dy)
   let cxa = grid.x-lo + ia * dx
-  let cya = grid.y-lo + ja * 2 * dy
+  let cya = grid.y-lo + ja * two-dy
   let dax = x - cxa
   let day = y - cya
   let da2 = dax * dax + day * day
-  // Lattice B centre (odd rows).
-  let ib = calc.round((x - grid.x-lo - dx / 2) / dx)
-  let jb = calc.round((y - grid.y-lo - dy) / (2 * dy))
+  let ib = calc.round((xrel - dx / 2) / dx)
+  let jb = calc.round((yrel - dy) / two-dy)
   let cxb = grid.x-lo + ib * dx + dx / 2
-  let cyb = grid.y-lo + jb * 2 * dy + dy
+  let cyb = grid.y-lo + jb * two-dy + dy
   let dbx = x - cxb
   let dby = y - cyb
   let db2 = dbx * dbx + dby * dby
@@ -97,11 +90,8 @@
   }
 }
 
-// Six pointy-top vertices around `(cx, cy)`. `dx` is horizontal pitch and
-// `dy` vertical row pitch; the circumradius derives as `dy * 2 / 3` only
-// when `dy = dx * sqrt(3) / 2`. For non-regular grids we draw the hex with
-// width `dx` and height `2 * dy`, which keeps cells touching their
-// neighbours.
+// Six pointy-top vertices around `(cx, cy)`. The circumradius is `2 * dy / 3`,
+// which matches a regular hex when `dy = dx * sqrt(3) / 2`.
 #let hex-vertices(cx, cy, dx, dy) = {
   let hw = dx / 2
   let q = dy * 2 / 3
