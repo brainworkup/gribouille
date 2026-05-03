@@ -27,6 +27,7 @@
 /// \@param linewidth Legend title for the linewidth aesthetic.
 /// \@param shape Legend title for the shape aesthetic.
 /// \@param linetype Legend title for the linetype aesthetic.
+/// \@param stroke Legend title for the stroke aesthetic.
 ///
 /// \@returns Dictionary tagged `kind: "labs"`, consumed by \@plot.
 ///
@@ -91,6 +92,7 @@
   linewidth: none,
   shape: none,
   linetype: none,
+  stroke: none,
 ) = (
   kind: "labs",
   title: title,
@@ -108,5 +110,6 @@
     linewidth: linewidth,
     shape: shape,
     linetype: linetype,
+    stroke: stroke,
   ),
 )

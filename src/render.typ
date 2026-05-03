@@ -1340,28 +1340,33 @@
 
 // Build a (row-key-fn, panel-key-fn) pair for a grid facet spec, specialised
 // on which of `rows` / `cols` is set. The row-key-fn is invoked once per data
-// row inside `group-by` and must avoid per-row allocation.
+// row inside `group-by` and must avoid per-row allocation. `none` values are
+// coerced to "" so rows with missing facet variables drop out (panel levels
+// from `_raw-levels-for` exclude `none`).
+#let _facet-cell-str(row, col) = {
+  let v = row.at(col, default: none)
+  if v == none { "" } else { str(v) }
+}
+
 #let _grid-facet-keyers(spec) = {
   let r = spec.facet.rows
   let c = spec.facet.cols
   if r != none and c != none {
     return (
       row: row => (
-        str(row.at(r, default: ""))
-          + _facet-key-sep
-          + str(row.at(c, default: ""))
+        _facet-cell-str(row, r) + _facet-key-sep + _facet-cell-str(row, c)
       ),
       panel: (rl, cl) => rl + _facet-key-sep + cl,
     )
   }
   if r != none {
     return (
-      row: row => str(row.at(r, default: "")),
+      row: row => _facet-cell-str(row, r),
       panel: (rl, _) => rl,
     )
   }
   (
-    row: row => str(row.at(c, default: "")),
+    row: row => _facet-cell-str(row, c),
     panel: (_, cl) => cl,
   )
 }
@@ -1387,7 +1392,7 @@
     let var = spec.facet.var
     let layer-groups = spec.layers.map(l => group-by(
       _resolve-data(l, spec.data),
-      row => str(row.at(var, default: "")),
+      row => _facet-cell-str(row, var),
     ))
     wrap-levels.map(level => (
       level: level,

@@ -24,6 +24,7 @@
 /// \@param colour Line colour. `auto` inherits the theme `ink`.
 /// \@param stroke Line thickness (a Typst length).
 /// \@param alpha Line opacity in `[0, 1]`.
+/// \@param linetype Dash keyword. Defaults to `"solid"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
 /// \@returns Layer dictionary consumed by \@plot.
@@ -65,6 +66,7 @@
   colour: auto,
   stroke: 0.6pt,
   alpha: auto,
+  linetype: "solid",
   inherit-aes: false,
 ) = (
   kind: "layer",
@@ -76,6 +78,7 @@
     colour: colour,
     stroke: stroke,
     alpha: alpha,
+    linetype: linetype,
   ),
   stat: "identity",
   position: "identity",
@@ -106,7 +109,11 @@
     (:),
     layer.params.stroke,
   )
-  let stroke-spec = (paint: fill, thickness: thickness)
+  let stroke-spec = (
+    paint: fill,
+    thickness: thickness,
+    dash: layer.params.linetype,
+  )
   if flipped {
     let (py-lo, py-hi) = ctx.py-range
     for y in ys {
