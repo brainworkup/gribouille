@@ -3,6 +3,7 @@
 
 #import "identity.typ" as identity-stat
 #import "bin.typ" as bin-stat
+#import "bin2d.typ" as bin2d-stat
 #import "bindot.typ" as bindot-stat
 #import "count.typ" as count-stat
 #import "sum.typ" as sum-stat
@@ -18,9 +19,11 @@
 #import "ellipse.typ" as ellipse-stat
 #import "quantile.typ" as quantile-stat
 #import "../utils/bin.typ": panel-bin-grid
+#import "../utils/bin2d.typ": panel-bin-grid-2d
 
 #let _stat-constructors = (
   bin: bin-stat.stat-bin,
+  bin_2d: bin2d-stat.stat-bin-2d,
   bindot: bindot-stat.stat-bindot,
   smooth: smooth-stat.stat-smooth,
   boxplot: boxplot-stat.stat-boxplot,
@@ -41,10 +44,13 @@
 // stats) is computed from the full data and reused. Stats not listed here
 // return their input params unchanged.
 #let _binning-stats = ("bin", "bindot", "summary_bin")
+#let _binning-2d-stats = ("bin_2d",)
 
 #let setup-stat(name, data, mapping, params) = {
   if _binning-stats.contains(name) {
     panel-bin-grid(data, mapping, params)
+  } else if _binning-2d-stats.contains(name) {
+    panel-bin-grid-2d(data, mapping, params)
   } else {
     params
   }
@@ -55,6 +61,8 @@
     (data: data, mapping: mapping)
   } else if name == "bin" {
     bin-stat.apply(data, mapping, params: params)
+  } else if name == "bin_2d" {
+    bin2d-stat.apply(data, mapping, params: params)
   } else if name == "bindot" {
     bindot-stat.apply(data, mapping, params: params)
   } else if name == "count" {
