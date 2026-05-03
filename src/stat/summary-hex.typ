@@ -56,9 +56,10 @@
     triples.map(t => t.y),
     params,
   )
-  // Sparse cell dict: each entry holds the bucket of z values plus the
-  // hex centre, so we capture the centre once on first insert without a
-  // parallel dict.
+  // Sparse cell dict, mirroring `bin-hex.apply`: hex grids are sparser
+  // than their rectangular bounding box and a flat array would
+  // over-allocate. The cell entry holds the z bucket plus the centre so
+  // that capture happens once on first insert.
   let cells = (:)
   for t in triples {
     let cell = hex-bin-of(t.x, t.y, grid)
