@@ -69,6 +69,37 @@
 #assert.eq(r-two.data.at(0).k, "a")
 #assert.eq(r-two.data.at(1).k, "b")
 
+// Tilted, correlated point cloud: covariance has a non-zero off-diagonal so
+// the principal axis no longer aligns with x. Reference computed in R as
+//   S <- cov(cbind(x, y))
+//   e <- eigen(S, symmetric = TRUE)
+//   chi <- -2 * log(0.05)
+//   a <- sqrt(e$values[1] * chi); b <- sqrt(e$values[2] * chi)
+//   ang <- atan2(S[1, 2], e$values[1] - S[2, 2])
+#let df-tilt = (
+  (x: 1, y: 1.0),
+  (x: 2, y: 2.1),
+  (x: 3, y: 2.9),
+  (x: 4, y: 4.2),
+  (x: 5, y: 5.1),
+  (x: 6, y: 5.8),
+  (x: 7, y: 7.1),
+  (x: 8, y: 8.0),
+)
+#let r-tilt = apply-stat(
+  "ellipse",
+  df-tilt,
+  (x: "x", y: "y"),
+  (level: 0.95),
+)
+#assert.eq(r-tilt.data.len(), 1)
+#let row-tilt = r-tilt.data.at(0)
+#assert-close(row-tilt.x0, 4.5, tol: 1e-12)
+#assert-close(row-tilt.y0, 4.525, tol: 1e-12)
+#assert-close(row-tilt.a, 8.461951823634504)
+#assert-close(row-tilt.b, 0.2213768288834559)
+#assert-close(row-tilt.angle, 0.7836936245462096)
+
 // Single-row group is dropped (need at least 2 points for a covariance).
 #let r-thin = apply-stat(
   "ellipse",

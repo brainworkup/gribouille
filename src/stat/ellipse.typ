@@ -150,12 +150,15 @@
 
     let a = calc.sqrt(lambda1 * chi-sq)
     let b = calc.sqrt(lambda2 * chi-sq)
-    // Eigenvector of λ₁ for [[cxx, cxy], [cxy, cyy]] gives the rotation;
-    // when the off-diagonal is zero the ellipse is axis-aligned.
+    // Eigenvector of λ₁ for [[cxx, cxy], [cxy, cyy]] is (λ₁ - cyy, cxy);
+    // the major-axis angle is its angle from the x-axis. Typst's
+    // `calc.atan2(x, y)` takes the x-component first, opposite to R's
+    // `atan2(y, x)`. The off-diagonal-zero branch keeps the ellipse axis-
+    // aligned without taking atan2 of zero.
     let angle = if cxy == 0 {
       if cxx >= cyy { 0.0 } else { calc.pi / 2 }
     } else {
-      calc.atan2(cxy, lambda1 - cyy) / 1rad
+      calc.atan2(lambda1 - cyy, cxy) / 1rad
     }
 
     let row = (
