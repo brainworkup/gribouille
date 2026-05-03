@@ -13,6 +13,7 @@
   apply-alpha, resolve-alpha, resolve-linewidth,
 )
 #import "../utils/aes-pair.typ": aes-set
+#import "../utils/linetype-resolve.typ": resolve-linetype
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -32,6 +33,7 @@
 /// \@param colour Fixed line colour. `auto` picks a neutral default.
 /// \@param fill Fixed ribbon fill. `auto` reuses the line colour.
 /// \@param alpha Ribbon opacity in `[0, 1]`.
+/// \@param linetype Dash keyword for the fitted line. `auto` resolves via the linetype scale or defaults to `"solid"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.
@@ -83,6 +85,7 @@
   colour: auto,
   fill: auto,
   alpha: auto,
+  linetype: auto,
   inherit-aes: true,
 ) = (
   kind: "layer",
@@ -97,6 +100,7 @@
     colour: colour,
     fill: fill,
     alpha: alpha,
+    linetype: linetype,
   ),
   stat: stat-smooth(method: method, se: se, level: level),
   position: "identity",
@@ -211,9 +215,10 @@
         rows.first(),
         layer.params.stroke,
       )
+      let dash = resolve-linetype(layer, mapping, ctx, rows.first())
       cetz.draw.line(
         ..line-pts,
-        stroke: (paint: line-colour, thickness: thickness),
+        stroke: (paint: line-colour, thickness: thickness, dash: dash),
       )
     }
   }

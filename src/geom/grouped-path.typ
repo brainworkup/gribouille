@@ -5,10 +5,9 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/palette.typ": default-linetypes, palette-at, spec-palette
-#import "../utils/level-resolve.typ": resolve-binned
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
+#import "../utils/linetype-resolve.typ": resolve-linetype
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -59,54 +58,19 @@
 
   let ink = ctx.theme.at("ink", default: black)
 
-  let linetype-param = layer.params.at("linetype", default: auto)
-  let linetype-pinned = linetype-param != auto and linetype-param != none
-  let linetype-col = mapping.at("linetype", default: none)
-  let linetype-trained = ctx.trained.at("linetype", default: none)
-  let linetype-palette = spec-palette(linetype-trained, default-linetypes)
-  let default-linetype = if linetype-pinned { linetype-param } else { "solid" }
-
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
     let pts = build-pts(rows, layer, mapping, x-trained, y-trained, ctx)
     if pts.len() < 2 { continue }
 
-    let final-colour = resolve-stroke-colour(
-      layer,
-      mapping,
-      ctx,
-      rows.first(),
-      ink,
-    )
-
-    let dash = if linetype-pinned {
-      linetype-param
-    } else if linetype-col == none or linetype-trained == none {
-      default-linetype
-    } else {
-      let sample = rows.first().at(linetype-col, default: none)
-      if linetype-trained.type == "identity" {
-        if sample == none or sample == "" { default-linetype } else {
-          str(sample)
-        }
-      } else if linetype-trained.type == "continuous" {
-        let resolved = if sample == none { none } else {
-          resolve-binned(linetype-trained, sample, default-linetypes)
-        }
-        if resolved == none { default-linetype } else { resolved }
-      } else {
-        let idx = linetype-trained.domain.position(v => v == str(sample))
-        if idx == none { default-linetype } else {
-          palette-at(linetype-palette, idx)
-        }
-      }
-    }
-
+    let leader = rows.first()
+    let final-colour = resolve-stroke-colour(layer, mapping, ctx, leader, ink)
+    let dash = resolve-linetype(layer, mapping, ctx, leader)
     let thickness = resolve-linewidth(
       layer,
       mapping,
       ctx,
-      rows.first(),
+      leader,
       layer.params.stroke,
     )
     cetz.draw.line(
