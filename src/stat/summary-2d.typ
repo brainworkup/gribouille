@@ -1,35 +1,36 @@
-///! Rectangular two-dimensional summary statistic.
-///!
-///! Bins (x, y) the same way as \@stat-bin-2d, then reduces the `z`
-///! aesthetic inside each cell to a single scalar via `fun`.
-
 #import "../utils/aes-resolve.typ": stat-output-mapping
-#import "../utils/bin2d.typ": (
-  bin-midpoint-2d, bin-of-2d, panel-bin-grid-2d, resolve-bin-grid-2d,
-)
-#import "../utils/summaries.typ": mean, median, read-weight
+#import "../utils/bin2d.typ": bin-midpoint-2d, bin-of-2d, resolve-bin-grid-2d
+#import "../utils/summaries.typ": mean, median
 #import "../utils/types.typ": parse-number
+
+#let _numeric(values) = {
+  values.map(parse-number).filter(v => v != none)
+}
+
+#let _scalar-reducers = (
+  mean: values => mean(values).y,
+  median: values => median(values).y,
+  sum: values => {
+    let xs = _numeric(values)
+    if xs.len() == 0 { none } else { xs.sum() }
+  },
+  min: values => {
+    let xs = _numeric(values)
+    if xs.len() == 0 { none } else { calc.min(..xs) }
+  },
+  max: values => {
+    let xs = _numeric(values)
+    if xs.len() == 0 { none } else { calc.max(..xs) }
+  },
+)
 
 #let _reduce(name, values) = {
   if type(name) == function { return name(values) }
-  if name == "mean" { return mean(values).y }
-  if name == "median" { return median(values).y }
-  if name == "sum" {
-    let xs = values.map(parse-number).filter(v => v != none)
-    if xs.len() == 0 { return none }
-    return xs.sum()
+  let fn = _scalar-reducers.at(name, default: none)
+  if fn == none {
+    panic("stat-summary-2d: unknown fun " + repr(name))
   }
-  if name == "min" {
-    let xs = values.map(parse-number).filter(v => v != none)
-    if xs.len() == 0 { return none }
-    return calc.min(..xs)
-  }
-  if name == "max" {
-    let xs = values.map(parse-number).filter(v => v != none)
-    if xs.len() == 0 { return none }
-    return calc.max(..xs)
-  }
-  mean(values).y
+  fn(values)
 }
 
 /// Two-dimensional summary statistic.
