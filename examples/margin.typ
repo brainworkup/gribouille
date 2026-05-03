@@ -1,4 +1,4 @@
-// theme(plot-margin: ...) shifts the canvas using margin() or margin-part().
+// theme(plot-margin: ...) shifts the canvas using margin().
 
 #import "../lib.typ": *
 
@@ -33,7 +33,7 @@
   spacing: 0.4cm,
   panel("Default plot-margin", theme-minimal()),
   panel(
-    "margin(top: 0.6cm, left: 1.6cm)",
+    "margin(top: 0.6cm, right: 0.6cm, bottom: 0.9cm, left: 1.6cm)",
     theme-minimal(plot-margin: margin(
       top: 0.6cm,
       right: 0.6cm,
@@ -42,7 +42,7 @@
     )),
   ),
   panel(
-    "margin-part(top: 0.6cm, left: 1.6cm)",
-    theme-minimal(plot-margin: margin-part(top: 0.6cm, left: 1.6cm)),
+    "margin(top: 0.6cm, left: 1.6cm) — other sides auto",
+    theme-minimal(plot-margin: margin(top: 0.6cm, left: 1.6cm)),
   ),
 )

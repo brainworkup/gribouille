@@ -504,8 +504,8 @@
 - slug: margin
   section: themes
   title: "Plot margins"
-  description: '<a href="../reference/themes/margin.qmd"><code>margin</code></a> sets all four sides; <a href="../reference/themes/margin-part.qmd"><code>margin-part</code></a> overrides only the named sides.'
-  alt: "Three stacked panels of the same scatter, the first with default margins, the second with all four margins pinned via margin(), and the third with only top and left pinned via margin-part()."
+  description: '<a href="../reference/themes/margin.qmd"><code>margin</code></a> defaults every side to <code>auto</code>; pass explicit lengths to pin individual sides while the others fall through to the renderer''s dynamic default.'
+  alt: "Three stacked panels of the same scatter, the first with default margins, the second with all four margins pinned via margin(), and the third with only top and left pinned via margin() (other sides auto)."
 
 - slug: dodge-mixed
   section: bars

@@ -207,6 +207,6 @@
 #import "src/theme/theme.typ": theme
 #import "src/theme/elements.typ": (
   element-blank, element-line, element-rect, element-text, element-typst,
-  margin, margin-auto, margin-part,
+  margin,
 )
 #import "src/theme/current.typ": theme-get, theme-set

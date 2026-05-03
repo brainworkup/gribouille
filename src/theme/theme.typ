@@ -184,7 +184,7 @@
 /// Surfaces:
 ///
 /// - Base elements: `text`, `line`, `rect`. Set inherited parents that descendants fall back to.
-/// - Text surfaces: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`. Pass `margin: margin-part(...)` on either constructor to widen or tighten the gap between the surface and its neighbours; em values track the surface font size.
+/// - Text surfaces: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`. Pass `margin: margin(...)` on either constructor to widen or tighten the gap between the surface and its neighbours; em values track the surface font size.
 /// - Line surfaces: `panel-grid`, `axis-line`. Each accepts `element-line()` or `element-blank()`.
 /// - Rect surfaces: `panel-background`, `strip-background`. Each accepts `element-rect()` or `element-blank()`.
 ///

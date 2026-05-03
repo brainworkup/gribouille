@@ -17,7 +17,7 @@
 /// \@param colour Text colour, or `none` to inherit.
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 /// \@param family Font family (e.g. `"sans"`, `"serif"`), or `none` to inherit.
-/// \@param margin Per-side spacing built with \@margin-part. Each side accepts
+/// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
 ///   with the surface font size. Sides left at `auto` fall through to the
 ///   renderer default. `none` keeps every side at the default.
@@ -67,14 +67,14 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(axis-title: element-text(
 ///     size: 11pt,
-///     margin: margin-part(top: 1.6em, right: 1.6em),
+///     margin: margin(top: 1.6em, right: 1.6em),
 ///   )),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
 /// ```
 ///
-/// \@see \@theme, \@element-line, \@element-rect, \@element-blank, \@element-typst, \@margin-part
+/// \@see \@theme, \@element-line, \@element-rect, \@element-blank, \@element-typst, \@margin
 #let element-text(
   size: none,
   weight: none,
@@ -111,7 +111,7 @@
 /// \@param colour Text colour, or `none` to inherit.
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 /// \@param family Font family, or `none` to inherit.
-/// \@param margin Per-side spacing built with \@margin-part. Each side accepts
+/// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
 ///   with the surface font size. Sides left at `auto` fall through to the
 ///   renderer default. `none` keeps every side at the default.
@@ -150,7 +150,7 @@
 /// )
 /// ```
 ///
-/// \@see \@theme, \@element-text, \@typst, \@margin-part
+/// \@see \@theme, \@element-text, \@typst, \@margin
 #let element-typst(
   size: none,
   weight: none,
@@ -315,8 +315,10 @@
 ///
 /// Each side accepts a Typst length (e.g. `1cm`, `8pt`) or `auto` to fall
 /// through to the renderer's dynamic default (which leaves room for the
-/// axis title, tick labels, and any legend). Pass the result to \@theme
-/// under the `plot-margin` key.
+/// axis title, tick labels, and any legend). Defaults to `auto` on every
+/// side so calling `margin()` with no arguments resets to the dynamic
+/// default, and `margin(left: 2cm)` overrides only the left side. Pass
+/// the result to \@theme under the `plot-margin` key.
 ///
 /// \@category Themes
 /// \@stability stable
@@ -329,7 +331,8 @@
 ///
 /// \@returns Margin dictionary consumed by \@theme.
 ///
-/// \@examples Wide left margin to give a long axis title room to breathe.
+/// \@examples Wide left margin to give a long axis title room to breathe;
+/// other sides keep the renderer's default.
 /// ```
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
@@ -342,62 +345,24 @@
 /// )
 /// ```
 ///
-/// \@see \@theme, \@margin-part, \@margin-auto
-#let margin(top: 0pt, right: 0pt, bottom: 0pt, left: 0pt) = (
+/// \@examples Pin every side to zero for an edge-to-edge canvas.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(plot-margin: margin(top: 0pt, right: 0pt, bottom: 0pt, left: 0pt)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@theme
+#let margin(top: auto, right: auto, bottom: auto, left: auto) = (
   kind: "margin",
   top: top,
   right: right,
   bottom: bottom,
   left: left,
-)
-
-/// Partial margin specification: unspecified sides fall through to the
-/// renderer's dynamic default.
-///
-/// Like \@margin but with `auto` defaults so every unset side keeps the
-/// computed default while explicit sides override.
-///
-/// \@category Themes
-/// \@stability stable
-/// \@since 0.4.0
-///
-/// \@param top Top margin (`auto` to keep the default).
-/// \@param right Right margin.
-/// \@param bottom Bottom margin.
-/// \@param left Left margin.
-///
-/// \@returns Margin dictionary consumed by \@theme.
-///
-/// \@see \@margin, \@margin-auto
-#let margin-part(
-  top: auto,
-  right: auto,
-  bottom: auto,
-  left: auto,
-) = (
-  kind: "margin",
-  top: top,
-  right: right,
-  bottom: bottom,
-  left: left,
-)
-
-/// Auto-sized margin: every side resolves to the renderer's dynamic default.
-///
-/// Equivalent to omitting `plot-margin` from a theme; available so users
-/// can reset to defaults explicitly when overriding a theme.
-///
-/// \@category Themes
-/// \@stability stable
-/// \@since 0.4.0
-///
-/// \@returns Margin dictionary consumed by \@theme.
-///
-/// \@see \@margin, \@margin-part
-#let margin-auto() = (
-  kind: "margin",
-  top: auto,
-  right: auto,
-  bottom: auto,
-  left: auto,
 )

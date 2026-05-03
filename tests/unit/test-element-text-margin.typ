@@ -1,10 +1,10 @@
 // element-text and element-typst preserve a margin record built with
-// margin-part(). Sides default to auto so the renderer falls back to its
-// own gap when the user has not set them.
+// margin(). Unspecified sides default to auto so the renderer falls back
+// to its own gap when the user has not set them.
 
-#import "../../lib.typ": element-text, element-typst, margin-part
+#import "../../lib.typ": element-text, element-typst, margin
 
-#let m = margin-part(top: 1.5em, right: 0.4cm)
+#let m = margin(top: 1.5em, right: 0.4cm)
 
 #let et = element-text(size: 11pt, margin: m)
 #assert.eq(et.kind, "element-text")
