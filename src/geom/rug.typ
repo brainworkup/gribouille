@@ -24,7 +24,7 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param sides String of edge codes among `b`, `t`, `l`, `r` indicating which axes receive ticks.
-/// \@param length Tick length in CeTZ canvas units (1 unit equals 1 cm).
+/// \@param length Tick length as a Typst length (e.g. `0.15cm`).
 /// \@param stroke Tick thickness (a Typst length).
 /// \@param colour Fixed tick colour. `auto` resolves via the colour scale or theme `ink`.
 /// \@param alpha Tick opacity in `[0, 1]`.
@@ -73,7 +73,7 @@
   mapping: none,
   data: none,
   sides: "bl",
-  length: 0.15,
+  length: 0.15cm,
   stroke: 0.4pt,
   colour: auto,
   alpha: auto,
@@ -119,7 +119,7 @@
 
   let (px-lo, px-hi) = ctx.px-range
   let (py-lo, py-hi) = ctx.py-range
-  let len = layer.params.length
+  let len = layer.params.length / 1cm
 
   let want-bottom = sides.contains("b")
   let want-top = sides.contains("t")

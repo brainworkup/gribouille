@@ -698,7 +698,7 @@
   let y-trained = trained.at("y", default: none)
   let grid-stroke = _line-stroke(theme, "panel-grid", fallback-colour: _ink)
   let axis-stroke = _line-stroke(theme, "axis-line", fallback-colour: _ink)
-  let tick-len = theme.tick-length
+  let tick-len = theme.tick-length / 1cm
 
   let x-guide = _read-axis-guide(spec, "x")
   let y-guide = _read-axis-guide(spec, "y")
@@ -2143,7 +2143,7 @@
   let y-trained-top = trained.at("y", default: none)
   let x-sec = _sec-spec(x-trained-top)
   let y-sec = _sec-spec(y-trained-top)
-  let tick-len = theme.tick-length
+  let tick-len = theme.tick-length / 1cm
   let ax-text-pt = _text-style(theme, "axis-text").size
   let ax-title-pt = _text-style(theme, "axis-title").size
   let title-text-cm = _ax-text-cm(ax-title-pt)

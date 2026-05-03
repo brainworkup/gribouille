@@ -52,7 +52,7 @@
       mapping: aes(x: "x", y: "y"),
       inherit-aes: false,
     ),
-    geom-rug(sides: "b", colour: rgb("#2ca02c"), length: 0.4),
+    geom-rug(sides: "b", colour: rgb("#2ca02c"), length: 0.4cm),
   ),
   scales: (scale-x-continuous(name: "Highway mpg"),),
   labs: labs(y: ""),

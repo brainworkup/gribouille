@@ -78,7 +78,7 @@
     panel-background: element-blank(),
     panel-grid: element-line(colour: rgb("#ebebeb"), thickness: 0.4pt),
     axis-line: element-blank(),
-    tick-length: 0,
+    tick-length: 0cm,
   )
   _apply-overrides(base, fields)
 }

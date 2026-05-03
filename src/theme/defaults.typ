@@ -53,8 +53,7 @@
   // renderer's dynamic default).
   plot-margin: margin-auto(),
 
-  // Bare scalars
-  tick-length: 0.1,
+  tick-length: 0.1cm,
   tick-labels: true,
 )
 

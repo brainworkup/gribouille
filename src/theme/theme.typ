@@ -157,7 +157,7 @@
 /// - Line surfaces: `panel-grid`, `axis-line`. Each accepts `element-line()` or `element-blank()`.
 /// - Rect surfaces: `panel-background`, `strip-background`. Each accepts `element-rect()` or `element-blank()`.
 ///
-/// Bare scalars: `ink`, `paper`, `accent`, `tick-length`, `tick-labels`.
+/// Scalars: `ink`, `paper`, `accent` (colours), `tick-labels` (boolean), `tick-length` (a Typst length, e.g. `0.1cm`).
 ///
 /// \@category Themes
 /// \@stability stable

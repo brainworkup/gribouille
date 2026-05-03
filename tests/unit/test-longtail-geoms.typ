@@ -20,12 +20,12 @@
 #assert.eq(rg.stat, "identity")
 #assert.eq(rg.position, "identity")
 #assert.eq(rg.params.sides, "bl")
-#assert.eq(rg.params.length, 0.15)
+#assert.eq(rg.params.length, 0.15cm)
 #assert.eq(rg.params.alpha, auto)
 
-#let rg2 = geom-rug(sides: "tr", length: 0.25, colour: red, alpha: 0.5)
+#let rg2 = geom-rug(sides: "tr", length: 0.25cm, colour: red, alpha: 0.5)
 #assert.eq(rg2.params.sides, "tr")
-#assert.eq(rg2.params.length, 0.25)
+#assert.eq(rg2.params.length, 0.25cm)
 #assert.eq(rg2.params.colour, red)
 #assert.eq(rg2.params.alpha, 0.5)
 
