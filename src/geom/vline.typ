@@ -6,7 +6,7 @@
 ///! same data value because the x axis becomes the rendered vertical axis.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-axis
+#import "../scale/train.typ": map-axis-data
 #import "../utils/colour-resolve.typ": (
   apply-alpha, resolve-alpha, resolve-linewidth,
 )
@@ -116,13 +116,13 @@
   if flipped {
     let (px-lo, px-hi) = ctx.px-range
     for x in xs {
-      let cy = map-axis(trained, float(x), ctx.py-range)
+      let cy = map-axis-data(trained, float(x), ctx.py-range)
       cetz.draw.line((px-lo, cy), (px-hi, cy), stroke: stroke-spec)
     }
   } else {
     let (py-lo, py-hi) = ctx.py-range
     for x in xs {
-      let cx = map-axis(trained, float(x), ctx.px-range)
+      let cx = map-axis-data(trained, float(x), ctx.px-range)
       cetz.draw.line((cx, py-lo), (cx, py-hi), stroke: stroke-spec)
     }
   }

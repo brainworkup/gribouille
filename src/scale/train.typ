@@ -183,6 +183,26 @@
   fallback
 }
 
+// Forward axis transformation for `log10` and `sqrt`: warps coordinates so
+// equal visual distances correspond to equal multiplicative or square-root
+// steps. `reverse` is handled separately by swapping the range endpoints.
+#let transform-fwd(name, x) = {
+  if name == none or name == "identity" or name == "reverse" { return x }
+  if name == "log10" { return calc.log(x, base: 10) }
+  if name == "sqrt" { return calc.sqrt(x) }
+  x
+}
+
+// Inverse of `transform-fwd`: convert a transformed-space coordinate back to
+// data space. Used to back-translate a padded view range so axis breaks
+// can be picked in data units.
+#let transform-inv(name, x) = {
+  if name == none or name == "identity" or name == "reverse" { return x }
+  if name == "log10" { return calc.pow(10, x) }
+  if name == "sqrt" { return x * x }
+  x
+}
+
 #let train(
   scales: (),
   layers: (),
@@ -266,11 +286,29 @@
     let transform = if user-scale != none {
       user-scale.at("transform", default: "identity")
     } else { "identity" }
+    // log10 / sqrt scales pre-transform data before stats run, matching
+    // ggplot2 v4 / plotnine semantics. Domain values cached above are
+    // already in transformed space when the renderer's preprocess pass has
+    // run. `reverse` and `identity` stay as visual-only warps applied at
+    // mapping time.
+    let pre-transformed = (
+      scale-type == "continuous"
+        and (transform == "log10" or transform == "sqrt")
+    )
+    if pre-transformed and scale-type == "continuous" {
+      // Apply pre-transform to user-supplied limits so they live in the same
+      // (stat) space as cached domain values.
+      if user-scale != none and user-scale.at("limits", default: none) != none {
+        let (lo, hi) = domain
+        domain = (transform-fwd(transform, lo), transform-fwd(transform, hi))
+      }
+    }
     let entry = (
       type: scale-type,
       domain: domain,
       spec: user-scale,
       transform: transform,
+      pre-transformed: pre-transformed,
       typst-mark: typst-mark,
     )
     if user-scale != none and user-scale.at("temporal", default: none) != none {
@@ -308,6 +346,7 @@
       domain: (lo, hi),
       spec: spec,
       transform: _scale-param(target, spec, "transform", "identity"),
+      pre-transformed: _scale-param(target, none, "pre-transformed", false),
       typst-mark: _scale-param(target, none, "typst-mark", false),
     )
     let temporal = _scale-param(target, spec, "temporal", none)
@@ -365,40 +404,30 @@
   (hi - lo) / n
 }
 
-// Forward axis transformation for `log10` and `sqrt`: warps coordinates so
-// equal visual distances correspond to equal multiplicative or square-root
-// steps. `reverse` is handled separately by swapping the range endpoints.
-#let transform-fwd(name, x) = {
-  if name == none or name == "identity" or name == "reverse" { return x }
-  if name == "log10" { return calc.log(x, base: 10) }
-  if name == "sqrt" { return calc.sqrt(x) }
-  x
-}
-
-// Inverse of `transform-fwd`: convert a transformed-space coordinate back to
-// data space. Used to back-translate a padded view range so axis breaks
-// can be picked in data units.
-#let transform-inv(name, x) = {
-  if name == none or name == "identity" or name == "reverse" { return x }
-  if name == "log10" { return calc.pow(10, x) }
-  if name == "sqrt" { return x * x }
-  x
-}
-
+// `pre-transformed` scales already store transformed values on rows and in
+// `domain` (set by the renderer's preprocess pass); mapping a row value is a
+// straight linear interpolation. Other scales hold data-space values, so the
+// `transform` warp is applied at mapping time.
 #let _map-transform(trained, value, range) = {
   let transform = trained.at("transform", default: "identity")
+  let pre = trained.at("pre-transformed", default: false)
   let view-transform = trained.at("view-transform", default: none)
   let (t-lo, t-hi) = if view-transform != none {
     view-transform
   } else {
     let (d-lo, d-hi) = trained.domain
-    (transform-fwd(transform, d-lo), transform-fwd(transform, d-hi))
+    if pre {
+      (d-lo, d-hi)
+    } else {
+      (transform-fwd(transform, d-lo), transform-fwd(transform, d-hi))
+    }
   }
   let (r-lo, r-hi) = range
   let target = if transform == "reverse" {
     (r-hi, r-lo)
   } else { (r-lo, r-hi) }
-  map-continuous(transform-fwd(transform, value), (t-lo, t-hi), target)
+  let v = if pre { value } else { transform-fwd(transform, value) }
+  map-continuous(v, (t-lo, t-hi), target)
 }
 
 #let map-position(trained, value, range) = {
@@ -417,9 +446,23 @@
 }
 
 // Transform-aware wrapper for callers that already hold a numeric axis value
-// (renderer break placement, reference-line geoms). Equivalent to
-// `map-position` but skips the `parse-number` round-trip.
+// in stat-space (post-pre-transform). Geoms read row values that have been
+// pre-transformed by the renderer's preprocess pass and call this directly.
 #let map-axis(trained, value, range) = {
   if trained.type != "continuous" { return none }
   _map-transform(trained, value, range)
+}
+
+// Wrapper for callers holding a value in original *data-space*: axis tick
+// rendering, secondary-axis ticks, vline/hline/abline reference geoms, and
+// cartesian xlim/ylim. When the trained scale is `pre-transformed`, the
+// value is forward-transformed to stat-space first; otherwise it falls
+// through to `map-axis` as-is.
+#let map-axis-data(trained, value, range) = {
+  if trained.type != "continuous" { return none }
+  let pre = trained.at("pre-transformed", default: false)
+  let v = if pre {
+    transform-fwd(trained.at("transform", default: "identity"), value)
+  } else { value }
+  _map-transform(trained, v, range)
 }

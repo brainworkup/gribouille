@@ -6,7 +6,7 @@
 ///! follows the warped axis correctly.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-axis
+#import "../scale/train.typ": map-axis-data, transform-inv
 #import "../utils/colour-resolve.typ": (
   apply-alpha, resolve-alpha, resolve-linewidth,
 )
@@ -109,7 +109,13 @@
   ) {
     return
   }
-  let (x-lo, x-hi) = user-x-trained.domain
+  // Sample slope/intercept in data space so the line equation matches the
+  // user's expectation regardless of any pre-transform on the x scale.
+  let _data-domain(t) = if t.at("pre-transformed", default: false) {
+    let n = t.at("transform", default: "identity")
+    (transform-inv(n, t.domain.at(0)), transform-inv(n, t.domain.at(1)))
+  } else { t.domain }
+  let (x-lo, x-hi) = _data-domain(user-x-trained)
   let slope = float(layer.params.slope)
   let intercept = float(layer.params.intercept)
   let colour = if layer.params.colour == auto {
@@ -135,13 +141,13 @@
   // point and routes each coordinate to the right pixel range.
   let _pos(ux, uy) = if flipped {
     (
-      map-axis(user-y-trained, uy, ctx.px-range),
-      map-axis(user-x-trained, ux, ctx.py-range),
+      map-axis-data(user-y-trained, uy, ctx.px-range),
+      map-axis-data(user-x-trained, ux, ctx.py-range),
     )
   } else {
     (
-      map-axis(user-x-trained, ux, ctx.px-range),
-      map-axis(user-y-trained, uy, ctx.py-range),
+      map-axis-data(user-x-trained, ux, ctx.px-range),
+      map-axis-data(user-y-trained, uy, ctx.py-range),
     )
   }
   let x-transform = user-x-trained.at("transform", default: "identity")
