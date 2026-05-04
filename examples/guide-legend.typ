@@ -21,8 +21,8 @@
         colour: "Class",
       ),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 5cm,
+      width: 11cm,
+      height: 4.2cm,
     ),
   )
 }

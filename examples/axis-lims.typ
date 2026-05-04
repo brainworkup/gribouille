@@ -17,12 +17,12 @@
   guides: extra-guides,
   labs: labs(x: "Displacement (L)", y: "Highway mpg"),
   theme: theme-minimal(),
-  width: 6cm,
-  height: 5cm,
+  width: 11cm,
+  height: 4.2cm,
 )
 
 #grid(
-  columns: 3,
+  rows: 3,
   column-gutter: 0.5cm,
   row-gutter: 0.5cm,
   panel("default", base()),
