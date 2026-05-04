@@ -298,17 +298,17 @@ Items outside the ggplot2 surface: ggforce ports and gribouille-native convenien
 ## Coverage at a glance
 
 - **Plot basics**: `plot()` and `aes()` covering `x`, `y`, `colour`, `fill`, `size`, `alpha`, `group`.
-- **Geoms**: `point`, `line`, `path`, `step`, `col`, `bar`, `histogram`, `freqpoly`, `ribbon`, `area`, `boxplot`, `jitter`, `rug`, `text`, `label`, `rect`, `tile`, `polygon`, `segment`, `errorbar`, `errorbarh`, `linerange`, `crossbar`, `pointrange`, `abline`, `hline`, `vline`, `blank`, `function`, `qq`, `qq-line`, `count`; `geom-smooth` covers `method = "lm"` only.
-- **Stats**: `stat-identity`, `stat-count`, `stat-bin`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-ecdf`, `stat-qq`, `stat-qq-line`, `stat-unique`, `stat-function`; `stat-smooth` covers `method = "lm"` only.
+- **Geoms**: `point`, `line`, `path`, `step`, `col`, `bar`, `histogram`, `freqpoly`, `ribbon`, `area`, `boxplot`, `dotplot`, `jitter`, `rug`, `text`, `label`, `typst`, `rect`, `tile`, `bin-2d`, `hex`, `polygon`, `segment`, `curve`, `spoke`, `ellipse`, `mark`, `errorbar`, `errorbarh`, `linerange`, `crossbar`, `pointrange`, `abline`, `hline`, `vline`, `blank`, `function`, `qq`, `qq-line`, `quantile`, `count`; `geom-smooth` covers `method = "lm"` only.
+- **Stats**: `stat-identity`, `stat-count`, `stat-sum`, `stat-bin`, `stat-bin-2d`, `stat-bin-hex`, `stat-bindot`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-summary-2d`, `stat-summary-hex`, `stat-ecdf`, `stat-ellipse`, `stat-qq`, `stat-qq-line`, `stat-quantile`, `stat-unique`, `stat-function`; `stat-smooth` covers `method = "lm"` only.
 - **Positions**: `identity`, `stack`, `fill`, `dodge` (uniform and variable widths), `jitter`, `jitterdodge`, `nudge`.
 - **Annotations**: `annotate()` with `text`, `point`, `label`, `segment`, `rect`, `vline`, `hline`, `abline`.
 - **Positional scales**: continuous, discrete, log10, sqrt, reverse, date, datetime, time, on x and y.
 - **Colour and fill scales**: continuous, discrete, manual, viridis (c/d/b), brewer, gradient, gradient2, gradientn, grey, hue, distiller, identity.
 - **Other aesthetic scales**: shape and linetype (with manual and identity variants); linewidth, alpha, and size (continuous, manual, binned, identity); size also has `scale-size-area`, `scale-size-binned-area`, and the `scale-radius` linear alias.
-- **Coords**: `coord-cartesian` (with xlim/ylim) and `coord-fixed`; flip, polar, and transform deferred.
+- **Coords**: `coord-cartesian` (with xlim/ylim), `coord-fixed`, `coord-flip`, and `coord-transform` (post-stat per-axis warp); polar deferred.
 - **Facets**: `facet-wrap` (`fixed`/`free`/`free_x`/`free_y` scales) and `facet-grid` (shared scales only).
 - **Themes**: `theme-minimal`, `theme-classic`, `theme-void`, `theme-grey`, `theme-bw`, `theme-linedraw`, `theme-light`, `theme-dark`, `theme-test`, plus `theme()` with `element-blank`, `element-rect`, `element-line`, `element-text`.
-- **Guides**: `guide-legend` with `title`/`nrow`/`ncol`/`reverse`, automatic `guide-colourbar` for continuous colour and fill, `guide-axis` (x-axis only), `guide-none`, and a top-level `guides()` binder.
+- **Guides**: `guide-legend` with `title`/`nrow`/`ncol`/`reverse`, automatic `guide-colourbar` for continuous colour and fill, `guide-axis` (x and y) with `guide-axis-logticks` for log10 minor ticks, `guide-none`, and a top-level `guides()` binder.
 - **Helpers**: `cut-interval`, `cut-number`, `cut-width`, `resolution`, `mean-se`, `mean-cl-normal`, `mean-sdl`, `median-hilow`.
 - **Datasets**: `mpg` (30 rows) and `economics` (24 rows).
 
