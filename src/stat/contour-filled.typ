@@ -1,0 +1,78 @@
+///! Filled iso-band statistic. Backing stat for \@geom-contour-filled.
+
+#import "../utils/aes-resolve.typ": stat-output-mapping
+#import "../utils/contour-grid.typ": grid-from-rows, resolve-levels
+#import "../utils/isobands.typ": isobands
+
+/// Filled iso-band statistic. Partitions the `(x, y, z)` field into bands
+/// defined by successive levels and emits one closed polygon per cell that
+/// touches each band. Pair with \@geom-polygon or \@geom-contour-filled.
+///
+/// `bins`, `binwidth`, and `breaks` follow the same precedence as
+/// \@stat-contour, but with one extra level so neighbouring lines bound
+/// `n + 1` bands (i.e. `bins: 10` produces ~11 levels and 10 bands).
+///
+/// \@category Stats
+/// \@stability stable
+/// \@since 0.4.0
+///
+/// \@param bins Target band count when `breaks` and `binwidth` are unset.
+/// \@param binwidth Fixed step between successive levels. Overrides `bins`.
+/// \@param breaks Explicit array of level boundaries. Overrides the rest.
+///
+/// \@returns Statistic object with `name: "contour_filled"`.
+///
+/// \@see \@geom-contour-filled, \@stat-contour
+#let stat-contour-filled(bins: 10, binwidth: none, breaks: auto) = (
+  kind: "stat",
+  name: "contour_filled",
+  params: (bins: bins, binwidth: binwidth, breaks: breaks),
+)
+
+#let apply(data, mapping, params: (:)) = {
+  let new-mapping = stat-output-mapping(
+    mapping,
+    (x: "x", y: "y", group: "group", fill: "level"),
+  )
+  if mapping == none { return (data: (), mapping: new-mapping) }
+  let x-col = mapping.at("x", default: none)
+  let y-col = mapping.at("y", default: none)
+  let z-col = mapping.at("z", default: none)
+  if x-col == none or y-col == none or z-col == none {
+    return (data: (), mapping: new-mapping)
+  }
+  let grid = grid-from-rows(data, x-col, y-col, z-col)
+  if grid.z.len() == 0 or grid.at("z-lo", default: none) == none {
+    return (data: (), mapping: new-mapping)
+  }
+  // Pad the level set with the data extents so the lowest and highest bands
+  // reach the boundary instead of being clipped away by `resolve-levels`.
+  let inner = resolve-levels(
+    grid.z-lo,
+    grid.z-hi,
+    params.at("bins", default: 10),
+    params.at("binwidth", default: none),
+    params.at("breaks", default: auto),
+  )
+  let edges = (grid.z-lo,) + inner + (grid.z-hi,)
+  let rows = ()
+  for bi in range(edges.len() - 1) {
+    let lo = edges.at(bi)
+    let hi = edges.at(bi + 1)
+    if hi <= lo { continue }
+    let polys = isobands(grid.xs, grid.ys, grid.z, lo, hi)
+    for (ci, poly) in polys.enumerate() {
+      let group = str(bi) + ":" + str(ci)
+      for v in poly {
+        rows.push((
+          x: v.x,
+          y: v.y,
+          level: lo,
+          level-hi: hi,
+          group: group,
+        ))
+      }
+    }
+  }
+  (data: rows, mapping: new-mapping)
+}

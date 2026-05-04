@@ -7,6 +7,7 @@
 #import "bin-hex.typ" as bin-hex-stat
 #import "bindot.typ" as bindot-stat
 #import "contour.typ" as contour-stat
+#import "contour-filled.typ" as contour-filled-stat
 #import "count.typ" as count-stat
 #import "sum.typ" as sum-stat
 #import "smooth.typ" as smooth-stat
@@ -32,6 +33,7 @@
   bin_hex: bin-hex-stat.stat-bin-hex,
   bindot: bindot-stat.stat-bindot,
   contour: contour-stat.stat-contour,
+  contour_filled: contour-filled-stat.stat-contour-filled,
   smooth: smooth-stat.stat-smooth,
   boxplot: boxplot-stat.stat-boxplot,
   summary: summary-stat.stat-summary,
@@ -81,6 +83,8 @@
     bindot-stat.apply(data, mapping, params: params)
   } else if name == "contour" {
     contour-stat.apply(data, mapping, params: params)
+  } else if name == "contour_filled" {
+    contour-filled-stat.apply(data, mapping, params: params)
   } else if name == "count" {
     count-stat.apply(data, mapping, params: params)
   } else if name == "sum" {
