@@ -44,6 +44,7 @@
   // Per-surface line records
   panel-grid: element-line(thickness: 0.5pt),
   axis-line: element-line(thickness: 0.5pt),
+  axis-ticks: element-line(thickness: 0.5pt),
 
   // Per-surface rect records
   panel-background: element-rect(),

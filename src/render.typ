@@ -3,15 +3,17 @@
 
 #import "deps.typ": cetz
 #import "scale/train.typ": (
-  _SYNTHETIC-FEEDERS, _find-user-scale, map-axis, map-axis-data, map-continuous,
-  map-position, mapping-ref-col, positional-aesthetics, train, transform-fwd,
-  transform-inv,
+  _SYNTHETIC-FEEDERS, _find-user-scale, _resolve-forced-type, map-axis,
+  map-axis-data, map-continuous, map-position, mapping-ref-col,
+  positional-aesthetics, train, transform-fwd, transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour
-#import "theme/theme.typ": _line-stroke, _rect-fill, _text-style
+#import "theme/theme.typ": (
+  _line-stroke, _rect-fill, _scalar-cascade, _text-style,
+)
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
 #import "utils/palette.typ": default-discrete, palette-at, spec-palette
@@ -237,6 +239,46 @@
   new-spec
 }
 
+// Rewrite each discrete-marked positional column to its 1-indexed level
+// position so position adjustments (`position-jitter`, ...) operate in
+// numeric space. Without this, jitter would offset the raw level values
+// directly and the discrete scale would train on the jittered floats.
+// The level set is stashed on the layer so scale training can restore it
+// as the discrete domain.
+#let _rewrite-factor-cols(mapping, data) = {
+  if mapping == none {
+    return (data: data, factor-levels: (:))
+  }
+  let factor-levels = (:)
+  let new-data = data
+  for axis in ("x", "y") {
+    let raw = mapping.at(axis, default: none)
+    if raw == none { continue }
+    let col = mapping-ref-col(raw)
+    if _resolve-forced-type(raw, new-data, col) != "discrete" { continue }
+    // Two passes: Typst closures capture variables read-only, so a single
+    // `.map` cannot update the level dict it consults.
+    let levels = ()
+    for row in new-data {
+      let v = row.at(col, default: none)
+      if v == none { continue }
+      let s = str(v)
+      if not levels.contains(s) { levels.push(s) }
+    }
+    let level-map = (:)
+    for (i, lv) in levels.enumerate() { level-map.insert(lv, i + 1) }
+    new-data = new-data.map(row => {
+      let v = row.at(col, default: none)
+      if v == none { return row }
+      let r = row
+      r.insert(col, level-map.at(str(v)))
+      r
+    })
+    factor-levels.insert(col, levels)
+  }
+  (data: new-data, factor-levels: factor-levels)
+}
+
 #let _prepare-layer(layer, plot-mapping, plot-data) = {
   // Keep mapping-ref annotations intact on the layer so scale training can
   // read forced types; only strip them when the renderer hands a mapping to
@@ -308,13 +350,20 @@
   }
   let pos-data = stat-data
   let pos-mapping = stat-mapping
+  let factor-levels = (:)
   if position-name != none and position-name != "identity" {
+    // Rewrite `as-factor`-marked positional columns to 1-indexed level
+    // positions before position adjusts them, so `position-jitter` and
+    // friends operate in numeric space without exploding the discrete
+    // domain. See `_rewrite-factor-cols` for the full rationale.
+    let rewritten = _rewrite-factor-cols(stat-mapping, stat-data)
+    factor-levels = rewritten.factor-levels
     // Position needs plain column names; strip again in case stat-identity
     // left annotations in place.
     let pos-in = _strip-mapping-refs(stat-mapping)
     let r = apply-position(
       position-name,
-      stat-data,
+      rewritten.data,
       pos-in,
       params: position-params,
     )
@@ -335,6 +384,9 @@
   new.mapping = pos-mapping
   new.inherit-aes = false
   new.typst-marks = _typst-marks-of(mapping)
+  if factor-levels.len() > 0 {
+    new.insert("_factor-levels", factor-levels)
+  }
   if not stat-identity { new.stat = "identity" }
   new
 }
@@ -654,6 +706,21 @@
 // when no actual labels are measured (e.g. an axis with no breaks).
 #let _ax-text-cm(size-pt) = size-pt / 1pt * 0.0353
 
+// Resolve every side of an axis-* family into a record keyed by short side
+// codes (xb=x-bottom, xt=x-top, yl=y-left, yr=y-right). The builder receives
+// `(prefix, side, axis)` so it can either build a full surface key
+// (`prefix + "-" + side`) or hand `(prefix, side, axis)` to a cascade.
+#let _per-side(builder, prefix) = (
+  xb: builder(prefix, "x-bottom", "x"),
+  xt: builder(prefix, "x-top", "x"),
+  yl: builder(prefix, "y-left", "y"),
+  yr: builder(prefix, "y-right", "y"),
+)
+
+// Whether a tick draw should emit anything: needs both an active stroke and
+// a positive length.
+#let _should-draw-tick(stroke, len) = stroke != none and len > 0
+
 // Resolve a margin side on a text-style record to a cm float, falling back to
 // the supplied default length when the user has not overridden the side. The
 // surface's font size is forwarded so em values scale with it.
@@ -814,8 +881,9 @@
   let py-range = (py-lo + y-pad-lo, py-hi - y-pad-hi)
 
   let _ink = resolve-colour(theme, "ink")
-  let _ax-text = _text-style(theme, "axis-text")
-  let _ax-title = _text-style(theme, "axis-title")
+  let _surface-style = (p, s, _) => _text-style(theme, p + "-" + s)
+  let _ax-text = _per-side(_surface-style, "axis-text")
+  let _ax-title = _per-side(_surface-style, "axis-title")
 
   let _resolve-mapping-flipped(layer) = {
     let m = _resolve-mapping(layer, spec.mapping)
@@ -853,8 +921,15 @@
   let x-trained = trained.at("x", default: none)
   let y-trained = trained.at("y", default: none)
   let grid-stroke = _line-stroke(theme, "panel-grid", fallback-colour: _ink)
-  let axis-stroke = _line-stroke(theme, "axis-line", fallback-colour: _ink)
-  let tick-len = theme.tick-length / 1cm
+  let _stroke-side = (p, s, _) => _line-stroke(
+    theme,
+    p + "-" + s,
+    fallback-colour: _ink,
+  )
+  let _ax-line = _per-side(_stroke-side, "axis-line")
+  let _ax-ticks = _per-side(_stroke-side, "axis-ticks")
+  let _len-side = (p, s, a) => _scalar-cascade(theme, p, s, a) / 1cm
+  let _tick-len = _per-side(_len-side, "tick-length")
 
   let x-guide = _read-axis-guide(spec, "x")
   let y-guide = _read-axis-guide(spec, "y")
@@ -867,13 +942,13 @@
     if not (show-x-labels and theme.tick-labels) { return }
     let dodge-row = calc.rem(idx, x-guide.n-dodge)
     let row-gap = 0.35
-    let cy = py-lo - tick-len - 0.1 - dodge-row * row-gap
+    let cy = py-lo - _tick-len.xb - 0.1 - dodge-row * row-gap
     content(
       (cx, cy),
       text(
-        size: _ax-text.size,
-        fill: _ax-text.fill,
-        weight: _ax-text.weight,
+        size: _ax-text.xb.size,
+        fill: _ax-text.xb.fill,
+        weight: _ax-text.xb.weight,
       )[#label-text],
       anchor: _x-label-anchor(x-guide.angle),
       angle: x-guide.angle * 1deg,
@@ -883,13 +958,13 @@
     if not (show-y-labels and theme.tick-labels) { return }
     let dodge-col = calc.rem(idx, y-guide.n-dodge)
     let col-gap = 0.5
-    let cx = px-lo - tick-len - 0.1 - dodge-col * col-gap
+    let cx = px-lo - _tick-len.yl - 0.1 - dodge-col * col-gap
     content(
       (cx, cy),
       text(
-        size: _ax-text.size,
-        fill: _ax-text.fill,
-        weight: _ax-text.weight,
+        size: _ax-text.yl.size,
+        fill: _ax-text.yl.fill,
+        weight: _ax-text.yl.weight,
       )[#label-text],
       anchor: "east",
       angle: y-guide.angle * 1deg,
@@ -916,8 +991,8 @@
       if grid-stroke != none {
         line((cx, py-lo), (cx, py-hi), stroke: grid-stroke)
       }
-      if axis-stroke != none and tick-len > 0 {
-        line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
+      if _should-draw-tick(_ax-ticks.xb, _tick-len.xb) {
+        line((cx, py-lo), (cx, py-lo - _tick-len.xb), stroke: _ax-ticks.xb)
       }
       _draw-x-label(
         cx,
@@ -929,7 +1004,7 @@
             _axis-label(x-trained, b),
             typst-mark: _x-disp.typst-mark,
           ),
-          eval-strings: _ax-text.typst,
+          eval-strings: _ax-text.xb.typst,
         ),
         idx,
       )
@@ -937,8 +1012,8 @@
   } else if x-trained != none and x-trained.type == "discrete" {
     for (idx, level) in x-trained.domain.enumerate() {
       let cx = map-position(x-trained, level, px-range)
-      if axis-stroke != none and tick-len > 0 {
-        line((cx, py-lo), (cx, py-lo - tick-len), stroke: axis-stroke)
+      if _should-draw-tick(_ax-ticks.xb, _tick-len.xb) {
+        line((cx, py-lo), (cx, py-lo - _tick-len.xb), stroke: _ax-ticks.xb)
       }
       _draw-x-label(
         cx,
@@ -950,7 +1025,7 @@
             level,
             typst-mark: _x-disp.typst-mark,
           ),
-          eval-strings: _ax-text.typst,
+          eval-strings: _ax-text.xb.typst,
         ),
         idx,
       )
@@ -966,8 +1041,8 @@
       if grid-stroke != none {
         line((px-lo, cy), (px-hi, cy), stroke: grid-stroke)
       }
-      if axis-stroke != none and tick-len > 0 {
-        line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
+      if _should-draw-tick(_ax-ticks.yl, _tick-len.yl) {
+        line((px-lo - _tick-len.yl, cy), (px-lo, cy), stroke: _ax-ticks.yl)
       }
       _draw-y-label(
         cy,
@@ -979,7 +1054,7 @@
             _axis-label(y-trained, b),
             typst-mark: _y-disp.typst-mark,
           ),
-          eval-strings: _ax-text.typst,
+          eval-strings: _ax-text.yl.typst,
         ),
         idx,
       )
@@ -987,8 +1062,8 @@
   } else if y-trained != none and y-trained.type == "discrete" {
     for (idx, level) in y-trained.domain.enumerate() {
       let cy = map-position(y-trained, level, py-range)
-      if axis-stroke != none and tick-len > 0 {
-        line((px-lo - tick-len, cy), (px-lo, cy), stroke: axis-stroke)
+      if _should-draw-tick(_ax-ticks.yl, _tick-len.yl) {
+        line((px-lo - _tick-len.yl, cy), (px-lo, cy), stroke: _ax-ticks.yl)
       }
       _draw-y-label(
         cy,
@@ -1000,7 +1075,7 @@
             level,
             typst-mark: _y-disp.typst-mark,
           ),
-          eval-strings: _ax-text.typst,
+          eval-strings: _ax-text.yl.typst,
         ),
         idx,
       )
@@ -1010,12 +1085,12 @@
   // Minor log ticks: opt-in via guide-axis-logticks() on a log10-trans axis.
   // Emits half-length, unlabelled ticks at sub-decade positions (2, 3, ..., 9
   // within each decade) covered by the visible domain.
-  let _draw-log-minors(trained, guide, axis, range) = {
+  let _draw-log-minors(trained, guide, axis, range, stroke, tick-len) = {
     if not guide.logticks { return }
     if trained == none { return }
     if trained.type != "continuous" { return }
     if trained.at("transform", default: "identity") != "log10" { return }
-    if axis-stroke == none or tick-len <= 0 { return }
+    if not _should-draw-tick(stroke, tick-len) { return }
     let view-transform = trained.at("view-transform", default: none)
     let (lo, hi) = if view-transform != none {
       (
@@ -1035,18 +1110,32 @@
         if v >= lo and v <= hi {
           if axis == "x" {
             let cx = map-axis-data(trained, v, range)
-            line((cx, py-lo), (cx, py-lo - minor-len), stroke: axis-stroke)
+            line((cx, py-lo), (cx, py-lo - minor-len), stroke: stroke)
           } else {
             let cy = map-axis-data(trained, v, range)
-            line((px-lo - minor-len, cy), (px-lo, cy), stroke: axis-stroke)
+            line((px-lo - minor-len, cy), (px-lo, cy), stroke: stroke)
           }
         }
       }
       k = k + 1
     }
   }
-  _draw-log-minors(x-trained, x-guide, "x", px-range)
-  _draw-log-minors(y-trained, y-guide, "y", py-range)
+  _draw-log-minors(
+    x-trained,
+    x-guide,
+    "x",
+    px-range,
+    _ax-ticks.xb,
+    _tick-len.xb,
+  )
+  _draw-log-minors(
+    y-trained,
+    y-guide,
+    "y",
+    py-range,
+    _ax-ticks.yl,
+    _tick-len.yl,
+  )
 
   // Secondary x-axis: draw on top edge if the trained x scale carries a
   // secondary spec. Breaks reuse the primary axis grid; their labels go
@@ -1058,47 +1147,47 @@
     } else { _axis-breaks(x-trained) }
     for b in breaks {
       let cx = map-axis-data(x-trained, b, px-range)
-      if axis-stroke != none and tick-len > 0 {
-        line((cx, py-hi), (cx, py-hi + tick-len), stroke: axis-stroke)
+      if _should-draw-tick(_ax-ticks.xt, _tick-len.xt) {
+        line((cx, py-hi), (cx, py-hi + _tick-len.xt), stroke: _ax-ticks.xt)
       }
       if theme.tick-labels {
         let mapped = secondary-mod.apply-transform(_x-sec, b)
         content(
-          (cx, py-hi + tick-len + 0.1),
+          (cx, py-hi + _tick-len.xt + 0.1),
           text(
-            size: _ax-text.size,
-            fill: _ax-text.fill,
-            weight: _ax-text.weight,
+            size: _ax-text.xt.size,
+            fill: _ax-text.xt.fill,
+            weight: _ax-text.xt.weight,
           )[#resolve-prose(
             _format-break(mapped),
-            eval-strings: _ax-text.typst,
+            eval-strings: _ax-text.xt.typst,
           )],
           anchor: "south",
         )
       }
     }
-    if axis-stroke != none {
-      line((px-lo, py-hi), (px-hi, py-hi), stroke: axis-stroke)
+    if _ax-line.xt != none {
+      line((px-lo, py-hi), (px-hi, py-hi), stroke: _ax-line.xt)
     }
-    if _x-sec.name != none and _ax-title.size > 0pt {
-      let _x-sec-ext = _resolve-extents(x-sec-extents, _ax-text.size)
+    if _x-sec.name != none and _ax-title.xt.size > 0pt {
+      let _x-sec-ext = _resolve-extents(x-sec-extents, _ax-text.xt.size)
       let x-sec-depth = _x-label-depth(
         0,
         1,
         _x-sec-ext.width,
         _x-sec-ext.height,
       )
-      let x-sec-gap = _text-margin-cm(_ax-title, "bottom", 0.25em)
+      let x-sec-gap = _text-margin-cm(_ax-title.xt, "bottom", 0.25em)
       content(
         (
           (px-lo + px-hi) / 2,
-          py-hi + tick-len + 0.1 + x-sec-depth + x-sec-gap,
+          py-hi + _tick-len.xt + 0.1 + x-sec-depth + x-sec-gap,
         ),
         text(
-          size: _ax-title.size,
-          fill: _ax-title.fill,
-          weight: _ax-title.weight,
-        )[#resolve-prose(_x-sec.name, eval-strings: _ax-title.typst)],
+          size: _ax-title.xt.size,
+          fill: _ax-title.xt.fill,
+          weight: _ax-title.xt.weight,
+        )[#resolve-prose(_x-sec.name, eval-strings: _ax-title.xt.typst)],
         anchor: "south",
       )
     }
@@ -1113,56 +1202,63 @@
     } else { _axis-breaks(y-trained) }
     for b in breaks {
       let cy = map-axis-data(y-trained, b, py-range)
-      if axis-stroke != none and tick-len > 0 {
-        line((px-hi, cy), (px-hi + tick-len, cy), stroke: axis-stroke)
+      if _should-draw-tick(_ax-ticks.yr, _tick-len.yr) {
+        line((px-hi, cy), (px-hi + _tick-len.yr, cy), stroke: _ax-ticks.yr)
       }
       if theme.tick-labels {
         let mapped = secondary-mod.apply-transform(_y-sec, b)
         content(
-          (px-hi + tick-len + 0.1, cy),
+          (px-hi + _tick-len.yr + 0.1, cy),
           text(
-            size: _ax-text.size,
-            fill: _ax-text.fill,
-            weight: _ax-text.weight,
+            size: _ax-text.yr.size,
+            fill: _ax-text.yr.fill,
+            weight: _ax-text.yr.weight,
           )[#resolve-prose(
             _format-break(mapped),
-            eval-strings: _ax-text.typst,
+            eval-strings: _ax-text.yr.typst,
           )],
           anchor: "west",
         )
       }
     }
-    if axis-stroke != none {
-      line((px-hi, py-lo), (px-hi, py-hi), stroke: axis-stroke)
+    if _ax-line.yr != none {
+      line((px-hi, py-lo), (px-hi, py-hi), stroke: _ax-line.yr)
     }
-    if _y-sec.name != none and _ax-title.size > 0pt {
-      let _y-sec-ext = _resolve-extents(y-sec-extents, _ax-text.size)
+    if _y-sec.name != none and _ax-title.yr.size > 0pt {
+      let _y-sec-ext = _resolve-extents(y-sec-extents, _ax-text.yr.size)
       let y-sec-width = _y-label-width(
         0,
         1,
         _y-sec-ext.width,
         _y-sec-ext.height,
       )
-      let title-text-cm = _ax-text-cm(_ax-title.size)
-      let y-sec-gap = _text-margin-cm(_ax-title, "left", 0.25em)
+      let title-text-cm = _ax-text-cm(_ax-title.yr.size)
+      let y-sec-gap = _text-margin-cm(_ax-title.yr, "left", 0.25em)
       content(
         (
-          px-hi + tick-len + 0.1 + y-sec-width + y-sec-gap + title-text-cm / 2,
+          px-hi
+            + _tick-len.yr
+            + 0.1
+            + y-sec-width
+            + y-sec-gap
+            + title-text-cm / 2,
           (py-lo + py-hi) / 2,
         ),
         text(
-          size: _ax-title.size,
-          fill: _ax-title.fill,
-          weight: _ax-title.weight,
-        )[#resolve-prose(_y-sec.name, eval-strings: _ax-title.typst)],
+          size: _ax-title.yr.size,
+          fill: _ax-title.yr.fill,
+          weight: _ax-title.yr.weight,
+        )[#resolve-prose(_y-sec.name, eval-strings: _ax-title.yr.typst)],
         angle: 90deg,
       )
     }
   }
 
-  if axis-stroke != none {
-    line((px-lo, py-lo), (px-hi, py-lo), stroke: axis-stroke)
-    line((px-lo, py-lo), (px-lo, py-hi), stroke: axis-stroke)
+  if _ax-line.xb != none {
+    line((px-lo, py-lo), (px-hi, py-lo), stroke: _ax-line.xb)
+  }
+  if _ax-line.yl != none {
+    line((px-lo, py-lo), (px-lo, py-hi), stroke: _ax-line.yl)
   }
 
   // Render geoms into a sibling cetz canvas whose origin is (0, 0) and whose
@@ -1177,7 +1273,7 @@
   inner-ctx.py-range = (y-pad-lo, panel-h - y-pad-hi)
   let geoms = cetz.canvas({
     import cetz.draw: hide, rect
-    hide(rect((0, 0), (panel-w, panel-h)))
+    hide(rect((0, 0), (panel-w, panel-h)), bounds: true)
     for layer in prepared {
       let draw = _geom-draw.at(layer.geom, default: none)
       if draw != none { draw(layer, inner-ctx) }
@@ -1216,8 +1312,8 @@
     } else { none }
     if from-scale != none { from-scale } else { _mapping-y-name }
   }
-  let _x-ext = _resolve-extents(x-extents, _ax-text.size)
-  let _y-ext = _resolve-extents(y-extents, _ax-text.size)
+  let _x-ext = _resolve-extents(x-extents, _ax-text.xb.size)
+  let _y-ext = _resolve-extents(y-extents, _ax-text.yl.size)
   let x-label-depth = _x-label-depth(
     x-guide.angle,
     x-guide.n-dodge,
@@ -1230,30 +1326,31 @@
     _y-ext.width,
     _y-ext.height,
   )
-  let title-text-cm = _ax-text-cm(_ax-title.size)
-  let x-title-gap = _text-margin-cm(_ax-title, "top", 0.25em)
-  let y-title-gap = _text-margin-cm(_ax-title, "right", 0.25em)
-  let x-edge-offset = tick-len + 0.1 + x-label-depth + x-title-gap
-  let y-edge-offset = tick-len + 0.1 + y-label-width + y-title-gap
-  if show-x-title and x-title != none and _ax-title.size > 0pt {
+  let x-title-cm = _ax-text-cm(_ax-title.xb.size)
+  let y-title-cm = _ax-text-cm(_ax-title.yl.size)
+  let x-title-gap = _text-margin-cm(_ax-title.xb, "top", 0.25em)
+  let y-title-gap = _text-margin-cm(_ax-title.yl, "right", 0.25em)
+  let x-edge-offset = _tick-len.xb + 0.1 + x-label-depth + x-title-gap
+  let y-edge-offset = _tick-len.yl + 0.1 + y-label-width + y-title-gap
+  if show-x-title and x-title != none and _ax-title.xb.size > 0pt {
     content(
-      ((px-lo + px-hi) / 2, oy - (x-edge-offset + title-text-cm)),
+      ((px-lo + px-hi) / 2, oy - (x-edge-offset + x-title-cm)),
       text(
-        size: _ax-title.size,
-        fill: _ax-title.fill,
-        weight: _ax-title.weight,
-      )[#resolve-prose(x-title, eval-strings: _ax-title.typst)],
+        size: _ax-title.xb.size,
+        fill: _ax-title.xb.fill,
+        weight: _ax-title.xb.weight,
+      )[#resolve-prose(x-title, eval-strings: _ax-title.xb.typst)],
       anchor: "south",
     )
   }
-  if show-y-title and y-title != none and _ax-title.size > 0pt {
+  if show-y-title and y-title != none and _ax-title.yl.size > 0pt {
     content(
-      (px-lo - (y-edge-offset + title-text-cm / 2), (py-lo + py-hi) / 2),
+      (px-lo - (y-edge-offset + y-title-cm / 2), (py-lo + py-hi) / 2),
       text(
-        size: _ax-title.size,
-        fill: _ax-title.fill,
-        weight: _ax-title.weight,
-      )[#resolve-prose(y-title, eval-strings: _ax-title.typst)],
+        size: _ax-title.yl.size,
+        fill: _ax-title.yl.fill,
+        weight: _ax-title.yl.weight,
+      )[#resolve-prose(y-title, eval-strings: _ax-title.yl.typst)],
       angle: 90deg,
     )
   }
@@ -1591,7 +1688,10 @@
 #let _render-style(theme) = (
   strip-fill: _rect-fill(theme, "strip-background", fallback: theme.paper),
   strip-text: _text-style(theme, "strip-text"),
-  ax-title: _text-style(theme, "axis-title"),
+  ax-title: _per-side(
+    (p, s, _) => _text-style(theme, p + "-" + s),
+    "axis-title",
+  ),
 )
 
 // Width reserved between the panel right edge and the legend (or canvas edge)
@@ -1815,8 +1915,7 @@
   let y-extents = ctx.y-extents
   let x-sec-extents = ctx.x-sec-extents
   let y-sec-extents = ctx.y-sec-extents
-  let ax-text-pt = ctx.ax-text-pt
-  let ax-text-typst = ctx.ax-text-typst
+  let ax-text = ctx.ax-text
 
   // Per-panel extents under free scales: each panel's trained scale carries
   // its own break/level set, so the longest label can differ panel-to-panel.
@@ -1832,25 +1931,25 @@
       let ys = _sec-spec(yt)
       (
         x: if free-x {
-          _axis-label-extents(xt, ax-text-pt, typst-eval: ax-text-typst)
+          _axis-label-extents(xt, ax-text.xb.size, typst-eval: ax-text.xb.typst)
         } else { x-extents },
         y: if free-y {
-          _axis-label-extents(yt, ax-text-pt, typst-eval: ax-text-typst)
+          _axis-label-extents(yt, ax-text.yl.size, typst-eval: ax-text.yl.typst)
         } else { y-extents },
         x-sec: if free-x {
           _secondary-label-extents(
             xt,
             xs,
-            ax-text-pt,
-            typst-eval: ax-text-typst,
+            ax-text.xt.size,
+            typst-eval: ax-text.xt.typst,
           )
         } else { x-sec-extents },
         y-sec: if free-y {
           _secondary-label-extents(
             yt,
             ys,
-            ax-text-pt,
-            typst-eval: ax-text-typst,
+            ax-text.yr.size,
+            typst-eval: ax-text.yr.typst,
           )
         } else { y-sec-extents },
       )
@@ -1984,25 +2083,25 @@
         mapping-ref-col(spec.mapping.at("y", default: none))
       } else { none }
     }
-    if x-title != none and _ax-title.size > 0pt {
+    if x-title != none and _ax-title.xb.size > 0pt {
       content(
         (margin.left + grid-w / 2, 0.1),
         text(
-          size: _ax-title.size,
-          fill: style.ax-title.fill,
-          weight: style.ax-title.weight,
-        )[#resolve-prose(x-title, eval-strings: _ax-title.typst)],
+          size: _ax-title.xb.size,
+          fill: _ax-title.xb.fill,
+          weight: _ax-title.xb.weight,
+        )[#resolve-prose(x-title, eval-strings: _ax-title.xb.typst)],
         anchor: "south",
       )
     }
-    if y-title != none and _ax-title.size > 0pt {
+    if y-title != none and _ax-title.yl.size > 0pt {
       content(
         (0.2, margin.bottom + grid-h / 2),
         text(
-          size: _ax-title.size,
-          fill: style.ax-title.fill,
-          weight: style.ax-title.weight,
-        )[#resolve-prose(y-title, eval-strings: _ax-title.typst)],
+          size: _ax-title.yl.size,
+          fill: _ax-title.yl.fill,
+          weight: _ax-title.yl.weight,
+        )[#resolve-prose(y-title, eval-strings: _ax-title.yl.typst)],
         angle: 90deg,
       )
     }
@@ -2191,25 +2290,25 @@
         mapping-ref-col(spec.mapping.at("y", default: none))
       } else { none }
     }
-    if x-title != none and _ax-title.size > 0pt {
+    if x-title != none and _ax-title.xb.size > 0pt {
       content(
         (margin.left + grid-w / 2, 0.1),
         text(
-          size: _ax-title.size,
-          fill: style.ax-title.fill,
-          weight: style.ax-title.weight,
-        )[#resolve-prose(x-title, eval-strings: _ax-title.typst)],
+          size: _ax-title.xb.size,
+          fill: _ax-title.xb.fill,
+          weight: _ax-title.xb.weight,
+        )[#resolve-prose(x-title, eval-strings: _ax-title.xb.typst)],
         anchor: "south",
       )
     }
-    if y-title != none and _ax-title.size > 0pt {
+    if y-title != none and _ax-title.yl.size > 0pt {
       content(
         (0.2, margin.bottom + grid-h / 2),
         text(
-          size: _ax-title.size,
-          fill: style.ax-title.fill,
-          weight: style.ax-title.weight,
-        )[#resolve-prose(y-title, eval-strings: _ax-title.typst)],
+          size: _ax-title.yl.size,
+          fill: _ax-title.yl.fill,
+          weight: _ax-title.yl.weight,
+        )[#resolve-prose(y-title, eval-strings: _ax-title.yl.typst)],
         angle: 90deg,
       )
     }
@@ -2432,48 +2531,46 @@
   let y-trained-top = trained.at("y", default: none)
   let x-sec = _sec-spec(x-trained-top)
   let y-sec = _sec-spec(y-trained-top)
-  let tick-len = theme.tick-length / 1cm
-  let ax-text-style = _text-style(theme, "axis-text")
-  let ax-title-style = _text-style(theme, "axis-title")
-  let ax-text-pt = ax-text-style.size
-  let ax-title-pt = ax-title-style.size
-  let title-text-cm = _ax-text-cm(ax-title-pt)
+  let _surface-style = (p, s, _) => _text-style(theme, p + "-" + s)
+  let _len-side = (p, s, a) => _scalar-cascade(theme, p, s, a) / 1cm
+  let tick-len = _per-side(_len-side, "tick-length")
+  let ax-text = _per-side(_surface-style, "axis-text")
+  let ax-title = _per-side(_surface-style, "axis-title")
 
-  let ax-text-typst = ax-text-style.typst
   let x-extents = _axis-label-extents(
     x-trained-top,
-    ax-text-pt,
-    typst-eval: ax-text-typst,
+    ax-text.xb.size,
+    typst-eval: ax-text.xb.typst,
   )
   let y-extents = _axis-label-extents(
     y-trained-top,
-    ax-text-pt,
-    typst-eval: ax-text-typst,
+    ax-text.yl.size,
+    typst-eval: ax-text.yl.typst,
   )
   let x-sec-extents = _secondary-label-extents(
     x-trained-top,
     x-sec,
-    ax-text-pt,
-    typst-eval: ax-text-typst,
+    ax-text.xt.size,
+    typst-eval: ax-text.xt.typst,
   )
   let y-sec-extents = _secondary-label-extents(
     y-trained-top,
     y-sec,
-    ax-text-pt,
-    typst-eval: ax-text-typst,
+    ax-text.yr.size,
+    typst-eval: ax-text.yr.typst,
   )
 
   let sec-x-extent = _sec-x-extent(
     x-sec,
-    tick-len,
+    tick-len.xt,
     x-sec-extents,
-    ax-title-style,
+    ax-title.xt,
   )
   let sec-y-extent = _sec-y-extent(
     y-sec,
-    tick-len,
+    tick-len.yr,
     y-sec-extents,
-    ax-title-style,
+    ax-title.yr,
   )
 
   let x-guide = _read-axis-guide(spec, "x")
@@ -2490,13 +2587,15 @@
     y-extents.width,
     y-extents.height,
   )
-  let bottom-gap = _text-margin-cm(ax-title-style, "top", 0.25em)
-  let left-gap = _text-margin-cm(ax-title-style, "right", 0.25em)
+  let bottom-gap = _text-margin-cm(ax-title.xb, "top", 0.25em)
+  let left-gap = _text-margin-cm(ax-title.yl, "right", 0.25em)
+  let x-title-cm = _ax-text-cm(ax-title.xb.size)
+  let y-title-cm = _ax-text-cm(ax-title.yl.size)
   let bottom-extent = (
-    tick-len + 0.1 + x-label-depth + bottom-gap + title-text-cm + 0.05
+    tick-len.xb + 0.1 + x-label-depth + bottom-gap + x-title-cm + 0.05
   )
   let left-extent = (
-    tick-len + 0.1 + y-label-width + left-gap + title-text-cm + 0.05
+    tick-len.yl + 0.1 + y-label-width + left-gap + y-title-cm + 0.05
   )
 
   // Cap the right margin so the legend can never push panel width below the
@@ -2537,8 +2636,7 @@
       y-extents: y-extents,
       x-sec-extents: x-sec-extents,
       y-sec-extents: y-sec-extents,
-      ax-text-pt: ax-text-pt,
-      ax-text-typst: ax-text-typst,
+      ax-text: ax-text,
     ))
   } else if facet-grid-mode {
     _render-canvas-grid((

@@ -8,20 +8,34 @@
 ///! Base element keys (`text`, `line`, `rect`) set inherited parent fields:
 ///! specific child keys (e.g. `axis-text`) take priority at render time.
 
-#let _surface-parent = (
-  "axis-text": "text",
-  "axis-title": "text",
-  "legend-text": "text",
-  "legend-title": "text",
-  "strip-text": "text",
-  "plot-title": "text",
-  "plot-subtitle": "text",
-  "plot-caption": "text",
-  "panel-grid": "line",
-  "axis-line": "line",
-  "panel-background": "rect",
-  "strip-background": "rect",
-)
+#let _surface-parent = {
+  let out = (
+    "axis-text": "text",
+    "axis-title": "text",
+    "legend-text": "text",
+    "legend-title": "text",
+    "strip-text": "text",
+    "plot-title": "text",
+    "plot-subtitle": "text",
+    "plot-caption": "text",
+    "panel-grid": "line",
+    "axis-line": "line",
+    "axis-ticks": "line",
+    "panel-background": "rect",
+    "strip-background": "rect",
+  )
+  // Each axis family gains per-axis (-x, -y) and per-side (-x-bottom, -x-top,
+  // -y-left, -y-right) variants that cascade up to their family.
+  for fam in ("axis-text", "axis-title", "axis-line", "axis-ticks") {
+    out.insert(fam + "-x", fam)
+    out.insert(fam + "-y", fam)
+    out.insert(fam + "-x-bottom", fam + "-x")
+    out.insert(fam + "-x-top", fam + "-x")
+    out.insert(fam + "-y-left", fam + "-y")
+    out.insert(fam + "-y-right", fam + "-y")
+  }
+  out
+}
 
 #let _merge-element(base, top) = {
   let out = base
@@ -36,29 +50,47 @@
   out
 }
 
-/// Resolve a surface's element record by merging surface → parent → empty.
+/// Resolve a surface's element record by walking its inheritance chain root-to-leaf and merging in order.
 ///
-/// Returns a dict shaped like the underlying element constructor, with `kind`
-/// set to the most specific element kind in the cascade. Fields not set
-/// anywhere remain `none`; the renderer is responsible for hardcoded
-/// fallbacks (e.g. colour → `theme.ink`).
+/// The cascade follows `_surface-parent` to the root, then merges each populated record back down so the most specific surface wins.
+/// Returns a dict shaped like the underlying element constructor, with `kind` set to the most specific element kind in the cascade.
+/// Fields not set anywhere remain `none`; the renderer is responsible for hardcoded fallbacks (e.g. colour → `theme.ink`).
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@param surface Surface key, e.g. `"axis-text"`, `"panel-grid"`.
+/// \@param surface Surface key, e.g. `"axis-text-x-bottom"`, `"panel-grid"`.
 /// \@returns Element record with cascaded fields.
 #let resolve-element(theme, surface) = {
-  let parent-key = _surface-parent.at(surface, default: none)
-  let surface-record = theme.at(surface, default: none)
-  let parent-record = if parent-key != none {
-    theme.at(parent-key, default: none)
-  } else { none }
-
-  let merged = if parent-record != none { parent-record } else { (:) }
-  if surface-record != none {
-    merged = _merge-element(merged, surface-record)
+  let chain = ()
+  let cur = surface
+  while cur != none {
+    chain.push(cur)
+    cur = _surface-parent.at(cur, default: none)
+  }
+  let merged = (:)
+  for key in chain.rev() {
+    let rec = theme.at(key, default: none)
+    if rec != none { merged = _merge-element(merged, rec) }
   }
   merged
+}
+
+/// Resolve a per-side scalar theme key with a three-step cascade: `<base>-<side>` → `<base>-<axis>` → `<base>`.
+///
+/// Returns `0pt` if no level of the cascade is set. Used for `tick-length` and any future scalar that mirrors the element cascade shape.
+///
+/// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param base Scalar key root, e.g. `"tick-length"`.
+/// \@param side Side suffix, e.g. `"x-bottom"`, `"y-right"`.
+/// \@param axis Axis suffix, `"x"` or `"y"`.
+/// \@returns The most specific value set, falling back to base, then `0pt`.
+#let _scalar-cascade(theme, base, side, axis) = {
+  let v = theme.at(base + "-" + side, default: none)
+  if v != none { return v }
+  let av = theme.at(base + "-" + axis, default: none)
+  if av != none { return av }
+  theme.at(base, default: 0pt)
 }
 
 /// Whether a text surface is configured to evaluate strings as Typst markup.
@@ -192,6 +224,8 @@
 ///
 /// **Text surfaces** — accept \@element-text or \@element-typst. Pass `margin: margin(...)` on either constructor to widen or tighten the gap between the surface and its neighbours; em values track the surface font size.
 ///
+/// `axis-text` and `axis-title` each expose per-axis variants (`-x`, `-y`) and per-side leaves (`-x-bottom`, `-x-top`, `-y-left`, `-y-right`) that cascade up to the family. Setting any variant overrides only the matching side; unset variants inherit from their parent.
+///
 /// - `axis-text` — tick labels on both axes. Default: `element-text(size: 8pt)`.
 ///
 /// - `axis-title` — axis titles via `labs(x: ..., y: ...)`. Default: `element-text(size: 9pt)`.
@@ -210,9 +244,13 @@
 ///
 /// **Line surfaces** — accept \@element-line or \@element-blank (use `element-blank()` to hide).
 ///
+/// `axis-line` and `axis-ticks` follow the same per-axis (`-x`, `-y`) and per-side (`-x-bottom`, `-x-top`, `-y-left`, `-y-right`) cascade as the text surfaces.
+///
 /// - `panel-grid` — major gridlines inside the panel. Default: `element-line(thickness: 0.5pt)`.
 ///
 /// - `axis-line` — the x and y axis spines. Default: `element-line(thickness: 0.5pt)`.
+///
+/// - `axis-ticks` — tick marks on every axis; inherits from `line` rather than `axis-line`. Default: `element-line(thickness: 0.5pt)`.
 ///
 /// **Rect surfaces** — accept \@element-rect or \@element-blank.
 ///
@@ -230,7 +268,7 @@
 ///
 /// - `tick-labels` (boolean) — toggle every axis tick label at once. Default: `true`.
 ///
-/// - `tick-length` (length) — tick mark length (any Typst length). Default: `0.1cm`.
+/// - `tick-length` (length) — tick mark length (any Typst length). Default: `0.1cm`. Side variants `tick-length-x`, `tick-length-y`, `tick-length-x-bottom`, `tick-length-x-top`, `tick-length-y-left`, `tick-length-y-right` cascade up to `tick-length` when unset.
 ///
 /// - `plot-margin` (\@margin record) — padding around the plot canvas. Use `margin(left: 2cm)` to override one side and let the others fall through to the renderer's default. Default: `margin()` (every side `auto`).
 ///

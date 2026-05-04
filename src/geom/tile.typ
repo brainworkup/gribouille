@@ -3,11 +3,11 @@
 ///! Mapping provides `x` and `y`; `width` and `height` may be mapped or fixed.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": resolve-stroke-spec
+#import "../utils/band.typ": x-band
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
@@ -108,12 +108,7 @@
   if x-col == none or y-col == none { return }
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
-  if (
-    x-trained == none
-      or y-trained == none
-      or x-trained.type != "continuous"
-      or y-trained.type != "continuous"
-  ) { return }
+  if x-trained == none or y-trained == none { return }
 
   let width-col = mapping.at("width", default: none)
   let height-col = mapping.at("height", default: none)
@@ -126,9 +121,12 @@
     neutral-fill,
   )
 
+  // `x-band` is axis-agnostic despite its name: it builds a centred (lo, hi)
+  // pair from a half-width given in data units (continuous) or slot fractions
+  // (discrete). Reused here for both x and y.
   for row in data {
-    let x = parse-number(row.at(x-col, default: none))
-    let y = parse-number(row.at(y-col, default: none))
+    let x = row.at(x-col, default: none)
+    let y = row.at(y-col, default: none)
     if x == none or y == none { continue }
     let w = if width-col != none {
       parse-number(row.at(width-col, default: none))
@@ -137,11 +135,11 @@
       parse-number(row.at(height-col, default: none))
     } else { layer.params.height }
     if w == none or h == none { continue }
-    let cx0 = map-position(x-trained, x - w / 2, ctx.px-range)
-    let cx1 = map-position(x-trained, x + w / 2, ctx.px-range)
-    let cy0 = map-position(y-trained, y - h / 2, ctx.py-range)
-    let cy1 = map-position(y-trained, y + h / 2, ctx.py-range)
-    if cx0 == none or cx1 == none or cy0 == none or cy1 == none { continue }
+    let xe = x-band(x-trained, x, w / 2, ctx.px-range)
+    let ye = x-band(y-trained, y, h / 2, ctx.py-range)
+    if xe == none or ye == none { continue }
+    let (cx0, cx1) = xe
+    let (cy0, cy1) = ye
 
     let final-fill = resolve-fill-colour(
       layer,

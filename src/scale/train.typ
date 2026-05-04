@@ -73,6 +73,14 @@
   none
 }
 
+// Centralise the "mapping-ref forced type, falling back to data sentinel"
+// resolution used by both scale training and the discrete-axis rewrite step.
+#let _resolve-forced-type(raw, data, col-name) = {
+  let forced = mapping-ref-type(raw)
+  if forced != none { return forced }
+  _factor-sentinel-type(data, col-name)
+}
+
 #let _column-for-aesthetic(layer, aesthetic, plot-mapping, plot-data) = {
   let mapping = _resolve-mapping(layer, plot-mapping)
   let data = _resolve-data(layer, plot-data)
@@ -80,14 +88,10 @@
   let raw = mapping.at(aesthetic, default: none)
   if raw == none { return none }
   let col-name = mapping-ref-col(raw)
-  let forced = mapping-ref-type(raw)
-  if forced == none {
-    forced = _factor-sentinel-type(data, col-name)
-  }
   (
     name: col-name,
     values: column(data, col-name),
-    forced-type: forced,
+    forced-type: _resolve-forced-type(raw, data, col-name),
   )
 }
 
@@ -150,7 +154,13 @@
 #let _discrete-domain-from-cache(cols) = {
   let seen = ()
   for col in cols {
-    for v in col.values {
+    // `_prepare-layer` records the original level set on the layer when it
+    // rewrites a discrete-marked column to numeric indices for `position-jitter`
+    // and friends. Use the recorded levels here so the trained domain doesn't
+    // collapse onto the rewritten (and possibly fractional) values.
+    let recorded = col.at("levels", default: none)
+    let source = if recorded != none { recorded } else { col.values }
+    for v in source {
       if v == none or v == "" { continue }
       let s = str(v)
       if not seen.contains(s) { seen.push(s) }
@@ -219,19 +229,17 @@
     let layer-mapping = _resolve-mapping(layer, mapping)
     if layer-mapping == none { continue }
     let layer-data = _resolve-data(layer, data)
+    let layer-factor-levels = layer.at("_factor-levels", default: (:))
     for a in aes-list {
       let raw = layer-mapping.at(a, default: none)
       if raw == none { continue }
       let col-name = mapping-ref-col(raw)
-      let forced = mapping-ref-type(raw)
-      if forced == none {
-        forced = _factor-sentinel-type(layer-data, col-name)
-      }
       let entry = cache.at(a)
       entry.cols.push((
         name: col-name,
         values: column(layer-data, col-name),
-        forced-type: forced,
+        forced-type: _resolve-forced-type(raw, layer-data, col-name),
+        levels: layer-factor-levels.at(col-name, default: none),
       ))
       if is-typst-markup(raw) { entry.typst-mark = true }
       cache.insert(a, entry)
@@ -382,10 +390,18 @@
 // viewport `(-0.5, n - 0.5)` reproduces the midpoint-of-equal-slots layout
 // used by non-positional discrete scales (colour, fill, shape, ...).
 #let map-discrete(value, domain, range, view-index: none) = {
+  let n = domain.len()
+  if n == 0 { return none }
   let s = str(value)
   let idx = domain.position(v => v == s)
-  let n = domain.len()
-  if idx == none or n == 0 { return none }
+  if idx == none and (type(value) == int or type(value) == float) {
+    // Numeric values that miss a string match are treated as 1-indexed
+    // fractional level positions. `_prepare-layer` rewrites discrete-marked
+    // positional columns to integer indices before `position-jitter` runs;
+    // jitter writes back fractional floats that land here.
+    idx = value - 1
+  }
+  if idx == none { return none }
   let (r-lo, r-hi) = range
   let (v-lo, v-hi) = if view-index == none {
     (-0.5, n - 0.5)
