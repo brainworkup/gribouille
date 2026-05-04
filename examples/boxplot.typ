@@ -15,7 +15,9 @@
     x: "Class",
     y: "Highway mpg",
   ),
-  theme: theme-minimal(),
+  theme: theme(
+    tick-length: 0.5cm,
+  ),
   width: 11cm,
   height: 6.5cm,
 )
