@@ -17,7 +17,7 @@
   layers: (geom-col(),),
   guides: guides(fill: guide-none()),
   labs: labs(title: "Counts per fruit", x: "Fruit", y: "Count"),
-  theme: theme-minimal(),
+  theme: theme-grey(),
   width: 11cm,
   height: 6cm,
 )

@@ -6,40 +6,30 @@
 #import "../utils/types.typ": parse-number
 
 // Resolve contour levels from `breaks` (explicit array), `binwidth` (fixed
-// step), or `bins` (target count). Falls back to `pretty()` so default
-// levels land on round numbers within `[lo, hi]`.
+// step), or `bins` (target count). Endpoints are excluded so iso-lines at
+// the data min/max — which trace the boundary degenerately — are skipped.
 #let _resolve-levels(lo, hi, bins, binwidth, breaks) = {
   if breaks != none and breaks != auto {
-    return breaks
+    return breaks.filter(L => L > lo and L < hi)
   }
   if binwidth != none {
     let n = calc.max(1, int(calc.floor((hi - lo) / binwidth)))
-    return range(1, n + 1).map(i => lo + i * binwidth)
+    return range(1, n + 1).map(i => lo + i * binwidth).filter(L => L < hi)
   }
   let target = if bins == none { 10 } else { bins }
-  pretty(lo, hi, n: target)
+  pretty(lo, hi, n: target).filter(L => L > lo and L < hi)
 }
 
-// Reshape a long-format `(x, y, z)` table into the `(xs, ys, z[i][j])`
-// regular grid expected by `isolines`. Rows must lie on a (Cartesian)
-// product of unique x and y values; missing cells are filled with `none`
-// and skipped by marching squares.
+// Reshape a long-format `(x, y, z)` table into the regular grid expected by
+// `isolines`. Missing cells are filled with `none` and skipped by marching
+// squares. Single pass over rows; axis dedup and value→index lookup go
+// through dictionaries keyed by `str(value)` to avoid O(n) scans.
 #let _grid-from-rows(rows, x-col, y-col, z-col) = {
-  let xs-set = ()
-  let ys-set = ()
-  for r in rows {
-    let xv = parse-number(r.at(x-col, default: none))
-    let yv = parse-number(r.at(y-col, default: none))
-    if xv == none or yv == none { continue }
-    if not xs-set.contains(xv) { xs-set.push(xv) }
-    if not ys-set.contains(yv) { ys-set.push(yv) }
-  }
-  let xs = xs-set.sorted()
-  let ys = ys-set.sorted()
-  let nx = xs.len()
-  let ny = ys.len()
-  if nx < 2 or ny < 2 { return (xs: xs, ys: ys, z: ()) }
-  let z = range(nx).map(_ => range(ny).map(_ => none))
+  let parsed = ()
+  let x-keys = (:)
+  let y-keys = (:)
+  let xs-uniq = ()
+  let ys-uniq = ()
   let z-lo = none
   let z-hi = none
   for r in rows {
@@ -47,12 +37,32 @@
     let yv = parse-number(r.at(y-col, default: none))
     let zv = parse-number(r.at(z-col, default: none))
     if xv == none or yv == none or zv == none { continue }
-    let i = xs.position(v => v == xv)
-    let j = ys.position(v => v == yv)
-    if i == none or j == none { continue }
-    z.at(i).at(j) = zv
+    let xk = str(xv)
+    let yk = str(yv)
+    if xk not in x-keys {
+      x-keys.insert(xk, none)
+      xs-uniq.push(xv)
+    }
+    if yk not in y-keys {
+      y-keys.insert(yk, none)
+      ys-uniq.push(yv)
+    }
+    parsed.push((x: xv, y: yv, z: zv))
     z-lo = if z-lo == none { zv } else { calc.min(z-lo, zv) }
     z-hi = if z-hi == none { zv } else { calc.max(z-hi, zv) }
+  }
+  let xs = xs-uniq.sorted()
+  let ys = ys-uniq.sorted()
+  let nx = xs.len()
+  let ny = ys.len()
+  if nx < 2 or ny < 2 { return (xs: xs, ys: ys, z: ()) }
+  let x-idx = (:)
+  for (i, v) in xs.enumerate() { x-idx.insert(str(v), i) }
+  let y-idx = (:)
+  for (j, v) in ys.enumerate() { y-idx.insert(str(v), j) }
+  let z = range(nx).map(_ => range(ny).map(_ => none))
+  for p in parsed {
+    z.at(x-idx.at(str(p.x))).at(y-idx.at(str(p.y))) = p.z
   }
   (xs: xs, ys: ys, z: z, z-lo: z-lo, z-hi: z-hi)
 }

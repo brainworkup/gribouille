@@ -1,10 +1,6 @@
-// Marching-squares isoline extraction over a regular grid.
-//
-// Each cell is classified by the sign of its four corner values relative to
-// the contour level; the 16-case lookup gives the line segments crossing the
-// cell. Edge crossings are linearly interpolated. Saddle cases (5 and 10)
-// are disambiguated by the cell-centre average so the two segments separate
-// the high regions from the low ones.
+// Marching-squares isoline extraction over a regular grid. Saddle cases
+// (5, 10) are disambiguated by the cell-centre average so the segments
+// separate the high regions from the low ones.
 
 // Edge codes used by the case table.
 #let _T = 0  // top    (NW-NE)
@@ -46,10 +42,9 @@
   (xw, _interp(nw, sw, yn, ys, level))
 }
 
-// Saddle disambiguation: case 5 has NE+SW above and NW+SE below; case 10
-// is the mirror. Connect through the centre's region: when centre >= level
-// the centre is "above" so the two "above" corners sit in one connected
-// region; the segments thus separate the two "below" corners.
+// Connect segments through the centre's region: when centre >= level the
+// two "above" corners sit in one region and segments isolate the "below"
+// pair, and vice versa.
 #let _disambiguate-saddle(case, nw, ne, se, sw, level) = {
   let centre = (nw + ne + se + sw) / 4
   let centre-above = centre >= level
