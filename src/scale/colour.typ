@@ -119,6 +119,23 @@
 /// )
 /// ```
 ///
+/// \@examples Bind a colour-blind-friendly palette to penguin species and
+/// reorder the legend via `limits`.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
+///   layers: (geom-point(size: 2pt, alpha: 0.85),),
+///   scales: (scale-colour-discrete(
+///     palette: (rgb("#0072B2"), rgb("#D55E00"), rgb("#009E73")),
+///     limits: ("Adelie", "Chinstrap", "Gentoo"),
+///   ),),
+///   labs: labs(x: "Flipper length (mm)", y: "Body mass (g)", colour: "Species"),
+///   width: 11cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@scale-colour-manual, \@scale-colour-viridis-d, \@scale-fill-discrete
 #let scale-colour-discrete(
   name: none,

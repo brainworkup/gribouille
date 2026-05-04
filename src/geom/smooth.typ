@@ -74,6 +74,32 @@
 /// )
 /// ```
 ///
+/// \@examples Per-species linear fits on the penguins data: mapping
+/// `colour` splits the smoother into one trend per group.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(
+///     x: "flipper-len",
+///     y: "body-mass",
+///     colour: "species",
+///     fill: "species",
+///   ),
+///   layers: (
+///     geom-point(size: 2pt, alpha: 0.6),
+///     geom-smooth(method: "lm", alpha: 0.2),
+///   ),
+///   labs: labs(
+///     x: "Flipper length (mm)",
+///     y: "Body mass (g)",
+///     colour: "Species",
+///     fill: "Species",
+///   ),
+///   width: 11cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@stat-smooth, \@geom-line, \@geom-ribbon
 #let geom-smooth(
   mapping: none,

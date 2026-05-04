@@ -76,6 +76,27 @@
 /// )
 /// ```
 ///
+/// \@examples Full label block on the penguins scatter: title, subtitle,
+/// caption, axis titles, and a legend title for the `fill` aesthetic.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),
+///   layers: (geom-point(size: 2pt, alpha: 0.85),),
+///   labs: labs(
+///     title: "Penguin body mass scales with flipper length",
+///     subtitle: "Three species across the Palmer Archipelago",
+///     caption: "Data: palmerpenguins (Horst, Hill & Gorman, 2020)",
+///     x: "Flipper length (mm)",
+///     y: "Body mass (g)",
+///     fill: "Species",
+///     alt: "Scatter of body mass against flipper length, coloured by species.",
+///   ),
+///   width: 12cm,
+///   height: 7cm,
+/// )
+/// ```
+///
 /// \@see \@plot
 #let labs(
   title: none,

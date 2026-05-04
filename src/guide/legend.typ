@@ -55,6 +55,20 @@
 /// )
 /// ```
 ///
+/// \@examples Penguin species legend rendered as a 3-column legend so it
+/// sits flat under a wide panel.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),
+///   layers: (geom-point(size: 2pt),),
+///   guides: guides(fill: guide-legend(title: "Species", ncol: 3)),
+///   labs: labs(x: "Flipper length (mm)", y: "Body mass (g)"),
+///   width: 14cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@guides, \@guide-none, \@plot
 #let guide-legend(title: none, nrow: none, ncol: none, reverse: false) = (
   kind: "guide",

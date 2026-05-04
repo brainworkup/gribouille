@@ -68,6 +68,24 @@
 /// )
 /// ```
 ///
+/// \@examples One panel per penguin island, sharing axes so the species
+/// clusters can be compared visually across panels.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(
+///     x: "flipper-len",
+///     y: "body-mass",
+///     fill: "species",
+///   ),
+///   layers: (geom-point(size: 2pt, alpha: 0.85),),
+///   facet: facet-wrap("island", ncol: 3),
+///   labs: labs(x: "Flipper length (mm)", y: "Body mass (g)", fill: "Species"),
+///   width: 14cm,
+///   height: 5cm,
+/// )
+/// ```
+///
 /// \@see \@facet-grid, \@plot
 #let facet-wrap(
   var,

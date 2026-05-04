@@ -76,6 +76,29 @@
 /// )
 /// ```
 ///
+/// \@examples The classic penguins scatter: flipper length vs body mass,
+/// coloured and shaped by species.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(
+///     x: "flipper-len",
+///     y: "body-mass",
+///     fill: "species",
+///     shape: "species",
+///   ),
+///   layers: (geom-point(size: 2pt, alpha: 0.85),),
+///   labs: labs(
+///     x: "Flipper length (mm)",
+///     y: "Body mass (g)",
+///     fill: "Species",
+///     shape: "Species",
+///   ),
+///   width: 11cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-line, \@geom-text, \@scale-shape, \@aes
 #let geom-point(
   mapping: none,

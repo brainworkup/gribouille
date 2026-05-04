@@ -67,6 +67,19 @@
 /// )
 /// ```
 ///
+/// \@examples Penguin counts per island, broken down by species with
+/// dodged bars.
+/// ```
+/// #plot(
+///   data: penguins,
+///   mapping: aes(x: "island", fill: "species"),
+///   layers: (geom-bar(position: "dodge"),),
+///   labs: labs(x: "Island", y: "Count", fill: "Species"),
+///   width: 11cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-col, \@stat-count
 #let geom-bar(
   mapping: none,
