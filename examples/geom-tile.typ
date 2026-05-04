@@ -22,7 +22,7 @@
 #plot(
   data: traffic,
   mapping: aes(x: "hour", y: "day", fill: "requests"),
-  layers: (geom-tile(stroke: 0.5pt + rgb("#ffffff")),),
+  layers: (geom-tile(stroke: 0.5pt, colour: rgb("#ffffff")),),
   scales: (
     scale-fill-viridis-c(name: "Requests / min"),
     scale-y-discrete(limits: weeks.rev()),
