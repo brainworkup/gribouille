@@ -1,6 +1,3 @@
-// Filled iso-bands. Each cell of the 50-by-50 grid is clipped against
-// successive level pairs; cell polygons tile each band seamlessly.
-
 #import "../lib.typ": *
 
 #set page(width: auto, height: auto, margin: 0.5cm)

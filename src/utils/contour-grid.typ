@@ -48,9 +48,7 @@
   (xs: xs, ys: ys, z: z, z-lo: z-lo, z-hi: z-hi)
 }
 
-// Resolve contour levels from `breaks` (explicit), `binwidth` (fixed step),
-// or `bins` (target count). Endpoints are excluded so degenerate boundary
-// iso-lines are skipped.
+// Endpoints are excluded so degenerate boundary iso-lines are skipped.
 #let resolve-levels(lo, hi, bins, binwidth, breaks) = {
   if breaks != none and breaks != auto {
     return breaks.filter(L => L > lo and L < hi)

@@ -59,7 +59,6 @@
 #assert.eq(r.mapping.group, "group")
 #assert(r.data.len() > 0)
 #assert("level" in r.data.first())
-#assert("level-hi" in r.data.first())
 
 // Distinct bands -> distinct group prefixes.
 #let bands = r.data.map(row => row.group.split(":").at(0)).dedup()

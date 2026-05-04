@@ -64,13 +64,7 @@
     for (ci, poly) in polys.enumerate() {
       let group = str(bi) + ":" + str(ci)
       for v in poly {
-        rows.push((
-          x: v.x,
-          y: v.y,
-          level: lo,
-          level-hi: hi,
-          group: group,
-        ))
+        rows.push((x: v.x, y: v.y, level: lo, group: group))
       }
     }
   }
