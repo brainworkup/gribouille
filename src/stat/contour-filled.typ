@@ -8,9 +8,9 @@
 /// defined by successive levels and emits one closed polygon per cell that
 /// touches each band. Pair with \@geom-polygon or \@geom-contour-filled.
 ///
-/// `bins`, `binwidth`, and `breaks` follow the same precedence as
-/// \@stat-contour, but with one extra level so neighbouring lines bound
-/// `n + 1` bands (i.e. `bins: 10` produces ~11 levels and 10 bands).
+/// `bins`, `binwidth`, and `breaks` follow \@stat-contour precedence, but
+/// with one extra level so neighbouring lines bound `n + 1` bands (i.e.
+/// `bins: 10` produces ~11 levels and 10 bands).
 ///
 /// \@category Stats
 /// \@stability stable
