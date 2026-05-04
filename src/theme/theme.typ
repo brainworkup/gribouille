@@ -178,17 +178,61 @@
 
 /// Build a custom theme from per-element overrides.
 ///
-/// Pass named arguments like `axis-title: element-text(size: 12pt)` or `panel-grid: element-blank()`.
-/// Each surface is stored as an element record; the renderer reads them via `resolve-element` with cascade `surface → parent → defaults`.
+/// Pass named arguments like `axis-title: element-text(size: 12pt)` or `panel-grid: element-blank()`. Each surface is stored as an element record; the renderer reads them via `resolve-element` with cascade `surface → parent → defaults`.
 ///
-/// Surfaces:
+/// Every surface listed below can be set via `theme(<name>: ...)`. Defaults come from the active theme (typically \@theme-grey).
 ///
-/// - Base elements: `text`, `line`, `rect`. Set inherited parents that descendants fall back to.
-/// - Text surfaces: `axis-text`, `axis-title`, `legend-text`, `legend-title`, `strip-text`, `plot-title`, `plot-subtitle`, `plot-caption`. Each accepts `element-text()` or `element-typst()`. Pass `margin: margin(...)` on either constructor to widen or tighten the gap between the surface and its neighbours; em values track the surface font size.
-/// - Line surfaces: `panel-grid`, `axis-line`. Each accepts `element-line()` or `element-blank()`.
-/// - Rect surfaces: `panel-background`, `strip-background`. Each accepts `element-rect()` or `element-blank()`.
+/// **Inherited parents** — set once and every descendant in the same family falls back to them.
 ///
-/// Scalars: `ink`, `paper`, `accent` (colours), `tick-labels` (boolean), `tick-length` (a Typst length, e.g. `0.1cm`).
+/// - `text` — \@element-text or \@element-typst. Default: `element-text(size: 9pt)`. Parent for every text surface below.
+///
+/// - `line` — \@element-line. Default: `element-line(thickness: 0.5pt)`. Parent for `panel-grid` and `axis-line`.
+///
+/// - `rect` — \@element-rect. Default: `element-rect()`. Parent for `panel-background` and `strip-background`.
+///
+/// **Text surfaces** — accept \@element-text or \@element-typst. Pass `margin: margin(...)` on either constructor to widen or tighten the gap between the surface and its neighbours; em values track the surface font size.
+///
+/// - `axis-text` — tick labels on both axes. Default: `element-text(size: 8pt)`.
+///
+/// - `axis-title` — axis titles via `labs(x: ..., y: ...)`. Default: `element-text(size: 9pt)`.
+///
+/// - `legend-text` — legend entry labels. Default: `element-text(size: 8pt)`.
+///
+/// - `legend-title` — legend headings. Default: `element-text(size: 8pt)`.
+///
+/// - `strip-text` — facet strip labels. Default: `element-text(size: 8pt)`.
+///
+/// - `plot-title` — plot title via `labs(title: ...)`. Default: `element-text(size: 12pt, weight: "bold")`.
+///
+/// - `plot-subtitle` — plot subtitle via `labs(subtitle: ...)`. Default: `element-text(size: 9pt)`.
+///
+/// - `plot-caption` — plot caption via `labs(caption: ...)`. Default: `element-text(size: 8pt)`.
+///
+/// **Line surfaces** — accept \@element-line or \@element-blank (use `element-blank()` to hide).
+///
+/// - `panel-grid` — major gridlines inside the panel. Default: `element-line(thickness: 0.5pt)`.
+///
+/// - `axis-line` — the x and y axis spines. Default: `element-line(thickness: 0.5pt)`.
+///
+/// **Rect surfaces** — accept \@element-rect or \@element-blank.
+///
+/// - `panel-background` — panel fill behind the geoms. Default: `element-rect()`.
+///
+/// - `strip-background` — facet strip fill behind the strip text. Default: `element-rect()`.
+///
+/// **Colours and scalars**.
+///
+/// - `ink` (colour) — foreground colour used wherever no other colour applies. Default: `black`.
+///
+/// - `paper` (colour) — default canvas and panel background. Default: `white`.
+///
+/// - `accent` (colour) — reserved for highlight elements (e.g. some geom defaults). Default: `rgb("#3366FF")`.
+///
+/// - `tick-labels` (boolean) — toggle every axis tick label at once. Default: `true`.
+///
+/// - `tick-length` (length) — tick mark length (any Typst length). Default: `0.1cm`.
+///
+/// - `plot-margin` (\@margin record) — padding around the plot canvas. Use `margin(left: 2cm)` to override one side and let the others fall through to the renderer's default. Default: `margin()` (every side `auto`).
 ///
 /// \@category Themes
 /// \@stability stable
@@ -232,7 +276,26 @@
 /// )
 /// ```
 ///
-/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, \@element-text, \@element-line, \@element-rect, \@element-blank
+/// \@examples Tweak the scalar fields: bigger ticks, no tick labels, and a
+/// wider left margin so a long axis title fits.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   labs: labs(y: "Cumulative response (per protocol)"),
+///   theme: theme(
+///     tick-length: 0.25cm,
+///     tick-labels: false,
+///     plot-margin: margin(left: 2cm),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, \@element-text, \@element-line, \@element-rect, \@element-blank, \@margin
 #let theme(..fields) = {
   let out = (kind: "theme", name: "custom")
   _apply-overrides(out, fields)
