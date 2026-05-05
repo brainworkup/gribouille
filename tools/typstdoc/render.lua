@@ -137,33 +137,29 @@ local function emit_examples(fn, from_qmd, index, strict)
   if #fn.doc.examples == 0 then return "" end
   local out = { "## Examples", "" }
   local render_idx = 0
-  for _, ex in ipairs(fn.doc.examples) do
-    if ex.caption and ex.caption ~= "" then
-      table.insert(out, resolve.resolve_refs_in_text(ex.caption, from_qmd, index, strict, fn.file, fn.line))
-      table.insert(out, "")
-    end
-    if ex.render then
-      render_idx = render_idx + 1
-      table.insert(out, "```typst")
-      if ex.source ~= "" then
-        table.insert(out, ex.source)
-      end
-      table.insert(out, "```")
-      table.insert(out, "")
-      table.insert(out, "```{typst}")
-      table.insert(out, string.format('//| output-filename: "%s-%d.svg"',
-        fn.name, render_idx))
-      if ex.source ~= "" then
-        table.insert(out, ex.source)
-      end
-    else
-      table.insert(out, "```typst")
-      if ex.source ~= "" then
-        table.insert(out, ex.source)
-      end
-    end
+  local function emit_fence(open, source)
+    table.insert(out, open)
+    if source ~= "" then table.insert(out, source) end
     table.insert(out, "```")
     table.insert(out, "")
+  end
+  for _, ex in ipairs(fn.doc.examples) do
+    for _, seg in ipairs(ex.segments) do
+      if seg.kind == "prose" then
+        if seg.text ~= "" then
+          table.insert(out, resolve.resolve_refs_in_text(seg.text, from_qmd, index, strict, fn.file, fn.line))
+          table.insert(out, "")
+        end
+      elseif seg.kind == "code" then
+        emit_fence("```typst", seg.source)
+        if ex.render then
+          render_idx = render_idx + 1
+          local header = string.format('```{typst}\n//| output-filename: "%s-%d.svg"',
+            fn.name, render_idx)
+          emit_fence(header, seg.source)
+        end
+      end
+    end
   end
   return table.concat(out, "\n")
 end

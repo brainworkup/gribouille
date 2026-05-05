@@ -15,6 +15,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  typstdoc-tests:
+    name: Run typstdoc tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: "5.4"
+
+      - name: Run typstdoc tests
+        shell: bash
+        run: lua tools/typstdoc/test/run.lua
+
   typst-compile:
     name: Compile Typst sources
     runs-on: ubuntu-latest

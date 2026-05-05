@@ -12,9 +12,7 @@ end
 function M.new_example(opts)
   return {
     render = opts.render,
-    attributes = opts.attributes or {},
-    source = opts.source or "",
-    caption = opts.caption or "",
+    segments = opts.segments or {},
   }
 end
 

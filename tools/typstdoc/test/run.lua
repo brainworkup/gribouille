@@ -380,10 +380,11 @@ describe("parser: @examples handling", function()
     local exs = parsed.functions[1].doc.examples
     assert_eq(#exs, 1)
     assert_true(exs[1].render)
-    assert_eq(exs[1].attributes.width, "10cm")
-    assert_eq(exs[1].attributes.height, "6cm")
-    assert_contains(exs[1].source, "#plot")
-    assert_eq(exs[1].caption, "")
+    assert_eq(#exs[1].segments, 1)
+    assert_eq(exs[1].segments[1].kind, "code")
+    assert_eq(exs[1].segments[1].attributes.width, "10cm")
+    assert_eq(exs[1].segments[1].attributes.height, "6cm")
+    assert_contains(exs[1].segments[1].source, "#plot")
   end)
 
   it("distinguishes @examples from @examples-static", function()
@@ -416,6 +417,18 @@ describe("parser: @examples handling", function()
     assert_throws(function() parser.parse_file(f) end, "fence never closes")
   end)
 
+  it("errors when @examples block has no code fence", function()
+    local f = tmpfile("nofence", [[
+/// Summary.
+///
+/// @category Core
+/// @examples Just prose, no fence.
+/// @returns Nothing.
+#let foo() = none
+]])
+    assert_throws(function() parser.parse_file(f) end, "must contain at least one code fence")
+  end)
+
   it("captures inline caption on the tag line", function()
     local f = tmpfile("inlinecap", [[
 /// Summary.
@@ -429,7 +442,10 @@ describe("parser: @examples handling", function()
 ]])
     local parsed = parser.parse_file(f)
     local exs = parsed.functions[1].doc.examples
-    assert_eq(exs[1].caption, "Default invocation.")
+    assert_eq(#exs[1].segments, 2)
+    assert_eq(exs[1].segments[1].kind, "prose")
+    assert_eq(exs[1].segments[1].text, "Default invocation.")
+    assert_eq(exs[1].segments[2].kind, "code")
   end)
 
   it("captures multi-line caption between tag and fence", function()
@@ -449,9 +465,89 @@ describe("parser: @examples handling", function()
 ]])
     local parsed = parser.parse_file(f)
     local exs = parsed.functions[1].doc.examples
-    assert_contains(exs[1].caption, "First sentence of the caption.")
-    assert_contains(exs[1].caption, "Second sentence on the next line.")
-    assert_contains(exs[1].caption, "\n\nA second paragraph.")
+    assert_eq(exs[1].segments[1].kind, "prose")
+    assert_contains(exs[1].segments[1].text, "First sentence of the caption.")
+    assert_contains(exs[1].segments[1].text, "Second sentence on the next line.")
+    assert_contains(exs[1].segments[1].text, "\n\nA second paragraph.")
+  end)
+
+  it("collects multiple fences and prose into one block of segments", function()
+    local f = tmpfile("blockmulti", [[
+/// Summary.
+///
+/// @category Core
+/// @examples
+/// First step prose.
+/// ```
+/// foo()
+/// ```
+///
+/// Second step prose.
+/// ```
+/// bar()
+/// ```
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local exs = parsed.functions[1].doc.examples
+    assert_eq(#exs, 1)
+    assert_true(exs[1].render)
+    assert_eq(#exs[1].segments, 4)
+    assert_eq(exs[1].segments[1].kind, "prose")
+    assert_eq(exs[1].segments[1].text, "First step prose.")
+    assert_eq(exs[1].segments[2].kind, "code")
+    assert_contains(exs[1].segments[2].source, "foo()")
+    assert_eq(exs[1].segments[3].kind, "prose")
+    assert_eq(exs[1].segments[3].text, "Second step prose.")
+    assert_eq(exs[1].segments[4].kind, "code")
+    assert_contains(exs[1].segments[4].source, "bar()")
+  end)
+
+  it("closes @examples block at the next @tag", function()
+    local f = tmpfile("blockclose", [[
+/// Summary.
+///
+/// @category Core
+/// @examples
+/// Setup.
+/// ```
+/// foo()
+/// ```
+/// @returns A thing.
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local doc = parsed.functions[1].doc
+    assert_eq(doc.returns, "A thing.")
+    assert_eq(#doc.examples, 1)
+    assert_eq(#doc.examples[1].segments, 2)
+    assert_eq(doc.examples[1].segments[1].text, "Setup.")
+  end)
+
+  it("treats @examples-static as a block with non-rendered code", function()
+    local f = tmpfile("staticblock", [[
+/// Summary.
+///
+/// @category Core
+/// @examples-static
+/// Step 1.
+/// ```
+/// foo()
+/// ```
+///
+/// Step 2.
+/// ```
+/// bar()
+/// ```
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local exs = parsed.functions[1].doc.examples
+    assert_eq(#exs, 1)
+    assert_eq(exs[1].render, false)
+    assert_eq(#exs[1].segments, 4)
+    assert_eq(exs[1].segments[2].kind, "code")
+    assert_eq(exs[1].segments[4].kind, "code")
   end)
 
   it("rejects unknown legacy @example tag", function()
@@ -466,6 +562,69 @@ describe("parser: @examples handling", function()
 #let foo() = none
 ]])
     assert_throws(function() parser.parse_file(f) end, "unknown tag")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
+describe("parser: indented continuation lines", function()
+  it("merges indented continuation into @param description", function()
+    local f = tmpfile("paramcont", [[
+/// Summary.
+///
+/// @category Core
+/// @param x The x value
+///   continues on a second line
+///   and ends here.
+#let foo(x: 1) = none
+]])
+    local parsed = parser.parse_file(f)
+    local p = parsed.functions[1].doc.params[1]
+    assert_eq(p.name, "x")
+    assert_eq(p.description, "The x value continues on a second line and ends here.")
+  end)
+
+  it("keeps a leading @ref on an indented line as part of the description", function()
+    local f = tmpfile("paramref", [[
+/// Summary.
+///
+/// @category Core
+/// @param x The x value, see
+///   \@bar for more info.
+#let foo(x: 1) = none
+]])
+    local parsed = parser.parse_file(f)
+    local p = parsed.functions[1].doc.params[1]
+    assert_eq(p.description, "The x value, see @bar for more info.")
+  end)
+
+  it("merges indented continuation into @returns", function()
+    local f = tmpfile("returnscont", [[
+/// Summary.
+///
+/// @category Core
+/// @returns A dictionary
+///   with several fields.
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    assert_eq(parsed.functions[1].doc.returns, "A dictionary with several fields.")
+  end)
+
+  it("starts a new tag on a non-indented @param line", function()
+    local f = tmpfile("twoparams", [[
+/// Summary.
+///
+/// @category Core
+/// @param x The x value
+///   continues here.
+/// @param y The y value.
+#let foo(x: 1, y: 2) = none
+]])
+    local parsed = parser.parse_file(f)
+    local params = parsed.functions[1].doc.params
+    assert_eq(#params, 2)
+    assert_eq(params[1].description, "The x value continues here.")
+    assert_eq(params[2].description, "The y value.")
   end)
 end)
 

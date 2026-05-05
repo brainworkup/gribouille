@@ -219,7 +219,27 @@ local function collect_signature(lines, start_idx, file)
   }
 end
 
+local function merge_continuations(doc_lines)
+  local merged = {}
+  local in_fence = false
+  for _, line in ipairs(doc_lines) do
+    local trimmed = util.trim(line)
+    if trimmed:match("^```") then
+      in_fence = not in_fence
+      table.insert(merged, line)
+    elseif in_fence then
+      table.insert(merged, line)
+    elseif line:sub(1, 1):match("%s") and #merged > 0 and util.trim(merged[#merged]) ~= "" then
+      merged[#merged] = merged[#merged] .. " " .. trimmed
+    else
+      table.insert(merged, line)
+    end
+  end
+  return merged
+end
+
 local function parse_doc_block(doc_lines, file, start_line)
+  doc_lines = merge_continuations(doc_lines)
   local doc = model.new_doc_block()
   local mode = "summary"
   local para = {}
@@ -297,63 +317,91 @@ local function parse_doc_block(doc_lines, file, start_line)
         table.insert(doc.arities, model.new_arity({ signature = sig, description = desc }))
       elseif tag == "@examples" or tag == "@examples-static" then
         local render = (tag == "@examples")
-        local attrs = {}
-        local src = {}
-        local caption_paras = {}
-        local caption_buf = {}
-        local function flush_caption_para()
-          if #caption_buf > 0 then
-            table.insert(caption_paras, util.trim(table.concat(caption_buf, " ")))
-            caption_buf = {}
+        local segments = {}
+        local prose_paras = {}
+        local prose_buf = {}
+        local function flush_prose_para()
+          if #prose_buf > 0 then
+            table.insert(prose_paras, util.trim(table.concat(prose_buf, " ")))
+            prose_buf = {}
+          end
+        end
+        local function flush_prose_segment()
+          flush_prose_para()
+          if #prose_paras > 0 then
+            table.insert(segments, {
+              kind = "prose",
+              text = table.concat(prose_paras, "\n\n"),
+            })
+            prose_paras = {}
           end
         end
         local first_caption = util.trim(rest)
         if first_caption ~= "" then
-          table.insert(caption_buf, first_caption)
+          table.insert(prose_buf, first_caption)
         end
         local j = i + 1
         while j <= n do
-          local trimmed_inner = util.trim(doc_lines[j])
-          if trimmed_inner:match("^```") then
-            break
-          elseif trimmed_inner == "" then
-            flush_caption_para()
-          else
-            table.insert(caption_buf, trimmed_inner)
-          end
-          j = j + 1
-        end
-        flush_caption_para()
-        if j > n then
-          error_at(file, start_line + i - 1, tag .. " must be followed by a triple-backtick fence")
-        end
-        local caption = table.concat(caption_paras, "\n\n")
-        j = j + 1
-        while j <= n do
           local ln = doc_lines[j]
-          if util.trim(ln):match("^```%s*$") then
+          local trimmed_inner = util.trim(ln)
+          if trimmed_inner:sub(1, 1) == "@" then
+            local maybe_tag = trimmed_inner:match("^(@[%w%-]+)")
+            if maybe_tag and KNOWN_TAGS[maybe_tag] then
+              break
+            end
+          end
+          if trimmed_inner:match("^```") then
+            flush_prose_segment()
+            local attrs = {}
+            local src = {}
+            local k = j + 1
+            while k <= n do
+              local code_ln = doc_lines[k]
+              local code_trim = util.trim(code_ln)
+              if code_trim:match("^```%s*$") then
+                break
+              end
+              if code_trim:match("^//|") then
+                local attr_line = code_trim:gsub("^//|%s*", "")
+                local ak, av = attr_line:match("^([%w%-]+)%s*:%s*(.*)$")
+                if ak then attrs[ak] = util.trim(av) end
+              end
+              table.insert(src, code_ln)
+              k = k + 1
+            end
+            if k > n then
+              error_at(file, start_line + i - 1, tag .. " fence never closes")
+            end
+            table.insert(segments, {
+              kind = "code",
+              source = table.concat(src, "\n"),
+              attributes = attrs,
+            })
+            j = k + 1
+          elseif trimmed_inner == "" then
+            flush_prose_para()
+            j = j + 1
+          else
+            table.insert(prose_buf, trimmed_inner)
+            j = j + 1
+          end
+        end
+        flush_prose_segment()
+        local has_code = false
+        for _, seg in ipairs(segments) do
+          if seg.kind == "code" then
+            has_code = true
             break
           end
-          if util.trim(ln):match("^//|") then
-            local attr_line = util.trim(ln):gsub("^//|%s*", "")
-            local k, v = attr_line:match("^([%w%-]+)%s*:%s*(.*)$")
-            if k then attrs[k] = util.trim(v) end
-            table.insert(src, ln)
-          else
-            table.insert(src, ln)
-          end
-          j = j + 1
         end
-        if j > n then
-          error_at(file, start_line + i - 1, tag .. " fence never closes")
+        if not has_code then
+          error_at(file, start_line + i - 1, tag .. " block must contain at least one code fence")
         end
         table.insert(doc.examples, model.new_example({
           render = render,
-          attributes = attrs,
-          source = table.concat(src, "\n"),
-          caption = caption,
+          segments = segments,
         }))
-        i = j
+        i = j - 1
       end
     else
       table.insert(para, line)

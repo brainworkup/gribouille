@@ -37,6 +37,14 @@ compile_glob() {
   printf '%-9s %d/%d\n' "${label}:" "${label_passed}" "${label_total}"
 }
 
+if command -v lua5.4 >/dev/null 2>&1; then
+  lua5.4 tools/typstdoc/test/run.lua
+elif command -v lua >/dev/null 2>&1; then
+  lua tools/typstdoc/test/run.lua
+else
+  printf 'typstdoc tests: SKIP (lua not installed)\n'
+fi
+
 compile_glob "unit"     "tests/unit/*.typ"
 compile_glob "examples" "examples/*.typ"
 
