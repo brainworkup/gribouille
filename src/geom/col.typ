@@ -9,6 +9,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/polar.typ": polar-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Bar layer with heights taken from the y aesthetic.
@@ -102,6 +103,119 @@
   inherit-aes: inherit-aes,
 )
 
+#let _draw-polar(layer, ctx, mapping, data, polar) = {
+  let cat-trained = ctx.trained.at("x", default: none)
+  let value-trained = ctx.trained.at("y", default: none)
+  if cat-trained == none or value-trained == none { return }
+  if value-trained.type != "continuous" { return }
+
+  let cat-col = mapping.x
+  let value-col = mapping.y
+  let position = layer.at("position", default: "identity")
+  let vmin-col = mapping.at("ymin", default: none)
+  let vmax-col = mapping.at("ymax", default: none)
+  let use-minmax = (
+    (position == "stack" or position == "fill")
+      and vmin-col != none
+      and vmax-col != none
+  )
+
+  let neutral-fill = rgb("#4c78a8")
+  let ink = ctx.theme.at("ink", default: black)
+  let (default-colour, default-fill) = resolve-pair-defaults(
+    layer,
+    mapping,
+    ink,
+    neutral-fill,
+  )
+
+  let baseline = calc.max(0.0, value-trained.domain.at(0))
+  let bar-width-fraction = layer.params.width
+
+  let cat-range = if polar.cat-is-theta {
+    polar.theta-range
+  } else { polar.r-range }
+  let value-range = if polar.cat-is-theta {
+    polar.r-range
+  } else { polar.theta-range }
+
+  let category-span = if cat-trained.type == "discrete" {
+    discrete-slot-width(cat-trained, cat-range)
+  } else {
+    let xs = data
+      .map(r => parse-number(r.at(cat-col, default: none)))
+      .filter(v => v != none)
+    let (d-lo, d-hi) = cat-trained.domain
+    if xs.len() < 2 or d-hi == d-lo {
+      (cat-range.at(1) - cat-range.at(0)) / 10
+    } else {
+      let sorted = xs.dedup().sorted()
+      let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
+        map-axis(cat-trained, sorted.at(i + 1), cat-range)
+          - map-axis(cat-trained, sorted.at(i), cat-range),
+      ))
+      calc.min(..panel-gaps)
+    }
+  }
+  let half = category-span * bar-width-fraction / 2
+
+  for row in data {
+    let cat-c = map-position(
+      cat-trained,
+      row.at(cat-col, default: none),
+      cat-range,
+    )
+    if cat-c == none { continue }
+
+    let (v-lo, v-hi) = if use-minmax {
+      let lo-v = parse-number(row.at(vmin-col, default: none))
+      let hi-v = parse-number(row.at(vmax-col, default: none))
+      if lo-v == none or hi-v == none { continue }
+      (
+        map-axis(value-trained, lo-v, value-range),
+        map-axis(value-trained, hi-v, value-range),
+      )
+    } else {
+      let raw = parse-number(row.at(value-col, default: none))
+      if raw == none { continue }
+      (
+        map-axis(value-trained, baseline, value-range),
+        map-axis(value-trained, raw, value-range),
+      )
+    }
+
+    let final-fill = resolve-fill-colour(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-fill,
+    )
+    let stroke-spec = resolve-stroke-spec(
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-colour,
+    )
+
+    let (theta-lo, theta-hi, r-lo, r-hi) = if polar.cat-is-theta {
+      (cat-c - half, cat-c + half, v-lo, v-hi)
+    } else {
+      (v-lo, v-hi, cat-c - half, cat-c + half)
+    }
+    if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
+
+    let pts = polar-wedge(theta-lo, theta-hi, r-lo, r-hi, polar)
+    cetz.draw.line(
+      ..pts,
+      close: true,
+      fill: final-fill,
+      stroke: stroke-spec,
+    )
+  }
+}
+
 #let draw(layer, ctx) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
@@ -109,6 +223,12 @@
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
+
+  let polar = ctx.at("polar", default: none)
+  if polar != none {
+    _draw-polar(layer, ctx, mapping, data, polar)
+    return
+  }
 
   let flipped = ctx.at("flipped", default: false)
   // Under flip, the value axis is x and the category axis is y; otherwise

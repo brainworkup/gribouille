@@ -21,6 +21,7 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
+#import "utils/polar.typ": polar-ctx
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
@@ -98,6 +99,11 @@
   dotplot: dotplot-geom.draw,
   hex: hex-geom.draw,
 )
+
+// Layers whose `geom` is missing from this set panic under `coord-polar`
+// rather than silently falling back to cartesian rendering.
+#let _POLAR-AWARE = ("col",)
+
 #import "legend.typ" as legend-mod
 #import "facet/labellers.typ" as labellers
 #import "scale/secondary.typ" as secondary-mod
@@ -908,18 +914,32 @@
     flipped: flipped,
   )
 
-  let _panel-fill = _rect-fill(theme, "panel-background", fallback: theme.paper)
-  if _panel-fill != none {
-    rect(
-      (px-lo, py-lo),
-      (px-hi, py-hi),
-      fill: _panel-fill,
-      stroke: none,
-    )
-  }
-
   let x-trained = trained.at("x", default: none)
   let y-trained = trained.at("y", default: none)
+
+  let coord = spec.at("coord", default: none)
+  let outer-polar = polar-ctx(coord, x-trained, y-trained, px-range, py-range)
+  let is-polar = outer-polar != none
+
+  let _panel-fill = _rect-fill(theme, "panel-background", fallback: theme.paper)
+  if _panel-fill != none {
+    if is-polar {
+      cetz.draw.circle(
+        outer-polar.centre,
+        radius: outer-polar.r-max,
+        fill: _panel-fill,
+        stroke: none,
+      )
+    } else {
+      rect(
+        (px-lo, py-lo),
+        (px-hi, py-hi),
+        fill: _panel-fill,
+        stroke: none,
+      )
+    }
+  }
+
   let grid-stroke = _line-stroke(theme, "panel-grid", fallback-colour: _ink)
   let _stroke-side = (p, s, _) => _line-stroke(
     theme,
@@ -982,7 +1002,7 @@
   let _x-disp = _axis-display(x-trained)
   let _y-disp = _axis-display(y-trained)
 
-  if x-trained != none and x-trained.type == "continuous" {
+  if not is-polar and x-trained != none and x-trained.type == "continuous" {
     let breaks = if axis-breaks != none and axis-breaks.x != none {
       axis-breaks.x
     } else { _axis-breaks(x-trained) }
@@ -1009,7 +1029,9 @@
         idx,
       )
     }
-  } else if x-trained != none and x-trained.type == "discrete" {
+  } else if (
+    not is-polar and x-trained != none and x-trained.type == "discrete"
+  ) {
     for (idx, level) in x-trained.domain.enumerate() {
       let cx = map-position(x-trained, level, px-range)
       if _should-draw-tick(_ax-ticks.xb, _tick-len.xb) {
@@ -1032,7 +1054,7 @@
     }
   }
 
-  if y-trained != none and y-trained.type == "continuous" {
+  if not is-polar and y-trained != none and y-trained.type == "continuous" {
     let breaks = if axis-breaks != none and axis-breaks.y != none {
       axis-breaks.y
     } else { _axis-breaks(y-trained) }
@@ -1059,7 +1081,9 @@
         idx,
       )
     }
-  } else if y-trained != none and y-trained.type == "discrete" {
+  } else if (
+    not is-polar and y-trained != none and y-trained.type == "discrete"
+  ) {
     for (idx, level) in y-trained.domain.enumerate() {
       let cy = map-position(y-trained, level, py-range)
       if _should-draw-tick(_ax-ticks.yl, _tick-len.yl) {
@@ -1120,28 +1144,30 @@
       k = k + 1
     }
   }
-  _draw-log-minors(
-    x-trained,
-    x-guide,
-    "x",
-    px-range,
-    _ax-ticks.xb,
-    _tick-len.xb,
-  )
-  _draw-log-minors(
-    y-trained,
-    y-guide,
-    "y",
-    py-range,
-    _ax-ticks.yl,
-    _tick-len.yl,
-  )
+  if not is-polar {
+    _draw-log-minors(
+      x-trained,
+      x-guide,
+      "x",
+      px-range,
+      _ax-ticks.xb,
+      _tick-len.xb,
+    )
+    _draw-log-minors(
+      y-trained,
+      y-guide,
+      "y",
+      py-range,
+      _ax-ticks.yl,
+      _tick-len.yl,
+    )
+  }
 
   // Secondary x-axis: draw on top edge if the trained x scale carries a
   // secondary spec. Breaks reuse the primary axis grid; their labels go
   // through the user's transformation function.
   let _x-sec = _sec-spec(x-trained)
-  if _x-sec != none and show-x-sec {
+  if not is-polar and _x-sec != none and show-x-sec {
     let breaks = if axis-breaks != none and axis-breaks.x-sec != none {
       axis-breaks.x-sec
     } else { _axis-breaks(x-trained) }
@@ -1196,7 +1222,7 @@
   // Secondary y-axis: draw on right edge if the trained y scale carries a
   // secondary spec.
   let _y-sec = _sec-spec(y-trained)
-  if _y-sec != none and show-y-sec {
+  if not is-polar and _y-sec != none and show-y-sec {
     let breaks = if axis-breaks != none and axis-breaks.y-sec != none {
       axis-breaks.y-sec
     } else { _axis-breaks(y-trained) }
@@ -1254,10 +1280,10 @@
     }
   }
 
-  if _ax-line.xb != none {
+  if not is-polar and _ax-line.xb != none {
     line((px-lo, py-lo), (px-hi, py-lo), stroke: _ax-line.xb)
   }
-  if _ax-line.yl != none {
+  if not is-polar and _ax-line.yl != none {
     line((px-lo, py-lo), (px-lo, py-hi), stroke: _ax-line.yl)
   }
 
@@ -1271,6 +1297,21 @@
   let inner-ctx = ctx
   inner-ctx.px-range = (x-pad-lo, panel-w - x-pad-hi)
   inner-ctx.py-range = (y-pad-lo, panel-h - y-pad-hi)
+  let inner-polar = polar-ctx(
+    coord,
+    x-trained,
+    y-trained,
+    inner-ctx.px-range,
+    inner-ctx.py-range,
+  )
+  inner-ctx.polar = inner-polar
+  if inner-polar != none {
+    for layer in prepared {
+      if not _POLAR-AWARE.contains(layer.geom) {
+        panic("coord-polar does not support geom-" + layer.geom + ".")
+      }
+    }
+  }
   let geoms = cetz.canvas({
     import cetz.draw: hide, rect
     hide(rect((0, 0), (panel-w, panel-h)), bounds: true)
