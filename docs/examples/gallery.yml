@@ -512,3 +512,87 @@
   title: "Mixed-width dodge"
   description: 'Per-row <code>width</code> column lets <a href="../reference/positions/position-dodge.qmd"><code>position-dodge</code></a> give one product a wider slot than another.'
   alt: "Dodged bar chart of revenue per quarter where product A bars are visibly wider than product B bars within each quarter."
+
+- slug: bin-2d
+  section: stats
+  title: "Rectangular 2D binning"
+  description: 'Drop (x, y) samples into a uniform grid via <a href="../reference/geoms/geom-bin-2d.qmd"><code>geom-bin-2d</code></a>; cells colour by count.'
+  alt: "Spiral cloud of 600 points binned into a 25-by-25 grid, with cells coloured by count along the magma palette and empty bins suppressed."
+
+- slug: hex
+  section: stats
+  title: "Hexagonal binning"
+  description: 'Pointy-top hex cells via <a href="../reference/geoms/geom-hex.qmd"><code>geom-hex</code></a>, the hexagonal counterpart to <a href="../reference/geoms/geom-bin-2d.qmd"><code>geom-bin-2d</code></a>.'
+  alt: "Spiral cloud of 800 points binned into pointy-top hexagons, with cells coloured by count along the viridis palette and empty bins suppressed."
+
+- slug: contour
+  section: stats
+  title: "Contour lines"
+  description: 'Marching-squares iso-lines on a regular (x, y, z) grid via <a href="../reference/geoms/geom-contour.qmd"><code>geom-contour</code></a>.'
+  alt: "Twelve concentric contour lines tracing a radial wave field on a 60-by-60 grid, coloured by level along the viridis palette."
+
+- slug: contour-filled
+  section: stats
+  title: "Filled contour bands"
+  description: 'Closed iso-bands between contour levels via <a href="../reference/geoms/geom-contour-filled.qmd"><code>geom-contour-filled</code></a>.'
+  alt: "Ten filled contour bands tracing a radial wave field on a 50-by-50 grid, coloured by level along the magma palette."
+
+- slug: geom-quantile
+  section: stats
+  title: "Quantile regression lines"
+  description: 'Per-tau quantile regression curves via <a href="../reference/geoms/geom-quantile.qmd"><code>geom-quantile</code></a>.'
+  alt: "Two stacked scatter panels with quantile regression lines: the first showing the default 0.25, 0.5, and 0.75 lines, the second showing 0.1, 0.5, and 0.9 decile bands."
+
+- slug: stat-summary-2d
+  section: stats
+  title: "2D summary reduction"
+  description: '<a href="../reference/stats/stat-summary-2d.qmd"><code>stat-summary-2d</code></a> reduces a <code>z</code> aesthetic over a grid; cells colour by the mean rather than the count.'
+  alt: "Spiral cloud of 600 points reduced over a 25-by-25 grid, with each cell coloured by the mean radius along the viridis palette."
+
+- slug: geom-dotplot
+  section: geoms
+  title: "Stacked dotplot"
+  description: 'Stacked dots over a binned x distribution via <a href="../reference/geoms/geom-dotplot.qmd"><code>geom-dotplot</code></a>; tune <code>bins</code>, <code>binwidth</code>, <code>dotsize</code>, and <code>stackratio</code>.'
+  alt: "Three stacked dotplot panels of the same distribution: 14 equal-width bins, a wider 0.4 binwidth with 0.9 dotsize, and a 1.4 stackratio leaving gaps between dots."
+
+- slug: geom-typst-const
+  section: annotations
+  title: "Constant Typst content labels"
+  description: 'Set a content block on every row via <a href="../reference/geoms/geom-typst.qmd"><code>geom-typst(label: [...])</code></a>; or place a single content label with <code>annotate("typst", label: [...])</code>.'
+  alt: "Line and point chart with a star glyph above every observation rendered as Typst content, plus a bold peak alpha label tucked above the curve."
+
+- slug: scale-log-pre-stat
+  section: scales
+  title: "Log scale pre-transforms data"
+  description: '<a href="../reference/scales/scale-x-log10.qmd"><code>scale-x-log10</code></a> transforms data before stats run; <a href="../reference/geoms/geom-smooth.qmd"><code>geom-smooth</code></a> fits the line in log space.'
+  alt: "Two stacked panels of the same power-law dataset with a linear smoother: the linear x panel curves while the log10 x panel produces a straight line."
+
+- slug: coord-polar-clock
+  section: facets
+  title: "Polar clock layout"
+  description: 'Wrap an hourly series around a circle via <code>coord-polar(theta: "x")</code>: hour drives the angle and load the radius.'
+  alt: "Circular clock-face plot of 24 hourly load observations connected by a closed line and points, traced around the perimeter of a polar panel."
+
+- slug: coord-polar-pie
+  section: facets
+  title: "Pie chart via polar coordinates"
+  description: '<code>coord-polar(theta: "y")</code> with stacked <a href="../reference/geoms/geom-col.qmd"><code>geom-col</code></a> turns one stacked bar into a pie chart of revenue share.'
+  alt: "Pie chart of revenue share split across five regions (EU, US, APAC, LATAM, and Other), produced by stacking columns under coord-polar(theta: y)."
+
+- slug: coord-polar-radar
+  section: facets
+  title: "Radar chart"
+  description: 'Closed polygon under <code>coord-polar(theta: "x")</code> with one vertex per axis, drawn via <a href="../reference/geoms/geom-polygon.qmd"><code>geom-polygon</code></a>.'
+  alt: "Radar chart of a six-axis vehicle profile, showing a translucent blue polygon and points at each axis vertex inside a circular polar panel."
+
+- slug: coord-polar-rose
+  section: facets
+  title: "Rose chart"
+  description: 'Discrete categories distributed around the circle via <code>coord-polar(theta: "x")</code> with <a href="../reference/geoms/geom-col.qmd"><code>geom-col</code></a>; bar height encodes the count.'
+  alt: "Rose chart of wind direction counts across eight compass points (N, NE, E, SE, S, SW, W, and NW), with bar height encoding the count and each bar filled by direction."
+
+- slug: coord-transform
+  section: facets
+  title: "Coordinate-level transforms"
+  description: '<a href="../reference/coord/coord-transform.qmd"><code>coord-transform</code></a> warps the displayed coordinates without setting <code>transform</code> on each scale; overrides any scale-level transform.'
+  alt: "Two stacked panels of the same power-law dataset: the first applies log10 to both axes via coord-transform, the second mixes scale-y sqrt with coord-transform x log10."
