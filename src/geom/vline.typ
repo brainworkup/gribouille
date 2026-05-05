@@ -113,6 +113,34 @@
     thickness: thickness,
     dash: layer.params.linetype,
   )
+  let polar = ctx.at("polar", default: none)
+  if polar != none {
+    let (cx, cy) = polar.centre
+    let r-max = polar.r-max
+    if polar.theta-axis == "x" {
+      for x in xs {
+        let theta = map-axis-data(trained, float(x), polar.theta-range)
+        cetz.draw.line(
+          (cx, cy),
+          (cx + r-max * calc.cos(theta), cy + r-max * calc.sin(theta)),
+          stroke: stroke-spec,
+        )
+      }
+    } else {
+      for x in xs {
+        let r = map-axis-data(trained, float(x), polar.r-range)
+        if r > 0 and r <= r-max {
+          cetz.draw.circle(
+            (cx, cy),
+            radius: r,
+            fill: none,
+            stroke: stroke-spec,
+          )
+        }
+      }
+    }
+    return
+  }
   if flipped {
     let (px-lo, px-hi) = ctx.px-range
     for x in xs {

@@ -114,6 +114,9 @@
   "ribbon",
   "rect",
   "tile",
+  "hline",
+  "vline",
+  "abline",
 )
 
 #import "legend.typ" as legend-mod

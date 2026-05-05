@@ -10,6 +10,7 @@
 #import "../utils/colour-resolve.typ": (
   apply-alpha, resolve-alpha, resolve-linewidth,
 )
+#import "../utils/polar.typ": polar-point
 
 /// Straight reference line described by slope and intercept.
 ///
@@ -148,6 +149,21 @@
       map-axis-data(user-x-trained, ux, ctx.px-range),
       map-axis-data(user-y-trained, uy, ctx.py-range),
     )
+  }
+  let polar = ctx.at("polar", default: none)
+  if polar != none {
+    let n = 128
+    let pts = range(0, n)
+      .map(i => {
+        let t = i / (n - 1)
+        let x = x-lo + t * (x-hi - x-lo)
+        let y = slope * x + intercept
+        polar-point(x, y, polar)
+      })
+      .filter(p => p != none)
+    if pts.len() < 2 { return }
+    cetz.draw.line(..pts, stroke: stroke-spec)
+    return
   }
   let x-transform = user-x-trained.at("transform", default: "identity")
   let y-transform = user-y-trained.at("transform", default: "identity")
