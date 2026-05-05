@@ -103,12 +103,10 @@
   out
 }
 
-#let _build-pts(rows, layer, mapping, x-trained, y-trained, ctx) = {
+#let _build-pts(rows, layer, mapping, x-trained, ctx) = {
   let pts = rows-to-points(
     sort-rows-by-x(rows, mapping, x-trained),
     mapping,
-    x-trained,
-    y-trained,
     ctx,
   )
   _stair(pts, layer.params.direction)

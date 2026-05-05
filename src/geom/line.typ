@@ -92,14 +92,8 @@
   inherit-aes: inherit-aes,
 )
 
-#let _build-pts(rows, layer, mapping, x-trained, y-trained, ctx) = (
-  rows-to-points(
-    sort-rows-by-x(rows, mapping, x-trained),
-    mapping,
-    x-trained,
-    y-trained,
-    ctx,
-  )
+#let _build-pts(rows, layer, mapping, x-trained, ctx) = (
+  rows-to-points(sort-rows-by-x(rows, mapping, x-trained), mapping, ctx)
 )
 
 #let draw(layer, ctx) = draw-grouped-paths(layer, ctx, _build-pts)

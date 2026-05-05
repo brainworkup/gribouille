@@ -30,7 +30,7 @@
 // Map rows to (cx, cy) screen positions via `project-point`, which routes
 // through `ctx.polar` when active. Skips rows whose mapped position fails
 // to resolve.
-#let rows-to-points(rows, mapping, x-trained, y-trained, ctx) = {
+#let rows-to-points(rows, mapping, ctx) = {
   let pts = ()
   for row in rows {
     let p = project-point(
@@ -49,14 +49,13 @@
   let data = (ctx.resolve-data)(layer)
   if mapping == none or mapping.x == none or mapping.y == none { return }
   let x-trained = ctx.trained.at("x", default: none)
-  let y-trained = ctx.trained.at("y", default: none)
-  if x-trained == none or y-trained == none { return }
+  if x-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
-    let pts = build-pts(rows, layer, mapping, x-trained, y-trained, ctx)
+    let pts = build-pts(rows, layer, mapping, x-trained, ctx)
     if pts.len() < 2 { continue }
 
     let leader = rows.first()
