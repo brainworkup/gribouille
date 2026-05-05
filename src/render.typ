@@ -117,6 +117,8 @@
   "hline",
   "vline",
   "abline",
+  "text",
+  "label",
 )
 
 #import "legend.typ" as legend-mod
