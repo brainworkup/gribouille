@@ -2,6 +2,7 @@
 
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
+#import "../utils/polar.typ": polar-point
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -262,15 +263,21 @@
 
   let expand-cm = expand / 1cm
 
+  let polar = ctx.at("polar", default: none)
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let pts = _group-points(g.data, mapping)
     if pts.len() < 2 { continue }
     let projected-pts = ()
     for p in pts {
-      let cx = map-position(x-trained, p.at(0), ctx.px-range)
-      let cy = map-position(y-trained, p.at(1), ctx.py-range)
-      if cx == none or cy == none { continue }
-      projected-pts.push((cx, cy))
+      let projected = if polar != none {
+        polar-point(p.at(0), p.at(1), polar)
+      } else {
+        let cx = map-position(x-trained, p.at(0), ctx.px-range)
+        let cy = map-position(y-trained, p.at(1), ctx.py-range)
+        if cx == none or cy == none { none } else { (cx, cy) }
+      }
+      if projected == none { continue }
+      projected-pts.push(projected)
     }
     if projected-pts.len() < 2 { continue }
     let projected = _shape-vertices(method, projected-pts, expand-cm, n)

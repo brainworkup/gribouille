@@ -14,6 +14,7 @@
 )
 #import "../utils/aes-pair.typ": aes-set
 #import "../utils/linetype-resolve.typ": resolve-linetype
+#import "../utils/polar.typ": polar-point
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -198,23 +199,24 @@
       ((ctx.resolve-colour)(fill-trained, ctx.palette))(sample)
     } else { line-colour }
 
+    let polar = ctx.at("polar", default: none)
+    let _project(x, y) = if polar != none {
+      polar-point(x, y, polar)
+    } else {
+      let cx = map-position(x-trained, x, ctx.px-range)
+      let cy = map-position(y-trained, y, ctx.py-range)
+      if cx == none or cy == none { none } else { (cx, cy) }
+    }
+
     // Confidence ribbon first, so the line draws on top.
     let has-band = (
       layer.params.se and sorted.all(p => p.lo != none and p.hi != none)
     )
     if has-band {
-      let upper = sorted.map(p => (
-        map-position(x-trained, p.x, ctx.px-range),
-        map-position(y-trained, p.hi, ctx.py-range),
-      ))
-      let lower = sorted
-        .rev()
-        .map(p => (
-          map-position(x-trained, p.x, ctx.px-range),
-          map-position(y-trained, p.lo, ctx.py-range),
-        ))
+      let upper = sorted.map(p => _project(p.x, p.hi))
+      let lower = sorted.rev().map(p => _project(p.x, p.lo))
       let pts = upper + lower
-      if pts.all(p => p.at(0) != none and p.at(1) != none) {
+      if pts.all(p => p != none) {
         let alpha = resolve-alpha(
           layer,
           mapping,
@@ -227,12 +229,7 @@
       }
     }
 
-    let line-pts = sorted
-      .map(p => (
-        map-position(x-trained, p.x, ctx.px-range),
-        map-position(y-trained, p.y, ctx.py-range),
-      ))
-      .filter(p => p.at(0) != none and p.at(1) != none)
+    let line-pts = sorted.map(p => _project(p.x, p.y)).filter(p => p != none)
     if line-pts.len() >= 2 and not suppress-line {
       let thickness = resolve-linewidth(
         layer,

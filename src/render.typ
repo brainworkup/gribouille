@@ -119,6 +119,11 @@
   "abline",
   "text",
   "label",
+  "smooth",
+  "typst",
+  "blank",
+  "function",
+  "mark",
 )
 
 #import "legend.typ" as legend-mod
