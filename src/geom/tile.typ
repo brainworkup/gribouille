@@ -6,6 +6,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/polar.typ": polar-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../utils/band.typ": x-band
 
@@ -124,6 +125,7 @@
   // `x-band` is axis-agnostic despite its name: it builds a centred (lo, hi)
   // pair from a half-width given in data units (continuous) or slot fractions
   // (discrete). Reused here for both x and y.
+  let polar = ctx.at("polar", default: none)
   for row in data {
     let x = row.at(x-col, default: none)
     let y = row.at(y-col, default: none)
@@ -135,11 +137,6 @@
       parse-number(row.at(height-col, default: none))
     } else { layer.params.height }
     if w == none or h == none { continue }
-    let xe = x-band(x-trained, x, w / 2, ctx.px-range)
-    let ye = x-band(y-trained, y, h / 2, ctx.py-range)
-    if xe == none or ye == none { continue }
-    let (cx0, cx1) = xe
-    let (cy0, cy1) = ye
 
     let final-fill = resolve-fill-colour(
       layer,
@@ -157,11 +154,40 @@
       default-colour,
     )
 
-    cetz.draw.rect(
-      (cx0, cy0),
-      (cx1, cy1),
-      fill: final-fill,
-      stroke: stroke-spec,
-    )
+    if polar != none {
+      let cat-is-theta = polar.cat-is-theta
+      let xe = x-band(x-trained, x, w / 2, if cat-is-theta {
+        polar.theta-range
+      } else { polar.r-range })
+      let ye = x-band(y-trained, y, h / 2, if cat-is-theta {
+        polar.r-range
+      } else { polar.theta-range })
+      if xe == none or ye == none { continue }
+      let (theta-lo, theta-hi, r-lo, r-hi) = if cat-is-theta {
+        (xe.at(0), xe.at(1), ye.at(0), ye.at(1))
+      } else {
+        (ye.at(0), ye.at(1), xe.at(0), xe.at(1))
+      }
+      if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
+      let pts = polar-wedge(theta-lo, theta-hi, r-lo, r-hi, polar)
+      cetz.draw.line(
+        ..pts,
+        close: true,
+        fill: final-fill,
+        stroke: stroke-spec,
+      )
+    } else {
+      let xe = x-band(x-trained, x, w / 2, ctx.px-range)
+      let ye = x-band(y-trained, y, h / 2, ctx.py-range)
+      if xe == none or ye == none { continue }
+      let (cx0, cx1) = xe
+      let (cy0, cy1) = ye
+      cetz.draw.rect(
+        (cx0, cy0),
+        (cx1, cy1),
+        fill: final-fill,
+        stroke: stroke-spec,
+      )
+    }
   }
 }

@@ -1,10 +1,11 @@
 ///! Axis-aligned rectangles from `xmin`, `ymin`, `xmax`, `ymax`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
+#import "../scale/train.typ": map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/polar.typ": polar-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Rectangle layer drawing one filled box per row from the four corners.
@@ -108,17 +109,13 @@
     neutral-fill,
   )
 
+  let polar = ctx.at("polar", default: none)
   for row in data {
     let x0 = parse-number(row.at(xmin-col, default: none))
     let x1 = parse-number(row.at(xmax-col, default: none))
     let y0 = parse-number(row.at(ymin-col, default: none))
     let y1 = parse-number(row.at(ymax-col, default: none))
     if x0 == none or x1 == none or y0 == none or y1 == none { continue }
-    let cx0 = map-position(x-trained, x0, ctx.px-range)
-    let cx1 = map-position(x-trained, x1, ctx.px-range)
-    let cy0 = map-position(y-trained, y0, ctx.py-range)
-    let cy1 = map-position(y-trained, y1, ctx.py-range)
-    if cx0 == none or cx1 == none or cy0 == none or cy1 == none { continue }
 
     let final-fill = resolve-fill-colour(
       layer,
@@ -136,11 +133,45 @@
       default-colour,
     )
 
-    cetz.draw.rect(
-      (cx0, cy0),
-      (cx1, cy1),
-      fill: final-fill,
-      stroke: stroke-spec,
-    )
+    if polar != none {
+      let cat-is-theta = polar.cat-is-theta
+      let theta-range = polar.theta-range
+      let r-range = polar.r-range
+      let (theta-lo, theta-hi, r-lo, r-hi) = if cat-is-theta {
+        (
+          map-axis(x-trained, x0, theta-range),
+          map-axis(x-trained, x1, theta-range),
+          map-axis(y-trained, y0, r-range),
+          map-axis(y-trained, y1, r-range),
+        )
+      } else {
+        (
+          map-axis(y-trained, y0, theta-range),
+          map-axis(y-trained, y1, theta-range),
+          map-axis(x-trained, x0, r-range),
+          map-axis(x-trained, x1, r-range),
+        )
+      }
+      if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
+      let pts = polar-wedge(theta-lo, theta-hi, r-lo, r-hi, polar)
+      cetz.draw.line(
+        ..pts,
+        close: true,
+        fill: final-fill,
+        stroke: stroke-spec,
+      )
+    } else {
+      let cx0 = map-position(x-trained, x0, ctx.px-range)
+      let cx1 = map-position(x-trained, x1, ctx.px-range)
+      let cy0 = map-position(y-trained, y0, ctx.py-range)
+      let cy1 = map-position(y-trained, y1, ctx.py-range)
+      if cx0 == none or cx1 == none or cy0 == none or cy1 == none { continue }
+      cetz.draw.rect(
+        (cx0, cy0),
+        (cx1, cy1),
+        fill: final-fill,
+        stroke: stroke-spec,
+      )
+    }
   }
 }

@@ -6,6 +6,7 @@
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/polar.typ": polar-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Polygon layer: one closed filled polygon per group.
@@ -109,22 +110,22 @@
     neutral-fill,
   )
 
+  let polar = ctx.at("polar", default: none)
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
     let pts = ()
     for row in rows {
-      let cx = map-position(
-        x-trained,
-        row.at(mapping.x, default: none),
-        ctx.px-range,
-      )
-      let cy = map-position(
-        y-trained,
-        row.at(mapping.y, default: none),
-        ctx.py-range,
-      )
-      if cx == none or cy == none { continue }
-      pts.push((cx, cy))
+      let xv = row.at(mapping.x, default: none)
+      let yv = row.at(mapping.y, default: none)
+      let p = if polar != none {
+        polar-point(xv, yv, polar)
+      } else {
+        let cx = map-position(x-trained, xv, ctx.px-range)
+        let cy = map-position(y-trained, yv, ctx.py-range)
+        if cx == none or cy == none { none } else { (cx, cy) }
+      }
+      if p == none { continue }
+      pts.push(p)
     }
     if pts.len() < 3 { continue }
 

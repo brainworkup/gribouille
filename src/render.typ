@@ -102,7 +102,19 @@
 
 // Layers whose `geom` is missing from this set panic under `coord-polar`
 // rather than silently falling back to cartesian rendering.
-#let _POLAR-AWARE = ("col", "point", "line", "path", "step", "segment")
+#let _POLAR-AWARE = (
+  "col",
+  "point",
+  "line",
+  "path",
+  "step",
+  "segment",
+  "polygon",
+  "area",
+  "ribbon",
+  "rect",
+  "tile",
+)
 
 #import "legend.typ" as legend-mod
 #import "facet/labellers.typ" as labellers
