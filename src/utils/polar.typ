@@ -67,6 +67,21 @@
   (cx + r * calc.cos(theta), cy + r * calc.sin(theta))
 }
 
+// Single entry point for geoms: projects a row's `(x, y)` to canvas units
+// via either the trained scales or the active polar bundle. Returns `none`
+// when either coordinate fails to resolve.
+#let project-point(ctx, xv, yv) = {
+  let polar = ctx.at("polar", default: none)
+  if polar != none { return polar-point(xv, yv, polar) }
+  let xt = ctx.trained.at("x", default: none)
+  let yt = ctx.trained.at("y", default: none)
+  if xt == none or yt == none { return none }
+  let cx = map-position(xt, xv, ctx.px-range)
+  let cy = map-position(yt, yv, ctx.py-range)
+  if cx == none or cy == none { return none }
+  (cx, cy)
+}
+
 // Closed wedge polygon (centre or annulus segment). `theta-lo` and
 // `theta-hi` are math-space radians, `r-lo` and `r-hi` are canvas units.
 // `n` defaults to one step per ~5° of arc with a floor of eight steps so

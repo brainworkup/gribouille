@@ -1,12 +1,11 @@
 ///! Closed polygons from `(x, y)` rows, one polygon per group.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Polygon layer: one closed filled polygon per group.
@@ -110,20 +109,15 @@
     neutral-fill,
   )
 
-  let polar = ctx.at("polar", default: none)
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
     let pts = ()
     for row in rows {
-      let xv = row.at(mapping.x, default: none)
-      let yv = row.at(mapping.y, default: none)
-      let p = if polar != none {
-        polar-point(xv, yv, polar)
-      } else {
-        let cx = map-position(x-trained, xv, ctx.px-range)
-        let cy = map-position(y-trained, yv, ctx.py-range)
-        if cx == none or cy == none { none } else { (cx, cy) }
-      }
+      let p = project-point(
+        ctx,
+        row.at(mapping.x, default: none),
+        row.at(mapping.y, default: none),
+      )
       if p == none { continue }
       pts.push(p)
     }

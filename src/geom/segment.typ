@@ -1,10 +1,9 @@
 ///! Straight line segments from `(x, y)` to `(xend, yend)`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 
 /// Segment layer: one line from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -99,26 +98,17 @@
 
   let ink = ctx.theme.at("ink", default: black)
 
-  let polar = ctx.at("polar", default: none)
   for row in data {
     let x0 = parse-number(row.at(x-col, default: none))
     let y0 = parse-number(row.at(y-col, default: none))
     let x1 = parse-number(row.at(xend-col, default: none))
     let y1 = parse-number(row.at(yend-col, default: none))
     if x0 == none or y0 == none or x1 == none or y1 == none { continue }
-    let (cx0, cy0, cx1, cy1) = if polar != none {
-      let p0 = polar-point(x0, y0, polar)
-      let p1 = polar-point(x1, y1, polar)
-      if p0 == none or p1 == none { continue }
-      (p0.at(0), p0.at(1), p1.at(0), p1.at(1))
-    } else {
-      let a = map-position(x-trained, x0, ctx.px-range)
-      let b = map-position(y-trained, y0, ctx.py-range)
-      let c = map-position(x-trained, x1, ctx.px-range)
-      let d = map-position(y-trained, y1, ctx.py-range)
-      if a == none or b == none or c == none or d == none { continue }
-      (a, b, c, d)
-    }
+    let p0 = project-point(ctx, x0, y0)
+    let p1 = project-point(ctx, x1, y1)
+    if p0 == none or p1 == none { continue }
+    let (cx0, cy0) = p0
+    let (cx1, cy1) = p1
 
     let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
 

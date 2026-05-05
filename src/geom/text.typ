@@ -4,9 +4,8 @@
 ///! with a fill and border, use \@geom-label.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 #import "../utils/typst-markup.typ": eval-as-markup
 
 /// Text label layer reading strings from the `label` aesthetic.
@@ -120,17 +119,12 @@
     .at("typst-marks", default: (:))
     .at("label", default: false)
 
-  let polar = ctx.at("polar", default: none)
   for row in data {
-    let xv = row.at(mapping.x, default: none)
-    let yv = row.at(mapping.y, default: none)
-    let projected = if polar != none {
-      polar-point(xv, yv, polar)
-    } else {
-      let cx = map-position(x-trained, xv, ctx.px-range)
-      let cy = map-position(y-trained, yv, ctx.py-range)
-      if cx == none or cy == none { none } else { (cx, cy) }
-    }
+    let projected = project-point(
+      ctx,
+      row.at(mapping.x, default: none),
+      row.at(mapping.y, default: none),
+    )
     if projected == none { continue }
     let (cx, cy) = projected
     let label = if use-const { const-label } else {

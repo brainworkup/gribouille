@@ -7,11 +7,10 @@
 ///! sideways ribbon and should be inspected per use.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Filled band between `ymin` and `ymax` along the x aesthetic.
@@ -115,27 +114,10 @@
 
   if sorted.len() < 2 { return }
 
-  let polar = ctx.at("polar", default: none)
-  let upper = if polar != none {
-    sorted.map(p => polar-point(p.x, p.hi, polar))
-  } else {
-    sorted.map(p => (
-      map-position(x-trained, p.x, ctx.px-range),
-      map-position(y-trained, p.hi, ctx.py-range),
-    ))
-  }
-  let lower = if polar != none {
-    sorted.rev().map(p => polar-point(p.x, p.lo, polar))
-  } else {
-    sorted
-      .rev()
-      .map(p => (
-        map-position(x-trained, p.x, ctx.px-range),
-        map-position(y-trained, p.lo, ctx.py-range),
-      ))
-  }
+  let upper = sorted.map(p => project-point(ctx, p.x, p.hi))
+  let lower = sorted.rev().map(p => project-point(ctx, p.x, p.lo))
   let pts = upper + lower
-  if pts.any(p => p == none or p.at(0) == none or p.at(1) == none) { return }
+  if pts.any(p => p == none) { return }
 
   let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)

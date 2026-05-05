@@ -5,8 +5,7 @@
 ///! generates its own samples from `fun`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.
@@ -110,19 +109,12 @@
   let n = calc.max(2, int(layer.params.n))
   let step = (hi - lo) / (n - 1)
 
-  let polar = ctx.at("polar", default: none)
   let pts = ()
   for i in range(0, n) {
     let x = lo + i * step
     let y = fun(x)
     if y == none { continue }
-    let p = if polar != none {
-      polar-point(x, float(y), polar)
-    } else {
-      let cx = map-position(x-trained, x, ctx.px-range)
-      let cy = map-position(y-trained, float(y), ctx.py-range)
-      if cx == none or cy == none { none } else { (cx, cy) }
-    }
+    let p = project-point(ctx, x, float(y))
     if p == none { continue }
     pts.push(p)
   }

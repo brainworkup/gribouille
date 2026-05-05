@@ -6,12 +6,11 @@
 ///! line; check the rendered output if both axes are continuous.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Area layer: filled polygon from `y = 0` up to `y` along x, per group.
@@ -96,13 +95,6 @@
   if x-trained == none or y-trained == none { return }
   if y-trained.type != "continuous" { return }
 
-  let polar = ctx.at("polar", default: none)
-  let baseline = if polar != none { none } else {
-    let b = map-position(y-trained, 0, ctx.py-range)
-    if b == none { return }
-    b
-  }
-
   let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
   let (default-colour, default-fill) = resolve-pair-defaults(
@@ -124,25 +116,10 @@
       .sorted(key: p => p.x)
     if sorted.len() < 2 { continue }
 
-    let upper = if polar != none {
-      sorted.map(p => polar-point(p.x, p.y, polar))
-    } else {
-      sorted.map(p => (
-        map-position(x-trained, p.x, ctx.px-range),
-        map-position(y-trained, p.y, ctx.py-range),
-      ))
-    }
-    let lower = if polar != none {
-      sorted.rev().map(p => polar-point(p.x, 0, polar))
-    } else {
-      sorted
-        .rev()
-        .map(p => (map-position(x-trained, p.x, ctx.px-range), baseline))
-    }
+    let upper = sorted.map(p => project-point(ctx, p.x, p.y))
+    let lower = sorted.rev().map(p => project-point(ctx, p.x, 0))
     let pts = upper + lower
-    if pts.any(p => p == none or p.at(0) == none or p.at(1) == none) {
-      continue
-    }
+    if pts.any(p => p == none) { continue }
 
     let leader = rows.first()
     let final-fill = resolve-fill-colour(

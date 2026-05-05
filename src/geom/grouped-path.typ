@@ -3,12 +3,11 @@
 // (path: input order; line: sort by x; step: sort + stair).
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/linetype-resolve.typ": resolve-linetype
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -28,22 +27,17 @@
     .map(p => p.row)
 }
 
-// Map rows to (cx, cy) screen positions using the trained x and y scales,
-// or via the joint polar projection when `ctx.polar` is set. Skips rows
-// whose mapped position fails to resolve.
+// Map rows to (cx, cy) screen positions via `project-point`, which routes
+// through `ctx.polar` when active. Skips rows whose mapped position fails
+// to resolve.
 #let rows-to-points(rows, mapping, x-trained, y-trained, ctx) = {
-  let polar = ctx.at("polar", default: none)
   let pts = ()
   for row in rows {
-    let xv = row.at(mapping.x, default: none)
-    let yv = row.at(mapping.y, default: none)
-    let p = if polar != none {
-      polar-point(xv, yv, polar)
-    } else {
-      let cx = map-position(x-trained, xv, ctx.px-range)
-      let cy = map-position(y-trained, yv, ctx.py-range)
-      if cx == none or cy == none { none } else { (cx, cy) }
-    }
+    let p = project-point(
+      ctx,
+      row.at(mapping.x, default: none),
+      row.at(mapping.y, default: none),
+    )
     if p == none { continue }
     pts.push(p)
   }

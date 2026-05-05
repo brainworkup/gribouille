@@ -6,7 +6,6 @@
 
 #import "../deps.typ": cetz
 #import "../stat/smooth.typ": stat-smooth
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": (
@@ -14,7 +13,7 @@
 )
 #import "../utils/aes-pair.typ": aes-set
 #import "../utils/linetype-resolve.typ": resolve-linetype
-#import "../utils/polar.typ": polar-point
+#import "../utils/polar.typ": project-point
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -199,22 +198,13 @@
       ((ctx.resolve-colour)(fill-trained, ctx.palette))(sample)
     } else { line-colour }
 
-    let polar = ctx.at("polar", default: none)
-    let _project(x, y) = if polar != none {
-      polar-point(x, y, polar)
-    } else {
-      let cx = map-position(x-trained, x, ctx.px-range)
-      let cy = map-position(y-trained, y, ctx.py-range)
-      if cx == none or cy == none { none } else { (cx, cy) }
-    }
-
     // Confidence ribbon first, so the line draws on top.
     let has-band = (
       layer.params.se and sorted.all(p => p.lo != none and p.hi != none)
     )
     if has-band {
-      let upper = sorted.map(p => _project(p.x, p.hi))
-      let lower = sorted.rev().map(p => _project(p.x, p.lo))
+      let upper = sorted.map(p => project-point(ctx, p.x, p.hi))
+      let lower = sorted.rev().map(p => project-point(ctx, p.x, p.lo))
       let pts = upper + lower
       if pts.all(p => p != none) {
         let alpha = resolve-alpha(
@@ -229,7 +219,9 @@
       }
     }
 
-    let line-pts = sorted.map(p => _project(p.x, p.y)).filter(p => p != none)
+    let line-pts = sorted
+      .map(p => project-point(ctx, p.x, p.y))
+      .filter(p => p != none)
     if line-pts.len() >= 2 and not suppress-line {
       let thickness = resolve-linewidth(
         layer,
