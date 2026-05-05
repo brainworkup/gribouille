@@ -13,6 +13,7 @@
 /// \@param theta Which axis is angular: `"x"` (default) or `"y"`.
 /// \@param start Offset in radians from 12 o'clock for the first slice.
 /// \@param direction `1` (default) advances clockwise; `-1` counter-clockwise.
+/// \@param clip `"on"` (default) clips marks to the panel rectangle; `"off"` lets marks render past it.
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.
 ///
@@ -34,10 +35,11 @@
 /// ```
 ///
 /// \@see \@plot, \@geom-col
-#let coord-polar(theta: "x", start: 0, direction: 1) = (
+#let coord-polar(theta: "x", start: 0, direction: 1, clip: "on") = (
   kind: "coord",
   coord: "polar",
   theta: theta,
   start: start,
   direction: direction,
+  clip: clip,
 )

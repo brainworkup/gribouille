@@ -91,4 +91,21 @@
 #assert(approx-eq(ccw-quarter.at(0), 5 - 2.5))
 #assert(approx-eq(ccw-quarter.at(1), 5))
 
+// start rotates the sweep origin: start = π/2 puts x = 0 at 3 o'clock.
+#let off-coord = coord-polar(start: calc.pi / 2)
+#let off = polar-ctx(off-coord, xt, yt, (0, 10), (0, 10))
+#let off-zero = polar-point(0, 50, off)
+#assert(approx-eq(off-zero.at(0), 5 + 2.5))
+#assert(approx-eq(off-zero.at(1), 5))
+
+// clip defaults to "on" (truthy on the bundle); "off" surfaces as `false`.
+#let clip-default = coord-polar()
+#assert.eq(clip-default.clip, "on")
+#let clip-off = coord-polar(clip: "off")
+#assert.eq(clip-off.clip, "off")
+#let clip-on-bundle = polar-ctx(clip-default, xt, yt, (0, 10), (0, 10))
+#assert.eq(clip-on-bundle.clip, true)
+#let clip-off-bundle = polar-ctx(clip-off, xt, yt, (0, 10), (0, 10))
+#assert.eq(clip-off-bundle.clip, false)
+
 coord-polar tests passed.

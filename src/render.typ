@@ -1458,14 +1458,17 @@
       if draw != none { draw(layer, inner-ctx) }
     }
   })
+  let clip-on = if inner-polar != none { inner-polar.clip } else { true }
   content(
     (px-lo, py-lo),
-    box(
-      clip: true,
-      width: panel-w * 1cm,
-      height: panel-h * 1cm,
-      geoms,
-    ),
+    if clip-on {
+      box(
+        clip: true,
+        width: panel-w * 1cm,
+        height: panel-h * 1cm,
+        geoms,
+      )
+    } else { geoms },
     anchor: "south-west",
   )
 
