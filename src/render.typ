@@ -1287,6 +1287,127 @@
     line((px-lo, py-lo), (px-lo, py-hi), stroke: _ax-line.yl)
   }
 
+  if is-polar {
+    let (cx, cy) = outer-polar.centre
+    let r-max = outer-polar.r-max
+    let theta-range = outer-polar.theta-range
+    let r-range = outer-polar.r-range
+
+    let (
+      theta-trained,
+      r-trained,
+      theta-disp,
+      r-disp,
+      theta-text,
+      r-text,
+    ) = if outer-polar.cat-is-theta {
+      (x-trained, y-trained, _x-disp, _y-disp, _ax-text.xb, _ax-text.yl)
+    } else {
+      (y-trained, x-trained, _y-disp, _x-disp, _ax-text.yl, _ax-text.xb)
+    }
+
+    let _polar-theta-of(trained, value) = if trained.type == "continuous" {
+      map-axis-data(trained, value, theta-range)
+    } else {
+      map-position(trained, value, theta-range)
+    }
+
+    if grid-stroke != none and r-trained != none {
+      if r-trained.type == "continuous" {
+        for b in _axis-breaks(r-trained) {
+          let r = map-axis-data(r-trained, b, r-range)
+          if r > 0 and r <= r-max {
+            circle((cx, cy), radius: r, fill: none, stroke: grid-stroke)
+          }
+        }
+      }
+    }
+
+    let theta-breaks = if theta-trained == none { () } else if (
+      theta-trained.type == "continuous"
+    ) {
+      _axis-breaks(theta-trained)
+    } else { theta-trained.domain }
+
+    if grid-stroke != none and theta-trained != none {
+      for b in theta-breaks {
+        let theta = _polar-theta-of(theta-trained, b)
+        if theta == none { continue }
+        line(
+          (cx, cy),
+          (cx + r-max * calc.cos(theta), cy + r-max * calc.sin(theta)),
+          stroke: grid-stroke,
+        )
+      }
+    }
+
+    if (
+      show-x-labels and theme.tick-labels and theta-trained != none
+    ) {
+      let pad = 0.2
+      for (idx, b) in theta-breaks.enumerate() {
+        let theta = _polar-theta-of(theta-trained, b)
+        if theta == none { continue }
+        let raw = if theta-trained.type == "continuous" {
+          _axis-label(theta-trained, b)
+        } else { b }
+        let label-text = resolve-label(
+          theta-disp.labels,
+          b,
+          idx,
+          raw,
+          typst-mark: theta-disp.typst-mark,
+        )
+        let lr = r-max + pad
+        content(
+          (cx + lr * calc.cos(theta), cy + lr * calc.sin(theta)),
+          text(
+            size: theta-text.size,
+            fill: theta-text.fill,
+            weight: theta-text.weight,
+          )[#resolve-prose(label-text, eval-strings: theta-text.typst)],
+          anchor: "center",
+        )
+      }
+    }
+
+    if (
+      show-y-labels
+        and theme.tick-labels
+        and r-trained != none
+        and r-trained.type == "continuous"
+    ) {
+      let start-angle = theta-range.at(0)
+      let dx = calc.cos(start-angle)
+      let dy = calc.sin(start-angle)
+      // Offset perpendicular to the radial ray so labels sit beside the ray
+      // rather than on top of it; sign points away from the panel interior.
+      let nx = calc.cos(start-angle - calc.pi / 2)
+      let ny = calc.sin(start-angle - calc.pi / 2)
+      let pad = 0.1
+      for (idx, b) in _axis-breaks(r-trained).enumerate() {
+        let r = map-axis-data(r-trained, b, r-range)
+        if r < 0 or r > r-max { continue }
+        let label-text = resolve-label(
+          r-disp.labels,
+          b,
+          idx,
+          _axis-label(r-trained, b),
+          typst-mark: r-disp.typst-mark,
+        )
+        content(
+          (cx + r * dx + pad * nx, cy + r * dy + pad * ny),
+          text(
+            size: r-text.size,
+            fill: r-text.fill,
+            weight: r-text.weight,
+          )[#resolve-prose(label-text, eval-strings: r-text.typst)],
+          anchor: "center",
+        )
+      }
+    }
+  }
+
   // Render geoms into a sibling cetz canvas whose origin is (0, 0) and whose
   // bounds match the panel rectangle, then clip via Typst's `box(clip: true)`
   // before placing it back at the panel's south-west corner. cetz 0.5.0 has
