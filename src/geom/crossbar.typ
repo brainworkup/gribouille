@@ -1,8 +1,9 @@
 ///! Hollow box from `ymin` to `ymax` with a thicker bar at `y` (the median).
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
+#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/band.typ": x-band
+#import "../utils/radial.typ": radial-arc, radial-wedge
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-stroke-colour
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -121,6 +122,101 @@
   )
 
   let half-width = layer.params.width / 2
+
+  let radial = ctx.at("radial", default: none)
+  if radial != none {
+    // Mirror the geom-col category-span heuristic so wedge widths match
+    // ggplot2's bar-width semantics under polar.
+    let cat-trained = if radial.cat-is-theta { x-trained } else { y-trained }
+    let val-trained = if radial.cat-is-theta { y-trained } else { x-trained }
+    let cat-col = if radial.cat-is-theta { x-col } else { y-col }
+    let cat-range = if radial.cat-is-theta {
+      radial.theta-range
+    } else { radial.r-range }
+    let value-range = if radial.cat-is-theta {
+      radial.r-range
+    } else { radial.theta-range }
+    let category-span = if cat-trained.type == "discrete" {
+      discrete-slot-width(cat-trained, cat-range)
+    } else {
+      let xs = data
+        .map(r => parse-number(r.at(cat-col, default: none)))
+        .filter(v => v != none)
+      let (d-lo, d-hi) = cat-trained.domain
+      if xs.len() < 2 or d-hi == d-lo {
+        (cat-range.at(1) - cat-range.at(0)) / 10
+      } else {
+        let sorted = xs.dedup().sorted()
+        let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
+          map-axis(cat-trained, sorted.at(i + 1), cat-range)
+            - map-axis(cat-trained, sorted.at(i), cat-range),
+        ))
+        calc.min(..panel-gaps)
+      }
+    }
+    let half = category-span * layer.params.width / 2
+    for row in data {
+      let raw-cat = if radial.cat-is-theta {
+        row.at(x-col, default: none)
+      } else { row.at(y-col, default: none) }
+      let cat-c = map-position(cat-trained, raw-cat, cat-range)
+      let mid = parse-number(row.at(y-col, default: none))
+      let lo = parse-number(row.at(ymin-col, default: none))
+      let hi = parse-number(row.at(ymax-col, default: none))
+      if cat-c == none or mid == none or lo == none or hi == none { continue }
+      let v-mid = map-axis(val-trained, mid, value-range)
+      let v-lo = map-axis(val-trained, lo, value-range)
+      let v-hi = map-axis(val-trained, hi, value-range)
+      let (theta-lo, theta-hi, r-lo, r-hi, r-mid) = if radial.cat-is-theta {
+        (cat-c - half, cat-c + half, v-lo, v-hi, v-mid)
+      } else {
+        (v-lo, v-hi, cat-c - half, cat-c + half, cat-c)
+      }
+      if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
+
+      let final-fill = resolve-fill-colour(
+        layer,
+        mapping,
+        ctx,
+        row,
+        default-fill,
+      )
+      let resolved-stroke = resolve-stroke-colour(
+        layer,
+        mapping,
+        ctx,
+        row,
+        default-colour,
+      )
+      let stroke-spec = build-stroke(layer.params.stroke, resolved-stroke)
+      let middle-stroke-spec = build-stroke(
+        layer.params.middle-stroke,
+        resolved-stroke,
+      )
+
+      let pts = radial-wedge(theta-lo, theta-hi, r-lo, r-hi, radial)
+      cetz.draw.line(
+        ..pts,
+        close: true,
+        fill: final-fill,
+        stroke: stroke-spec,
+      )
+      if radial.cat-is-theta {
+        let median = radial-arc(theta-lo, theta-hi, r-mid, radial)
+        cetz.draw.line(..median, stroke: middle-stroke-spec)
+      } else {
+        // Theta axis is the value direction: median is a radial line at the
+        // mid-theta from r-lo to r-hi.
+        let (cx, cy) = radial.centre
+        cetz.draw.line(
+          (cx + r-lo * calc.cos(v-mid), cy + r-lo * calc.sin(v-mid)),
+          (cx + r-hi * calc.cos(v-mid), cy + r-hi * calc.sin(v-mid)),
+          stroke: middle-stroke-spec,
+        )
+      }
+    }
+    return
+  }
 
   for row in data {
     let raw-x = row.at(x-col, default: none)

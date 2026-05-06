@@ -5,9 +5,9 @@
 ///! and `yend = y + radius * sin(angle)`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
+#import "../utils/radial.typ": project-point
 
 /// Spoke layer: one segment from `(x, y)` along `(angle, radius)` per row.
 ///
@@ -129,11 +129,11 @@
     }
     let x1 = x0 + r * cos-t
     let y1 = y0 + r * sin-t
-    let cx0 = map-position(x-trained, x0, ctx.px-range)
-    let cy0 = map-position(y-trained, y0, ctx.py-range)
-    let cx1 = map-position(x-trained, x1, ctx.px-range)
-    let cy1 = map-position(y-trained, y1, ctx.py-range)
-    if cx0 == none or cy0 == none or cx1 == none or cy1 == none { continue }
+    let p0 = project-point(ctx, x0, y0)
+    let p1 = project-point(ctx, x1, y1)
+    if p0 == none or p1 == none { continue }
+    let (cx0, cy0) = p0
+    let (cx1, cy1) = p1
 
     let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
     let thickness = resolve-linewidth(

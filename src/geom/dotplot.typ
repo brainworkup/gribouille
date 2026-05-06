@@ -10,6 +10,7 @@
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/radial.typ": project-point
 
 /// Dotplot layer: one dot per observation, stacked within bins.
 ///
@@ -116,9 +117,9 @@
   let dot-radius = radius-cm * 1cm
 
   for row in data {
-    let cx = map-position(x-trained, row.at(mapping.x), ctx.px-range)
-    let cy = map-position(y-trained, row.at(mapping.y), ctx.py-range)
-    if cx == none or cy == none { continue }
+    let p = project-point(ctx, row.at(mapping.x), row.at(mapping.y))
+    if p == none { continue }
+    let (cx, cy) = p
 
     let body-fill = resolve-fill-colour(layer, mapping, ctx, row, default-fill)
     let alpha = resolve-alpha(layer, mapping, ctx, row, default-alpha: 1)

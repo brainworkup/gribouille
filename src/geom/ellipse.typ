@@ -1,10 +1,10 @@
 ///! Parametric ellipse geom: one ellipse per data row.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
+#import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Ellipse layer: draws one closed ellipse per row from `(x0, y0, a, b, angle)`.
@@ -135,10 +135,9 @@
       let su = calc.sin(u)
       let dx = a * cu * cos-t - b * su * sin-t
       let dy = a * cu * sin-t + b * su * cos-t
-      let cx = map-position(x-trained, x0 + dx, ctx.px-range)
-      let cy = map-position(y-trained, y0 + dy, ctx.py-range)
-      if cx == none or cy == none { continue }
-      pts.push((cx, cy))
+      let p = project-point(ctx, x0 + dx, y0 + dy)
+      if p == none { continue }
+      pts.push(p)
     }
     if pts.len() < 3 { continue }
 

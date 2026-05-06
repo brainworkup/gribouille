@@ -124,6 +124,18 @@
   "blank",
   "function",
   "mark",
+  "hex",
+  "ellipse",
+  "curve",
+  "spoke",
+  "errorbar",
+  "errorbarh",
+  "linerange",
+  "pointrange",
+  "crossbar",
+  "dotplot",
+  "boxplot",
+  "rug",
 )
 
 #import "legend.typ" as legend-mod

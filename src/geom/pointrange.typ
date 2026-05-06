@@ -1,12 +1,12 @@
 ///! Point at `(x, y)` plus a vertical range from `ymin` to `ymax`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": (
   resolve-linewidth, resolve-size, resolve-stroke-colour,
 )
 #import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/radial.typ": project-point
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
 ///
@@ -114,15 +114,18 @@
   let ink = ctx.theme.at("ink", default: black)
 
   for row in data {
-    let cx = map-position(x-trained, row.at(x-col, default: none), ctx.px-range)
+    let xv = row.at(x-col, default: none)
     let mid = parse-number(row.at(y-col, default: none))
     let lo = parse-number(row.at(ymin-col, default: none))
     let hi = parse-number(row.at(ymax-col, default: none))
-    if cx == none or mid == none or lo == none or hi == none { continue }
-    let cy-mid = map-position(y-trained, mid, ctx.py-range)
-    let cy-lo = map-position(y-trained, lo, ctx.py-range)
-    let cy-hi = map-position(y-trained, hi, ctx.py-range)
-    if cy-mid == none or cy-lo == none or cy-hi == none { continue }
+    if xv == none or mid == none or lo == none or hi == none { continue }
+    let p-mid = project-point(ctx, xv, mid)
+    let p-lo = project-point(ctx, xv, lo)
+    let p-hi = project-point(ctx, xv, hi)
+    if p-mid == none or p-lo == none or p-hi == none { continue }
+    let (cx-mid, cy-mid) = p-mid
+    let (cx-lo, cy-lo) = p-lo
+    let (cx-hi, cy-hi) = p-hi
 
     let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
     let final-fill = resolve-fill-colour(
@@ -141,8 +144,8 @@
       layer.params.stroke,
     )
     cetz.draw.line(
-      (cx, cy-lo),
-      (cx, cy-hi),
+      (cx-lo, cy-lo),
+      (cx-hi, cy-hi),
       stroke: (
         paint: final-colour,
         thickness: thickness,
@@ -157,7 +160,7 @@
       layer.params.size,
     )
     cetz.draw.circle(
-      (cx, cy-mid),
+      (cx-mid, cy-mid),
       radius: radius,
       fill: final-fill,
       stroke: none,

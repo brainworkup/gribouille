@@ -7,6 +7,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/hex.typ": hex-vertices
+#import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../utils/types.typ": parse-number
 
@@ -106,10 +107,9 @@
     let dy = row.at("_hex-dy", default: none)
     if cx == none or cy == none or dx == none or dy == none { continue }
     let pts = hex-vertices(cx, cy, dx, dy).map(((vx, vy)) => (
-      map-position(x-trained, vx, ctx.px-range),
-      map-position(y-trained, vy, ctx.py-range),
+      project-point(ctx, vx, vy)
     ))
-    if pts.any(((px, py)) => px == none or py == none) { continue }
+    if pts.any(p => p == none) { continue }
 
     let final-fill = resolve-fill-colour(
       layer,

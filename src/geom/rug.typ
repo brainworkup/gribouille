@@ -101,6 +101,10 @@
   if mapping == none or data == none { return }
   let sides = layer.params.sides
   if sides == none or sides == "" { return }
+  // Rug tassels are anchored to rectangular panel edges; the axis-edge
+  // semantics don't translate to polar, so degrade to a no-op rather than
+  // emit confusing ticks.
+  if ctx.at("radial", default: none) != none { return }
 
   let x-col = mapping.at("x", default: none)
   let y-col = mapping.at("y", default: none)

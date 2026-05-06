@@ -1,9 +1,9 @@
 ///! Vertical range from `ymin` to `ymax` at each `x`.
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
+#import "../utils/radial.typ": project-point
 
 /// Linerange layer: one vertical line from `ymin` to `ymax` at each `x`.
 ///
@@ -95,13 +95,15 @@
   let ink = ctx.theme.at("ink", default: black)
 
   for row in data {
-    let cx = map-position(x-trained, row.at(x-col, default: none), ctx.px-range)
+    let xv = row.at(x-col, default: none)
     let lo = parse-number(row.at(ymin-col, default: none))
     let hi = parse-number(row.at(ymax-col, default: none))
-    if cx == none or lo == none or hi == none { continue }
-    let cy-lo = map-position(y-trained, lo, ctx.py-range)
-    let cy-hi = map-position(y-trained, hi, ctx.py-range)
-    if cy-lo == none or cy-hi == none { continue }
+    if xv == none or lo == none or hi == none { continue }
+    let p-lo = project-point(ctx, xv, lo)
+    let p-hi = project-point(ctx, xv, hi)
+    if p-lo == none or p-hi == none { continue }
+    let (cx-lo, cy-lo) = p-lo
+    let (cx-hi, cy-hi) = p-hi
 
     let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
 
@@ -113,8 +115,8 @@
       layer.params.stroke,
     )
     cetz.draw.line(
-      (cx, cy-lo),
-      (cx, cy-hi),
+      (cx-lo, cy-lo),
+      (cx-hi, cy-hi),
       stroke: (
         paint: final-colour,
         thickness: thickness,

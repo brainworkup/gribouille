@@ -120,6 +120,21 @@
   groups
 }
 
+// Polyline samples along an arc at constant radius between `theta-lo` and
+// `theta-hi`. Used by composite geoms (boxplot, crossbar) to draw a median
+// or whisker line that follows the polar layout.
+#let radial-arc(theta-lo, theta-hi, r, radial, n: none) = {
+  let (cx, cy) = radial.centre
+  let span = calc.abs(theta-hi - theta-lo)
+  let steps = if n != none { n } else {
+    calc.max(8, int(calc.ceil(span / (calc.pi / 36))))
+  }
+  range(steps + 1).map(i => {
+    let t = theta-lo + (theta-hi - theta-lo) * i / steps
+    (cx + r * calc.cos(t), cy + r * calc.sin(t))
+  })
+}
+
 // Closed wedge polygon (centre or annulus segment). `theta-lo` and
 // `theta-hi` are math-space radians, `r-lo` and `r-hi` are canvas units.
 // `n` defaults to one step per ~5° of arc with a floor of eight steps so

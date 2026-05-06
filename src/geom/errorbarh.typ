@@ -4,6 +4,7 @@
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
+#import "../utils/radial.typ": project-point
 
 /// Horizontal errorbar layer: range with a vertical cap at each end.
 ///
@@ -166,6 +167,33 @@
       thickness: layer.params.stroke,
       dash: layer.params.linetype,
     )
+
+    if ctx.at("radial", default: none) != none {
+      let p-lo = project-point(ctx, lo, raw-y)
+      let p-hi = project-point(ctx, hi, raw-y)
+      if p-lo == none or p-hi == none { continue }
+      let (sx-lo, sy-lo) = p-lo
+      let (sx-hi, sy-hi) = p-hi
+      cetz.draw.line((sx-lo, sy-lo), (sx-hi, sy-hi), stroke: stroke-spec)
+      let dx = sx-hi - sx-lo
+      let dy = sy-hi - sy-lo
+      let len = calc.sqrt(dx * dx + dy * dy)
+      if len == 0 { continue }
+      let cap-half = if height-is-length { half-height } else { 0.15 }
+      let nx = -dy / len * cap-half
+      let ny = dx / len * cap-half
+      cetz.draw.line(
+        (sx-lo - nx, sy-lo - ny),
+        (sx-lo + nx, sy-lo + ny),
+        stroke: stroke-spec,
+      )
+      cetz.draw.line(
+        (sx-hi - nx, sy-hi - ny),
+        (sx-hi + nx, sy-hi + ny),
+        stroke: stroke-spec,
+      )
+      continue
+    }
 
     cetz.draw.line((cx-lo, cy), (cx-hi, cy), stroke: stroke-spec)
     cetz.draw.line((cx-lo, cap-lo), (cx-lo, cap-hi), stroke: stroke-spec)
