@@ -1402,42 +1402,6 @@
         )
       }
     }
-
-    if (
-      show-y-labels
-        and theme.tick-labels
-        and r-trained != none
-        and r-trained.type == "continuous"
-    ) {
-      let start-angle = theta-range.at(0)
-      let dx = calc.cos(start-angle)
-      let dy = calc.sin(start-angle)
-      // Offset perpendicular to the radial ray so labels sit beside the ray
-      // rather than on top of it; sign points away from the panel interior.
-      let nx = calc.cos(start-angle - calc.pi / 2)
-      let ny = calc.sin(start-angle - calc.pi / 2)
-      let pad = 0.1
-      for (idx, b) in _axis-breaks(r-trained).enumerate() {
-        let r = map-axis-data(r-trained, b, r-range)
-        if r < 0 or r > r-max { continue }
-        let label-text = resolve-label(
-          r-disp.labels,
-          b,
-          idx,
-          _axis-label(r-trained, b),
-          typst-mark: r-disp.typst-mark,
-        )
-        content(
-          (cx + r * dx + pad * nx, cy + r * dy + pad * ny),
-          text(
-            size: r-text.size,
-            fill: r-text.fill,
-            weight: r-text.weight,
-          )[#resolve-prose(label-text, eval-strings: r-text.typst)],
-          anchor: "center",
-        )
-      }
-    }
   }
 
   // Render geoms into a sibling cetz canvas whose origin is (0, 0) and whose
@@ -1486,6 +1450,52 @@
     } else { geoms },
     anchor: "south-west",
   )
+
+  // Radial-axis tick labels render after geoms so filled wedges, lines, and
+  // points cannot mask them. Labels sit centred on the start spoke.
+  if is-radial {
+    let (cx, cy) = outer-radial.centre
+    let r-max = outer-radial.r-max
+    let theta-range = outer-radial.theta-range
+    let r-range = outer-radial.r-range
+    let r-trained = if outer-radial.cat-is-theta {
+      y-trained
+    } else { x-trained }
+    let r-disp = if outer-radial.cat-is-theta { _y-disp } else { _x-disp }
+    let r-text = if outer-radial.cat-is-theta {
+      _ax-text.yl
+    } else { _ax-text.xb }
+    if (
+      show-y-labels
+        and theme.tick-labels
+        and r-trained != none
+        and r-trained.type == "continuous"
+    ) {
+      let start-angle = theta-range.at(0)
+      let dx = calc.cos(start-angle)
+      let dy = calc.sin(start-angle)
+      for (idx, b) in _axis-breaks(r-trained).enumerate() {
+        let r = map-axis-data(r-trained, b, r-range)
+        if r < 0 or r > r-max { continue }
+        let label-text = resolve-label(
+          r-disp.labels,
+          b,
+          idx,
+          _axis-label(r-trained, b),
+          typst-mark: r-disp.typst-mark,
+        )
+        content(
+          (cx + r * dx, cy + r * dy),
+          text(
+            size: r-text.size,
+            fill: r-text.fill,
+            weight: r-text.weight,
+          )[#resolve-prose(label-text, eval-strings: r-text.typst)],
+          anchor: "center",
+        )
+      }
+    }
+  }
 
   // When flipped, the bottom axis shows the user's original y mapping and
   // the left axis shows the user's original x mapping; trained.x and
