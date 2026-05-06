@@ -305,7 +305,7 @@ Items outside the ggplot2 surface: ggforce ports and gribouille-native convenien
 - **Positional scales**: continuous, discrete, log10, sqrt, reverse, date, datetime, time, on x and y.
 - **Colour and fill scales**: continuous, discrete, manual, viridis (c/d/b), brewer, gradient, gradient2, gradientn, grey, hue, distiller, identity.
 - **Other aesthetic scales**: shape and linetype (with manual and identity variants); linewidth, alpha, and size (continuous, manual, binned, identity); size also has `scale-size-area`, `scale-size-binned-area`, and the `scale-radius` linear alias.
-- **Coords**: `coord-cartesian` (with xlim/ylim), `coord-fixed`, `coord-flip`, and `coord-transform` (post-stat per-axis warp); polar deferred.
+- **Coords**: `coord-cartesian` (with xlim/ylim), `coord-fixed`, `coord-flip`, `coord-radial` (pie/donut/rose/radar), and `coord-transform` (post-stat per-axis warp).
 - **Facets**: `facet-wrap` (`fixed`/`free`/`free_x`/`free_y` scales) and `facet-grid` (shared scales only).
 - **Themes**: `theme-minimal`, `theme-classic`, `theme-void`, `theme-grey`, `theme-bw`, `theme-linedraw`, `theme-light`, `theme-dark`, `theme-test`, plus `theme()` with `element-blank`, `element-rect`, `element-line`, `element-text`.
 - **Guides**: `guide-legend` with `title`/`nrow`/`ncol`/`reverse`, automatic `guide-colourbar` for continuous colour and fill, `guide-axis` (x and y) with `guide-axis-logticks` for log10 minor ticks, `guide-none`, and a top-level `guides()` binder.

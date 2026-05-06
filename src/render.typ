@@ -21,7 +21,7 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
-#import "utils/radial.typ": radial-ctx
+#import "utils/radial.typ": radial-axis-of, radial-ctx
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
@@ -1701,11 +1701,7 @@
   // Under `coord-radial`, the radial axis maps view-min to canvas radius 0,
   // so any lo-side padding leaves a hole at the centre. Match ggplot2 by
   // collapsing the radial lo-side to zero when `expand` is auto.
-  let radial-axis = if (
-    coord != none and coord.at("coord", default: none) == "radial"
-  ) {
-    if coord.at("theta", default: "x") == "x" { "y" } else { "x" }
-  } else { none }
+  let radial-axis = radial-axis-of(coord)
   for axis in ("x", "y") {
     let entry = trained.at(axis, default: none)
     if entry == none { continue }

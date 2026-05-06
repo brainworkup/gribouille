@@ -2,6 +2,15 @@
 
 #import "../scale/train.typ": map-position
 
+// "y" when theta is "x" (rose/radar) and "x" when theta is "y" (pie).
+// Returns `none` for non-radial coords. Used during scale expansion, which
+// runs before trained scales exist and so cannot route through `radial-ctx`.
+#let radial-axis-of(coord) = if (
+  coord != none and coord.at("coord", default: none) == "radial"
+) {
+  if coord.at("theta", default: "x") == "x" { "y" } else { "x" }
+} else { none }
+
 // `start = 0` plus `direction = 1` reproduce ggplot2's convention: the first
 // slice opens at 12 o'clock and the sweep advances clockwise. Encoding the
 // sweep as a `(theta-lo, theta-hi)` pair lets `map-position` produce angles
