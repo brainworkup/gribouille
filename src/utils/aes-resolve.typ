@@ -147,7 +147,9 @@
 ///
 /// If the resolved label is a string and `typst-mark` is `true`, the
 /// string is evaluated as Typst markup. Content and other types pass
-/// through.
+/// through. Callbacks may return `none` to signal "drop this break"; the
+/// `coord-radial` cyclic-wrap merge filters `none` out of merged labels
+/// (other tick/legend sites currently render `none` as empty content).
 ///
 /// \@internal
 /// \@param labels A function, array, `auto`, or `none`.

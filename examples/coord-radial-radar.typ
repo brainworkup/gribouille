@@ -18,7 +18,7 @@
   scales: (
     scale-x-continuous(
       limits: (0, 6),
-      labels: v => if v == 6 { none } else { [#v] },
+      labels: v => if v == 6 { none } else { str(v) },
       expand: false,
     ),
     scale-y-continuous(limits: (0, 10)),
