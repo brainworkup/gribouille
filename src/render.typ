@@ -1387,14 +1387,8 @@
             typst-mark: theta-disp.typst-mark,
           )
         })
-        let label-text = if labels.len() == 1 { labels.first() } else {
-          // Higher-domain break first: "24/0", not "0/24".
-          let merged = labels.last()
-          for i in range(labels.len() - 2, -1, step: -1) {
-            merged = merged + [/] + labels.at(i)
-          }
-          merged
-        }
+        // Higher-domain break first: "24/0", not "0/24".
+        let label-text = labels.rev().join([/])
         let theta = group.first().theta
         let lr = r-max + pad
         content(

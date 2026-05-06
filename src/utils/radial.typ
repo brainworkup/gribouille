@@ -106,6 +106,8 @@
     if theta == none { continue }
     let r = calc.rem(theta, 2 * calc.pi)
     if r < 0 { r += 2 * calc.pi }
+    // 6-digit rounding absorbs float noise from `map-position` round-trips
+    // so theta-lo and theta-hi (mathematically 2π apart) collide on key.
     let key = str(calc.round(r, digits: 6))
     let rec = (idx: idx, b: b, theta: theta)
     if key in seen {
