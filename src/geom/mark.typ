@@ -1,7 +1,7 @@
 ///! Annotation geom that encloses each group with a chosen shape.
 
 #import "../deps.typ": cetz
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour

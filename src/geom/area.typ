@@ -10,7 +10,7 @@
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Area layer: filled polygon from `y = 0` up to `y` along x, per group.

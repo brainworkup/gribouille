@@ -1,4 +1,4 @@
-// coord-polar(theta: "y") + geom-col + position-stack produces a pie chart.
+// coord-radial(theta: "y") + geom-col + position-stack produces a pie chart.
 
 #import "../lib.typ": *
 
@@ -16,7 +16,7 @@
   data: revenue,
   mapping: aes(x: "slice", y: "value", fill: "region"),
   layers: (geom-col(width: 1, position: "stack"),),
-  coord: coord-polar(theta: "y"),
+  coord: coord-radial(theta: "y"),
   labs: labs(title: "Revenue share", fill: "Region"),
   theme: theme-minimal(),
   width: 8cm,

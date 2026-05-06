@@ -114,13 +114,13 @@
     thickness: thickness,
     dash: layer.params.linetype,
   )
-  let polar = ctx.at("polar", default: none)
-  if polar != none {
-    let (cx, cy) = polar.centre
-    let r-max = polar.r-max
-    if polar.theta-axis == "x" {
+  let radial = ctx.at("radial", default: none)
+  if radial != none {
+    let (cx, cy) = radial.centre
+    let r-max = radial.r-max
+    if radial.theta-axis == "x" {
       for y in ys {
-        let r = map-axis-data(trained, float(y), polar.r-range)
+        let r = map-axis-data(trained, float(y), radial.r-range)
         if r > 0 and r <= r-max {
           cetz.draw.circle(
             (cx, cy),
@@ -132,7 +132,7 @@
       }
     } else {
       for y in ys {
-        let theta = map-axis-data(trained, float(y), polar.theta-range)
+        let theta = map-axis-data(trained, float(y), radial.theta-range)
         cetz.draw.line(
           (cx, cy),
           (cx + r-max * calc.cos(theta), cy + r-max * calc.sin(theta)),

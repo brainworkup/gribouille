@@ -5,7 +5,7 @@
 
 #import "../deps.typ": cetz
 #import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 #import "../utils/typst-markup.typ": eval-as-markup
 
 /// Text label layer reading strings from the `label` aesthetic.

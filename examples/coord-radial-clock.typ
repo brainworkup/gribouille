@@ -1,4 +1,4 @@
-// Clock-face layout: hourly observations wrapped to a circle via coord-polar.
+// Clock-face layout: hourly observations wrapped to a circle via coord-radial.
 
 #import "../lib.typ": *
 
@@ -16,9 +16,9 @@
     geom-line(stroke: 1pt),
     geom-point(size: 2pt),
   ),
-  coord: coord-polar(theta: "x"),
+  coord: coord-radial(theta: "x"),
   scales: (
-    scale-x-continuous(limits: (0, 24)),
+    scale-x-continuous(limits: (0, 24), expand: false),
   ),
   labs: labs(title: "Daily load"),
   theme: theme-minimal(),

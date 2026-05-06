@@ -1,4 +1,4 @@
-// Radar chart: closed polygon under coord-polar with one vertex per axis.
+// Radar chart: closed polygon under coord-radial with one vertex per axis.
 
 #import "../lib.typ": *
 
@@ -14,7 +14,7 @@
     geom-polygon(fill: rgb("#1f77b4"), alpha: 0.4, stroke: 0.8pt),
     geom-point(size: 2pt),
   ),
-  coord: coord-polar(theta: "x"),
+  coord: coord-radial(theta: "x"),
   scales: (
     scale-x-continuous(limits: (0, 5)),
     scale-y-continuous(limits: (0, 10)),

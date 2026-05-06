@@ -7,7 +7,7 @@
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/linetype-resolve.typ": resolve-linetype
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -28,7 +28,7 @@
 }
 
 // Map rows to (cx, cy) screen positions via `project-point`, which routes
-// through `ctx.polar` when active. Skips rows whose mapped position fails
+// through `ctx.radial` when active. Skips rows whose mapped position fails
 // to resolve.
 #let rows-to-points(rows, mapping, ctx) = {
   let pts = ()

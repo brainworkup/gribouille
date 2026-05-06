@@ -13,7 +13,7 @@
 )
 #import "../utils/aes-pair.typ": aes-set
 #import "../utils/linetype-resolve.typ": resolve-linetype
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 
 /// Fitted trend line with an optional confidence ribbon.
 ///

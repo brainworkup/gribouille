@@ -3,7 +3,7 @@
 #import "../deps.typ": cetz
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 
 /// Segment layer: one line from `(x, y)` to `(xend, yend)` per row.
 ///

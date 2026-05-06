@@ -142,4 +142,68 @@
 #assert.eq(pt-trained.x.view-transform, (1, 5))
 #assert.eq(pt-trained.x.at("view-pad-cm"), (5pt / 1cm, 5pt / 1cm))
 
+// Under `coord-radial`, the radial axis (opposite of `theta`) drops its
+// lo-side expansion to zero so bars meet at radius 0.
+#import "../../src/coord/radial.typ": coord-radial
+
+#let pie-data = (
+  (slice: "all", value: 30, region: "A"),
+  (slice: "all", value: 70, region: "B"),
+)
+#let pie-mapping = aes(x: "slice", y: "value", fill: "region")
+#let pie-layers = (geom-col(width: 1, position: "stack"),)
+#let pie-prepared = pie-layers.map(l => _prepare-layer(
+  l,
+  pie-mapping,
+  pie-data,
+))
+#let pie-trained = train(
+  layers: pie-prepared,
+  mapping: pie-mapping,
+  data: pie-data,
+)
+#let pie-trained = _post-train(pie-trained, pie-prepared)
+#let pie-trained = _apply-expand(pie-trained, coord-radial(theta: "y"))
+// Pie shape (theta: "y"): radial x drops the lo data pad; the geom-min-pad
+// floor (= half the bar width) keeps the inner edge at radius 0.
+#assert.eq(pie-trained.x.view-index, (-0.5, DISCRETE-AUTO-DATA-PAD))
+#assert.eq(pie-trained.x.at("view-pad-cm"), (0, 0))
+
+// Rose shape (theta: "x"): radial y lo collapses from -5% to 0; hi unchanged.
+#let rose-data = (
+  (h: 0, v: 10),
+  (h: 1, v: 50),
+  (h: 2, v: 30),
+)
+#let rose-mapping = aes(x: "h", y: "v")
+#let rose-layers = (geom-point(),)
+#let rose-prepared = rose-layers.map(l => _prepare-layer(
+  l,
+  rose-mapping,
+  rose-data,
+))
+#let rose-trained = train(
+  layers: rose-prepared,
+  mapping: rose-mapping,
+  data: rose-data,
+)
+#let rose-trained = _apply-expand(rose-trained, coord-radial())
+#let (rvt-lo, rvt-hi) = rose-trained.y.view-transform
+#assert.eq(rvt-lo, 10)
+#assert(rvt-hi > 50)
+
+// Explicit `expand:` on the radial scale wins over the radial override.
+#let pinned-trained = train(
+  scales: (scale-x-continuous(expand: (10%, 0%)),),
+  layers: rose-prepared,
+  mapping: rose-mapping,
+  data: rose-data,
+)
+#let pinned-trained = _apply-expand(
+  pinned-trained,
+  coord-radial(theta: "y"),
+)
+#let (pvt-lo, pvt-hi) = pinned-trained.x.view-transform
+#assert(pvt-lo < 0)
+
 Expansion tests passed.

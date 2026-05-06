@@ -1,4 +1,4 @@
-///! Joint `(x, y) → (cx, cy)` projection helpers for `coord-polar`.
+///! Joint `(x, y) → (cx, cy)` projection helpers for `coord-radial`.
 
 #import "../scale/train.typ": map-position
 
@@ -6,8 +6,8 @@
 // slice opens at 12 o'clock and the sweep advances clockwise. Encoding the
 // sweep as a `(theta-lo, theta-hi)` pair lets `map-position` produce angles
 // directly through the existing scale-mapping routines.
-#let polar-ctx(coord, x-trained, y-trained, px-range, py-range) = {
-  if coord == none or coord.at("coord", default: none) != "polar" {
+#let radial-ctx(coord, x-trained, y-trained, px-range, py-range) = {
+  if coord == none or coord.at("coord", default: none) != "radial" {
     return none
   }
   let (px-lo, px-hi) = px-range
@@ -23,56 +23,56 @@
   let theta-lo = calc.pi / 2 - start
   let theta-hi = theta-lo - direction * 2 * calc.pi
   (
-    coord: "polar",
+    coord: "radial",
     centre: centre,
     r-max: r-max,
     theta-axis: theta-axis,
     cat-is-theta: theta-axis == "x",
     theta-range: (theta-lo, theta-hi),
     r-range: (0, r-max),
-    clip: coord.at("clip", default: "on") != "off",
+    clip: coord.at("clip", default: "off") != "off",
     x-trained: x-trained,
     y-trained: y-trained,
   )
 }
 
-#let _theta-trained(polar) = if polar.cat-is-theta {
-  polar.x-trained
-} else { polar.y-trained }
+#let _theta-trained(radial) = if radial.cat-is-theta {
+  radial.x-trained
+} else { radial.y-trained }
 
-#let _r-trained(polar) = if polar.cat-is-theta {
-  polar.y-trained
-} else { polar.x-trained }
+#let _r-trained(radial) = if radial.cat-is-theta {
+  radial.y-trained
+} else { radial.x-trained }
 
-#let polar-theta(value, polar) = {
-  let trained = _theta-trained(polar)
+#let radial-theta(value, radial) = {
+  let trained = _theta-trained(radial)
   if trained == none { return none }
-  map-position(trained, value, polar.theta-range)
+  map-position(trained, value, radial.theta-range)
 }
 
-#let polar-r(value, polar) = {
-  let trained = _r-trained(polar)
+#let radial-r(value, radial) = {
+  let trained = _r-trained(radial)
   if trained == none { return none }
-  map-position(trained, value, polar.r-range)
+  map-position(trained, value, radial.r-range)
 }
 
-#let polar-point(x-val, y-val, polar) = {
-  let (ang-val, rad-val) = if polar.cat-is-theta {
+#let radial-point(x-val, y-val, radial) = {
+  let (ang-val, rad-val) = if radial.cat-is-theta {
     (x-val, y-val)
   } else { (y-val, x-val) }
-  let theta = polar-theta(ang-val, polar)
-  let r = polar-r(rad-val, polar)
+  let theta = radial-theta(ang-val, radial)
+  let r = radial-r(rad-val, radial)
   if theta == none or r == none { return none }
-  let (cx, cy) = polar.centre
+  let (cx, cy) = radial.centre
   (cx + r * calc.cos(theta), cy + r * calc.sin(theta))
 }
 
 // Single entry point for geoms: projects a row's `(x, y)` to canvas units
-// via either the trained scales or the active polar bundle. Returns `none`
+// via either the trained scales or the active radial bundle. Returns `none`
 // when either coordinate fails to resolve.
 #let project-point(ctx, xv, yv) = {
-  let polar = ctx.at("polar", default: none)
-  if polar != none { return polar-point(xv, yv, polar) }
+  let radial = ctx.at("radial", default: none)
+  if radial != none { return radial-point(xv, yv, radial) }
   let xt = ctx.trained.at("x", default: none)
   let yt = ctx.trained.at("y", default: none)
   if xt == none or yt == none { return none }
@@ -86,8 +86,8 @@
 // `theta-hi` are math-space radians, `r-lo` and `r-hi` are canvas units.
 // `n` defaults to one step per ~5° of arc with a floor of eight steps so
 // even narrow wedges look round.
-#let polar-wedge(theta-lo, theta-hi, r-lo, r-hi, polar, n: none) = {
-  let (cx, cy) = polar.centre
+#let radial-wedge(theta-lo, theta-hi, r-lo, r-hi, radial, n: none) = {
+  let (cx, cy) = radial.centre
   let span = calc.abs(theta-hi - theta-lo)
   let steps = if n != none { n } else {
     calc.max(8, int(calc.ceil(span / (calc.pi / 36))))

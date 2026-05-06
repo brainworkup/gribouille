@@ -5,7 +5,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/polar.typ": polar-wedge
+#import "../utils/radial.typ": radial-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Rectangle layer drawing one filled box per row from the four corners.
@@ -109,7 +109,7 @@
     neutral-fill,
   )
 
-  let polar = ctx.at("polar", default: none)
+  let radial = ctx.at("radial", default: none)
   for row in data {
     let x0 = parse-number(row.at(xmin-col, default: none))
     let x1 = parse-number(row.at(xmax-col, default: none))
@@ -133,10 +133,10 @@
       default-colour,
     )
 
-    if polar != none {
-      let cat-is-theta = polar.cat-is-theta
-      let theta-range = polar.theta-range
-      let r-range = polar.r-range
+    if radial != none {
+      let cat-is-theta = radial.cat-is-theta
+      let theta-range = radial.theta-range
+      let r-range = radial.r-range
       let (theta-lo, theta-hi, r-lo, r-hi) = if cat-is-theta {
         (
           map-axis(x-trained, x0, theta-range),
@@ -153,7 +153,7 @@
         )
       }
       if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
-      let pts = polar-wedge(theta-lo, theta-hi, r-lo, r-hi, polar)
+      let pts = radial-wedge(theta-lo, theta-hi, r-lo, r-hi, radial)
       cetz.draw.line(
         ..pts,
         close: true,

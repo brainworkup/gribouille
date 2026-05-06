@@ -5,7 +5,7 @@
 ///! generates its own samples from `fun`.
 
 #import "../deps.typ": cetz
-#import "../utils/polar.typ": project-point
+#import "../utils/radial.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.

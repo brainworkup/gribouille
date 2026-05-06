@@ -9,7 +9,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/polar.typ": polar-wedge
+#import "../utils/radial.typ": radial-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Bar layer with heights taken from the y aesthetic.
@@ -103,7 +103,7 @@
   inherit-aes: inherit-aes,
 )
 
-#let _draw-polar(layer, ctx, mapping, data, polar) = {
+#let _draw-radial(layer, ctx, mapping, data, radial) = {
   let cat-trained = ctx.trained.at("x", default: none)
   let value-trained = ctx.trained.at("y", default: none)
   if cat-trained == none or value-trained == none { return }
@@ -132,12 +132,12 @@
   let baseline = calc.max(0.0, value-trained.domain.at(0))
   let bar-width-fraction = layer.params.width
 
-  let cat-range = if polar.cat-is-theta {
-    polar.theta-range
-  } else { polar.r-range }
-  let value-range = if polar.cat-is-theta {
-    polar.r-range
-  } else { polar.theta-range }
+  let cat-range = if radial.cat-is-theta {
+    radial.theta-range
+  } else { radial.r-range }
+  let value-range = if radial.cat-is-theta {
+    radial.r-range
+  } else { radial.theta-range }
 
   let category-span = if cat-trained.type == "discrete" {
     discrete-slot-width(cat-trained, cat-range)
@@ -199,14 +199,14 @@
       default-colour,
     )
 
-    let (theta-lo, theta-hi, r-lo, r-hi) = if polar.cat-is-theta {
+    let (theta-lo, theta-hi, r-lo, r-hi) = if radial.cat-is-theta {
       (cat-c - half, cat-c + half, v-lo, v-hi)
     } else {
       (v-lo, v-hi, cat-c - half, cat-c + half)
     }
     if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
 
-    let pts = polar-wedge(theta-lo, theta-hi, r-lo, r-hi, polar)
+    let pts = radial-wedge(theta-lo, theta-hi, r-lo, r-hi, radial)
     cetz.draw.line(
       ..pts,
       close: true,
@@ -224,9 +224,9 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let polar = ctx.at("polar", default: none)
-  if polar != none {
-    _draw-polar(layer, ctx, mapping, data, polar)
+  let radial = ctx.at("radial", default: none)
+  if radial != none {
+    _draw-radial(layer, ctx, mapping, data, radial)
     return
   }
 

@@ -21,7 +21,7 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
-#import "utils/polar.typ": polar-ctx
+#import "utils/radial.typ": radial-ctx
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
@@ -100,9 +100,9 @@
   hex: hex-geom.draw,
 )
 
-// Layers whose `geom` is missing from this set panic under `coord-polar`
+// Layers whose `geom` is missing from this set panic under `coord-radial`
 // rather than silently falling back to cartesian rendering.
-#let _POLAR-AWARE = (
+#let _RADIAL-AWARE = (
   "col",
   "point",
   "line",
@@ -940,15 +940,15 @@
   let y-trained = trained.at("y", default: none)
 
   let coord = spec.at("coord", default: none)
-  let outer-polar = polar-ctx(coord, x-trained, y-trained, px-range, py-range)
-  let is-polar = outer-polar != none
+  let outer-radial = radial-ctx(coord, x-trained, y-trained, px-range, py-range)
+  let is-radial = outer-radial != none
 
   let _panel-fill = _rect-fill(theme, "panel-background", fallback: theme.paper)
   if _panel-fill != none {
-    if is-polar {
+    if is-radial {
       cetz.draw.circle(
-        outer-polar.centre,
-        radius: outer-polar.r-max,
+        outer-radial.centre,
+        radius: outer-radial.r-max,
         fill: _panel-fill,
         stroke: none,
       )
@@ -1024,7 +1024,7 @@
   let _x-disp = _axis-display(x-trained)
   let _y-disp = _axis-display(y-trained)
 
-  if not is-polar and x-trained != none and x-trained.type == "continuous" {
+  if not is-radial and x-trained != none and x-trained.type == "continuous" {
     let breaks = if axis-breaks != none and axis-breaks.x != none {
       axis-breaks.x
     } else { _axis-breaks(x-trained) }
@@ -1052,7 +1052,7 @@
       )
     }
   } else if (
-    not is-polar and x-trained != none and x-trained.type == "discrete"
+    not is-radial and x-trained != none and x-trained.type == "discrete"
   ) {
     for (idx, level) in x-trained.domain.enumerate() {
       let cx = map-position(x-trained, level, px-range)
@@ -1076,7 +1076,7 @@
     }
   }
 
-  if not is-polar and y-trained != none and y-trained.type == "continuous" {
+  if not is-radial and y-trained != none and y-trained.type == "continuous" {
     let breaks = if axis-breaks != none and axis-breaks.y != none {
       axis-breaks.y
     } else { _axis-breaks(y-trained) }
@@ -1104,7 +1104,7 @@
       )
     }
   } else if (
-    not is-polar and y-trained != none and y-trained.type == "discrete"
+    not is-radial and y-trained != none and y-trained.type == "discrete"
   ) {
     for (idx, level) in y-trained.domain.enumerate() {
       let cy = map-position(y-trained, level, py-range)
@@ -1166,7 +1166,7 @@
       k = k + 1
     }
   }
-  if not is-polar {
+  if not is-radial {
     _draw-log-minors(
       x-trained,
       x-guide,
@@ -1189,7 +1189,7 @@
   // secondary spec. Breaks reuse the primary axis grid; their labels go
   // through the user's transformation function.
   let _x-sec = _sec-spec(x-trained)
-  if not is-polar and _x-sec != none and show-x-sec {
+  if not is-radial and _x-sec != none and show-x-sec {
     let breaks = if axis-breaks != none and axis-breaks.x-sec != none {
       axis-breaks.x-sec
     } else { _axis-breaks(x-trained) }
@@ -1244,7 +1244,7 @@
   // Secondary y-axis: draw on right edge if the trained y scale carries a
   // secondary spec.
   let _y-sec = _sec-spec(y-trained)
-  if not is-polar and _y-sec != none and show-y-sec {
+  if not is-radial and _y-sec != none and show-y-sec {
     let breaks = if axis-breaks != none and axis-breaks.y-sec != none {
       axis-breaks.y-sec
     } else { _axis-breaks(y-trained) }
@@ -1302,18 +1302,18 @@
     }
   }
 
-  if not is-polar and _ax-line.xb != none {
+  if not is-radial and _ax-line.xb != none {
     line((px-lo, py-lo), (px-hi, py-lo), stroke: _ax-line.xb)
   }
-  if not is-polar and _ax-line.yl != none {
+  if not is-radial and _ax-line.yl != none {
     line((px-lo, py-lo), (px-lo, py-hi), stroke: _ax-line.yl)
   }
 
-  if is-polar {
-    let (cx, cy) = outer-polar.centre
-    let r-max = outer-polar.r-max
-    let theta-range = outer-polar.theta-range
-    let r-range = outer-polar.r-range
+  if is-radial {
+    let (cx, cy) = outer-radial.centre
+    let r-max = outer-radial.r-max
+    let theta-range = outer-radial.theta-range
+    let r-range = outer-radial.r-range
 
     let (
       theta-trained,
@@ -1322,13 +1322,13 @@
       r-disp,
       theta-text,
       r-text,
-    ) = if outer-polar.cat-is-theta {
+    ) = if outer-radial.cat-is-theta {
       (x-trained, y-trained, _x-disp, _y-disp, _ax-text.xb, _ax-text.yl)
     } else {
       (y-trained, x-trained, _y-disp, _x-disp, _ax-text.yl, _ax-text.xb)
     }
 
-    let _polar-theta-of(trained, value) = if trained.type == "continuous" {
+    let _radial-theta-of(trained, value) = if trained.type == "continuous" {
       map-axis-data(trained, value, theta-range)
     } else {
       map-position(trained, value, theta-range)
@@ -1353,7 +1353,7 @@
 
     if grid-stroke != none and theta-trained != none {
       for b in theta-breaks {
-        let theta = _polar-theta-of(theta-trained, b)
+        let theta = _radial-theta-of(theta-trained, b)
         if theta == none { continue }
         line(
           (cx, cy),
@@ -1368,7 +1368,7 @@
     ) {
       let pad = 0.2
       for (idx, b) in theta-breaks.enumerate() {
-        let theta = _polar-theta-of(theta-trained, b)
+        let theta = _radial-theta-of(theta-trained, b)
         if theta == none { continue }
         let raw = if theta-trained.type == "continuous" {
           _axis-label(theta-trained, b)
@@ -1440,18 +1440,18 @@
   let inner-ctx = ctx
   inner-ctx.px-range = (x-pad-lo, panel-w - x-pad-hi)
   inner-ctx.py-range = (y-pad-lo, panel-h - y-pad-hi)
-  let inner-polar = polar-ctx(
+  let inner-radial = radial-ctx(
     coord,
     x-trained,
     y-trained,
     inner-ctx.px-range,
     inner-ctx.py-range,
   )
-  inner-ctx.polar = inner-polar
-  if inner-polar != none {
+  inner-ctx.radial = inner-radial
+  if inner-radial != none {
     for layer in prepared {
-      if not _POLAR-AWARE.contains(layer.geom) {
-        panic("coord-polar does not support geom-" + layer.geom + ".")
+      if not _RADIAL-AWARE.contains(layer.geom) {
+        panic("coord-radial does not support geom-" + layer.geom + ".")
       }
     }
   }
@@ -1463,7 +1463,7 @@
       if draw != none { draw(layer, inner-ctx) }
     }
   })
-  let clip-on = if inner-polar != none { inner-polar.clip } else { true }
+  let clip-on = if inner-radial != none { inner-radial.clip } else { true }
   content(
     (px-lo, py-lo),
     if clip-on {
@@ -1698,6 +1698,14 @@
       and coord.at("coord", default: none) == "cartesian"
       and coord.at("expand", default: true) == false
   )
+  // Under `coord-radial`, the radial axis maps view-min to canvas radius 0,
+  // so any lo-side padding leaves a hole at the centre. Match ggplot2 by
+  // collapsing the radial lo-side to zero when `expand` is auto.
+  let radial-axis = if (
+    coord != none and coord.at("coord", default: none) == "radial"
+  ) {
+    if coord.at("theta", default: "x") == "x" { "y" } else { "x" }
+  } else { none }
   for axis in ("x", "y") {
     let entry = trained.at(axis, default: none)
     if entry == none { continue }
@@ -1717,6 +1725,11 @@
       if anchor == "lo" or anchor == "both" { mult-lo = 0 }
       if anchor == "hi" or anchor == "both" { mult-hi = 0 }
     }
+    let radial-zero-lo = axis == radial-axis and raw == auto
+    if radial-zero-lo {
+      mult-lo = 0
+      add-cm-lo = 0
+    }
     let new-entry = entry
     if entry.type == "continuous" {
       let (lo, hi) = entry.domain
@@ -1735,10 +1748,12 @@
       let n = entry.domain.len()
       let span = if n > 1 { n - 1 } else { 0 }
       // Discrete `auto` gets a default 0.6-slot data-unit pad on each side;
-      // any explicit `expand:` value supersedes it.
+      // any explicit `expand:` value supersedes it. Radial axes skip
+      // the lo-side data pad so the inner edge sits at radius 0.
       let auto-data-pad = if raw == auto { DISCRETE-AUTO-DATA-PAD } else { 0 }
       let geom-min = entry.at("geom-min-pad", default: 0)
-      let pad-lo = calc.max(mult-lo * span + auto-data-pad, geom-min)
+      let lo-pad-base = if radial-zero-lo { 0 } else { auto-data-pad }
+      let pad-lo = calc.max(mult-lo * span + lo-pad-base, geom-min)
       let pad-hi = calc.max(mult-hi * span + auto-data-pad, geom-min)
       new-entry.insert("view-index", (0 - pad-lo, (n - 1) + pad-hi))
     }

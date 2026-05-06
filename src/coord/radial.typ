@@ -1,6 +1,6 @@
-///! Polar coordinate system.
+///! Radial coordinate system.
 
-/// Polar coordinate system.
+/// Radial coordinate system.
 ///
 /// `theta = "x"` (default) distributes categories around the circle for
 /// rose / radar layouts; `theta = "y"` turns stacked y values into wedges
@@ -10,10 +10,13 @@
 /// \@stability experimental
 /// \@since 0.5.0
 ///
-/// \@param theta Which axis is angular: `"x"` (default) or `"y"`.
+/// \@param theta Which axis is angular: `"x"` (default) or `"y"`. The radial
+///   axis (the other one) automatically drops its lo-side expansion to zero
+///   so bars meet at radius 0; pass an explicit `expand:` on the radial scale
+///   to override.
 /// \@param start Offset in radians from 12 o'clock for the first slice.
 /// \@param direction `1` (default) advances clockwise; `-1` counter-clockwise.
-/// \@param clip `"on"` (default) clips marks to the panel rectangle; `"off"` lets marks render past it.
+/// \@param clip `"off"` (default) lets marks render past the panel rectangle; `"on"` clips.
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.
 ///
@@ -28,16 +31,16 @@
 ///   data: d,
 ///   mapping: aes(x: "slice", y: "value", fill: "kind"),
 ///   layers: (geom-col(width: 1, position: "stack"),),
-///   coord: coord-polar(theta: "y"),
+///   coord: coord-radial(theta: "y"),
 ///   width: 7cm,
 ///   height: 7cm,
 /// )
 /// ```
 ///
 /// \@see \@plot, \@geom-col
-#let coord-polar(theta: "x", start: 0, direction: 1, clip: "on") = (
+#let coord-radial(theta: "x", start: 0, direction: 1, clip: "off") = (
   kind: "coord",
-  coord: "polar",
+  coord: "radial",
   theta: theta,
   start: start,
   direction: direction,
