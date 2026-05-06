@@ -1315,17 +1315,12 @@
     let theta-range = outer-radial.theta-range
     let r-range = outer-radial.r-range
 
-    let (
-      theta-trained,
-      r-trained,
-      theta-disp,
-      r-disp,
-      theta-text,
-      r-text,
-    ) = if outer-radial.cat-is-theta {
-      (x-trained, y-trained, _x-disp, _y-disp, _ax-text.xb, _ax-text.yl)
+    let (theta-trained, r-trained, theta-disp, theta-text) = if (
+      outer-radial.cat-is-theta
+    ) {
+      (x-trained, y-trained, _x-disp, _ax-text.xb)
     } else {
-      (y-trained, x-trained, _y-disp, _x-disp, _ax-text.yl, _ax-text.xb)
+      (y-trained, x-trained, _y-disp, _ax-text.yl)
     }
 
     let _radial-theta-of(trained, value) = if trained.type == "continuous" {
@@ -1452,7 +1447,7 @@
   )
 
   // Radial-axis tick labels render after geoms so filled wedges, lines, and
-  // points cannot mask them. Labels sit centred on the start spoke.
+  // points cannot mask them.
   if is-radial {
     let (cx, cy) = outer-radial.centre
     let r-max = outer-radial.r-max
