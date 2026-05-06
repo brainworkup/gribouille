@@ -17,9 +17,7 @@
     geom-point(size: 2pt),
   ),
   coord: coord-radial(theta: "x"),
-  scales: (
-    scale-x-continuous(limits: (0, 24), expand: false),
-  ),
+  scales: (scale-x-continuous(limits: (0, 24), expand: false),),
   labs: labs(title: "Daily load"),
   theme: theme-minimal(),
   width: 9cm,
