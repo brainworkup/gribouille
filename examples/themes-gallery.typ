@@ -36,7 +36,7 @@
 }
 
 #grid(
-  columns: 3,
+  rows: 3,
   column-gutter: 0.4cm,
   row-gutter: 0.4cm,
   panel("theme-minimal", theme-minimal()),

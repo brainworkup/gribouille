@@ -36,8 +36,8 @@
 }
 
 #grid(
-  columns: 3,
-  column-gutter: 0.4cm,
+  rows: 3,
+  row-gutter: 0.4cm,
   panel("theme-minimal", theme-minimal()),
   panel("theme-classic", theme-classic()),
   panel("theme-void", theme-void()),
