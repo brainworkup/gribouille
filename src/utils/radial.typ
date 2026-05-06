@@ -1,6 +1,7 @@
 ///! Joint `(x, y) → (cx, cy)` projection helpers for `coord-radial`.
 
-#import "../scale/train.typ": map-position
+#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
+#import "types.typ": parse-number
 
 // "y" when theta is "x" (rose/radar) and "x" when theta is "y" (pie).
 // Returns `none` for non-radial coords. Used during scale expansion, which
@@ -119,6 +120,63 @@
   }
   groups
 }
+
+// Canvas point at radial position `(theta, r)`. Avoids open-coding the
+// `(cx + r * cos(t), cy + r * sin(t))` recipe at every call site.
+#let polar-canvas(radial, theta, r) = {
+  let (cx, cy) = radial.centre
+  (cx + r * calc.cos(theta), cy + r * calc.sin(theta))
+}
+
+// Bar-width category span derived from a trained scale. Discrete scales use
+// `discrete-slot-width`; continuous scales fall back to the smallest gap
+// between sorted unique x values, mirroring `geom-col`'s heuristic.
+#let radial-category-span(cat-trained, cat-col, cat-range, data) = {
+  if cat-trained.type == "discrete" {
+    return discrete-slot-width(cat-trained, cat-range)
+  }
+  let xs = data
+    .map(r => parse-number(r.at(cat-col, default: none)))
+    .filter(v => v != none)
+  let (d-lo, d-hi) = cat-trained.domain
+  if xs.len() < 2 or d-hi == d-lo {
+    return (cat-range.at(1) - cat-range.at(0)) / 10
+  }
+  let sorted = xs.dedup().sorted()
+  let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
+    map-axis(cat-trained, sorted.at(i + 1), cat-range)
+      - map-axis(cat-trained, sorted.at(i), cat-range),
+  ))
+  calc.min(..panel-gaps)
+}
+
+// Resolve `cat-range` and `value-range` from a radial bundle so callers
+// don't repeat the `cat-is-theta` ternary.
+#let radial-axis-ranges(radial) = {
+  if radial.cat-is-theta {
+    (cat-range: radial.theta-range, value-range: radial.r-range)
+  } else {
+    (cat-range: radial.r-range, value-range: radial.theta-range)
+  }
+}
+
+// Tangent-cap offset for composite-bar geoms (errorbar, errorbarh).
+// Returns `(nx, ny)` perpendicular to the chord `(p-lo, p-hi)` with length
+// `half`, or `none` when the chord is degenerate.
+#let radial-tangent-cap(p-lo, p-hi, half) = {
+  let (sx-lo, sy-lo) = p-lo
+  let (sx-hi, sy-hi) = p-hi
+  let dx = sx-hi - sx-lo
+  let dy = sy-hi - sy-lo
+  let len = calc.sqrt(dx * dx + dy * dy)
+  if len == 0 { return none }
+  (-dy / len * half, dx / len * half)
+}
+
+// Default canvas-unit half-cap for radial composite-bar geoms when the user
+// supplied a relative cap width that has no meaningful pixel mapping under
+// polar.
+#let RADIAL-DEFAULT-CAP-HALF = 0.15
 
 // Polyline samples along an arc at constant radius between `theta-lo` and
 // `theta-hi`. Used by composite geoms (boxplot, crossbar) to draw a median

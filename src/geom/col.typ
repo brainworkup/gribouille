@@ -9,7 +9,9 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/radial.typ": radial-wedge
+#import "../utils/radial.typ": (
+  radial-axis-ranges, radial-category-span, radial-wedge,
+)
 #import "../utils/stroke.typ": resolve-stroke-spec
 
 /// Bar layer with heights taken from the y aesthetic.
@@ -132,31 +134,13 @@
   let baseline = calc.max(0.0, value-trained.domain.at(0))
   let bar-width-fraction = layer.params.width
 
-  let cat-range = if radial.cat-is-theta {
-    radial.theta-range
-  } else { radial.r-range }
-  let value-range = if radial.cat-is-theta {
-    radial.r-range
-  } else { radial.theta-range }
-
-  let category-span = if cat-trained.type == "discrete" {
-    discrete-slot-width(cat-trained, cat-range)
-  } else {
-    let xs = data
-      .map(r => parse-number(r.at(cat-col, default: none)))
-      .filter(v => v != none)
-    let (d-lo, d-hi) = cat-trained.domain
-    if xs.len() < 2 or d-hi == d-lo {
-      (cat-range.at(1) - cat-range.at(0)) / 10
-    } else {
-      let sorted = xs.dedup().sorted()
-      let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
-        map-axis(cat-trained, sorted.at(i + 1), cat-range)
-          - map-axis(cat-trained, sorted.at(i), cat-range),
-      ))
-      calc.min(..panel-gaps)
-    }
-  }
+  let (cat-range, value-range) = radial-axis-ranges(radial)
+  let category-span = radial-category-span(
+    cat-trained,
+    cat-col,
+    cat-range,
+    data,
+  )
   let half = category-span * bar-width-fraction / 2
 
   for row in data {

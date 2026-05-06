@@ -6,9 +6,12 @@
 ///! `ymin`, `ymax`, optional `outliers`).
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
+#import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": x-band
-#import "../utils/radial.typ": radial-arc, radial-wedge
+#import "../utils/radial.typ": (
+  polar-canvas, radial-arc, radial-axis-ranges, radial-category-span,
+  radial-wedge,
+)
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-stroke-colour
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -153,40 +156,18 @@
 
   let radial = ctx.at("radial", default: none)
   if radial != none {
-    // Match geom-col's category-span heuristic so wedge widths align with
-    // bar-width semantics.
     let cat-trained = if radial.cat-is-theta { x-trained } else { y-trained }
     let val-trained = if radial.cat-is-theta { y-trained } else { x-trained }
     let cat-col = if radial.cat-is-theta { x-col } else {
       mapping.at("y", default: none)
     }
-    let cat-range = if radial.cat-is-theta {
-      radial.theta-range
-    } else { radial.r-range }
-    let value-range = if radial.cat-is-theta {
-      radial.r-range
-    } else { radial.theta-range }
-    let category-span = if cat-trained.type == "discrete" {
-      discrete-slot-width(cat-trained, cat-range)
-    } else {
-      let xs = data
-        .map(r => parse-number(r.at(cat-col, default: none)))
-        .filter(v => v != none)
-      let (d-lo, d-hi) = cat-trained.domain
-      if xs.len() < 2 or d-hi == d-lo {
-        (cat-range.at(1) - cat-range.at(0)) / 10
-      } else {
-        let sorted = xs.dedup().sorted()
-        let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
-          map-axis(cat-trained, sorted.at(i + 1), cat-range)
-            - map-axis(cat-trained, sorted.at(i), cat-range),
-        ))
-        calc.min(..panel-gaps)
-      }
-    }
-    let half = category-span * layer.params.width / 2
+    let (cat-range, value-range) = radial-axis-ranges(radial)
+    let half = (
+      radial-category-span(cat-trained, cat-col, cat-range, data)
+        * layer.params.width
+        / 2
+    )
     let cap-half-cat = half * layer.params.whisker-cap
-    let (cx, cy) = radial.centre
     for row in data {
       let raw-cat = row.at(cat-col, default: none)
       let cat-c = map-position(cat-trained, raw-cat, cat-range)
@@ -247,13 +228,13 @@
         let median-pts = radial-arc(theta-lo, theta-hi, v-middle, radial)
         cetz.draw.line(..median-pts, stroke: stroke-spec)
         cetz.draw.line(
-          (cx + v-wlo * calc.cos(cat-c), cy + v-wlo * calc.sin(cat-c)),
-          (cx + r-lower * calc.cos(cat-c), cy + r-lower * calc.sin(cat-c)),
+          polar-canvas(radial, cat-c, v-wlo),
+          polar-canvas(radial, cat-c, r-lower),
           stroke: stroke-spec,
         )
         cetz.draw.line(
-          (cx + r-upper * calc.cos(cat-c), cy + r-upper * calc.sin(cat-c)),
-          (cx + v-whi * calc.cos(cat-c), cy + v-whi * calc.sin(cat-c)),
+          polar-canvas(radial, cat-c, r-upper),
+          polar-canvas(radial, cat-c, v-whi),
           stroke: stroke-spec,
         )
         if layer.params.whisker-cap > 0 {
@@ -271,7 +252,7 @@
           if v == none { continue }
           let r = map-axis(val-trained, v, value-range)
           cetz.draw.circle(
-            (cx + r * calc.cos(cat-c), cy + r * calc.sin(cat-c)),
+            polar-canvas(radial, cat-c, r),
             radius: layer.params.outlier-size,
             fill: outlier-paint,
             stroke: none,
@@ -292,8 +273,8 @@
           stroke: stroke-spec,
         )
         cetz.draw.line(
-          (cx + r-lo * calc.cos(v-middle), cy + r-lo * calc.sin(v-middle)),
-          (cx + r-hi * calc.cos(v-middle), cy + r-hi * calc.sin(v-middle)),
+          polar-canvas(radial, v-middle, r-lo),
+          polar-canvas(radial, v-middle, r-hi),
           stroke: stroke-spec,
         )
         let whisker-lo-pts = radial-arc(v-wlo, v-lower, cat-c, radial)
@@ -302,13 +283,13 @@
         cetz.draw.line(..whisker-hi-pts, stroke: stroke-spec)
         if layer.params.whisker-cap > 0 {
           cetz.draw.line(
-            (cx + cap-rlo * calc.cos(v-wlo), cy + cap-rlo * calc.sin(v-wlo)),
-            (cx + cap-rhi * calc.cos(v-wlo), cy + cap-rhi * calc.sin(v-wlo)),
+            polar-canvas(radial, v-wlo, cap-rlo),
+            polar-canvas(radial, v-wlo, cap-rhi),
             stroke: stroke-spec,
           )
           cetz.draw.line(
-            (cx + cap-rlo * calc.cos(v-whi), cy + cap-rlo * calc.sin(v-whi)),
-            (cx + cap-rhi * calc.cos(v-whi), cy + cap-rhi * calc.sin(v-whi)),
+            polar-canvas(radial, v-whi, cap-rlo),
+            polar-canvas(radial, v-whi, cap-rhi),
             stroke: stroke-spec,
           )
         }
@@ -321,7 +302,7 @@
           if v == none { continue }
           let theta = map-axis(val-trained, v, value-range)
           cetz.draw.circle(
-            (cx + cat-c * calc.cos(theta), cy + cat-c * calc.sin(theta)),
+            polar-canvas(radial, theta, cat-c),
             radius: layer.params.outlier-size,
             fill: outlier-paint,
             stroke: none,

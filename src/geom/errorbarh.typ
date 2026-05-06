@@ -4,7 +4,9 @@
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
-#import "../utils/radial.typ": project-point
+#import "../utils/radial.typ": (
+  RADIAL-DEFAULT-CAP-HALF, project-point, radial-tangent-cap,
+)
 
 /// Horizontal errorbar layer: range with a vertical cap at each end.
 ///
@@ -175,13 +177,13 @@
       let (sx-lo, sy-lo) = p-lo
       let (sx-hi, sy-hi) = p-hi
       cetz.draw.line((sx-lo, sy-lo), (sx-hi, sy-hi), stroke: stroke-spec)
-      let dx = sx-hi - sx-lo
-      let dy = sy-hi - sy-lo
-      let len = calc.sqrt(dx * dx + dy * dy)
-      if len == 0 { continue }
-      let cap-half = if height-is-length { half-height } else { 0.15 }
-      let nx = -dy / len * cap-half
-      let ny = dx / len * cap-half
+      let cap = radial-tangent-cap(
+        p-lo,
+        p-hi,
+        if height-is-length { half-height } else { RADIAL-DEFAULT-CAP-HALF },
+      )
+      if cap == none { continue }
+      let (nx, ny) = cap
       cetz.draw.line(
         (sx-lo - nx, sy-lo - ny),
         (sx-lo + nx, sy-lo + ny),

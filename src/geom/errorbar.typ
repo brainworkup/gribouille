@@ -3,7 +3,9 @@
 #import "../deps.typ": cetz
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": x-band
-#import "../utils/radial.typ": project-point
+#import "../utils/radial.typ": (
+  RADIAL-DEFAULT-CAP-HALF, project-point, radial-tangent-cap,
+)
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": (
   apply-alpha, resolve-alpha, resolve-linewidth,
@@ -163,23 +165,21 @@
     )
 
     if ctx.at("radial", default: none) != none {
-      // Radial mode: warp the spine endpoints and draw a straight chord;
-      // caps are tangent line segments around each endpoint. Polar caps
-      // would ideally be arcs at constant r, but a tangent chord reads
-      // similarly at typical cap widths.
+      // Polar caps would ideally be arcs at constant r, but a tangent
+      // chord reads similarly at typical cap widths.
       let p-lo = project-point(ctx, raw-x, lo)
       let p-hi = project-point(ctx, raw-x, hi)
       if p-lo == none or p-hi == none { continue }
       let (sx-lo, sy-lo) = p-lo
       let (sx-hi, sy-hi) = p-hi
       cetz.draw.line((sx-lo, sy-lo), (sx-hi, sy-hi), stroke: stroke-spec)
-      let dx = sx-hi - sx-lo
-      let dy = sy-hi - sy-lo
-      let len = calc.sqrt(dx * dx + dy * dy)
-      if len == 0 { continue }
-      let cap-half = if width-is-length { half-width } else { 0.15 }
-      let nx = -dy / len * cap-half
-      let ny = dx / len * cap-half
+      let cap = radial-tangent-cap(
+        p-lo,
+        p-hi,
+        if width-is-length { half-width } else { RADIAL-DEFAULT-CAP-HALF },
+      )
+      if cap == none { continue }
+      let (nx, ny) = cap
       cetz.draw.line(
         (sx-lo - nx, sy-lo - ny),
         (sx-lo + nx, sy-lo + ny),

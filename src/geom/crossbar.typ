@@ -1,9 +1,12 @@
 ///! Hollow box from `ymin` to `ymax` with a thicker bar at `y` (the median).
 
 #import "../deps.typ": cetz
-#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
+#import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": x-band
-#import "../utils/radial.typ": radial-arc, radial-wedge
+#import "../utils/radial.typ": (
+  polar-canvas, radial-arc, radial-axis-ranges, radial-category-span,
+  radial-wedge,
+)
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-stroke-colour
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -125,36 +128,15 @@
 
   let radial = ctx.at("radial", default: none)
   if radial != none {
-    // Mirror the geom-col category-span heuristic so wedge widths match
-    // ggplot2's bar-width semantics under polar.
     let cat-trained = if radial.cat-is-theta { x-trained } else { y-trained }
     let val-trained = if radial.cat-is-theta { y-trained } else { x-trained }
     let cat-col = if radial.cat-is-theta { x-col } else { y-col }
-    let cat-range = if radial.cat-is-theta {
-      radial.theta-range
-    } else { radial.r-range }
-    let value-range = if radial.cat-is-theta {
-      radial.r-range
-    } else { radial.theta-range }
-    let category-span = if cat-trained.type == "discrete" {
-      discrete-slot-width(cat-trained, cat-range)
-    } else {
-      let xs = data
-        .map(r => parse-number(r.at(cat-col, default: none)))
-        .filter(v => v != none)
-      let (d-lo, d-hi) = cat-trained.domain
-      if xs.len() < 2 or d-hi == d-lo {
-        (cat-range.at(1) - cat-range.at(0)) / 10
-      } else {
-        let sorted = xs.dedup().sorted()
-        let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
-          map-axis(cat-trained, sorted.at(i + 1), cat-range)
-            - map-axis(cat-trained, sorted.at(i), cat-range),
-        ))
-        calc.min(..panel-gaps)
-      }
-    }
-    let half = category-span * layer.params.width / 2
+    let (cat-range, value-range) = radial-axis-ranges(radial)
+    let half = (
+      radial-category-span(cat-trained, cat-col, cat-range, data)
+        * layer.params.width
+        / 2
+    )
     for row in data {
       let raw-cat = if radial.cat-is-theta {
         row.at(x-col, default: none)
@@ -205,12 +187,9 @@
         let median = radial-arc(theta-lo, theta-hi, r-mid, radial)
         cetz.draw.line(..median, stroke: middle-stroke-spec)
       } else {
-        // Theta axis is the value direction: median is a radial line at the
-        // mid-theta from r-lo to r-hi.
-        let (cx, cy) = radial.centre
         cetz.draw.line(
-          (cx + r-lo * calc.cos(v-mid), cy + r-lo * calc.sin(v-mid)),
-          (cx + r-hi * calc.cos(v-mid), cy + r-hi * calc.sin(v-mid)),
+          polar-canvas(radial, v-mid, r-lo),
+          polar-canvas(radial, v-mid, r-hi),
           stroke: middle-stroke-spec,
         )
       }
