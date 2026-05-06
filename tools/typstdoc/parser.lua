@@ -243,6 +243,7 @@ local function parse_doc_block(doc_lines, file, start_line)
   local doc = model.new_doc_block()
   local mode = "summary"
   local para = {}
+  local list_items = {}
   local i = 1
   local n = #doc_lines
 
@@ -259,13 +260,36 @@ local function parse_doc_block(doc_lines, file, start_line)
     end
   end
 
+  local function flush_list()
+    if #list_items > 0 then
+      local text = table.concat(list_items, "\n")
+      if mode == "summary" then
+        doc.summary = text
+        mode = "description"
+      else
+        table.insert(doc.description, text)
+      end
+      list_items = {}
+    end
+  end
+
+  local function flush_block()
+    flush_list()
+    flush_para()
+  end
+
+  local function is_list_line(s)
+    local first = s:sub(1, 2)
+    return first == "- " or first == "* " or first == "+ "
+  end
+
   while i <= n do
     local line = doc_lines[i]
     local trimmed_line = util.trim(line)
     if trimmed_line == "" then
-      flush_para()
+      flush_block()
     elseif trimmed_line:sub(1, 1) == "@" then
-      flush_para()
+      flush_block()
       local tag, rest = trimmed_line:match("^(@[%w%-]+)%s*(.*)$")
       if not KNOWN_TAGS[tag] then
         error_at(file, start_line + i - 1, "unknown tag: " .. tag)
@@ -404,11 +428,17 @@ local function parse_doc_block(doc_lines, file, start_line)
         i = j - 1
       end
     else
-      table.insert(para, line)
+      if is_list_line(trimmed_line) then
+        flush_para()
+        table.insert(list_items, trimmed_line)
+      else
+        flush_list()
+        table.insert(para, line)
+      end
     end
     i = i + 1
   end
-  flush_para()
+  flush_block()
 
   if not doc.summary or doc.summary == "" then
     error_at(file, start_line, "doc block missing summary sentence")

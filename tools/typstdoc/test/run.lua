@@ -629,6 +629,75 @@ describe("parser: indented continuation lines", function()
 end)
 
 -- -----------------------------------------------------------------------
+describe("parser: markdown lists in description", function()
+  it("preserves a three-item list as a single description entry with newlines", function()
+    local f = tmpfile("list_basic", [[
+/// Summary line.
+///
+/// Columns:
+///
+/// - alpha.
+/// - beta.
+/// - gamma.
+///
+/// @category Core
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local desc = parsed.functions[1].doc.description
+    assert_eq(#desc, 2, "expected prose paragraph + list as two entries")
+    assert_eq(desc[1], "Columns:")
+    assert_eq(desc[2], "- alpha.\n- beta.\n- gamma.")
+  end)
+
+  it("folds an indented continuation into the preceding list item", function()
+    local f = tmpfile("list_cont", [[
+/// Summary line.
+///
+/// Returns:
+///
+/// - both originals when neither or both aesthetics are set, so geoms keep
+///   their historical look when the user touches nothing or supplies both;
+/// - `(c, none)` when only colour is set.
+///
+/// @category Core
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local desc = parsed.functions[1].doc.description
+    assert_eq(#desc, 2, "expected prose paragraph + list as two entries")
+    local lines = {}
+    for line in (desc[2] .. "\n"):gmatch("([^\n]*)\n") do
+      table.insert(lines, line)
+    end
+    assert_eq(#lines, 2, "expected two list items after continuation merge")
+    assert_eq(lines[1]:sub(1, 2), "- ")
+    assert_eq(lines[2]:sub(1, 2), "- ")
+    assert_contains(lines[1], "their historical look when the user touches nothing")
+    assert_contains(lines[2], "`(c, none)` when only colour is set.")
+  end)
+
+  it("keeps a list and a following prose paragraph as separate entries", function()
+    local f = tmpfile("list_then_prose", [[
+/// Summary line.
+///
+/// - one.
+/// - two.
+///
+/// Some prose afterwards.
+///
+/// @category Core
+#let foo() = none
+]])
+    local parsed = parser.parse_file(f)
+    local desc = parsed.functions[1].doc.description
+    assert_eq(#desc, 2, "expected list + prose as two entries")
+    assert_contains(desc[1], "\n- two")
+    assert_eq(desc[2], "Some prose afterwards.")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
 describe("parser: parse_lib", function()
   it("extracts exports grouped by banner", function()
     local f = tmpfile("lib", [[
