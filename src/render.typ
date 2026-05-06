@@ -1442,11 +1442,13 @@
     }
   }
   let geoms = cetz.canvas({
-    import cetz.draw: hide, rect
+    import cetz.draw: floating, hide, rect
     hide(rect((0, 0), (panel-w, panel-h)), bounds: true)
     for layer in prepared {
       let draw = _geom-draw.at(layer.geom, default: none)
-      if draw != none { draw(layer, inner-ctx) }
+      if draw != none {
+        floating({ draw(layer, inner-ctx) })
+      }
     }
   })
   let clip-on = if inner-radial != none { inner-radial.clip } else { true }
