@@ -21,7 +21,7 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
-#import "utils/radial.typ": radial-axis-of, radial-ctx
+#import "utils/radial.typ": group-theta-breaks, radial-axis-of, radial-ctx
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
@@ -1351,10 +1351,17 @@
       _axis-breaks(theta-trained)
     } else { theta-trained.domain }
 
+    // Full-sweep domain endpoints can land on the same canvas angle (e.g. 0
+    // and 24 on a 24-hour clock both sit at 12 o'clock); group them so we
+    // draw one spoke and one merged "end/start" label per shared angle.
+    let theta-groups = group-theta-breaks(
+      theta-breaks,
+      b => _radial-theta-of(theta-trained, b),
+    )
+
     if grid-stroke != none and theta-trained != none {
-      for b in theta-breaks {
-        let theta = _radial-theta-of(theta-trained, b)
-        if theta == none { continue }
+      for group in theta-groups {
+        let theta = group.first().theta
         line(
           (cx, cy),
           (cx + r-max * calc.cos(theta), cy + r-max * calc.sin(theta)),
@@ -1367,19 +1374,28 @@
       show-x-labels and theme.tick-labels and theta-trained != none
     ) {
       let pad = 0.2
-      for (idx, b) in theta-breaks.enumerate() {
-        let theta = _radial-theta-of(theta-trained, b)
-        if theta == none { continue }
-        let raw = if theta-trained.type == "continuous" {
-          _axis-label(theta-trained, b)
-        } else { b }
-        let label-text = resolve-label(
-          theta-disp.labels,
-          b,
-          idx,
-          raw,
-          typst-mark: theta-disp.typst-mark,
-        )
+      for group in theta-groups {
+        let labels = group.map(rec => {
+          let raw = if theta-trained.type == "continuous" {
+            _axis-label(theta-trained, rec.b)
+          } else { rec.b }
+          resolve-label(
+            theta-disp.labels,
+            rec.b,
+            rec.idx,
+            raw,
+            typst-mark: theta-disp.typst-mark,
+          )
+        })
+        let label-text = if labels.len() == 1 { labels.first() } else {
+          // Higher-domain break first: "24/0", not "0/24".
+          let merged = labels.last()
+          for i in range(labels.len() - 2, -1, step: -1) {
+            merged = merged + [/] + labels.at(i)
+          }
+          merged
+        }
+        let theta = group.first().theta
         let lr = r-max + pad
         content(
           (cx + lr * calc.cos(theta), cy + lr * calc.sin(theta)),

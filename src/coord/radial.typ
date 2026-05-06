@@ -15,6 +15,10 @@
 ///   so bars meet at radius 0; pass an explicit `expand:` on the radial scale
 ///   to override.
 /// \@param start Offset in radians from 12 o'clock for the first slice.
+/// \@param end Offset in radians from 12 o'clock for the sweep end. `none`
+///   (default) means a full sweep in the requested `direction`. On a full
+///   sweep where the angular domain endpoints land on the same canvas angle,
+///   the two ticks merge into a single `"end/start"` label.
 /// \@param direction `1` (default) advances clockwise; `-1` counter-clockwise.
 /// \@param clip `"off"` (default) lets marks render past the panel rectangle; `"on"` clips.
 ///
@@ -38,11 +42,18 @@
 /// ```
 ///
 /// \@see \@plot, \@geom-col
-#let coord-radial(theta: "x", start: 0, direction: 1, clip: "off") = (
+#let coord-radial(
+  theta: "x",
+  start: 0,
+  end: none,
+  direction: 1,
+  clip: "off",
+) = (
   kind: "coord",
   coord: "radial",
   theta: theta,
   start: start,
+  end: end,
   direction: direction,
   clip: clip,
 )

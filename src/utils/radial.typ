@@ -28,9 +28,11 @@
   )
   let start = coord.at("start", default: 0)
   let direction = coord.at("direction", default: 1)
+  let end = coord.at("end", default: none)
+  let end-eff = if end == none { start + direction * 2 * calc.pi } else { end }
   let theta-axis = coord.at("theta", default: "x")
   let theta-lo = calc.pi / 2 - start
-  let theta-hi = theta-lo - direction * 2 * calc.pi
+  let theta-hi = calc.pi / 2 - end-eff
   (
     coord: "radial",
     centre: centre,
@@ -89,6 +91,31 @@
   let cy = map-position(yt, yv, ctx.py-range)
   if cx == none or cy == none { return none }
   (cx, cy)
+}
+
+// Group break values by canvas angle modulo a full turn. `project` maps a
+// break to canvas radians (or `none` to skip). Returns an array of groups,
+// where each group is an array of `(idx, b, theta)` records sharing an
+// angle. First-seen order is preserved so a full-sweep wrap renders as
+// `<last>/<first>` (higher-domain break first).
+#let group-theta-breaks(breaks, project) = {
+  let groups = ()
+  let seen = (:)
+  for (idx, b) in breaks.enumerate() {
+    let theta = project(b)
+    if theta == none { continue }
+    let r = calc.rem(theta, 2 * calc.pi)
+    if r < 0 { r += 2 * calc.pi }
+    let key = str(calc.round(r, digits: 6))
+    let rec = (idx: idx, b: b, theta: theta)
+    if key in seen {
+      groups.at(seen.at(key)).push(rec)
+    } else {
+      seen.insert(key, groups.len())
+      groups.push((rec,))
+    }
+  }
+  groups
 }
 
 // Closed wedge polygon (centre or annulus segment). `theta-lo` and

@@ -569,13 +569,19 @@
 
 - slug: coord-radial-clock
   section: facets
-  title: "Polar clock layout"
+  title: "Radial clock layout"
   description: 'Wrap an hourly series around a circle via <code>coord-radial(theta: "x")</code>: hour drives the angle and load the radius.'
-  alt: "Circular clock-face plot of 24 hourly load observations connected by a closed line and points, traced around the perimeter of a polar panel."
+  alt: "Circular clock-face plot of 24 hourly load observations connected by a closed line and points, traced around the perimeter of a radial panel."
+
+- slug: coord-radial-half
+  section: facets
+  title: "Half-sweep radial layout"
+  description: 'Pass <code>end: calc.pi</code> to <code>coord-radial</code> for a partial sweep; the panel becomes a half-circle and domain endpoints land at distinct angles instead of stacking.'
+  alt: "Half-circle radial plot of 13 hourly load samples connected by a line, sweeping from 12 o'clock clockwise to 6 o'clock."
 
 - slug: coord-radial-pie
   section: facets
-  title: "Pie chart via polar coordinates"
+  title: "Pie chart via radial coordinates"
   description: '<code>coord-radial(theta: "y")</code> with stacked <a href="../reference/geoms/geom-col.qmd"><code>geom-col</code></a> turns one stacked bar into a pie chart of revenue share.'
   alt: "Pie chart of revenue share split across five regions (EU, US, APAC, LATAM, and Other), produced by stacking columns under coord-radial(theta: y)."
 
@@ -583,7 +589,7 @@
   section: facets
   title: "Radar chart"
   description: 'Closed polygon under <code>coord-radial(theta: "x")</code> with one vertex per axis, drawn via <a href="../reference/geoms/geom-polygon.qmd"><code>geom-polygon</code></a>.'
-  alt: "Radar chart of a six-axis vehicle profile, showing a translucent blue polygon and points at each axis vertex inside a circular polar panel."
+  alt: "Radar chart of a six-axis vehicle profile, showing a translucent blue polygon and points at each axis vertex inside a circular radial panel."
 
 - slug: coord-radial-rose
   section: facets
