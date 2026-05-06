@@ -326,8 +326,9 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
     colour: "Species",
     fill: "Species",
   ),
-  theme: theme-minimal()
-    + theme(plot-title: element-text(size: 12pt, weight: "bold")),
+  theme: theme-minimal(
+    plot-title: element-text(size: 12pt, weight: "bold")
+  ),
   width: 12cm,
   height: 6cm,
 )
@@ -369,8 +370,9 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
     colour: "Species",
     fill: "Species",
   ),
-  theme: theme-minimal()
-    + theme(plot-title: element-text(size: 12pt, weight: "bold")),
+  theme: theme-minimal(
+    plot-title: element-text(size: 12pt, weight: "bold")
+  ),
   width: 12cm,
   height: 6cm,
 )
