@@ -750,6 +750,8 @@ blockquote {
 
 .gallery-item {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: var(--gb-surface);
   border-radius: var(--gb-radius-lg);
   box-shadow: var(--gb-shadow-soft);
@@ -798,6 +800,8 @@ blockquote {
 }
 
 .gallery-source-btn {
+  align-self: center;
+  margin-top: auto;
   background: var(--gb-paper);
   color: var(--gb-ink);
   border: 1px solid var(--gb-border, rgba(0, 0, 0, 0.12));
