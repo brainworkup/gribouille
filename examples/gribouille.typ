@@ -26,29 +26,31 @@
   )
 })
 
-#let species_card(name, colour, note) = block(
-  width: auto,
-  inset: 0pt,
-  radius: 4pt,
-  fill: luma(99%),
-  stroke: (paint: colour, thickness: 0.6pt),
-)[
-  #set block(spacing: 0pt)
-
-  #block(
-    inset: 2pt,
+#let species-card(name, note, colour, ink, paper) = context {
+  block(
+    width: auto,
+    inset: 0pt,
     radius: 4pt,
-    fill: colour,
+    fill: paper,
+    stroke: (paint: colour, thickness: 0.6pt),
   )[
-    #set text(size: 6pt, weight: "bold", fill: white)
-    #set par(spacing: 0pt, leading: 0.85em)
-    #name
+    #set block(spacing: 0pt)
+
+    #block(
+      inset: 2pt,
+      radius: 4pt,
+      fill: colour,
+    )[
+      #set text(size: 6pt, weight: "bold", fill: if luma(colour).components().at(0) < 50% { white } else { black })
+      #set par(spacing: 0pt, leading: 0.85em)
+      #name
+    ]
+    #block(inset: (x: 4pt, y: 3pt))[
+      #set text(size: 5.4pt, fill: ink)
+      #note
+    ]
   ]
-  #block(inset: (x: 4pt, y: 3pt))[
-    #set text(size: 5.4pt, fill: rgb("#111827"))
-    #note
-  ]
-]
+}
 
 #plot(
   data: penguins,
@@ -71,10 +73,12 @@
           y: 5000,
           species: "Adelie",
           label: [
-            #species_card(
+            #species-card(
               "Adelie",
-              rgb("#ff8c00"),
               "Compact and stable mass profile.",
+              rgb("#ff8c00"),
+              black,
+              white,
             )
           ],
         ),
@@ -83,10 +87,12 @@
           y: 2900,
           species: "Chinstrap",
           label: [
-            #species_card(
+            #species-card(
               "Chinstrap",
-              rgb("#008B8B"),
               "Similar centre to Adelie, with tighter spread.",
+              rgb("#008B8B"),
+              black,
+              white,
             )
           ],
         ),
@@ -95,10 +101,12 @@
           y: 6150,
           species: "Gentoo",
           label: [
-            #species_card(
+            #species-card(
               "Gentoo",
-              rgb("#800080"),
               "Heavier birds and broader variability.",
+              rgb("#800080"),
+              black,
+              white,
             )
           ],
         ),
