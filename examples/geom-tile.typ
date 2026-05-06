@@ -25,6 +25,7 @@
   layers: (geom-tile(stroke: 0.5pt, colour: rgb("#ffffff")),),
   scales: (
     scale-fill-viridis-c(name: "Requests / min"),
+    scale-x-discrete(limits: hours),
     scale-y-discrete(limits: weeks.rev()),
   ),
   labs: labs(
