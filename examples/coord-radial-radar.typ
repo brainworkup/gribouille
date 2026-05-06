@@ -16,7 +16,11 @@
   ),
   coord: coord-radial(theta: "x"),
   scales: (
-    scale-x-continuous(limits: (0, 5)),
+    scale-x-continuous(
+      limits: (0, 6),
+      labels: v => if v == 6 { none } else { [#v] },
+      expand: false,
+    ),
     scale-y-continuous(limits: (0, 10)),
   ),
   labs: labs(title: "Vehicle profile"),

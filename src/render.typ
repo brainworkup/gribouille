@@ -1370,18 +1370,23 @@
     ) {
       let pad = 0.2
       for group in theta-groups {
-        let labels = group.map(rec => {
-          let raw = if theta-trained.type == "continuous" {
-            _axis-label(theta-trained, rec.b)
-          } else { rec.b }
-          resolve-label(
-            theta-disp.labels,
-            rec.b,
-            rec.idx,
-            raw,
-            typst-mark: theta-disp.typst-mark,
-          )
-        })
+        // `labels` callbacks may return `none` to drop a wrap-side break from
+        // the merged label (e.g. hide "6" so a 0..6 radar shows "0", not "6/0").
+        let labels = group
+          .map(rec => {
+            let raw = if theta-trained.type == "continuous" {
+              _axis-label(theta-trained, rec.b)
+            } else { rec.b }
+            resolve-label(
+              theta-disp.labels,
+              rec.b,
+              rec.idx,
+              raw,
+              typst-mark: theta-disp.typst-mark,
+            )
+          })
+          .filter(l => l != none)
+        if labels.len() == 0 { continue }
         // Higher-domain break first: "24/0", not "0/24".
         let label-text = labels.rev().join([/])
         let theta = group.first().theta
