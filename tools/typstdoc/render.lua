@@ -317,7 +317,9 @@ function M.render_sidebar(category_order, functions)
     "      align: left",
     "      collapse-level: 2",
     "      contents:",
-    "        - reference/index.qmd",
+    "        - section: Reference",
+    "          href: reference/index.qmd",
+    "          contents:",
   }
   local by_cat = {}
   for _, fn in ipairs(functions) do
@@ -331,11 +333,11 @@ function M.render_sidebar(category_order, functions)
     if fns and #fns > 0 then
       local slug = util.slugify(cat)
       table.sort(fns, function(a, b) return a.name < b.name end)
-      table.insert(lines, string.format("        - section: %s", cat))
-      table.insert(lines, string.format("          href: reference/%s/index.qmd", slug))
-      table.insert(lines, "          contents:")
+      table.insert(lines, string.format("            - section: %s", cat))
+      table.insert(lines, string.format("              href: reference/%s/index.qmd", slug))
+      table.insert(lines, "              contents:")
       for _, fn in ipairs(fns) do
-        table.insert(lines, string.format("            - reference/%s/%s.qmd", slug, fn.name))
+        table.insert(lines, string.format("                - reference/%s/%s.qmd", slug, fn.name))
       end
     end
   end
