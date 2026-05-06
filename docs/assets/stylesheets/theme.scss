@@ -762,11 +762,10 @@ blockquote {
     box-shadow: var(--gb-shadow-lift);
   }
 
-  // Lift inline anchors above Bootstrap's `.stretched-link::after` overlay
-  // so links inside descriptions remain clickable.
-  p a {
-    position: relative;
-    z-index: 2;
+  a.lightbox {
+    display: block;
+    line-height: 0;
+    cursor: zoom-in;
   }
 
   img {
@@ -798,10 +797,21 @@ blockquote {
   margin-top: 2.5rem;
 }
 
-.gallery-trigger {
-  display: block;
-  color: inherit;
+.gallery-source-btn {
+  background: var(--gb-paper);
+  color: var(--gb-ink);
+  border: 1px solid var(--gb-border, rgba(0, 0, 0, 0.12));
+  border-radius: var(--gb-radius-md);
+  box-shadow: var(--gb-shadow-soft);
+  font-size: 0.9rem;
+  padding: 0.35rem 0.75rem;
   cursor: pointer;
+  transition: background-color 120ms ease, box-shadow 120ms ease;
+
+  &:hover, &:focus-visible {
+    background: var(--gb-surface);
+    box-shadow: var(--gb-shadow-lift);
+  }
 }
 
 // ========================================================================

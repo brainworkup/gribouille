@@ -27,7 +27,7 @@ for (const item of items) {
 <div class="dark-content"><img src="../assets/typst-render/examples/<%= item.slug %>-dark.svg" alt="<%= item.alt %>" loading="lazy"></div>
 <h3><%= item.title %></h3>
 <p><%= item.description %></p>
-<a class="gallery-trigger stretched-link" href="#modal-<%= item.slug %>" data-bs-toggle="modal" data-bs-target="#modal-<%= item.slug %>" role="button" aria-label="View source for <%= item.title %>"></a>
+<button type="button" class="btn btn-sm gallery-source-btn" data-bs-toggle="modal" data-bs-target="#modal-<%= item.slug %>" aria-label="View source for <%= item.title %>">View source</button>
 </article>
 <% } %>
 </div>
