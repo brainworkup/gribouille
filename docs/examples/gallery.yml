@@ -24,7 +24,7 @@
 - slug: factor-inline
   section: basics
   title: "Inline factor coercion"
-  description: '<a href="../reference/helpers/as-factor.qmd"><code>as-factor</code></a> forces a numeric column to be treated as discrete for the colour aesthetic.'
+  description: '<a href="../reference/core/as-factor.qmd"><code>as-factor</code></a> forces a numeric column to be treated as discrete for the colour aesthetic.'
   alt: "Scatter plot of a noisy sinusoidal pattern with points coloured by a three-level cluster factor coerced from a numeric column."
 
 - slug: penguins
@@ -486,7 +486,7 @@
 - slug: annotate-typst
   section: annotations
   title: "Typst markup in annotations"
-  description: '<code>annotate("typst", label: "...")</code> always evaluates the label as Typst markup; <a href="../reference/helpers/typst.qmd"><code>typst()</code></a> forces evaluation inside <code>annotate("text", ...)</code>.'
+  description: '<code>annotate("typst", label: "...")</code> always evaluates the label as Typst markup; <a href="../reference/core/typst.qmd"><code>typst()</code></a> forces evaluation inside <code>annotate("text", ...)</code>.'
   alt: "Annotated line and point chart with a bold-italic peak label rendered as Typst markup and a series A label using the typst() forcing tag."
 
 - slug: theme-set
