@@ -4,12 +4,20 @@
 ///! markers defer aesthetic resolution past the point where a column was
 ///! first bound, so callers can pull values from the trained stat output,
 ///! the resolved scale output, or the active theme.
-///!
-///! Slice 1 ships `from-theme(path)`. The remaining primitives
-///! (`after-stat`, `after-scale`, `stage`) are added in later slices and
-///! share the same `is-late-binding(v)` / `late-binding-kind(v)` test pair.
 
-#let _LATE-BINDING-KINDS = ("after-stat", "after-scale", "stage", "from-theme")
+#let _LATE-BINDING-KINDS = ("from-theme",)
+
+/// Read the late-binding kind tag on a marker, or `none` if `v` is not a
+/// late-binding marker.
+///
+/// \@internal
+/// \@param v Any value.
+/// \@returns The kind string or `none`.
+#let late-binding-kind(v) = {
+  if type(v) != dictionary { return none }
+  let k = v.at("kind", default: none)
+  if k in _LATE-BINDING-KINDS { k } else { none }
+}
 
 /// Whether a mapping value is a late-binding marker.
 ///
@@ -17,18 +25,7 @@
 /// \@param v Any value pulled from an aesthetic mapping.
 /// \@returns `true` when `v` is a dictionary tagged with one of the
 ///   late-binding kinds.
-#let is-late-binding(v) = (
-  type(v) == dictionary and v.at("kind", default: none) in _LATE-BINDING-KINDS
-)
-
-/// Read the late-binding kind tag on a marker, or `none` if `v` is not a
-/// late-binding marker.
-///
-/// \@internal
-/// \@param v Any value.
-/// \@returns The kind string (`"after-stat"`, `"after-scale"`, `"stage"`,
-///   `"from-theme"`) or `none`.
-#let late-binding-kind(v) = if is-late-binding(v) { v.kind } else { none }
+#let is-late-binding(v) = late-binding-kind(v) != none
 
 /// Pull a value from the resolved theme at render time.
 ///
@@ -93,6 +90,7 @@
   let cur = theme
   let walked = ()
   for part in parts {
+    let here = (..walked, part).join(".")
     if type(cur) != dictionary {
       panic(
         "from-theme: cannot descend into "
@@ -100,19 +98,12 @@
           + " at '"
           + part
           + "' in path "
-          + walked.join(".")
-          + (if walked.len() > 0 { "." } else { "" })
-          + part,
+          + here,
       )
     }
     if not (part in cur) {
       panic(
-        "from-theme: key '"
-          + part
-          + "' not found in theme at path "
-          + walked.join(".")
-          + (if walked.len() > 0 { "." } else { "" })
-          + part,
+        "from-theme: key '" + part + "' not found in theme at path " + here,
       )
     }
     cur = cur.at(part)

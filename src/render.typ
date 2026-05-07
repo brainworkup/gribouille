@@ -3,8 +3,8 @@
 
 #import "deps.typ": cetz
 #import "scale/train.typ": (
-  _SYNTHETIC-FEEDERS, _find-user-scale, _resolve-forced-type, map-axis,
-  map-axis-data, map-continuous, map-position, mapping-ref-col,
+  _SYNTHETIC-FEEDERS, _find-user-scale, _resolve-forced-type, all-aesthetics,
+  map-axis, map-axis-data, map-continuous, map-position, mapping-ref-col,
   positional-aesthetics, train, transform-fwd, transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
@@ -322,44 +322,37 @@
   (data: new-data, factor-levels: factor-levels)
 }
 
-// Aesthetic channels that have a fixed-value layer parameter; `from-theme`
-// resolves to a literal scalar that we write into `layer.params.<channel>`
-// so per-row resolvers honour it through their existing pinned-param paths.
-#let _FROM-THEME-PARAM-CHANNELS = (
-  "colour",
-  "fill",
-  "size",
-  "alpha",
-  "linewidth",
-  "stroke",
-  "shape",
-  "linetype",
-)
+// `from-theme` resolves to a literal scalar that we write into
+// `layer.params.<channel>` so per-row resolvers honour it through their
+// existing pinned-param paths. Positional aesthetics (x/y and synthetic
+// feeders) have no fixed-value param to write to, hence the exclusion.
+#let _FROM-THEME-PARAM-CHANNELS = all-aesthetics.filter(a => (
+  not positional-aesthetics.contains(a)
+))
 
 // Resolve `from-theme(...)` markers in `mapping`. The resolved scalar is
 // pushed into `layer.params.<channel>` and the mapping entry is cleared so
 // scale training and per-row mapping reads see no ghost binding.
 #let _apply-from-theme(layer, mapping, theme) = {
   if mapping == none { return (layer: layer, mapping: mapping) }
+  if not mapping.values().any(v => late-binding-kind(v) == "from-theme") {
+    return (layer: layer, mapping: mapping)
+  }
   let new-mapping = mapping
   let params = layer.at("params", default: (:))
-  let touched = false
   for (channel, value) in mapping.pairs() {
     if late-binding-kind(value) != "from-theme" { continue }
     if not _FROM-THEME-PARAM-CHANNELS.contains(channel) {
       panic(
         "from-theme: unsupported on '"
           + channel
-          + "'; use a fixed-value channel like "
+          + "'; use one of: "
           + _FROM-THEME-PARAM-CHANNELS.join(", "),
       )
     }
-    let resolved = resolve-from-theme(theme, value.path)
-    params.insert(channel, resolved)
+    params.insert(channel, resolve-from-theme(theme, value.path))
     new-mapping.insert(channel, none)
-    touched = true
   }
-  if not touched { return (layer: layer, mapping: mapping) }
   let new-layer = layer
   new-layer.insert("params", params)
   (layer: new-layer, mapping: new-mapping)
