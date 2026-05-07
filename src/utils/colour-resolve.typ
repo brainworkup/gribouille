@@ -91,23 +91,14 @@
   apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
-/// Resolve a per-row stroke thickness.
-///
-/// Priority order:
-/// 1. Pinned `layer.params.linewidth` when set to a non-`auto`, non-`none` length.
-/// 2. The trained linewidth scale, if `mapping.linewidth` is set.
-/// 3. `default-thickness` otherwise.
-///
-/// `default-thickness` is conventionally the layer's `params.stroke` length, so
-/// when neither the mapping nor an explicit `linewidth:` pin applies, the
-/// layer's configured stroke length is used as the fallback thickness.
+/// Read `col` through the trained linewidth scale, falling back to
+/// `default-thickness` when the column or scale is missing.
 ///
 /// \@internal
-/// \@param layer The layer dictionary providing `params.linewidth`.
-/// \@param mapping The resolved aesthetic mapping.
-/// \@param ctx The plot context exposing `trained`.
-/// \@param sample-row The row used to read the linewidth value.
-/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@param col Source column name or `none`.
+/// \@param ctx Plot context exposing `trained`.
+/// \@param sample-row The row to read.
+/// \@param default-thickness Fallback length.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let _resolve-linewidth-natural(col, ctx, sample-row, default-thickness) = {
   let trained = ctx.trained.at("linewidth", default: none)
@@ -138,6 +129,24 @@
   if resolved == none { default-thickness } else { resolved }
 }
 
+/// Resolve a per-row stroke thickness.
+///
+/// Priority order:
+/// 1. Pinned `layer.params.linewidth` when set to a non-`auto`, non-`none` length.
+/// 2. The trained linewidth scale, if `mapping.linewidth` is set.
+/// 3. `default-thickness` otherwise.
+///
+/// `default-thickness` is conventionally the layer's `params.stroke` length, so
+/// when neither the mapping nor an explicit `linewidth:` pin applies, the
+/// layer's configured stroke length is used as the fallback thickness.
+///
+/// \@internal
+/// \@param layer The layer dictionary providing `params.linewidth`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the linewidth value.
+/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@returns A Typst length suitable for `stroke.thickness`.
 #let resolve-linewidth(layer, mapping, ctx, sample-row, default-thickness) = {
   let pinned-lw = layer.params.at("linewidth", default: auto)
   if pinned-lw != auto and pinned-lw != none and type(pinned-lw) == length {
@@ -156,20 +165,14 @@
   apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
-/// Resolve a per-row marker outline thickness from the `stroke` aesthetic.
-///
-/// Priority order:
-/// 1. Pinned `layer.params.stroke` when set to a length.
-/// 2. Pinned stroke dictionary's `thickness` field, when one is supplied.
-/// 3. The trained stroke scale, if `mapping.stroke` is set.
-/// 4. `default-thickness` otherwise.
+/// Read `col` through the trained stroke scale, falling back to
+/// `default-thickness` when the column or scale is missing.
 ///
 /// \@internal
-/// \@param layer The layer dictionary providing `params.stroke`.
-/// \@param mapping The resolved aesthetic mapping.
-/// \@param ctx The plot context exposing `trained`.
-/// \@param sample-row The row used to read the stroke value.
-/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@param col Source column name or `none`.
+/// \@param ctx Plot context exposing `trained`.
+/// \@param sample-row The row to read.
+/// \@param default-thickness Fallback length.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let _resolve-stroke-width-natural(col, ctx, sample-row, default-thickness) = {
   let trained = ctx.trained.at("stroke", default: none)
@@ -200,6 +203,21 @@
   if resolved == none { default-thickness } else { resolved }
 }
 
+/// Resolve a per-row marker outline thickness from the `stroke` aesthetic.
+///
+/// Priority order:
+/// 1. Pinned `layer.params.stroke` when set to a length.
+/// 2. Pinned stroke dictionary's `thickness` field, when one is supplied.
+/// 3. The trained stroke scale, if `mapping.stroke` is set.
+/// 4. `default-thickness` otherwise.
+///
+/// \@internal
+/// \@param layer The layer dictionary providing `params.stroke`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the stroke value.
+/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@returns A Typst length suitable for `stroke.thickness`.
 #let resolve-stroke-width(
   layer,
   mapping,
@@ -225,19 +243,15 @@
   apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
-/// Resolve a per-row marker size.
-///
-/// Priority order:
-/// 1. Pinned `layer.params.size` when set to a non-`auto`, non-`none` length.
-/// 2. The trained size scale, if `mapping.size` is set.
-/// 3. `default-size` otherwise.
+/// Read `col` through the trained size scale (with optional `area`
+/// transform), falling back to `default-size` when the column or scale
+/// is missing.
 ///
 /// \@internal
-/// \@param layer The layer dictionary providing `params.size`.
-/// \@param mapping The resolved aesthetic mapping.
-/// \@param ctx The plot context exposing `trained`.
-/// \@param sample-row The row used to read the size value.
-/// \@param default-size Fallback length when no mapping or pin applies.
+/// \@param col Source column name or `none`.
+/// \@param ctx Plot context exposing `trained`.
+/// \@param sample-row The row to read.
+/// \@param default-size Fallback length.
 /// \@returns A Typst length suitable for a marker radius.
 #let _resolve-size-natural(col, ctx, sample-row, default-size) = {
   let trained = ctx.trained.at("size", default: none)
@@ -280,6 +294,20 @@
   if resolved == none { default-size } else { resolved }
 }
 
+/// Resolve a per-row marker size.
+///
+/// Priority order:
+/// 1. Pinned `layer.params.size` when set to a non-`auto`, non-`none` length.
+/// 2. The trained size scale, if `mapping.size` is set.
+/// 3. `default-size` otherwise.
+///
+/// \@internal
+/// \@param layer The layer dictionary providing `params.size`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`.
+/// \@param sample-row The row used to read the size value.
+/// \@param default-size Fallback length when no mapping or pin applies.
+/// \@returns A Typst length suitable for a marker radius.
 #let resolve-size(layer, mapping, ctx, sample-row, default-size) = {
   let pinned = layer.params.at("size", default: auto)
   if pinned != auto and pinned != none and type(pinned) == length {

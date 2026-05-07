@@ -49,7 +49,7 @@
 /// fixed-value layer parameter (`colour`, `fill`, `size`, `alpha`,
 /// `linewidth`, `stroke`, `shape`, `linetype`).
 ///
-/// \@category Aesthetics
+/// \@category Core
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -82,7 +82,7 @@
 /// a function `(row, ctx) => any`. `ctx` carries `theme`, `palette`,
 /// `stat-name`, and `stat-info` (see `_prepare-layer` for the exact shape).
 ///
-/// \@category Aesthetics
+/// \@category Core
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -102,7 +102,7 @@
 /// honoured on `colour`, `fill`, `alpha`, `size`, `linewidth`, and
 /// `stroke`. The closure runs once per row.
 ///
-/// \@category Aesthetics
+/// \@category Core
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -120,7 +120,7 @@
 /// (`(value, ctx) => any`) post-transforms the channel's resolved
 /// scale value just before draw. Any lane may be `none`.
 ///
-/// \@category Aesthetics
+/// \@category Core
 /// \@stability experimental
 /// \@since 0.0.1
 ///

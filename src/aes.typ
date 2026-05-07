@@ -4,12 +4,15 @@
 /// properties: which column drives the x axis, which becomes a colour, etc.
 /// Pass the result as the `mapping` argument of \@plot or any geom layer.
 ///
-/// Channel values can also be late-binding markers that defer resolution
-/// past the point where a column was first bound: \@from-theme pulls a
-/// scalar from the active theme; \@after-stat substitutes a column or
-/// closure result published by the layer's stat; \@after-scale
-/// post-transforms a channel's scale-resolved value just before draw;
-/// \@stage composes all three lanes for a single channel.
+/// Channel values can also be late-binding markers that defer
+/// resolution past the point where a column was first bound:
+///
+/// - Use \@from-theme to pull a scalar from the active theme.
+/// - Use \@after-stat to substitute a column or closure result
+///   published by the layer's stat.
+/// - Use \@after-scale to post-transform a channel's scale-resolved
+///   value just before draw.
+/// - Use \@stage to compose all three lanes for a single channel.
 ///
 /// \@category Core
 /// \@stability stable
