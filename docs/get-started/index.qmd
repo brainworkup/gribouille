@@ -42,21 +42,10 @@ At minimum [`geom-point`](../reference/geoms/geom-point.qmd) needs `x` and `y`.
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
-#plot(
-  data: penguins,
-  mapping: aes(x: "flipper-len", y: "body-mass"),
-  layers: (geom-point(size: 2pt),),
-  width: 12cm,
-  height: 9cm,
-)
-```
-
 ```{typst}
+//| echo: true
 //| output-filename: "step-1.svg"
 //| alt: "Scatter of penguin body mass against flipper length, all points the same colour."
-#import "./lib.typ": *
-
 #plot(
   data: penguins,
   mapping: aes(x: "flipper-len", y: "body-mass"),
@@ -75,25 +64,10 @@ Every aesthetic mapping is independent of the geom, so the same colour scale wil
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
-#plot(
-  data: penguins,
-  mapping: aes(
-    x: "flipper-len",
-    y: "body-mass",
-    colour: "species",
-  ),
-  layers: (geom-point(size: 2pt, alpha: 0.85),),
-  width: 12cm,
-  height: 9cm,
-)
-```
-
 ```{typst}
+//| echo: true
 //| output-filename: "step-2.svg"
 //| alt: "Scatter of body mass against flipper length, points coloured by species."
-#import "./lib.typ": *
-
 #plot(
   data: penguins,
   mapping: aes(
@@ -116,29 +90,10 @@ Adding a [`geom-smooth`](../reference/geoms/geom-smooth.qmd) draws one fitted li
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
-#plot(
-  data: penguins,
-  mapping: aes(
-    x: "flipper-len",
-    y: "body-mass",
-    colour: "species",
-    fill: "species",
-  ),
-  layers: (
-    geom-point(size: 2pt, alpha: 0.6),
-    geom-smooth(method: "lm", alpha: 0.2),
-  ),
-  width: 12cm,
-  height: 9cm,
-)
-```
-
 ```{typst}
+//| echo: true
 //| output-filename: "step-3.svg"
 //| alt: "Per-species scatter with linear fits and 95% confidence ribbons."
-#import "./lib.typ": *
-
 #plot(
   data: penguins,
   mapping: aes(
@@ -165,43 +120,14 @@ A matching [`scale-fill-discrete`](../reference/scales/scale-fill-discrete.qmd) 
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
+```{typst}
+//| echo: true
+//| output-filename: "step-4.svg"
+//| alt: "Same scatter as step 3 with a colour-blind-friendly palette."
 #let cb = (
   rgb("#0072B2"),  // blue
   rgb("#D55E00"),  // vermillion
   rgb("#009E73"),  // bluish green
-)
-
-#plot(
-  data: penguins,
-  mapping: aes(
-    x: "flipper-len",
-    y: "body-mass",
-    colour: "species",
-    fill: "species",
-  ),
-  layers: (
-    geom-point(size: 2pt, alpha: 0.6),
-    geom-smooth(method: "lm", alpha: 0.2),
-  ),
-  scales: (
-    scale-colour-discrete(palette: cb),
-    scale-fill-discrete(palette: cb),
-  ),
-  width: 8cm,
-  height: 5cm,
-)
-```
-
-```{typst}
-//| output-filename: "step-4.svg"
-//| alt: "Same scatter as step 3 with a colour-blind-friendly palette."
-#import "./lib.typ": *
-
-#let cb = (
-  rgb("#0072B2"),
-  rgb("#D55E00"),
-  rgb("#009E73"),
 )
 
 #plot(
@@ -234,34 +160,10 @@ The same scales apply to every panel, so the species clusters can be compared ac
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
-#plot(
-  data: penguins,
-  mapping: aes(
-    x: "flipper-len",
-    y: "body-mass",
-    colour: "species",
-    fill: "species",
-  ),
-  layers: (
-    geom-point(size: 2pt, alpha: 0.6),
-    geom-smooth(method: "lm", alpha: 0.2),
-  ),
-  scales: (
-    scale-colour-discrete(palette: cb),
-    scale-fill-discrete(palette: cb),
-  ),
-  facet: facet-wrap("island"),
-  width: 12cm,
-  height: 9cm,
-)
-```
-
 ```{typst}
+//| echo: true
 //| output-filename: "step-5.svg"
 //| alt: "Three side-by-side panels, one per island, sharing colour and axis scales."
-#import "./lib.typ": *
-
 #let cb = (
   rgb("#0072B2"),
   rgb("#D55E00"),
@@ -300,45 +202,10 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
-#plot(
-  data: penguins,
-  mapping: aes(
-    x: "flipper-len",
-    y: "body-mass",
-    colour: "species",
-    fill: "species",
-  ),
-  layers: (
-    geom-point(size: 2pt, alpha: 0.6),
-    geom-smooth(method: "lm", alpha: 0.2),
-  ),
-  scales: (
-    scale-colour-discrete(palette: cb),
-    scale-fill-discrete(palette: cb),
-  ),
-  facet: facet-wrap("island"),
-  labs: labs(
-    title: "Penguin body mass scales with flipper length",
-    subtitle: "Same trend on every island, even though sample sizes differ",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
-    colour: "Species",
-    fill: "Species",
-  ),
-  theme: theme-minimal(
-    plot-title: element-text(size: 12pt, weight: "bold")
-  ),
-  width: 12cm,
-  height: 9cm,
-)
-```
-
 ```{typst}
+//| echo: true
 //| output-filename: "step-6.svg"
 //| alt: "Polished version of the faceted scatter with title block, axis labels, and minimal theme."
-#import "./lib.typ": *
-
 #let cb = (
   rgb("#0072B2"),
   rgb("#D55E00"),
@@ -388,24 +255,10 @@ The `position: "dodge"` parameter spreads the species side by side instead of st
 
 ::: {layout-ncol="2" layout-valign="center"}
 
-```typst
-#plot(
-  data: penguins,
-  mapping: aes(x: "island", fill: "species"),
-  layers: (geom-bar(position: "dodge"),),
-  scales: (scale-fill-discrete(palette: cb),),
-  labs: labs(x: "Island", y: "Count", fill: "Species"),
-  theme: theme-minimal(),
-  width: 12cm,
-  height: 9cm,
-)
-```
-
 ```{typst}
+//| echo: true
 //| output-filename: "step-7.svg"
 //| alt: "Dodged bars showing how many penguins of each species live on each island."
-#import "./lib.typ": *
-
 #let cb = (
   rgb("#0072B2"),
   rgb("#D55E00"),
@@ -429,17 +282,69 @@ The `position: "dodge"` parameter spreads the species side by side instead of st
 ## The grammar in one diagram
 
 Every plot you build composes the same pieces.
-Read the chain from data on the left to the rendered figure on the right.
+Read the chain from data on the left along the top row, then continue along the bottom row to the rendered figure.
 
-```{mermaid}
-flowchart LR
-  data["data"] --> aes["aes()"]
-  aes --> layer["layer<br/>(geom + stat + position)"]
-  layer --> scale["scale-*"]
-  scale --> coord["coord-*"]
-  coord --> facet["facet-*"]
-  facet --> theme["theme + labs"]
-  theme --> plot["plot()"]
+```{typst}
+//| echo: false
+//| output-filename: "grammar.svg"
+//| alt: "Flowchart of the grammar pipeline: data, aes(), layer (geom plus stat plus position), scale-*, then turning down to coord-*, facet-*, theme plus labs, and plot()."
+#import "@preview/cetz:0.5.0": canvas, draw
+
+#let ink = if _typst_render_foreground != none {
+  _typst_render_foreground
+} else {
+  rgb("#1f2328")
+}
+#let accent = rgb("#3366FF")
+
+#canvas(length: 1cm, {
+  import draw: *
+
+  set-style(
+    content: (
+      frame: "rect",
+      padding: (x: 0.5em, y: 0.4em),
+      stroke: 0.6pt + ink,
+    ),
+    stroke: 0.6pt + ink,
+    mark: (
+      end: "stealth",
+      fill: ink,
+      stroke: ink,
+      length: 0.25,
+    ),
+  )
+
+  let row-top = 1.6
+  let row-bot = 0
+  let col = (0, 4, 8, 12)
+
+  content((col.at(0), row-top), text(size: 9pt)[data], name: "data")
+  content((col.at(1), row-top), text(size: 9pt)[`aes()`], name: "aes")
+  content(
+    (col.at(2), row-top),
+    text(size: 9pt)[layer \ #text(size: 7.5pt)[(geom + stat + position)]],
+    name: "layer",
+  )
+  content((col.at(3), row-top), text(size: 9pt)[`scale-*`], name: "scale")
+
+  content((col.at(3), row-bot), text(size: 9pt)[`coord-*`], name: "coord")
+  content((col.at(2), row-bot), text(size: 9pt)[`facet-*`], name: "facet")
+  content((col.at(1), row-bot), text(size: 9pt)[theme + labs], name: "theme")
+  content(
+    (col.at(0), row-bot),
+    text(size: 9pt, weight: "bold", fill: accent)[`plot()`],
+    name: "plot",
+  )
+
+  line("data.east", "aes.west")
+  line("aes.east", "layer.west")
+  line("layer.east", "scale.west")
+  line("scale.south", "coord.north")
+  line("coord.west", "facet.east")
+  line("facet.west", "theme.east")
+  line("theme.west", "plot.east")
+})
 ```
 
 ## Next steps
