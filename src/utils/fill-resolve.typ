@@ -1,4 +1,5 @@
 #import "colour-resolve.typ": apply-alpha, resolve-alpha
+#import "late-binding.typ": late-binding-kind
 
 /// Resolve a fill colour for a row sample.
 ///
@@ -32,18 +33,21 @@
   default-alpha: 1,
 ) = {
   let fill-param = layer.params.at("fill", default: auto)
+  let fill-spec = if fill-mapping { mapping.at("fill", default: none) } else {
+    none
+  }
+  let after-scale = late-binding-kind(fill-spec) == "after-scale"
   let resolved = if fill-param != auto and fill-param != none {
     fill-param
+  } else if after-scale {
+    default-fill
   } else {
-    let fill-col = if fill-mapping { mapping.at("fill", default: none) } else {
-      none
-    }
     let fill-trained = if fill-mapping {
       ctx.trained.at("fill", default: none)
     } else { none }
-    if fill-col != none and fill-trained != none {
+    if fill-spec != none and fill-trained != none {
       ((ctx.resolve-colour)(fill-trained, ctx.palette))(
-        sample-row.at(fill-col, default: none),
+        sample-row.at(fill-spec, default: none),
       )
     } else if colour-fallback {
       let colour-col = mapping.at("colour", default: none)
@@ -54,6 +58,9 @@
         )
       } else { default-fill }
     } else { default-fill }
+  }
+  if after-scale {
+    resolved = (fill-spec.expr)(resolved, (..ctx, row: sample-row))
   }
   let alpha = resolve-alpha(
     layer,

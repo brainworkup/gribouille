@@ -3,6 +3,7 @@
 )
 #import "./palette.typ": spec-palette
 #import "./types.typ": parse-number
+#import "./late-binding.typ": late-binding-kind
 
 /// Apply an alpha transparentise to an already-resolved colour.
 ///
@@ -268,15 +269,21 @@
 /// \@returns A colour ready to use as a stroke paint.
 #let resolve-stroke-colour(layer, mapping, ctx, sample-row, default-colour) = {
   let colour-param = layer.params.at("colour", default: auto)
+  let spec = mapping.at("colour", default: none)
+  let after-scale = late-binding-kind(spec) == "after-scale"
   let resolved = if colour-param != auto and colour-param != none {
     colour-param
+  } else if after-scale {
+    default-colour
   } else {
-    let colour-col = mapping.at("colour", default: none)
     let colour-trained = ctx.trained.at("colour", default: none)
-    if colour-col != none and colour-trained != none {
-      let v = sample-row.at(colour-col, default: none)
+    if spec != none and colour-trained != none {
+      let v = sample-row.at(spec, default: none)
       ((ctx.resolve-colour)(colour-trained, ctx.palette))(v)
     } else { default-colour }
+  }
+  if after-scale {
+    resolved = (spec.expr)(resolved, (..ctx, row: sample-row))
   }
   let alpha = resolve-alpha(layer, mapping, ctx, sample-row)
   apply-alpha(resolved, alpha)

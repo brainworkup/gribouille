@@ -5,7 +5,7 @@
 ///! first bound, so callers can pull values from the trained stat output,
 ///! the resolved scale output, or the active theme.
 
-#let _LATE-BINDING-KINDS = ("from-theme", "after-stat")
+#let _LATE-BINDING-KINDS = ("from-theme", "after-stat", "after-scale")
 
 // Prefix for synthesised columns produced by function-form `after-stat`
 // closures. The full column name is `_as_<channel>`; collisions with
@@ -87,6 +87,28 @@
 ///
 /// \@see \@aes
 #let after-stat(expr) = (kind: "after-stat", expr: expr)
+
+/// Transform an aesthetic's resolved value just before it reaches the
+/// geom's draw step.
+///
+/// `expr` receives the channel's scale-resolved value (or the channel
+/// default when the channel carries no source) and a context dict
+/// (`theme`, `palette`, `ink`, `trained`, `row`, `resolve-colour`, ...).
+/// The closure's return value is what the geom finally draws.
+///
+/// Slice 4 wires `after-scale` for `colour` and `fill`; the remaining
+/// channels land in slice 7 once the per-row aesthetic resolver is
+/// unified.
+///
+/// \@category Aesthetics
+/// \@stability experimental
+/// \@since 0.0.1
+///
+/// \@param expr Function `(value, ctx) => any`.
+/// \@returns Late-binding marker consumed by \@aes.
+///
+/// \@see \@aes
+#let after-scale(expr) = (kind: "after-scale", expr: expr)
 
 /// Evaluate `after-stat` markers in a mapping against the post-stat
 /// rows.
