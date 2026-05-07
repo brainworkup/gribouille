@@ -111,14 +111,7 @@
 /// \@param sample-row The row used to read the linewidth value.
 /// \@param default-thickness Fallback thickness when no mapping or pin applies.
 /// \@returns A Typst length suitable for `stroke.thickness`.
-#let resolve-linewidth(layer, mapping, ctx, sample-row, default-thickness) = {
-  let pinned-lw = layer.params.at("linewidth", default: auto)
-  if pinned-lw != auto and pinned-lw != none and type(pinned-lw) == length {
-    return pinned-lw
-  }
-  let col = if mapping == none { none } else {
-    mapping.at("linewidth", default: none)
-  }
+#let _resolve-linewidth-natural(col, ctx, sample-row, default-thickness) = {
   let trained = ctx.trained.at("linewidth", default: none)
   if col == none or trained == none { return default-thickness }
   let raw = sample-row.at(col, default: none)
@@ -144,8 +137,27 @@
       discrete-numeric(trained, raw, range)
     }
   }
-  if resolved == none { return default-thickness }
-  resolved
+  if resolved == none { default-thickness } else { resolved }
+}
+
+#let resolve-linewidth(layer, mapping, ctx, sample-row, default-thickness) = {
+  let pinned-lw = layer.params.at("linewidth", default: auto)
+  if pinned-lw != auto and pinned-lw != none and type(pinned-lw) == length {
+    return pinned-lw
+  }
+  let spec = if mapping == none { none } else {
+    mapping.at("linewidth", default: none)
+  }
+  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
+    spec
+  }
+  let scaled = _resolve-linewidth-natural(
+    col,
+    ctx,
+    sample-row,
+    default-thickness,
+  )
+  apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
 /// Resolve a per-row marker outline thickness from the `stroke` aesthetic.
@@ -163,21 +175,7 @@
 /// \@param sample-row The row used to read the stroke value.
 /// \@param default-thickness Fallback thickness when no mapping or pin applies.
 /// \@returns A Typst length suitable for `stroke.thickness`.
-#let resolve-stroke-width(
-  layer,
-  mapping,
-  ctx,
-  sample-row,
-  default-thickness,
-) = {
-  let pinned = layer.params.at("stroke", default: auto)
-  if type(pinned) == length { return pinned }
-  if type(pinned) == dictionary {
-    return pinned.at("thickness", default: default-thickness)
-  }
-  let col = if mapping == none { none } else {
-    mapping.at("stroke", default: none)
-  }
+#let _resolve-stroke-width-natural(col, ctx, sample-row, default-thickness) = {
   let trained = ctx.trained.at("stroke", default: none)
   if col == none or trained == none { return default-thickness }
   let raw = sample-row.at(col, default: none)
@@ -203,8 +201,34 @@
       discrete-numeric(trained, raw, range)
     }
   }
-  if resolved == none { return default-thickness }
-  resolved
+  if resolved == none { default-thickness } else { resolved }
+}
+
+#let resolve-stroke-width(
+  layer,
+  mapping,
+  ctx,
+  sample-row,
+  default-thickness,
+) = {
+  let pinned = layer.params.at("stroke", default: auto)
+  if type(pinned) == length { return pinned }
+  if type(pinned) == dictionary {
+    return pinned.at("thickness", default: default-thickness)
+  }
+  let spec = if mapping == none { none } else {
+    mapping.at("stroke", default: none)
+  }
+  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
+    spec
+  }
+  let scaled = _resolve-stroke-width-natural(
+    col,
+    ctx,
+    sample-row,
+    default-thickness,
+  )
+  apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
 /// Resolve a per-row marker size.

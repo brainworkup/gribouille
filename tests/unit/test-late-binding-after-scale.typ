@@ -6,7 +6,8 @@
   after-scale, is-late-binding, late-binding-kind,
 )
 #import "../../src/utils/colour-resolve.typ": (
-  resolve-alpha, resolve-size, resolve-stroke-colour,
+  resolve-alpha, resolve-linewidth, resolve-size, resolve-stroke-colour,
+  resolve-stroke-width,
 )
 #import "../../src/utils/fill-resolve.typ": resolve-fill-colour
 
@@ -116,6 +117,32 @@
     2pt,
   ),
   4pt,
+)
+
+// --- after-scale on `linewidth` doubles the channel default -----------
+
+#assert.eq(
+  resolve-linewidth(
+    layer-of((linewidth: auto)),
+    (linewidth: after-scale((w, _) => w * 2)),
+    make-ctx((:)),
+    (:),
+    0.5pt,
+  ),
+  1pt,
+)
+
+// --- after-scale on `stroke` doubles the channel default --------------
+
+#assert.eq(
+  resolve-stroke-width(
+    layer-of((stroke: auto)),
+    (stroke: after-scale((w, _) => w * 2)),
+    make-ctx((:)),
+    (:),
+    0.5pt,
+  ),
+  1pt,
 )
 
 late-binding after-scale tests passed.
