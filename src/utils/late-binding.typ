@@ -79,9 +79,8 @@
 /// per-row computation over the post-stat data.
 ///
 /// `expr` may be a string column name (looked up in the post-stat row) or
-/// a function `(row, ctx) => any`. `ctx` exposes the trained scales,
-/// theme, palette, and ink so the closure can resolve other channels
-/// without re-reading the layer spec.
+/// a function `(row, ctx) => any`. `ctx` carries `theme`, `palette`,
+/// `stat-name`, and `stat-info` (see `_prepare-layer` for the exact shape).
 ///
 /// \@category Aesthetics
 /// \@stability experimental
@@ -218,6 +217,17 @@
 /// \@param v Any value.
 /// \@returns Boolean.
 #let is-after-scale(v) = late-binding-kind(v) == "after-scale"
+
+/// Extract the source column ref carried by an `after-scale` marker, or
+/// pass non-marker values through. Used by per-row resolvers to feed the
+/// channel's natural scale-resolver without branching on marker shape.
+///
+/// \@internal
+/// \@param spec An aesthetic mapping value.
+/// \@returns The source column name or `spec` unchanged.
+#let after-scale-source(spec) = {
+  if is-after-scale(spec) { spec.at("source", default: none) } else { spec }
+}
 
 /// Apply an `after-scale` marker to a freshly-resolved channel value.
 ///

@@ -3,7 +3,7 @@
 )
 #import "./palette.typ": spec-palette
 #import "./types.typ": parse-number
-#import "./late-binding.typ": apply-after-scale, is-after-scale
+#import "./late-binding.typ": after-scale-source, apply-after-scale
 
 /// Resolve `source-col` for `channel` through the channel's trained
 /// scale, returning `default` when either is missing.
@@ -66,9 +66,7 @@
   let spec = if mapping == none { none } else {
     mapping.at("alpha", default: none)
   }
-  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
-    spec
-  }
+  let col = after-scale-source(spec)
   let trained = ctx.trained.at("alpha", default: none)
   let scaled = if col == none or trained == none { fallback } else {
     let raw = sample-row.at(col, default: none)
@@ -148,9 +146,7 @@
   let spec = if mapping == none { none } else {
     mapping.at("linewidth", default: none)
   }
-  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
-    spec
-  }
+  let col = after-scale-source(spec)
   let scaled = _resolve-linewidth-natural(
     col,
     ctx,
@@ -219,9 +215,7 @@
   let spec = if mapping == none { none } else {
     mapping.at("stroke", default: none)
   }
-  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
-    spec
-  }
+  let col = after-scale-source(spec)
   let scaled = _resolve-stroke-width-natural(
     col,
     ctx,
@@ -294,9 +288,7 @@
   let spec = if mapping == none { none } else {
     mapping.at("size", default: none)
   }
-  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
-    spec
-  }
+  let col = after-scale-source(spec)
   let scaled = _resolve-size-natural(col, ctx, sample-row, default-size)
   apply-after-scale(scaled, spec, ctx, sample-row)
 }
@@ -322,16 +314,14 @@
   let spec = mapping.at("colour", default: none)
   let resolved = if colour-param != auto and colour-param != none {
     colour-param
-  } else if is-after-scale(spec) {
+  } else if spec != none {
     _resolve-channel-source(
       "colour",
-      spec.at("source", default: none),
+      after-scale-source(spec),
       ctx,
       sample-row,
       default-colour,
     )
-  } else if spec != none {
-    _resolve-channel-source("colour", spec, ctx, sample-row, default-colour)
   } else { default-colour }
   resolved = apply-after-scale(resolved, spec, ctx, sample-row)
   let alpha = resolve-alpha(layer, mapping, ctx, sample-row)

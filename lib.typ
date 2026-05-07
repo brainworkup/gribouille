@@ -6,9 +6,7 @@
 #import "src/aes.typ": aes
 #import "src/data.typ": as-factor, as-numeric
 #import "src/utils/typst-markup.typ": typst
-#import "src/utils/late-binding.typ": (
-  after-scale, after-stat, from-theme, is-late-binding, stage,
-)
+#import "src/utils/late-binding.typ": after-scale, after-stat, from-theme, stage
 
 // Datasets.
 #import "src/datasets/economics.typ": economics

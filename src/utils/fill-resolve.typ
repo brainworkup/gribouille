@@ -1,7 +1,7 @@
 #import "colour-resolve.typ": (
   _resolve-channel-source, apply-alpha, resolve-alpha,
 )
-#import "late-binding.typ": apply-after-scale, is-after-scale
+#import "late-binding.typ": after-scale-source, apply-after-scale
 
 /// Resolve a fill colour for a row sample.
 ///
@@ -50,16 +50,14 @@
         default-fill,
       )
     } else { default-fill }
-  } else if is-after-scale(fill-spec) {
+  } else if fill-spec != none {
     _resolve-channel-source(
       "fill",
-      fill-spec.at("source", default: none),
+      after-scale-source(fill-spec),
       ctx,
       sample-row,
       default-fill,
     )
-  } else if fill-spec != none {
-    _resolve-channel-source("fill", fill-spec, ctx, sample-row, default-fill)
   } else if colour-fallback {
     _resolve-channel-source(
       "colour",
