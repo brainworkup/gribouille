@@ -5,7 +5,7 @@
 ///! first bound, so callers can pull values from the trained stat output,
 ///! the resolved scale output, or the active theme.
 
-#let _LATE-BINDING-KINDS = ("from-theme",)
+#let _LATE-BINDING-KINDS = ("from-theme", "after-stat")
 
 /// Read the late-binding kind tag on a marker, or `none` if `v` is not a
 /// late-binding marker.
@@ -63,6 +63,28 @@
 ///
 /// \@see \@aes, \@theme
 #let from-theme(path) = (kind: "from-theme", path: path)
+
+/// Bind an aesthetic to a column produced by the layer's stat, or to a
+/// per-row computation over the post-stat data.
+///
+/// `expr` may be a string column name (looked up in the post-stat row) or
+/// a function `(row, ctx) => any`. `ctx` exposes the trained scales,
+/// theme, palette, and ink so the closure can resolve other channels
+/// without re-reading the layer spec.
+///
+/// The marker is consumed by `_prepare-layer` after the stat runs (slice
+/// 3); slice 2 only routes the marker through `_strip-mapping-refs`,
+/// `_merge-mapping`, and scale training without crashing.
+///
+/// \@category Aesthetics
+/// \@stability experimental
+/// \@since 0.0.1
+///
+/// \@param expr Column-name string or `(row, ctx) => any` closure.
+/// \@returns Late-binding marker consumed by \@aes.
+///
+/// \@see \@aes, \@stage
+#let after-stat(expr) = (kind: "after-stat", expr: expr)
 
 #let _path-parts(path) = {
   if type(path) == str { return path.split(".") }

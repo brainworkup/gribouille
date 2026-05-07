@@ -149,7 +149,8 @@
 // strings. Both `mapping-ref` annotations (`as-factor`/`as-numeric`) and
 // `typst-markup` annotations (`typst()`) are collapsed; the typst intent
 // is captured separately by `_typst-marks-of` so display surfaces can
-// honour it.
+// honour it. Late-binding markers (`from-theme`, `after-stat`, ...)
+// pass through unchanged because `mapping-ref-col` is a no-op on them.
 #let _strip-mapping-refs(mapping) = {
   if mapping == none { return none }
   let out = mapping

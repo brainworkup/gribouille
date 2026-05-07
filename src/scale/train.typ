@@ -9,6 +9,7 @@
 #import "../data.typ": column
 #import "../utils/types.typ": infer-column-type, parse-number
 #import "../utils/typst-markup.typ": is-typst-markup
+#import "../utils/late-binding.typ": is-late-binding
 
 #let _resolve-mapping(layer, plot-mapping) = {
   if layer.at("inherit-aes", default: true) and plot-mapping != none {
@@ -233,6 +234,10 @@
     for a in aes-list {
       let raw = layer-mapping.at(a, default: none)
       if raw == none { continue }
+      // Late-binding markers (`after-stat`, `from-theme`, ...) carry no
+      // column to train against; evaluation happens in `_prepare-layer`
+      // for `from-theme` and post-stat for `after-stat`.
+      if is-late-binding(raw) { continue }
       let col-name = mapping-ref-col(raw)
       let entry = cache.at(a)
       entry.cols.push((
