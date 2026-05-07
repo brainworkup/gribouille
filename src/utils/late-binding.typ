@@ -93,12 +93,9 @@
 ///
 /// `expr` receives the channel's scale-resolved value (or the channel
 /// default when the channel carries no source) and a context dict
-/// (`theme`, `palette`, `ink`, `trained`, `row`, `resolve-colour`, ...).
-/// The closure's return value is what the geom finally draws.
-///
-/// Slice 4 wires `after-scale` for `colour` and `fill`; the remaining
-/// channels land in slice 7 once the per-row aesthetic resolver is
-/// unified.
+/// (`theme`, `palette`, `trained`, `row`, `resolve-colour`, ...).
+/// The closure's return value is what the geom finally draws. Currently
+/// honoured on `colour` and `fill`. The closure runs once per row.
 ///
 /// \@category Aesthetics
 /// \@stability experimental
@@ -109,6 +106,30 @@
 ///
 /// \@see \@aes
 #let after-scale(expr) = (kind: "after-scale", expr: expr)
+
+/// Whether a mapping value carries an `after-scale` marker.
+///
+/// \@internal
+/// \@param v Any value.
+/// \@returns Boolean.
+#let is-after-scale(v) = late-binding-kind(v) == "after-scale"
+
+/// Apply an `after-scale` marker to a freshly-resolved channel value.
+///
+/// Builds a one-shot closure context that includes the row, then calls
+/// `spec.expr(resolved, ctx-with-row)`. Returns `resolved` unchanged
+/// when `spec` is not an `after-scale` marker.
+///
+/// \@internal
+/// \@param resolved The channel's scale-resolved value.
+/// \@param spec The mapping value for the channel (may be a marker).
+/// \@param ctx The renderer context (`theme`, `palette`, `trained`, ...).
+/// \@param row The current data row.
+/// \@returns The transformed value, or `resolved` when no marker.
+#let apply-after-scale(resolved, spec, ctx, row) = {
+  if not is-after-scale(spec) { return resolved }
+  (spec.expr)(resolved, (..ctx, row: row))
+}
 
 /// Evaluate `after-stat` markers in a mapping against the post-stat
 /// rows.

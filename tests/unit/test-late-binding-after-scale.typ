@@ -47,7 +47,7 @@
 // --- closure can read other-channel resolved values via ctx ------------
 
 #let mirror-fill = after-scale((_, ctx) => {
-  let trained = ctx.trained.fill
+  let trained = ctx.trained.at("fill", default: none)
   ((ctx.resolve-colour)(trained, ctx.palette))(ctx.row.sp)
 })
 #assert.eq(

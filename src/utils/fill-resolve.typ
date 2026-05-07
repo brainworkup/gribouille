@@ -1,5 +1,5 @@
 #import "colour-resolve.typ": apply-alpha, resolve-alpha
-#import "late-binding.typ": late-binding-kind
+#import "late-binding.typ": apply-after-scale, is-after-scale
 
 /// Resolve a fill colour for a row sample.
 ///
@@ -36,10 +36,9 @@
   let fill-spec = if fill-mapping { mapping.at("fill", default: none) } else {
     none
   }
-  let after-scale = late-binding-kind(fill-spec) == "after-scale"
   let resolved = if fill-param != auto and fill-param != none {
     fill-param
-  } else if after-scale {
+  } else if is-after-scale(fill-spec) {
     default-fill
   } else {
     let fill-trained = if fill-mapping {
@@ -59,9 +58,7 @@
       } else { default-fill }
     } else { default-fill }
   }
-  if after-scale {
-    resolved = (fill-spec.expr)(resolved, (..ctx, row: sample-row))
-  }
+  resolved = apply-after-scale(resolved, fill-spec, ctx, sample-row)
   let alpha = resolve-alpha(
     layer,
     mapping,

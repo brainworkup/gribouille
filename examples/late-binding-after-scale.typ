@@ -23,7 +23,7 @@
     y: "y",
     fill: "sp",
     colour: after-scale((_, ctx) => {
-      let trained = ctx.trained.fill
+      let trained = ctx.trained.at("fill", default: none)
       let v = ((ctx.resolve-colour)(trained, ctx.palette))(ctx.row.sp)
       v.darken(40%)
     }),
