@@ -22,7 +22,7 @@
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
 #import "utils/late-binding.typ": (
-  is-late-binding, late-binding-kind, resolve-from-theme,
+  eval-after-stat, is-late-binding, late-binding-kind, resolve-from-theme,
 )
 #import "utils/radial.typ": group-theta-breaks, radial-axis-of, radial-ctx
 #import "utils/margin.typ": (
@@ -422,6 +422,18 @@
     }
     stat-data = combined
     stat-mapping = last-mapping
+  }
+
+  // Resolve `after-stat` markers now that the stat has run; downstream
+  // (position, train, geom draw) only sees real column names.
+  if theme != none {
+    let after = eval-after-stat(
+      stat-data,
+      stat-mapping,
+      (theme: theme, ink: theme.ink, palette: default-discrete),
+    )
+    stat-data = after.rows
+    stat-mapping = after.mapping
   }
 
   // `position:` accepts either a string name (default params) or a dict

@@ -82,6 +82,49 @@
 /// \@see \@aes
 #let after-stat(expr) = (kind: "after-stat", expr: expr)
 
+/// Evaluate `after-stat` markers in a mapping against the post-stat
+/// rows.
+///
+/// String exprs rewrite the mapping field to that column name; function
+/// exprs run per row and write to a synthesised `_as_<channel>` column,
+/// then rewrite the mapping field to that column name. Returns the
+/// possibly-augmented rows and rewritten mapping; passes both through
+/// untouched when no `after-stat` marker is present.
+///
+/// \@internal
+/// \@param rows Post-stat row dictionaries.
+/// \@param mapping Aesthetic mapping (may carry `after-stat` markers).
+/// \@param ctx Closure context (`theme`, `palette`, `ink`, ...).
+/// \@returns Dict with `rows` and `mapping` fields.
+#let eval-after-stat(rows, mapping, ctx) = {
+  if mapping == none { return (rows: rows, mapping: mapping) }
+  if not mapping.values().any(v => late-binding-kind(v) == "after-stat") {
+    return (rows: rows, mapping: mapping)
+  }
+  let new-mapping = mapping
+  let new-rows = rows
+  for (channel, value) in mapping.pairs() {
+    if late-binding-kind(value) != "after-stat" { continue }
+    let expr = value.expr
+    if type(expr) == str {
+      new-mapping.insert(channel, expr)
+    } else if type(expr) == function {
+      let col = "_as_" + channel
+      new-rows = new-rows.map(row => {
+        let r = row
+        r.insert(col, expr(row, ctx))
+        r
+      })
+      new-mapping.insert(channel, col)
+    } else {
+      panic(
+        "after-stat: expr must be a string or function; got " + str(type(expr)),
+      )
+    }
+  }
+  (rows: new-rows, mapping: new-mapping)
+}
+
 #let _path-parts(path) = {
   if type(path) == str { return path.split(".") }
   if type(path) == array { return path }
