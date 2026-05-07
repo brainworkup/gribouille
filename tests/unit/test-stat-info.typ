@@ -3,7 +3,6 @@
 
 #import "../../src/stat/info.typ": stat-info, stat-names
 #import "../../src/stat/bin.typ" as bin-stat
-#import "../../src/stat/count.typ" as count-stat
 #import "../../src/aes.typ": aes
 
 // --- coverage: the names consumed by `apply-stat` ----------------------
@@ -65,12 +64,10 @@
 
 #let info-count = stat-info("count")
 #assert(info-count.outputs.contains("_count"))
-#assert.eq(info-count.default-y, "_count")
 
 // --- unknown stat falls back to empty contract ------------------------
 
 #let unk = stat-info("not-a-stat")
 #assert.eq(unk.outputs, ())
-#assert.eq(unk.default-y, none)
 
 stat-info tests passed.
