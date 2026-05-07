@@ -157,16 +157,16 @@
   let default-shape-kind = if shape-pinned { shape-param } else { "circle" }
 
   // Hoist layer-constant fields used by the per-row binned-shape resolver.
-  let shape-spec = if shape-trained == none { none } else {
+  let shape-scale-spec = if shape-trained == none { none } else {
     shape-trained.at("spec", default: none)
   }
   let shape-binned = (
-    shape-spec != none and shape-spec.at("binned", default: false)
+    shape-scale-spec != none and shape-scale-spec.at("binned", default: false)
   )
   let shape-bin-lo = if shape-binned { shape-trained.domain.at(0) } else { 0 }
   let shape-bin-hi = if shape-binned { shape-trained.domain.at(1) } else { 0 }
   let shape-bin-n = if shape-binned {
-    shape-spec.at("n-breaks", default: 4)
+    shape-scale-spec.at("n-breaks", default: 4)
   } else { 4 }
 
   for row in data {
