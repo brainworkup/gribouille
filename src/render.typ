@@ -23,7 +23,8 @@
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
 #import "utils/late-binding.typ": (
-  eval-after-stat, is-late-binding, late-binding-kind, resolve-from-theme,
+  apply-stages, eval-after-stat, is-late-binding, late-binding-kind,
+  resolve-from-theme, stash-stages,
 )
 #import "utils/radial.typ": group-theta-breaks, radial-axis-of, radial-ctx
 #import "utils/margin.typ": (
@@ -370,6 +371,12 @@
     layer = resolved.layer
     mapping = resolved.mapping
   }
+  // Stash any `stage(...)` markers and replace each with its `start`
+  // column ref so stat application and downstream column reads see a
+  // plain string. The post-stat lanes are reapplied after `eval-after-stat`.
+  let stage-stash = stash-stages(mapping)
+  mapping = stage-stash.mapping
+  let stages = stage-stash.stages
   let data = _resolve-data(layer, plot-data)
   // `stat:` accepts either a string name (with default params from the geom's
   // own params dict) or a dict returned by a `stat-*()` constructor carrying
@@ -427,18 +434,21 @@
 
   // Resolve `after-stat` markers now that the stat has run; downstream
   // (position, train, geom draw) only sees real column names.
-  let after = eval-after-stat(
-    stat-data,
-    stat-mapping,
-    (
-      theme: theme,
-      palette: default-discrete,
-      stat-name: stat-name,
-      stat-info: stat-info(stat-name),
-    ),
+  let after-ctx = (
+    theme: theme,
+    palette: default-discrete,
+    stat-name: stat-name,
+    stat-info: stat-info(stat-name),
   )
+  let after = eval-after-stat(stat-data, stat-mapping, after-ctx)
   stat-data = after.rows
   stat-mapping = after.mapping
+  // Reapply any stage lanes stashed before the stat: after-stat rewrites
+  // the column ref; after-scale wraps it in an `after-scale` marker that
+  // carries the source column for the per-row resolver to scale through.
+  let staged = apply-stages(stat-data, stat-mapping, stages, after-ctx)
+  stat-data = staged.rows
+  stat-mapping = staged.mapping
 
   // `position:` accepts either a string name (default params) or a dict
   // returned by a `position-*()` constructor carrying its own params.

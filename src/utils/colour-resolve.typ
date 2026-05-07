@@ -273,7 +273,13 @@
   let resolved = if colour-param != auto and colour-param != none {
     colour-param
   } else if is-after-scale(spec) {
-    default-colour
+    let src = spec.at("source", default: none)
+    let trained = ctx.trained.at("colour", default: none)
+    if src != none and trained != none {
+      ((ctx.resolve-colour)(trained, ctx.palette))(
+        sample-row.at(src, default: none),
+      )
+    } else { default-colour }
   } else {
     let colour-trained = ctx.trained.at("colour", default: none)
     if spec != none and colour-trained != none {

@@ -39,7 +39,15 @@
   let resolved = if fill-param != auto and fill-param != none {
     fill-param
   } else if is-after-scale(fill-spec) {
-    default-fill
+    let src = fill-spec.at("source", default: none)
+    let fill-trained = if fill-mapping {
+      ctx.trained.at("fill", default: none)
+    } else { none }
+    if src != none and fill-trained != none {
+      ((ctx.resolve-colour)(fill-trained, ctx.palette))(
+        sample-row.at(src, default: none),
+      )
+    } else { default-fill }
   } else {
     let fill-trained = if fill-mapping {
       ctx.trained.at("fill", default: none)

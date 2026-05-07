@@ -5,7 +5,12 @@
 ///! first bound, so callers can pull values from the trained stat output,
 ///! the resolved scale output, or the active theme.
 
-#let _LATE-BINDING-KINDS = ("from-theme", "after-stat", "after-scale")
+#let _LATE-BINDING-KINDS = (
+  "from-theme",
+  "after-stat",
+  "after-scale",
+  "stage",
+)
 
 // Prefix for synthesised columns produced by function-form `after-stat`
 // closures. The full column name is `_as_<channel>`; collisions with
@@ -106,6 +111,113 @@
 ///
 /// \@see \@aes
 #let after-scale(expr) = (kind: "after-scale", expr: expr)
+
+/// Compose all three late-binding lanes for a single aesthetic.
+///
+/// `start` (column name) names the column used during initial scale
+/// training, before the stat runs. `after-stat` (string column name or
+/// `(row, ctx) => any`) takes effect after the stat. `after-scale`
+/// (`(value, ctx) => any`) post-transforms the channel's resolved
+/// scale value just before draw. Any lane may be `none`.
+///
+/// \@category Aesthetics
+/// \@stability experimental
+/// \@since 0.0.1
+///
+/// \@param start Column name used for initial training, or `none`.
+/// \@param after-stat Post-stat expression, or `none`.
+/// \@param after-scale Post-scale closure, or `none`.
+/// \@returns Late-binding marker consumed by \@aes.
+///
+/// \@see \@after-stat, \@after-scale, \@aes
+#let stage(start: none, after-stat: none, after-scale: none) = (
+  kind: "stage",
+  start: start,
+  "after-stat": after-stat,
+  "after-scale": after-scale,
+)
+
+/// Decompose a stage marker into its three lanes.
+///
+/// \@internal
+/// \@param spec Late-binding marker (must be `kind: "stage"`).
+/// \@returns Dict with `start`, `after-stat`, `after-scale` fields.
+#let expand-stage(spec) = (
+  start: spec.at("start", default: none),
+  "after-stat": spec.at("after-stat", default: none),
+  "after-scale": spec.at("after-scale", default: none),
+)
+
+/// Replace stage markers in `mapping` with their `start` column ref so
+/// scale training and stat application see plain column names. Returns
+/// the rewritten mapping alongside a `stages` dict keyed by channel,
+/// which post-stat callers feed back to `apply-stages`.
+///
+/// \@internal
+/// \@param mapping Aesthetic mapping (may carry `stage` markers).
+/// \@returns Dict with `mapping` and `stages` fields.
+#let stash-stages(mapping) = {
+  if mapping == none { return (mapping: mapping, stages: (:)) }
+  let stages = (:)
+  let new-mapping = mapping
+  for (channel, value) in mapping.pairs() {
+    if late-binding-kind(value) != "stage" { continue }
+    stages.insert(channel, value)
+    new-mapping.insert(channel, value.at("start", default: none))
+  }
+  (mapping: new-mapping, stages: stages)
+}
+
+/// Apply each stage's after-stat and after-scale lanes against post-stat
+/// rows. Stage's after-scale becomes a fresh `after-scale` marker carrying
+/// `source: <post-stat-column>` so the per-row resolver scales the source
+/// column through the channel's palette before applying the closure.
+///
+/// \@internal
+/// \@param rows Post-stat row dictionaries.
+/// \@param mapping Aesthetic mapping with stage markers already stashed
+///   (positions of stage markers carry plain column refs).
+/// \@param stages Dict keyed by channel, returned by `stash-stages`.
+/// \@param ctx Closure context for after-stat closures.
+/// \@returns Dict with `rows` and `mapping` fields.
+#let apply-stages(rows, mapping, stages, ctx) = {
+  if stages.len() == 0 { return (rows: rows, mapping: mapping) }
+  let new-mapping = mapping
+  let new-rows = rows
+  for (channel, stg) in stages.pairs() {
+    let post-col = stg.at("start", default: none)
+    let after-stat-expr = stg.at("after-stat", default: none)
+    if after-stat-expr != none {
+      if type(after-stat-expr) == str {
+        post-col = after-stat-expr
+      } else if type(after-stat-expr) == function {
+        post-col = _AFTER-STAT-COL-PREFIX + channel
+        new-rows = new-rows.map(row => {
+          let r = row
+          r.insert(post-col, after-stat-expr(row, ctx))
+          r
+        })
+      } else {
+        panic(
+          "stage["
+            + channel
+            + "].after-stat: must be string or function; got "
+            + str(type(after-stat-expr)),
+        )
+      }
+    }
+    let after-scale-expr = stg.at("after-scale", default: none)
+    if after-scale-expr != none {
+      new-mapping.insert(
+        channel,
+        (kind: "after-scale", expr: after-scale-expr, source: post-col),
+      )
+    } else {
+      new-mapping.insert(channel, post-col)
+    }
+  }
+  (rows: new-rows, mapping: new-mapping)
+}
 
 /// Whether a mapping value carries an `after-scale` marker.
 ///

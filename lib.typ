@@ -7,7 +7,7 @@
 #import "src/data.typ": as-factor, as-numeric
 #import "src/utils/typst-markup.typ": typst
 #import "src/utils/late-binding.typ": (
-  after-scale, after-stat, from-theme, is-late-binding,
+  after-scale, after-stat, from-theme, is-late-binding, stage,
 )
 
 // Datasets.
