@@ -149,10 +149,28 @@
   if mapping == none { return (rows: rows, mapping: mapping) }
   let new-mapping = mapping
   let closures = ()
+  let stat-info = ctx.at("stat-info", default: none)
+  let stat-name = ctx.at("stat-name", default: "?")
   for (channel, value) in mapping.pairs() {
     if late-binding-kind(value) != "after-stat" { continue }
     let expr = value.expr
     if type(expr) == str {
+      if (
+        stat-info != none
+          and stat-info.outputs.len() > 0
+          and not stat-info.outputs.contains(expr)
+      ) {
+        panic(
+          "after-stat["
+            + channel
+            + "]: '"
+            + expr
+            + "' is not in the outputs of stat '"
+            + stat-name
+            + "'; valid outputs are: "
+            + stat-info.outputs.join(", "),
+        )
+      }
       new-mapping.insert(channel, expr)
     } else if type(expr) == function {
       let col = _AFTER-STAT-COL-PREFIX + channel

@@ -78,10 +78,17 @@
     let idx = bin-of(p.x, grid.lo, grid.width, grid.n-bins)
     counts.at(idx) = counts.at(idx) + p.w
   }
-  let rows = range(grid.n-bins).map(i => (
-    x: bin-midpoint(grid.lo, grid.width, i),
-    y: counts.at(i),
-    width: grid.width,
-  ))
+  let total = counts.fold(0, (acc, c) => acc + c)
+  let denom = if total == 0 { 1 } else { total * grid.width }
+  let rows = range(grid.n-bins).map(i => {
+    let c = counts.at(i)
+    (
+      x: bin-midpoint(grid.lo, grid.width, i),
+      y: c,
+      width: grid.width,
+      _count: c,
+      density: c / denom,
+    )
+  })
   (data: rows, mapping: new-mapping)
 }

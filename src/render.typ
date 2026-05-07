@@ -9,6 +9,7 @@
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
+#import "stat/info.typ": stat-info
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": (
@@ -429,7 +430,12 @@
   let after = eval-after-stat(
     stat-data,
     stat-mapping,
-    (theme: theme, palette: default-discrete),
+    (
+      theme: theme,
+      palette: default-discrete,
+      stat-name: stat-name,
+      stat-info: stat-info(stat-name),
+    ),
   )
   stat-data = after.rows
   stat-mapping = after.mapping
