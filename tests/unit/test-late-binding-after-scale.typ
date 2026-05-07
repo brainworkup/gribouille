@@ -10,6 +10,7 @@
   resolve-stroke-width,
 )
 #import "../../src/utils/fill-resolve.typ": resolve-fill-colour
+#import "../../src/utils/linetype-resolve.typ": resolve-linetype
 
 // --- constructor + predicates ------------------------------------------
 
@@ -130,6 +131,18 @@
     0.5pt,
   ),
   1pt,
+)
+
+// --- after-scale on `linetype` rewrites the channel default -----------
+
+#assert.eq(
+  resolve-linetype(
+    layer-of((linetype: auto)),
+    (linetype: after-scale((_, _) => "dashed")),
+    make-ctx((:)),
+    (:),
+  ),
+  "dashed",
 )
 
 // --- after-scale on `stroke` doubles the channel default --------------

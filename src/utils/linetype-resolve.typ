@@ -1,5 +1,6 @@
 #import "palette.typ": default-linetypes, palette-at, spec-palette
 #import "level-resolve.typ": resolve-binned
+#import "late-binding.typ": after-scale-source, apply-after-scale
 
 /// Resolve a per-row linetype dash keyword.
 ///
@@ -18,21 +19,25 @@
   let linetype-param = layer.params.at("linetype", default: auto)
   if linetype-param != auto and linetype-param != none { return linetype-param }
 
-  let linetype-col = mapping.at("linetype", default: none)
+  let spec = mapping.at("linetype", default: none)
+  let linetype-col = after-scale-source(spec)
   let linetype-trained = ctx.trained.at("linetype", default: none)
-  if linetype-col == none or linetype-trained == none { return "solid" }
-
-  let sample = sample-row.at(linetype-col, default: none)
-  if linetype-trained.type == "identity" {
-    if sample == none or sample == "" { "solid" } else { str(sample) }
-  } else if linetype-trained.type == "continuous" {
-    let resolved = if sample == none { none } else {
-      resolve-binned(linetype-trained, sample, default-linetypes)
-    }
-    if resolved == none { "solid" } else { resolved }
+  let scaled = if linetype-col == none or linetype-trained == none {
+    "solid"
   } else {
-    let palette = spec-palette(linetype-trained, default-linetypes)
-    let idx = linetype-trained.domain.position(v => v == str(sample))
-    if idx == none { "solid" } else { palette-at(palette, idx) }
+    let sample = sample-row.at(linetype-col, default: none)
+    if linetype-trained.type == "identity" {
+      if sample == none or sample == "" { "solid" } else { str(sample) }
+    } else if linetype-trained.type == "continuous" {
+      let resolved = if sample == none { none } else {
+        resolve-binned(linetype-trained, sample, default-linetypes)
+      }
+      if resolved == none { "solid" } else { resolved }
+    } else {
+      let palette = spec-palette(linetype-trained, default-linetypes)
+      let idx = linetype-trained.domain.position(v => v == str(sample))
+      if idx == none { "solid" } else { palette-at(palette, idx) }
+    }
   }
+  apply-after-scale(scaled, spec, ctx, sample-row)
 }

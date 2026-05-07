@@ -14,6 +14,7 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../guide/draw-marker.typ": draw-marker
+#import "../utils/late-binding.typ": after-scale-source, apply-after-scale
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
 ///
@@ -150,7 +151,8 @@
 
   let shape-param = layer.params.shape
   let shape-pinned = shape-param != auto and shape-param != none
-  let shape-col = mapping.at("shape", default: none)
+  let shape-spec = mapping.at("shape", default: none)
+  let shape-col = after-scale-source(shape-spec)
   let shape-trained = ctx.trained.at("shape", default: none)
   let shape-palette = spec-palette(shape-trained, default-shapes)
   let default-shape-kind = if shape-pinned { shape-param } else { "circle" }
@@ -214,6 +216,7 @@
         palette-at(shape-palette, idx)
       }
     }
-    draw-marker((cx, cy), shape-kind, size, body-fill, stroke-spec)
+    let final-shape = apply-after-scale(shape-kind, shape-spec, ctx, row)
+    draw-marker((cx, cy), final-shape, size, body-fill, stroke-spec)
   }
 }
