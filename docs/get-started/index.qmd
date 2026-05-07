@@ -47,8 +47,8 @@ At minimum [`geom-point`](../reference/geoms/geom-point.qmd) needs `x` and `y`.
   data: penguins,
   mapping: aes(x: "flipper-len", y: "body-mass"),
   layers: (geom-point(size: 2pt),),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -61,8 +61,8 @@ At minimum [`geom-point`](../reference/geoms/geom-point.qmd) needs `x` and `y`.
   data: penguins,
   mapping: aes(x: "flipper-len", y: "body-mass"),
   layers: (geom-point(size: 2pt),),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -84,8 +84,8 @@ Every aesthetic mapping is independent of the geom, so the same colour scale wil
     colour: "species",
   ),
   layers: (geom-point(size: 2pt, alpha: 0.85),),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -102,8 +102,8 @@ Every aesthetic mapping is independent of the geom, so the same colour scale wil
     colour: "species",
   ),
   layers: (geom-point(size: 2pt, alpha: 0.85),),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -129,8 +129,8 @@ Adding a [`geom-smooth`](../reference/geoms/geom-smooth.qmd) draws one fitted li
     geom-point(size: 2pt, alpha: 0.6),
     geom-smooth(method: "lm", alpha: 0.2),
   ),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -151,8 +151,8 @@ Adding a [`geom-smooth`](../reference/geoms/geom-smooth.qmd) draws one fitted li
     geom-point(size: 2pt, alpha: 0.6),
     geom-smooth(method: "lm", alpha: 0.2),
   ),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -220,8 +220,8 @@ A matching [`scale-fill-discrete`](../reference/scales/scale-fill-discrete.qmd) 
     scale-colour-discrete(palette: cb),
     scale-fill-discrete(palette: cb),
   ),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -253,7 +253,7 @@ The same scales apply to every panel, so the species clusters can be compared ac
   ),
   facet: facet-wrap("island"),
   width: 12cm,
-  height: 5cm,
+  height: 9cm,
 )
 ```
 
@@ -286,7 +286,7 @@ The same scales apply to every panel, so the species clusters can be compared ac
   ),
   facet: facet-wrap("island"),
   width: 12cm,
-  height: 5cm,
+  height: 9cm,
 )
 ```
 
@@ -330,7 +330,7 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
     plot-title: element-text(size: 12pt, weight: "bold")
   ),
   width: 12cm,
-  height: 6cm,
+  height: 9cm,
 )
 ```
 
@@ -374,7 +374,7 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
     plot-title: element-text(size: 12pt, weight: "bold")
   ),
   width: 12cm,
-  height: 6cm,
+  height: 9cm,
 )
 ```
 
@@ -396,8 +396,8 @@ The `position: "dodge"` parameter spreads the species side by side instead of st
   scales: (scale-fill-discrete(palette: cb),),
   labs: labs(x: "Island", y: "Count", fill: "Species"),
   theme: theme-minimal(),
-  width: 10cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
@@ -419,8 +419,8 @@ The `position: "dodge"` parameter spreads the species side by side instead of st
   scales: (scale-fill-discrete(palette: cb),),
   labs: labs(x: "Island", y: "Count", fill: "Species"),
   theme: theme-minimal(),
-  width: 10cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
