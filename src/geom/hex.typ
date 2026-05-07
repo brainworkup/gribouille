@@ -2,6 +2,7 @@
 ///! polygon draw routine.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../stat/bin-hex.typ": stat-bin-hex
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -111,7 +112,7 @@
     ))
     if pts.any(p => p == none) { continue }
 
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,

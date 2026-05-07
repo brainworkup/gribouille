@@ -3,6 +3,7 @@
 ///! Mapping provides `x` and `y`; `width` and `height` may be mapped or fixed.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -138,7 +139,7 @@
     } else { layer.params.height }
     if w == none or h == none { continue }
 
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,

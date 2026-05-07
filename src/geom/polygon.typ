@@ -1,6 +1,7 @@
 ///! Closed polygons from `(x, y)` rows, one polygon per group.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -124,7 +125,7 @@
     if pts.len() < 3 { continue }
 
     let leader = rows.first()
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,

@@ -6,6 +6,7 @@
 ///! line; check the rendered output if both axes are continuous.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -122,7 +123,7 @@
     if pts.any(p => p == none) { continue }
 
     let leader = rows.first()
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,

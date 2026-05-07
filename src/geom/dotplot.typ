@@ -5,6 +5,7 @@
 ///! data units on the x-axis and one stack-row in y units.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../stat/bindot.typ": stat-bindot
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
@@ -121,8 +122,8 @@
     if p == none { continue }
     let (cx, cy) = p
 
-    let body-fill = resolve-fill-colour(layer, mapping, ctx, row, default-fill)
-    let alpha = resolve-alpha(layer, mapping, ctx, row, default-alpha: 1)
+    let body-fill = resolve-channel("fill", layer, mapping, ctx, row, default-fill)
+    let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let outline = if layer.params.stroke == none { none } else {
       (
         paint: apply-alpha(default-colour, alpha),

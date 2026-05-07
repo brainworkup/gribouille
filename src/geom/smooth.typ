@@ -5,6 +5,7 @@
 ///! pointwise confidence band drawn when `se: true`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../stat/smooth.typ": stat-smooth
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
@@ -207,12 +208,13 @@
       let lower = sorted.rev().map(p => project-point(ctx, p.x, p.lo))
       let pts = upper + lower
       if pts.all(p => p != none) {
-        let alpha = resolve-alpha(
+        let alpha = resolve-channel(
+          "alpha",
           layer,
           mapping,
           ctx,
           rows.first(),
-          default-alpha: 0.2,
+          0.2,
         )
         let band = apply-alpha(ribbon-colour, alpha)
         cetz.draw.line(..pts, close: true, fill: band, stroke: none)
@@ -223,14 +225,22 @@
       .map(p => project-point(ctx, p.x, p.y))
       .filter(p => p != none)
     if line-pts.len() >= 2 and not suppress-line {
-      let thickness = resolve-linewidth(
+      let thickness = resolve-channel(
+        "linewidth",
         layer,
         mapping,
         ctx,
         rows.first(),
         layer.params.stroke,
       )
-      let dash = resolve-linetype(layer, mapping, ctx, rows.first())
+      let dash = resolve-channel(
+        "linetype",
+        layer,
+        mapping,
+        ctx,
+        rows.first(),
+        none,
+      )
       cetz.draw.line(
         ..line-pts,
         stroke: (paint: line-colour, thickness: thickness, dash: dash),

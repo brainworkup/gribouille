@@ -6,6 +6,7 @@
 ///! same draw chain.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
@@ -166,8 +167,8 @@
     let pts = _curve-points(cx0, cy0, cx1, cy1, curvature, cos-angle, n)
     if pts.len() < 2 { continue }
 
-    let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
-    let thickness = resolve-linewidth(
+    let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    let thickness = resolve-channel("linewidth", 
       layer,
       mapping,
       ctx,

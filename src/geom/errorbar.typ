@@ -1,6 +1,7 @@
 ///! Vertical line from `ymin` to `ymax` with horizontal caps at each `x`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": x-band
 #import "../utils/radial.typ": (
@@ -148,9 +149,9 @@
     } else if colour-col != none and resolve-colour != none {
       resolve-colour(row.at(colour-col, default: none))
     } else { ink }
-    let alpha = resolve-alpha(layer, mapping, ctx, row)
+    let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
-    let thickness = resolve-linewidth(
+    let thickness = resolve-channel("linewidth", 
       layer,
       mapping,
       ctx,

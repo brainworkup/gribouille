@@ -1,6 +1,7 @@
 ///! Horizontal line from `xmin` to `xmax` with vertical caps at each `y`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
@@ -161,7 +162,7 @@
     } else if colour-col != none and resolve-colour != none {
       resolve-colour(row.at(colour-col, default: none))
     } else { ink }
-    let alpha = resolve-alpha(layer, mapping, ctx, row)
+    let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
 
     let stroke-spec = (

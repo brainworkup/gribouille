@@ -1,6 +1,7 @@
 ///! Vertical range from `ymin` to `ymax` at each `x`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
@@ -105,9 +106,9 @@
     let (cx-lo, cy-lo) = p-lo
     let (cx-hi, cy-hi) = p-hi
 
-    let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
+    let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
 
-    let thickness = resolve-linewidth(
+    let thickness = resolve-channel("linewidth", 
       layer,
       mapping,
       ctx,

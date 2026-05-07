@@ -5,6 +5,7 @@
 ///! `"dodge"`, and `"fill"` via the matching position adjustments.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -168,7 +169,7 @@
       )
     }
 
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,
@@ -320,7 +321,7 @@
       bar-half = (category-span * bar-width-fraction / n) / 2
     }
 
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,

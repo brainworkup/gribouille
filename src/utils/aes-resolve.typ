@@ -14,6 +14,12 @@
 
 #import "typst-markup.typ": eval-as-markup, is-typst-markup
 #import "late-binding.typ": is-late-binding
+#import "colour-resolve.typ": (
+  resolve-alpha, resolve-linewidth, resolve-size, resolve-stroke-colour,
+  resolve-stroke-width,
+)
+#import "fill-resolve.typ": resolve-fill-colour
+#import "linetype-resolve.typ": resolve-linetype
 
 /// Strip `mapping-ref` wrappers but preserve `typst-markup` intent.
 ///
@@ -136,6 +142,48 @@
     out.insert(key, value)
   }
   out
+}
+
+/// Dispatch per-row resolution to the appropriate channel resolver.
+///
+/// Geoms call this once per (channel, row) instead of importing each
+/// per-aesthetic resolver directly. `default` is the channel-specific
+/// fallback value (a colour for `colour`/`fill`, a length for
+/// `size`/`linewidth`/`stroke`, a scalar for `alpha`); the `linetype`
+/// channel ignores `default` because the resolver's own `"solid"`
+/// fallback covers it. Extra named arguments are forwarded to the
+/// underlying resolver, supporting `colour-fallback:` /
+/// `default-alpha:` / `fill-mapping:` on the fill path.
+///
+/// \@internal
+/// \@param channel Channel name (`"colour"`, `"fill"`, `"size"`,
+///   `"alpha"`, `"linewidth"`, `"stroke"`, `"linetype"`).
+/// \@param layer The layer dictionary providing `params.<channel>`.
+/// \@param mapping The resolved aesthetic mapping.
+/// \@param ctx The plot context exposing `trained`, `resolve-colour`,
+///   and `palette`.
+/// \@param row The current row.
+/// \@param default Channel-specific fallback (ignored for `linetype`).
+/// \@param ..extra Extra named arguments forwarded to the resolver.
+/// \@returns The resolved channel value.
+#let resolve-channel(channel, layer, mapping, ctx, row, default, ..extra) = {
+  if channel == "colour" {
+    resolve-stroke-colour(layer, mapping, ctx, row, default)
+  } else if channel == "fill" {
+    resolve-fill-colour(layer, mapping, ctx, row, default, ..extra)
+  } else if channel == "size" {
+    resolve-size(layer, mapping, ctx, row, default)
+  } else if channel == "alpha" {
+    resolve-alpha(layer, mapping, ctx, row, default-alpha: default, ..extra)
+  } else if channel == "linewidth" {
+    resolve-linewidth(layer, mapping, ctx, row, default)
+  } else if channel == "stroke" {
+    resolve-stroke-width(layer, mapping, ctx, row, default)
+  } else if channel == "linetype" {
+    resolve-linetype(layer, mapping, ctx, row)
+  } else {
+    panic("resolve-channel: unsupported channel '" + channel + "'")
+  }
 }
 
 /// Resolve a break-display label by combining the scale's `labels:`

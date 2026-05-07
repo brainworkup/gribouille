@@ -6,6 +6,7 @@
 ///! `ymin`, `ymax`, optional `outliers`).
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": x-band
 #import "../utils/radial.typ": (
@@ -194,14 +195,14 @@
       let v-wlo = map-axis(val-trained, whisker-lo, value-range)
       let v-whi = map-axis(val-trained, whisker-hi, value-range)
 
-      let final-fill = resolve-fill-colour(
+      let final-fill = resolve-channel("fill", 
         layer,
         mapping,
         ctx,
         row,
         default-fill,
       )
-      let resolved-stroke = resolve-stroke-colour(
+      let resolved-stroke = resolve-channel("colour", 
         layer,
         mapping,
         ctx,
@@ -351,14 +352,14 @@
     let (cx-lo, cx-hi) = box-band
     let (cap-lo, cap-hi) = cap-band
 
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,
       row,
       default-fill,
     )
-    let resolved-stroke = resolve-stroke-colour(
+    let resolved-stroke = resolve-channel("colour", 
       layer,
       mapping,
       ctx,

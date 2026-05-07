@@ -6,6 +6,7 @@
 ///! data value because the y axis becomes the rendered horizontal axis.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis-data
 #import "../utils/colour-resolve.typ": (
   apply-alpha, resolve-alpha, resolve-linewidth,
@@ -100,9 +101,9 @@
     ctx.theme.at("ink", default: black)
   } else { layer.params.colour }
   let mapping = (ctx.resolve-mapping)(layer)
-  let alpha = resolve-alpha(layer, mapping, ctx, (:))
+  let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
   let fill = apply-alpha(colour, alpha)
-  let thickness = resolve-linewidth(
+  let thickness = resolve-channel("linewidth", 
     layer,
     mapping,
     ctx,

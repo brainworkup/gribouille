@@ -3,6 +3,7 @@
 // (path: input order; line: sort by x; step: sort + stair).
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
@@ -59,9 +60,9 @@
     if pts.len() < 2 { continue }
 
     let leader = rows.first()
-    let final-colour = resolve-stroke-colour(layer, mapping, ctx, leader, ink)
-    let dash = resolve-linetype(layer, mapping, ctx, leader)
-    let thickness = resolve-linewidth(
+    let final-colour = resolve-channel("colour", layer, mapping, ctx, leader, ink)
+    let dash = resolve-channel("linetype", layer, mapping, ctx, leader, none)
+    let thickness = resolve-channel("linewidth", 
       layer,
       mapping,
       ctx,

@@ -1,6 +1,7 @@
 ///! Axis-aligned rectangles from `xmin`, `ymin`, `xmax`, `ymax`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
@@ -117,7 +118,7 @@
     let y1 = parse-number(row.at(ymax-col, default: none))
     if x0 == none or x1 == none or y0 == none or y1 == none { continue }
 
-    let final-fill = resolve-fill-colour(
+    let final-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,

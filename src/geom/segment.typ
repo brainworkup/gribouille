@@ -1,6 +1,7 @@
 ///! Straight line segments from `(x, y)` to `(xend, yend)`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
@@ -110,9 +111,9 @@
     let (cx0, cy0) = p0
     let (cx1, cy1) = p1
 
-    let final-colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
+    let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
 
-    let thickness = resolve-linewidth(
+    let thickness = resolve-channel("linewidth", 
       layer,
       mapping,
       ctx,

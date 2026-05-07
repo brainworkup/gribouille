@@ -4,6 +4,7 @@
 ///! distribution of one or both positional aesthetics.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": (
@@ -136,9 +137,9 @@
     } else if colour-col != none and resolve-colour != none {
       resolve-colour(row.at(colour-col, default: none))
     } else { ink }
-    let alpha = resolve-alpha(layer, mapping, ctx, row)
+    let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
-    let thickness = resolve-linewidth(
+    let thickness = resolve-channel("linewidth", 
       layer,
       mapping,
       ctx,

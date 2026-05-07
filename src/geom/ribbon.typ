@@ -7,6 +7,7 @@
 ///! sideways ribbon and should be inspected per use.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -129,7 +130,7 @@
   )
 
   let leader = data.first()
-  let final-fill = resolve-fill-colour(
+  let final-fill = resolve-channel("fill", 
     layer,
     mapping,
     ctx,

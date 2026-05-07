@@ -4,6 +4,7 @@
 ///! fill, stroke, inset, and corner radius.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
 #import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -159,14 +160,14 @@
     // Text must remain visible regardless of the exclusive-default rule, so
     // resolve with `ink` as the unconditional fallback; the box outline
     // follows `default-colour` and is suppressed when only `fill` is set.
-    let text-paint = resolve-stroke-colour(
+    let text-paint = resolve-channel("colour", 
       layer,
       mapping,
       ctx,
       row,
       ink,
     )
-    let box-fill = resolve-fill-colour(
+    let box-fill = resolve-channel("fill", 
       layer,
       mapping,
       ctx,
@@ -178,7 +179,7 @@
     } else {
       build-stroke(layer.params.stroke, text-paint)
     }
-    let text-size = resolve-size(layer, mapping, ctx, row, layer.params.size)
+    let text-size = resolve-channel("size", layer, mapping, ctx, row, layer.params.size)
     let body = box(
       fill: box-fill,
       stroke: stroke-spec,

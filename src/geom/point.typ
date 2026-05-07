@@ -8,8 +8,7 @@
 #import "../deps.typ": cetz
 #import "../utils/palette.typ": default-shapes, palette-at, spec-palette
 #import "../utils/level-resolve.typ": bin-index
-#import "../utils/colour-resolve.typ": resolve-size
-#import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
@@ -178,8 +177,9 @@
     )
     if projected == none { continue }
     let (cx, cy) = projected
-    let size = resolve-size(layer, mapping, ctx, row, 1.5pt)
-    let body-fill = resolve-fill-colour(
+    let size = resolve-channel("size", layer, mapping, ctx, row, 1.5pt)
+    let body-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

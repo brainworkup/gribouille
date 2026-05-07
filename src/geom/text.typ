@@ -4,6 +4,7 @@
 ///! with a fill and border, use \@geom-label.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
 #import "../utils/typst-markup.typ": eval-as-markup
@@ -132,8 +133,8 @@
     }
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
-    let colour = resolve-stroke-colour(layer, mapping, ctx, row, ink)
-    let text-size = resolve-size(layer, mapping, ctx, row, layer.params.size)
+    let colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    let text-size = resolve-channel("size", layer, mapping, ctx, row, layer.params.size)
     let dx = if type(layer.params.dx) == length {
       layer.params.dx / 1cm
     } else { layer.params.dx }

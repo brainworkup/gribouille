@@ -5,6 +5,7 @@
 ///! generates its own samples from `fun`.
 
 #import "../deps.typ": cetz
+#import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/radial.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
 
@@ -124,7 +125,7 @@
     layer.params.colour != auto and layer.params.colour != none
   ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
   let mapping = (ctx.resolve-mapping)(layer)
-  let alpha = resolve-alpha(layer, mapping, ctx, (:))
+  let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
   let final-colour = apply-alpha(colour, alpha)
 
   cetz.draw.line(
