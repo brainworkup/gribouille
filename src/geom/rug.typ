@@ -7,9 +7,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-linewidth,
-)
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Marginal rug ticks at each row's x and / or y position.
 ///

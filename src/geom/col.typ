@@ -8,7 +8,6 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": (
   radial-axis-ranges, radial-category-span, radial-wedge,

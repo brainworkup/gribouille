@@ -3,7 +3,6 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
 
 /// Linerange layer: one vertical line from `ymin` to `ymax` at each `x`.

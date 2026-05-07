@@ -14,8 +14,6 @@
   radial-wedge,
 )
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": resolve-stroke-colour
-#import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": build-stroke
 

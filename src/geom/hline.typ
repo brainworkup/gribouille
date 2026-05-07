@@ -8,9 +8,7 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis-data
-#import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-linewidth,
-)
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Horizontal reference line at one or more y intercepts.
 ///

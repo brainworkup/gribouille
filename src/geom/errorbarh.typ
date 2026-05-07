@@ -4,7 +4,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
+#import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/radial.typ": (
   RADIAL-DEFAULT-CAP-HALF, project-point, radial-tangent-cap,
 )

@@ -7,7 +7,6 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": resolve-linewidth, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
 
 /// Spoke layer: one segment from `(x, y)` along `(angle, radius)` per row.

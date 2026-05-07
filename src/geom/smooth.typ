@@ -9,11 +9,8 @@
 #import "../stat/smooth.typ": stat-smooth
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
-#import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-linewidth,
-)
+#import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/aes-pair.typ": aes-set
-#import "../utils/linetype-resolve.typ": resolve-linetype
 #import "../utils/radial.typ": project-point
 
 /// Fitted trend line with an optional confidence ribbon.

@@ -3,10 +3,6 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": (
-  resolve-linewidth, resolve-size, resolve-stroke-colour,
-)
-#import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/radial.typ": project-point
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
@@ -129,7 +125,8 @@
     let (cx-hi, cy-hi) = p-hi
 
     let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,
@@ -137,7 +134,8 @@
       final-colour,
     )
 
-    let thickness = resolve-channel("linewidth", 
+    let thickness = resolve-channel(
+      "linewidth",
       layer,
       mapping,
       ctx,
@@ -153,7 +151,8 @@
         dash: layer.params.linetype,
       ),
     )
-    let radius = resolve-channel("size", 
+    let radius = resolve-channel(
+      "size",
       layer,
       mapping,
       ctx,

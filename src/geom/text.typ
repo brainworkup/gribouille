@@ -5,7 +5,6 @@
 
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
-#import "../utils/colour-resolve.typ": resolve-size, resolve-stroke-colour
 #import "../utils/radial.typ": project-point
 #import "../utils/typst-markup.typ": eval-as-markup
 

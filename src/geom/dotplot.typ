@@ -8,8 +8,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../stat/bindot.typ": stat-bindot
-#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
-#import "../utils/fill-resolve.typ": resolve-fill-colour
+#import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 

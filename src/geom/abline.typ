@@ -8,9 +8,7 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis-data, transform-inv
-#import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-linewidth,
-)
+#import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/radial.typ": radial-point
 
 /// Straight reference line described by slope and intercept.

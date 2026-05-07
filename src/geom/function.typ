@@ -7,7 +7,7 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/radial.typ": project-point
-#import "../utils/colour-resolve.typ": apply-alpha, resolve-alpha
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.
 ///

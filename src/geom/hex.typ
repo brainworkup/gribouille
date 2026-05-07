@@ -6,7 +6,6 @@
 #import "../scale/train.typ": map-position
 #import "../stat/bin-hex.typ": stat-bin-hex
 #import "../utils/aes-pair.typ": resolve-pair-defaults
-#import "../utils/fill-resolve.typ": resolve-fill-colour
 #import "../utils/hex.typ": hex-vertices
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec

@@ -8,9 +8,7 @@
   RADIAL-DEFAULT-CAP-HALF, project-point, radial-tangent-cap,
 )
 #import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": (
-  apply-alpha, resolve-alpha, resolve-linewidth,
-)
+#import "../utils/colour-resolve.typ": apply-alpha
 
 /// Errorbar layer: vertical range with a horizontal cap at each end.
 ///
