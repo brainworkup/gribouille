@@ -426,15 +426,13 @@
 
   // Resolve `after-stat` markers now that the stat has run; downstream
   // (position, train, geom draw) only sees real column names.
-  if theme != none {
-    let after = eval-after-stat(
-      stat-data,
-      stat-mapping,
-      (theme: theme, ink: theme.ink, palette: default-discrete),
-    )
-    stat-data = after.rows
-    stat-mapping = after.mapping
-  }
+  let after = eval-after-stat(
+    stat-data,
+    stat-mapping,
+    (theme: theme, palette: default-discrete),
+  )
+  stat-data = after.rows
+  stat-mapping = after.mapping
 
   // `position:` accepts either a string name (default params) or a dict
   // returned by a `position-*()` constructor carrying its own params.

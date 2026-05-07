@@ -7,6 +7,12 @@
 
 #let _LATE-BINDING-KINDS = ("from-theme", "after-stat")
 
+// Prefix for synthesised columns produced by function-form `after-stat`
+// closures. The full column name is `_as_<channel>`; collisions with
+// user-supplied column names of this exact shape would be silently
+// overwritten, hence the deliberate underscore prefix.
+#let _AFTER-STAT-COL-PREFIX = "_as_"
+
 /// Read the late-binding kind tag on a marker, or `none` if `v` is not a
 /// late-binding marker.
 ///
@@ -86,42 +92,44 @@
 /// rows.
 ///
 /// String exprs rewrite the mapping field to that column name; function
-/// exprs run per row and write to a synthesised `_as_<channel>` column,
-/// then rewrite the mapping field to that column name. Returns the
-/// possibly-augmented rows and rewritten mapping; passes both through
-/// untouched when no `after-stat` marker is present.
+/// exprs synthesise `_as_<channel>` columns over the rows and rewrite
+/// the mapping field to that column name. Returns the possibly-augmented
+/// rows and rewritten mapping; passes both through untouched when no
+/// `after-stat` marker is present.
 ///
 /// \@internal
 /// \@param rows Post-stat row dictionaries.
 /// \@param mapping Aesthetic mapping (may carry `after-stat` markers).
-/// \@param ctx Closure context (`theme`, `palette`, `ink`, ...).
+/// \@param ctx Closure context (`theme`, `palette`, ...).
 /// \@returns Dict with `rows` and `mapping` fields.
 #let eval-after-stat(rows, mapping, ctx) = {
   if mapping == none { return (rows: rows, mapping: mapping) }
-  if not mapping.values().any(v => late-binding-kind(v) == "after-stat") {
-    return (rows: rows, mapping: mapping)
-  }
   let new-mapping = mapping
-  let new-rows = rows
+  let closures = ()
   for (channel, value) in mapping.pairs() {
     if late-binding-kind(value) != "after-stat" { continue }
     let expr = value.expr
     if type(expr) == str {
       new-mapping.insert(channel, expr)
     } else if type(expr) == function {
-      let col = "_as_" + channel
-      new-rows = new-rows.map(row => {
-        let r = row
-        r.insert(col, expr(row, ctx))
-        r
-      })
+      let col = _AFTER-STAT-COL-PREFIX + channel
+      closures.push((channel: channel, col: col, expr: expr))
       new-mapping.insert(channel, col)
     } else {
       panic(
-        "after-stat: expr must be a string or function; got " + str(type(expr)),
+        "after-stat["
+          + channel
+          + "]: expr must be a string or function; got "
+          + str(type(expr)),
       )
     }
   }
+  if closures.len() == 0 { return (rows: rows, mapping: new-mapping) }
+  let new-rows = rows.map(row => {
+    let r = row
+    for c in closures { r.insert(c.col, (c.expr)(row, ctx)) }
+    r
+  })
   (rows: new-rows, mapping: new-mapping)
 }
 

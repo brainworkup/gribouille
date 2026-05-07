@@ -1,7 +1,7 @@
 // `after-stat` binds an aesthetic to a column produced by the layer's
-// stat. Here `geom-bar` runs `stat-count`, publishing `_count` per
-// category; we map y to the same column explicitly and scale the count
-// with a closure form for emphasis.
+// stat. `geom-bar` runs `stat-count`, publishing `_count` per category;
+// here we bind y to that column by name to make the contract explicit
+// rather than relying on the geom's implicit y default.
 
 #import "../lib.typ": *
 
@@ -22,15 +22,15 @@
   data: d,
   mapping: aes(
     x: "grp",
-    y: after-stat((row, _) => row._count * 2),
+    y: after-stat("_count"),
     fill: "grp",
   ),
   layers: (geom-bar(),),
   guides: guides(fill: guide-none()),
   labs: labs(
-    title: "Count × 2 via after-stat closure",
+    title: "Explicit after-stat binding",
     x: "Group",
-    y: "Count × 2",
+    y: "Count",
   ),
   theme: theme-minimal(),
   width: 11cm,

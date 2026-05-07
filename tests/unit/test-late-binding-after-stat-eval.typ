@@ -12,27 +12,29 @@
 #import "../../src/theme/grey.typ": theme-grey
 #import "../../src/geom/bar.typ": geom-bar
 
+#let rows = ((x: "a", count: 3), (x: "b", count: 5))
+
 // --- string expr: rewrite the mapping field ----------------------------
 
-#let rows = ((x: "a", count: 3), (x: "b", count: 5))
-#let mapping = (x: "x", y: after-stat("count"))
-#let r = eval-after-stat(rows, mapping, (theme: (:)))
+#let r = eval-after-stat(rows, (x: "x", y: after-stat("count")), (:))
 #assert.eq(r.mapping.y, "count")
 #assert.eq(r.mapping.x, "x")
 #assert.eq(r.rows, rows)
 
 // --- function expr: synthesised `_as_<channel>` column -----------------
 
-#let rows2 = ((x: "a", count: 3), (x: "b", count: 5))
-#let mapping2 = (x: "x", y: after-stat((row, _) => row.count * 2))
-#let r2 = eval-after-stat(rows2, mapping2, (theme: (:)))
+#let r2 = eval-after-stat(
+  rows,
+  (x: "x", y: after-stat((row, _) => row.count * 2)),
+  (:),
+)
 #assert.eq(r2.mapping.y, "_as_y")
 #assert.eq(r2.rows.at(0)._as_y, 6)
 #assert.eq(r2.rows.at(1)._as_y, 10)
 
 // --- no-op when mapping carries no markers -----------------------------
 
-#let r3 = eval-after-stat(rows, (x: "x", y: "count"), (theme: (:)))
+#let r3 = eval-after-stat(rows, (x: "x", y: "count"), (:))
 #assert.eq(r3.rows, rows)
 #assert.eq(r3.mapping.y, "count")
 
