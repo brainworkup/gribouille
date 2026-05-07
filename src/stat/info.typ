@@ -3,35 +3,33 @@
 ///! `stat-info(name)` returns a static record describing what columns a
 ///! stat's `apply()` publishes. The `outputs` list is consulted by
 ///! `after-stat(<string>)` to validate column references at layer-prepare
-///! time; an empty `outputs` list means "outputs depend on input mapping",
-///! which suppresses validation. Stats whose published columns have not
-///! been verified against their `apply()` keep `outputs: ()` until they
-///! are; this is preferred over fabricating contracts that would mislead
-///! validation.
+///! time; an empty `outputs` list suppresses validation (used for stats
+///! whose row shape passes through input data unchanged, e.g. `identity`
+///! and `unique`).
 
 #let _STAT-INFO = (
   identity: (outputs: ()),
   bin: (outputs: ("x", "y", "width", "_count", "density")),
-  bin_2d: (outputs: ()),
-  bin_hex: (outputs: ()),
-  bindot: (outputs: ()),
-  contour: (outputs: ()),
-  contour_filled: (outputs: ()),
+  bin_2d: (outputs: ("x", "y", "count", "xmin", "xmax", "ymin", "ymax")),
+  bin_hex: (outputs: ("x", "y", "count")),
+  bindot: (outputs: ("x", "y", "bin-count", "width")),
+  contour: (outputs: ("x", "y", "group", "level")),
+  contour_filled: (outputs: ("x", "y", "group", "level")),
   count: (outputs: ("x", "_count")),
-  sum: (outputs: ()),
-  smooth: (outputs: ()),
-  boxplot: (outputs: ()),
-  summary: (outputs: ()),
-  summary_bin: (outputs: ()),
-  summary_2d: (outputs: ()),
-  summary_hex: (outputs: ()),
-  ecdf: (outputs: ()),
+  sum: (outputs: ("x", "y", "n")),
+  smooth: (outputs: ("x", "y", "ymin", "ymax")),
+  boxplot: (outputs: ("x", "lower", "middle", "upper", "ymin", "ymax")),
+  summary: (outputs: ("x", "y", "xmin", "xmax", "ymin", "ymax")),
+  summary_bin: (outputs: ("x", "y", "ymin", "ymax")),
+  summary_2d: (outputs: ("x", "y", "value", "xmin", "xmax", "ymin", "ymax")),
+  summary_hex: (outputs: ("x", "y", "value")),
+  ecdf: (outputs: ("x", "y")),
   unique: (outputs: ()),
-  qq: (outputs: ()),
-  "qq-line": (outputs: ()),
-  function: (outputs: ()),
-  ellipse: (outputs: ()),
-  quantile: (outputs: ()),
+  qq: (outputs: ("theoretical", "sample")),
+  "qq-line": (outputs: ("theoretical", "sample")),
+  function: (outputs: ("x", "y")),
+  ellipse: (outputs: ("x", "y")),
+  quantile: (outputs: ("x", "y", "group", "quantile")),
 )
 
 /// Look up the metadata record for a stat by name.
