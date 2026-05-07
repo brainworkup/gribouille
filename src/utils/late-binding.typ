@@ -100,7 +100,8 @@
 /// default when the channel carries no source) and a context dict
 /// (`theme`, `palette`, `trained`, `row`, `resolve-colour`, ...).
 /// The closure's return value is what the geom finally draws. Currently
-/// honoured on `colour` and `fill`. The closure runs once per row.
+/// honoured on `colour`, `fill`, `alpha`, and `size`. The closure runs
+/// once per row.
 ///
 /// \@category Aesthetics
 /// \@stability experimental

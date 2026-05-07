@@ -63,35 +63,34 @@
     return _clamp(pinned, 0, 1)
   }
   let fallback = _clamp(default-alpha, 0, 1)
-  let col = if mapping == none { none } else {
+  let spec = if mapping == none { none } else {
     mapping.at("alpha", default: none)
   }
-  let trained = ctx.trained.at("alpha", default: none)
-  if col == none or trained == none { return fallback }
-  let raw = sample-row.at(col, default: none)
-  if raw == none { return fallback }
-  if trained.type == "identity" {
-    let v = parse-number(raw)
-    if v == none { return fallback }
-    return _clamp(v, 0, 1)
+  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
+    spec
   }
-  let range = spec-range(trained, (0.1, 1))
-  let resolved = if trained.type == "continuous" {
-    let v = parse-number(raw)
-    if v == none { return fallback }
-    continuous-numeric(trained, v, range)
-  } else {
-    let pal = spec-palette(trained, none)
-    if pal != none and pal.len() > 0 {
-      let idx = discrete-index(trained, raw)
-      if idx == none { return fallback }
-      pal.at(calc.rem(idx, pal.len()))
+  let trained = ctx.trained.at("alpha", default: none)
+  let scaled = if col == none or trained == none { fallback } else {
+    let raw = sample-row.at(col, default: none)
+    if raw == none { fallback } else if trained.type == "identity" {
+      let v = parse-number(raw)
+      if v == none { fallback } else { _clamp(v, 0, 1) }
     } else {
-      discrete-numeric(trained, raw, range)
+      let range = spec-range(trained, (0.1, 1))
+      let resolved = if trained.type == "continuous" {
+        let v = parse-number(raw)
+        if v == none { fallback } else { continuous-numeric(trained, v, range) }
+      } else {
+        let pal = spec-palette(trained, none)
+        if pal != none and pal.len() > 0 {
+          let idx = discrete-index(trained, raw)
+          if idx == none { fallback } else { pal.at(calc.rem(idx, pal.len())) }
+        } else { discrete-numeric(trained, raw, range) }
+      }
+      if resolved == none { fallback } else { _clamp(resolved, 0, 1) }
     }
   }
-  if resolved == none { return fallback }
-  _clamp(resolved, 0, 1)
+  apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
 /// Resolve a per-row stroke thickness.
@@ -222,14 +221,7 @@
 /// \@param sample-row The row used to read the size value.
 /// \@param default-size Fallback length when no mapping or pin applies.
 /// \@returns A Typst length suitable for a marker radius.
-#let resolve-size(layer, mapping, ctx, sample-row, default-size) = {
-  let pinned = layer.params.at("size", default: auto)
-  if pinned != auto and pinned != none and type(pinned) == length {
-    return pinned
-  }
-  let col = if mapping == none { none } else {
-    mapping.at("size", default: none)
-  }
+#let _resolve-size-natural(col, ctx, sample-row, default-size) = {
   let trained = ctx.trained.at("size", default: none)
   if col == none or trained == none { return default-size }
   let raw = sample-row.at(col, default: none)
@@ -267,8 +259,22 @@
       discrete-numeric(trained, raw, range)
     }
   }
-  if resolved == none { return default-size }
-  resolved
+  if resolved == none { default-size } else { resolved }
+}
+
+#let resolve-size(layer, mapping, ctx, sample-row, default-size) = {
+  let pinned = layer.params.at("size", default: auto)
+  if pinned != auto and pinned != none and type(pinned) == length {
+    return pinned
+  }
+  let spec = if mapping == none { none } else {
+    mapping.at("size", default: none)
+  }
+  let col = if is-after-scale(spec) { spec.at("source", default: none) } else {
+    spec
+  }
+  let scaled = _resolve-size-natural(col, ctx, sample-row, default-size)
+  apply-after-scale(scaled, spec, ctx, sample-row)
 }
 
 /// Resolve a stroke colour for a row sample.

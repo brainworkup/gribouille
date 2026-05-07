@@ -5,7 +5,9 @@
 #import "../../src/utils/late-binding.typ": (
   after-scale, is-late-binding, late-binding-kind,
 )
-#import "../../src/utils/colour-resolve.typ": resolve-stroke-colour
+#import "../../src/utils/colour-resolve.typ": (
+  resolve-alpha, resolve-size, resolve-stroke-colour,
+)
 #import "../../src/utils/fill-resolve.typ": resolve-fill-colour
 
 // --- constructor + predicates ------------------------------------------
@@ -86,6 +88,34 @@
     rgb("#888888"),
   ),
   rgb("#888888").darken(50%).transparentize(50%),
+)
+
+// --- after-scale on `alpha` clamps then transforms ---------------------
+
+#let halve-alpha = after-scale((a, _) => a * 0.5)
+#assert.eq(
+  resolve-alpha(
+    layer-of((alpha: auto)),
+    (alpha: halve-alpha),
+    make-ctx((:)),
+    (:),
+    default-alpha: 0.8,
+  ),
+  0.4,
+)
+
+// --- after-scale on `size` doubles the channel default -----------------
+
+#let double-size = after-scale((s, _) => s * 2)
+#assert.eq(
+  resolve-size(
+    layer-of((size: auto)),
+    (size: double-size),
+    make-ctx((:)),
+    (:),
+    2pt,
+  ),
+  4pt,
 )
 
 late-binding after-scale tests passed.
