@@ -136,7 +136,8 @@
     let (cx1, cy1) = p1
 
     let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
-    let thickness = resolve-channel("linewidth", 
+    let thickness = resolve-channel(
+      "linewidth",
       layer,
       mapping,
       ctx,

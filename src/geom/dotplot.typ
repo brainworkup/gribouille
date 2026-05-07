@@ -121,7 +121,14 @@
     if p == none { continue }
     let (cx, cy) = p
 
-    let body-fill = resolve-channel("fill", layer, mapping, ctx, row, default-fill)
+    let body-fill = resolve-channel(
+      "fill",
+      layer,
+      mapping,
+      ctx,
+      row,
+      default-fill,
+    )
     let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let outline = if layer.params.stroke == none { none } else {
       (

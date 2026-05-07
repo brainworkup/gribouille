@@ -193,14 +193,16 @@
       let v-wlo = map-axis(val-trained, whisker-lo, value-range)
       let v-whi = map-axis(val-trained, whisker-hi, value-range)
 
-      let final-fill = resolve-channel("fill", 
+      let final-fill = resolve-channel(
+        "fill",
         layer,
         mapping,
         ctx,
         row,
         default-fill,
       )
-      let resolved-stroke = resolve-channel("colour", 
+      let resolved-stroke = resolve-channel(
+        "colour",
         layer,
         mapping,
         ctx,
@@ -350,14 +352,16 @@
     let (cx-lo, cx-hi) = box-band
     let (cap-lo, cap-hi) = cap-band
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,
       row,
       default-fill,
     )
-    let resolved-stroke = resolve-channel("colour", 
+    let resolved-stroke = resolve-channel(
+      "colour",
       layer,
       mapping,
       ctx,

@@ -111,7 +111,8 @@
     ))
     if pts.any(p => p == none) { continue }
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

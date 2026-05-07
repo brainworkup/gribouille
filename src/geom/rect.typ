@@ -117,7 +117,8 @@
     let y1 = parse-number(row.at(ymax-col, default: none))
     if x0 == none or x1 == none or y0 == none or y1 == none { continue }
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

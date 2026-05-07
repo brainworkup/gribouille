@@ -58,9 +58,17 @@
     if pts.len() < 2 { continue }
 
     let leader = rows.first()
-    let final-colour = resolve-channel("colour", layer, mapping, ctx, leader, ink)
+    let final-colour = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      leader,
+      ink,
+    )
     let dash = resolve-channel("linetype", layer, mapping, ctx, leader, none)
-    let thickness = resolve-channel("linewidth", 
+    let thickness = resolve-channel(
+      "linewidth",
       layer,
       mapping,
       ctx,

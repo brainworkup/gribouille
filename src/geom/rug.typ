@@ -137,7 +137,8 @@
     } else { ink }
     let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
-    let thickness = resolve-channel("linewidth", 
+    let thickness = resolve-channel(
+      "linewidth",
       layer,
       mapping,
       ctx,

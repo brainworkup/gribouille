@@ -124,7 +124,8 @@
     if pts.len() < 3 { continue }
 
     let leader = rows.first()
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

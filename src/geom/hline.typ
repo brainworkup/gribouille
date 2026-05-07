@@ -101,7 +101,8 @@
   let mapping = (ctx.resolve-mapping)(layer)
   let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
   let fill = apply-alpha(colour, alpha)
-  let thickness = resolve-channel("linewidth", 
+  let thickness = resolve-channel(
+    "linewidth",
     layer,
     mapping,
     ctx,

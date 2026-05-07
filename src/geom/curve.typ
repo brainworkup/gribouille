@@ -167,7 +167,8 @@
     if pts.len() < 2 { continue }
 
     let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
-    let thickness = resolve-channel("linewidth", 
+    let thickness = resolve-channel(
+      "linewidth",
       layer,
       mapping,
       ctx,

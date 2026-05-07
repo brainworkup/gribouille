@@ -39,7 +39,9 @@
   columns: 2,
   column-gutter: 0.5cm,
   row-gutter: 0.5cm,
-  panel(`method: "hull"`, "hull", 8pt), panel(`method: "ellipse"`, "ellipse", 10pt),
+  panel(`method: "hull"`, "hull", 8pt),
+  panel(`method: "ellipse"`, "ellipse", 10pt),
 
-  panel(`method: "rect"`, "rect", 8pt), panel(`method: "circle"`, "circle", 8pt),
+  panel(`method: "rect"`, "rect", 8pt),
+  panel(`method: "circle"`, "circle", 8pt),
 )

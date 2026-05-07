@@ -158,14 +158,9 @@
     // Text must remain visible regardless of the exclusive-default rule, so
     // resolve with `ink` as the unconditional fallback; the box outline
     // follows `default-colour` and is suppressed when only `fill` is set.
-    let text-paint = resolve-channel("colour", 
-      layer,
-      mapping,
-      ctx,
-      row,
-      ink,
-    )
-    let box-fill = resolve-channel("fill", 
+    let text-paint = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    let box-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,
@@ -177,7 +172,14 @@
     } else {
       build-stroke(layer.params.stroke, text-paint)
     }
-    let text-size = resolve-channel("size", layer, mapping, ctx, row, layer.params.size)
+    let text-size = resolve-channel(
+      "size",
+      layer,
+      mapping,
+      ctx,
+      row,
+      layer.params.size,
+    )
     let body = box(
       fill: box-fill,
       stroke: stroke-spec,

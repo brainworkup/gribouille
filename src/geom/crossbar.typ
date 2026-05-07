@@ -155,14 +155,16 @@
       }
       if r-lo > r-hi { (r-lo, r-hi) = (r-hi, r-lo) }
 
-      let final-fill = resolve-channel("fill", 
+      let final-fill = resolve-channel(
+        "fill",
         layer,
         mapping,
         ctx,
         row,
         default-fill,
       )
-      let resolved-stroke = resolve-channel("colour", 
+      let resolved-stroke = resolve-channel(
+        "colour",
         layer,
         mapping,
         ctx,
@@ -211,14 +213,16 @@
     let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
     let (cx-lo, cx-hi) = if band == none { (cx, cx) } else { band }
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,
       row,
       default-fill,
     )
-    let resolved-stroke = resolve-channel("colour", 
+    let resolved-stroke = resolve-channel(
+      "colour",
       layer,
       mapping,
       ctx,

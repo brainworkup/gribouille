@@ -168,7 +168,8 @@
       )
     }
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,
@@ -320,7 +321,8 @@
       bar-half = (category-span * bar-width-fraction / n) / 2
     }
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

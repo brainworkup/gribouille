@@ -276,7 +276,8 @@
     if projected.len() < 3 { continue }
 
     let leader = g.data.first()
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

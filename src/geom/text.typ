@@ -133,7 +133,14 @@
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
     let colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
-    let text-size = resolve-channel("size", layer, mapping, ctx, row, layer.params.size)
+    let text-size = resolve-channel(
+      "size",
+      layer,
+      mapping,
+      ctx,
+      row,
+      layer.params.size,
+    )
     let dx = if type(layer.params.dx) == length {
       layer.params.dx / 1cm
     } else { layer.params.dx }

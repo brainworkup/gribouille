@@ -138,7 +138,8 @@
     } else { layer.params.height }
     if w == none or h == none { continue }
 
-    let final-fill = resolve-channel("fill", 
+    let final-fill = resolve-channel(
+      "fill",
       layer,
       mapping,
       ctx,

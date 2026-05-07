@@ -41,7 +41,10 @@
       radius: 4pt,
       fill: colour,
     )[
-      #set text(size: 6pt, weight: "bold", fill: if luma(colour).components().at(0) < 50% { white } else { black })
+      #set text(size: 6pt, weight: "bold", fill: if luma(colour)
+        .components()
+        .at(0)
+        < 50% { white } else { black })
       #set par(spacing: 0pt, leading: 0.85em)
       #name
     ]
