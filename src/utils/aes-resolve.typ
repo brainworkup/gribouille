@@ -72,14 +72,6 @@
   none
 }
 
-/// Return the late-binding marker carried by an aesthetic mapping value,
-/// or `none` if the value is a plain column reference.
-///
-/// \@internal
-/// \@param spec An aesthetic mapping value.
-/// \@returns The marker dict or `none`.
-#let late-binding-of(spec) = if is-late-binding(spec) { spec } else { none }
-
 /// Read an aesthetic value from a row, optionally evaluating as Typst
 /// markup.
 ///

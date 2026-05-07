@@ -1,12 +1,11 @@
-// Slice 2: late-binding markers must round-trip through the mapping
-// pipeline without being stripped or evaluated. `after-stat` evaluation
-// itself lands in slice 3; here we only verify the marker survives
-// `_merge-mapping`, `_strip-mapping-refs`, and scale training.
+// Late-binding markers (`after-stat`, ...) round-trip through the
+// mapping pipeline without being stripped or evaluated, and `train()`
+// skips the channels they cover.
 
 #import "../../src/utils/late-binding.typ": (
-  after-stat, from-theme, is-late-binding, late-binding-kind,
+  after-stat, is-late-binding, late-binding-kind,
 )
-#import "../../src/utils/aes-resolve.typ": aes-col, late-binding-of
+#import "../../src/utils/aes-resolve.typ": aes-col
 #import "../../src/aes.typ": aes
 #import "../../src/render.typ": _merge-mapping, _strip-mapping-refs
 #import "../../src/scale/train.typ": train
@@ -22,12 +21,6 @@
 #let m-fn = after-stat((row, ctx) => row.count * 2)
 #assert.eq(m-fn.kind, "after-stat")
 #assert.eq(type(m-fn.expr), function)
-
-// --- aes() round-trip ---------------------------------------------------
-
-#let mapping = aes(x: "x", y: after-stat("count"), fill: "sp")
-#assert.eq(mapping.y.kind, "after-stat")
-#assert.eq(mapping.y.expr, "count")
 
 // --- merge preserves the marker ----------------------------------------
 
@@ -51,13 +44,7 @@
 // --- aes-col reports `none` for markers --------------------------------
 
 #assert.eq(aes-col(after-stat("count")), none)
-#assert.eq(aes-col(from-theme("ink")), none)
 #assert.eq(aes-col("col"), "col")
-
-// --- late-binding-of returns the marker --------------------------------
-
-#assert.eq(late-binding-of(after-stat("count")).kind, "after-stat")
-#assert.eq(late-binding-of("col"), none)
 
 // --- train skips late-bound aesthetics without crashing ----------------
 

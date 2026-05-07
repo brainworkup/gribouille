@@ -72,10 +72,6 @@
 /// theme, palette, and ink so the closure can resolve other channels
 /// without re-reading the layer spec.
 ///
-/// The marker is consumed by `_prepare-layer` after the stat runs (slice
-/// 3); slice 2 only routes the marker through `_strip-mapping-refs`,
-/// `_merge-mapping`, and scale training without crashing.
-///
 /// \@category Aesthetics
 /// \@stability experimental
 /// \@since 0.0.1
@@ -83,7 +79,7 @@
 /// \@param expr Column-name string or `(row, ctx) => any` closure.
 /// \@returns Late-binding marker consumed by \@aes.
 ///
-/// \@see \@aes, \@stage
+/// \@see \@aes
 #let after-stat(expr) = (kind: "after-stat", expr: expr)
 
 #let _path-parts(path) = {
