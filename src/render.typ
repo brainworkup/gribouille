@@ -21,6 +21,9 @@
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
+#import "utils/late-binding.typ": (
+  is-late-binding, late-binding-kind, resolve-from-theme,
+)
 #import "utils/radial.typ": group-theta-breaks, radial-axis-of, radial-ctx
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
@@ -319,11 +322,59 @@
   (data: new-data, factor-levels: factor-levels)
 }
 
-#let _prepare-layer(layer, plot-mapping, plot-data) = {
+// Aesthetic channels that have a fixed-value layer parameter; `from-theme`
+// resolves to a literal scalar that we write into `layer.params.<channel>`
+// so per-row resolvers honour it through their existing pinned-param paths.
+#let _FROM-THEME-PARAM-CHANNELS = (
+  "colour",
+  "fill",
+  "size",
+  "alpha",
+  "linewidth",
+  "stroke",
+  "shape",
+  "linetype",
+)
+
+// Resolve `from-theme(...)` markers in `mapping`. The resolved scalar is
+// pushed into `layer.params.<channel>` and the mapping entry is cleared so
+// scale training and per-row mapping reads see no ghost binding.
+#let _apply-from-theme(layer, mapping, theme) = {
+  if mapping == none { return (layer: layer, mapping: mapping) }
+  let new-mapping = mapping
+  let params = layer.at("params", default: (:))
+  let touched = false
+  for (channel, value) in mapping.pairs() {
+    if late-binding-kind(value) != "from-theme" { continue }
+    if not _FROM-THEME-PARAM-CHANNELS.contains(channel) {
+      panic(
+        "from-theme: unsupported on '"
+          + channel
+          + "'; use a fixed-value channel like "
+          + _FROM-THEME-PARAM-CHANNELS.join(", "),
+      )
+    }
+    let resolved = resolve-from-theme(theme, value.path)
+    params.insert(channel, resolved)
+    new-mapping.insert(channel, none)
+    touched = true
+  }
+  if not touched { return (layer: layer, mapping: mapping) }
+  let new-layer = layer
+  new-layer.insert("params", params)
+  (layer: new-layer, mapping: new-mapping)
+}
+
+#let _prepare-layer(layer, plot-mapping, plot-data, theme: none) = {
   // Keep mapping-ref annotations intact on the layer so scale training can
   // read forced types; only strip them when the renderer hands a mapping to
   // a geom's draw function.
   let mapping = _merge-mapping(layer, plot-mapping)
+  if theme != none {
+    let resolved = _apply-from-theme(layer, mapping, theme)
+    layer = resolved.layer
+    mapping = resolved.mapping
+  }
   let data = _resolve-data(layer, plot-data)
   // `stat:` accepts either a string name (with default params from the geom's
   // own params dict) or a dict returned by a `stat-*()` constructor carrying
@@ -2007,7 +2058,7 @@
   )
 }
 
-#let _render-prepare(spec) = {
+#let _render-prepare(spec, theme) = {
   let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
   let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
 
@@ -2039,7 +2090,7 @@
           let with-subset = l
           with-subset.data = layer-groups.at(i).at(level, default: ())
           with-subset.insert("data-trusted", true)
-          _prepare-layer(with-subset, spec.mapping, spec.data)
+          _prepare-layer(with-subset, spec.mapping, spec.data, theme: theme)
         }),
     ))
   } else if facet-grid-mode {
@@ -2062,7 +2113,7 @@
               let with-subset = l
               with-subset.data = layer-groups.at(i).at(key, default: ())
               with-subset.insert("data-trusted", true)
-              _prepare-layer(with-subset, spec.mapping, spec.data)
+              _prepare-layer(with-subset, spec.mapping, spec.data, theme: theme)
             }),
         ))
       }
@@ -2075,7 +2126,12 @@
     for panel in panels { union += panel.layers }
     union
   } else {
-    spec.layers.map(l => _prepare-layer(l, spec.mapping, spec.data))
+    spec.layers.map(l => _prepare-layer(
+      l,
+      spec.mapping,
+      spec.data,
+      theme: theme,
+    ))
   }
 
   (
@@ -2675,7 +2731,7 @@
 
   // Faceted plots prepare layers per panel so stats (smooth, bin, count) fit
   // each panel's own row subset, following grammar-of-graphics semantics.
-  let prep = _render-prepare(spec)
+  let prep = _render-prepare(spec, theme)
   let facet-wrap-mode = prep.facet-wrap-mode
   let facet-grid-mode = prep.facet-grid-mode
   let wrap-levels = prep.wrap-levels
