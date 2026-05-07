@@ -1,4 +1,6 @@
-#import "colour-resolve.typ": apply-alpha, resolve-alpha
+#import "colour-resolve.typ": (
+  _resolve-channel-source, apply-alpha, resolve-alpha,
+)
 #import "late-binding.typ": apply-after-scale, is-after-scale
 
 /// Resolve a fill colour for a row sample.
@@ -38,34 +40,35 @@
   }
   let resolved = if fill-param != auto and fill-param != none {
     fill-param
+  } else if not fill-mapping {
+    if colour-fallback {
+      _resolve-channel-source(
+        "colour",
+        mapping.at("colour", default: none),
+        ctx,
+        sample-row,
+        default-fill,
+      )
+    } else { default-fill }
   } else if is-after-scale(fill-spec) {
-    let src = fill-spec.at("source", default: none)
-    let fill-trained = if fill-mapping {
-      ctx.trained.at("fill", default: none)
-    } else { none }
-    if src != none and fill-trained != none {
-      ((ctx.resolve-colour)(fill-trained, ctx.palette))(
-        sample-row.at(src, default: none),
-      )
-    } else { default-fill }
-  } else {
-    let fill-trained = if fill-mapping {
-      ctx.trained.at("fill", default: none)
-    } else { none }
-    if fill-spec != none and fill-trained != none {
-      ((ctx.resolve-colour)(fill-trained, ctx.palette))(
-        sample-row.at(fill-spec, default: none),
-      )
-    } else if colour-fallback {
-      let colour-col = mapping.at("colour", default: none)
-      let colour-trained = ctx.trained.at("colour", default: none)
-      if colour-col != none and colour-trained != none {
-        ((ctx.resolve-colour)(colour-trained, ctx.palette))(
-          sample-row.at(colour-col, default: none),
-        )
-      } else { default-fill }
-    } else { default-fill }
-  }
+    _resolve-channel-source(
+      "fill",
+      fill-spec.at("source", default: none),
+      ctx,
+      sample-row,
+      default-fill,
+    )
+  } else if fill-spec != none {
+    _resolve-channel-source("fill", fill-spec, ctx, sample-row, default-fill)
+  } else if colour-fallback {
+    _resolve-channel-source(
+      "colour",
+      mapping.at("colour", default: none),
+      ctx,
+      sample-row,
+      default-fill,
+    )
+  } else { default-fill }
   resolved = apply-after-scale(resolved, fill-spec, ctx, sample-row)
   let alpha = resolve-alpha(
     layer,

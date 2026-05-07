@@ -5,6 +5,26 @@
 #import "./types.typ": parse-number
 #import "./late-binding.typ": apply-after-scale, is-after-scale
 
+/// Resolve `source-col` for `channel` through the channel's trained
+/// scale, returning `default` when either is missing.
+///
+/// \@internal
+/// \@param channel Channel name (`"colour"`, `"fill"`).
+/// \@param source-col Column to read from the row, or `none`.
+/// \@param ctx Renderer context exposing `trained`, `resolve-colour`,
+///   and `palette`.
+/// \@param row The current row.
+/// \@param default Fallback value.
+/// \@returns The scale-resolved colour, or `default`.
+#let _resolve-channel-source(channel, source-col, ctx, row, default) = {
+  if source-col == none { return default }
+  let trained = ctx.trained.at(channel, default: none)
+  if trained == none { return default }
+  ((ctx.resolve-colour)(trained, ctx.palette))(
+    row.at(source-col, default: none),
+  )
+}
+
 /// Apply an alpha transparentise to an already-resolved colour.
 ///
 /// Returns `colour` unchanged when `alpha` is `>= 1`, otherwise returns
@@ -273,20 +293,16 @@
   let resolved = if colour-param != auto and colour-param != none {
     colour-param
   } else if is-after-scale(spec) {
-    let src = spec.at("source", default: none)
-    let trained = ctx.trained.at("colour", default: none)
-    if src != none and trained != none {
-      ((ctx.resolve-colour)(trained, ctx.palette))(
-        sample-row.at(src, default: none),
-      )
-    } else { default-colour }
-  } else {
-    let colour-trained = ctx.trained.at("colour", default: none)
-    if spec != none and colour-trained != none {
-      let v = sample-row.at(spec, default: none)
-      ((ctx.resolve-colour)(colour-trained, ctx.palette))(v)
-    } else { default-colour }
-  }
+    _resolve-channel-source(
+      "colour",
+      spec.at("source", default: none),
+      ctx,
+      sample-row,
+      default-colour,
+    )
+  } else if spec != none {
+    _resolve-channel-source("colour", spec, ctx, sample-row, default-colour)
+  } else { default-colour }
   resolved = apply-after-scale(resolved, spec, ctx, sample-row)
   let alpha = resolve-alpha(layer, mapping, ctx, sample-row)
   apply-alpha(resolved, alpha)

@@ -4,8 +4,7 @@
 // after-scale lanes against the post-stat rows.
 
 #import "../../src/utils/late-binding.typ": (
-  apply-stages, expand-stage, is-late-binding, late-binding-kind, stage,
-  stash-stages,
+  apply-stages, is-late-binding, late-binding-kind, stage, stash-stages,
 )
 
 // --- constructor + predicates ------------------------------------------
@@ -21,13 +20,6 @@
 #assert.eq(type(m.at("after-scale")), function)
 #assert(is-late-binding(m))
 #assert.eq(late-binding-kind(m), "stage")
-
-// --- expand-stage decomposes the marker --------------------------------
-
-#let lanes = expand-stage(m)
-#assert.eq(lanes.start, "sp")
-#assert.eq(lanes.at("after-stat"), "_count")
-#assert.eq(type(lanes.at("after-scale")), function)
 
 // --- stash-stages replaces markers with their start column --------------
 

@@ -137,17 +137,6 @@
   "after-scale": after-scale,
 )
 
-/// Decompose a stage marker into its three lanes.
-///
-/// \@internal
-/// \@param spec Late-binding marker (must be `kind: "stage"`).
-/// \@returns Dict with `start`, `after-stat`, `after-scale` fields.
-#let expand-stage(spec) = (
-  start: spec.at("start", default: none),
-  "after-stat": spec.at("after-stat", default: none),
-  "after-scale": spec.at("after-scale", default: none),
-)
-
 /// Replace stage markers in `mapping` with their `start` column ref so
 /// scale training and stat application see plain column names. Returns
 /// the rewritten mapping alongside a `stages` dict keyed by channel,
@@ -158,6 +147,9 @@
 /// \@returns Dict with `mapping` and `stages` fields.
 #let stash-stages(mapping) = {
   if mapping == none { return (mapping: mapping, stages: (:)) }
+  if not mapping.values().any(v => late-binding-kind(v) == "stage") {
+    return (mapping: mapping, stages: (:))
+  }
   let stages = (:)
   let new-mapping = mapping
   for (channel, value) in mapping.pairs() {
@@ -183,38 +175,38 @@
 #let apply-stages(rows, mapping, stages, ctx) = {
   if stages.len() == 0 { return (rows: rows, mapping: mapping) }
   let new-mapping = mapping
-  let new-rows = rows
+  let closures = ()
   for (channel, stg) in stages.pairs() {
     let post-col = stg.at("start", default: none)
     let after-stat-expr = stg.at("after-stat", default: none)
-    if after-stat-expr != none {
-      if type(after-stat-expr) == str {
-        post-col = after-stat-expr
-      } else if type(after-stat-expr) == function {
-        post-col = _AFTER-STAT-COL-PREFIX + channel
-        new-rows = new-rows.map(row => {
-          let r = row
-          r.insert(post-col, after-stat-expr(row, ctx))
-          r
-        })
-      } else {
-        panic(
-          "stage["
-            + channel
-            + "].after-stat: must be string or function; got "
-            + str(type(after-stat-expr)),
-        )
-      }
+    if type(after-stat-expr) == str {
+      post-col = after-stat-expr
+    } else if type(after-stat-expr) == function {
+      post-col = _AFTER-STAT-COL-PREFIX + channel
+      closures.push((col: post-col, expr: after-stat-expr))
+    } else if after-stat-expr != none {
+      panic(
+        "stage["
+          + channel
+          + "].after-stat: must be string or function; got "
+          + str(type(after-stat-expr)),
+      )
     }
     let after-scale-expr = stg.at("after-scale", default: none)
     if after-scale-expr != none {
-      new-mapping.insert(
-        channel,
-        (kind: "after-scale", expr: after-scale-expr, source: post-col),
-      )
-    } else {
+      let marker = after-scale(after-scale-expr)
+      marker.insert("source", post-col)
+      new-mapping.insert(channel, marker)
+    } else if post-col != none {
       new-mapping.insert(channel, post-col)
     }
+  }
+  let new-rows = if closures.len() == 0 { rows } else {
+    rows.map(row => {
+      let r = row
+      for c in closures { r.insert(c.col, (c.expr)(row, ctx)) }
+      r
+    })
   }
   (rows: new-rows, mapping: new-mapping)
 }
