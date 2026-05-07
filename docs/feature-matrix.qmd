@@ -111,7 +111,7 @@ Legend for **Priority** (used to order future work):
 | `stat_unique()`                                                                         | `stat-unique`.                      | ✅     | —        | Drops duplicate `(x, y)` rows; first occurrence wins.                                             |
 | `stat_manual()` / `stat_align()` / `stat_connect()`                                     | —                                   | ⬜     | P4       | Advanced.                                                                                         |
 | `stat_sf()` / `stat_sf_coordinates()`                                                   | —                                   | ❌     | ∅        | Out of scope.                                                                                     |
-| `after_stat()` / `after_scale()` / `stage()` / `from_theme()`                           | —                                   | ⬜     | P4       | Late-binding aesthetics.                                                                          |
+| `after_stat()` / `after_scale()` / `stage()` / `from_theme()`                           | `after-stat`, `after-scale`, `stage`, `from-theme`. | 🟡     | —        | `from-theme` pinned to `layer.params`; `after-stat` runs at `_prepare-layer` (string + closure forms); `after-scale` honoured on `colour` / `fill` / `alpha` / `size` (linewidth, stroke-width, shape, linetype pending); `stage` composes all three lanes. |
 
 ### Position adjustments
 

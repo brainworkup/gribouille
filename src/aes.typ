@@ -4,6 +4,13 @@
 /// properties: which column drives the x axis, which becomes a colour, etc.
 /// Pass the result as the `mapping` argument of \@plot or any geom layer.
 ///
+/// Channel values can also be late-binding markers that defer resolution
+/// past the point where a column was first bound: \@from-theme pulls a
+/// scalar from the active theme; \@after-stat substitutes a column or
+/// closure result published by the layer's stat; \@after-scale
+/// post-transforms a channel's scale-resolved value just before draw;
+/// \@stage composes all three lanes for a single channel.
+///
 /// \@category Core
 /// \@stability stable
 /// \@since 0.0.1
@@ -75,7 +82,41 @@
 /// )
 /// ```
 ///
-/// \@see \@plot, \@geom-point, \@as-factor
+/// \@examples Bind y to the count column the stat publishes via \@after-stat.
+/// ```
+/// #let d = ((grp: "a"), (grp: "b"), (grp: "a"), (grp: "c"))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: after-stat("_count"), fill: "grp"),
+///   layers: (geom-bar(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples Darken the marker outline from the trained fill palette
+/// via \@after-scale.
+/// ```
+/// #let d = ((x: 1, sp: "a"), (x: 2, sp: "b"), (x: 3, sp: "a"))
+/// #plot(
+///   data: d,
+///   mapping: aes(
+///     x: "x",
+///     y: "x",
+///     fill: "sp",
+///     colour: stage(
+///       start: "sp",
+///       after-scale: (c, _) => c.darken(40%),
+///     ),
+///   ),
+///   layers: (geom-point(size: 4pt, stroke: 0.6pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@plot, \@geom-point, \@as-factor, \@from-theme, \@after-stat,
+///   \@after-scale, \@stage
 #let aes(
   x: none,
   y: none,
