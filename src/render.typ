@@ -430,6 +430,18 @@
       })
       combined += enriched
     }
+    // stat-output-mapping preserves whatever keys we passed in, but we
+    // passed `stripped` so any `as-factor`/`as-numeric`/`typst` wrappers
+    // were dropped. Restore them on aesthetics the stat passed through
+    // unchanged so scale training can read the forced type.
+    for (k, v) in mapping.pairs() {
+      if v == none { continue }
+      let plain = stripped.at(k, default: none)
+      if plain == none or v == plain { continue }
+      if last-mapping.at(k, default: none) == plain {
+        last-mapping.insert(k, v)
+      }
+    }
     stat-data = combined
     stat-mapping = last-mapping
   }
