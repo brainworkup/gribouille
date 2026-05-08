@@ -23,6 +23,7 @@
 #import "function.typ" as function-stat
 #import "ellipse.typ" as ellipse-stat
 #import "quantile.typ" as quantile-stat
+#import "manual.typ" as manual-stat
 #import "../utils/bin.typ": panel-bin-grid
 #import "../utils/bin2d.typ": panel-bin-grid-2d
 #import "../utils/hex.typ": panel-hex-grid
@@ -43,6 +44,7 @@
   function: function-stat.stat-function,
   ellipse: ellipse-stat.stat-ellipse,
   quantile: quantile-stat.stat-quantile,
+  manual: manual-stat.stat-manual,
 )
 
 #let stat-default-params(name) = {
@@ -115,6 +117,8 @@
     ellipse-stat.apply(data, mapping, params: params)
   } else if name == "quantile" {
     quantile-stat.apply(data, mapping, params: params)
+  } else if name == "manual" {
+    manual-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }

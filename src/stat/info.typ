@@ -53,6 +53,7 @@
   function: (outputs: ("x", "y")),
   ellipse: (outputs: ("x0", "y0", "a", "b", "angle")),
   quantile: (outputs: ("x", "y", "group", "quantile")),
+  manual: (outputs: ()),
 )
 
 /// Look up the metadata record for a stat by name.
