@@ -5,7 +5,8 @@
 ///! `after-stat(<string>)` to validate column references at layer-prepare
 ///! time; an empty `outputs` list suppresses validation (used for stats
 ///! whose row shape passes through input data unchanged, e.g. `identity`
-///! and `unique`).
+///! and `unique`, or whose outputs cannot be enumerated statically, e.g.
+///! `manual`).
 
 #let _STAT-INFO = (
   identity: (outputs: ()),

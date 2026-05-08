@@ -1,8 +1,6 @@
 ///! User-supplied closure stat.
-///!
-///! `stat-manual(fun: ...)` runs the user closure on the layer's data array
-///! before the geom consumes it. The closure receives the data array and
-///! returns a (possibly different) data array; mapping passes through.
+
+#let _identity = data => data
 
 /// Manual statistic: run a closure on the data array inside the layer.
 ///
@@ -42,13 +40,13 @@
 /// ```
 ///
 /// \@see \@stat-identity, \@stat-summary
-#let stat-manual(fun: data => data) = (
+#let stat-manual(fun: _identity) = (
   kind: "stat",
   name: "manual",
   params: (fun: fun),
 )
 
 #let apply(data, mapping, params: (:)) = {
-  let fun = params.at("fun", default: data => data)
+  let fun = params.at("fun", default: _identity)
   (data: fun(data), mapping: mapping)
 }
