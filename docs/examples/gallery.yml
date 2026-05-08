@@ -602,3 +602,69 @@
   title: "Coordinate-level transforms"
   description: '<a href="../reference/coord/coord-transform.qmd"><code>coord-transform</code></a> warps the displayed coordinates without setting <code>transform</code> on each scale; overrides any scale-level transform.'
   alt: "Two stacked panels of the same power-law dataset: the first applies log10 to both axes via coord-transform, the second mixes scale-y sqrt with coord-transform x log10."
+
+- slug: coord-radial-composite
+  section: facets
+  title: "Composite geoms under coord-radial"
+  description: 'Errorbars, point ranges, line ranges, crossbars, and boxplots all switch to polar wedges, radial spines, and arc caps under <a href="../reference/coord/coord-radial.qmd"><code>coord-radial</code></a>.'
+  alt: "Three radial panels showing errorbar, pointrange and linerange, then crossbar and boxplot composites laid out around a polar coordinate system."
+
+- slug: guide-axis-stack
+  section: guides
+  title: "Stacked axis guides"
+  description: 'Stack a rotated <a href="../reference/guides/guide-axis.qmd"><code>guide-axis</code></a> over a <a href="../reference/guides/guide-axis-logticks.qmd"><code>guide-axis-logticks</code></a> pass via <a href="../reference/guides/guide-axis-stack.qmd"><code>guide-axis-stack</code></a> on the same x axis.'
+  alt: "Log-log scatter where the x-axis carries two stacked label rows: a 30-degree rotated decade row above the dense log minor-tick row."
+
+- slug: guide-axis-theta
+  section: guides
+  title: "Theta-axis guide"
+  description: '<a href="../reference/guides/guide-axis-theta.qmd"><code>guide-axis-theta</code></a> rotates radial tick labels, emits half-step minor ticks, and draws an outer axis arc with optional <code>cap</code>.'
+  alt: "Three radial radar panels: a default spoke-only layout, one with minor ticks added between spokes, and one with rotated labels and a capped outer arc."
+
+- slug: guide-custom
+  section: guides
+  title: "Custom legend slot"
+  description: '<a href="../reference/guides/guide-custom.qmd"><code>guide-custom</code></a> drops arbitrary Typst content into the legend area alongside the auto-built colour swatch.'
+  alt: "Scatter with a colour swatch legend on the right and a custom Notes block below it carrying free-form annotation text."
+
+- slug: late-binding-after-stat
+  section: late-binding
+  title: "after-stat: bind to a stat output"
+  description: '<a href="../reference/core/after-stat.qmd"><code>after-stat</code></a> binds an aesthetic to a column produced by the layer''s stat — here y is mapped to the <code>_count</code> column emitted by <code>stat-count</code>.'
+  alt: "Bar chart of category counts with the y aesthetic bound explicitly via after-stat, matching the implicit y default."
+
+- slug: late-binding-after-scale
+  section: late-binding
+  title: "after-scale: transform resolved values"
+  description: '<a href="../reference/core/after-scale.qmd"><code>after-scale</code></a> mirrors the trained fill palette into the colour channel and darkens it, so each marker outline tracks its own fill.'
+  alt: "Coloured scatter where each marker outline is a darker variant of the same fill palette swatch, computed via after-scale."
+
+- slug: late-binding-after-scale-shape
+  section: late-binding
+  title: "after-scale on shape"
+  description: '<a href="../reference/core/after-scale.qmd"><code>after-scale</code></a> on the shape channel transforms the resolved shape kind per row, flipping between two glyphs based on a per-row predicate.'
+  alt: "Scatter where each row picks one of two marker shapes via a per-row predicate driving the shape channel through after-scale."
+
+- slug: late-binding-from-theme
+  section: late-binding
+  title: "from-theme: pull theme colours"
+  description: '<a href="../reference/core/from-theme.qmd"><code>from-theme</code></a> pins a layer''s stroke to the active theme''s ink and the marker fill to the accent colour, resolved once at layer prepare time.'
+  alt: "Scatter where the marker fill follows the theme accent and the stroke follows the theme ink, both resolved via from-theme."
+
+- slug: late-binding-stage
+  section: late-binding
+  title: "stage: combine start, after-stat, after-scale"
+  description: '<a href="../reference/core/stage.qmd"><code>stage</code></a> trains the colour aesthetic on the same column the fill scale uses, then transparentises the resolved palette swatch as the marker outline.'
+  alt: "Scatter where each marker outline is a translucent variant of the matching fill palette swatch, composed via stage(start, after-scale)."
+
+- slug: theme-element-geom
+  section: themes
+  title: "theme(geom: element-geom(...))"
+  description: 'Pin layer-default <code>fill</code>, <code>colour</code>, and <code>linewidth</code> across the supporting geoms via <a href="../reference/themes/element-geom.qmd"><code>element-geom</code></a> on <code>theme.geom</code>.'
+  alt: "Two stacked rows of bar and line panels: the first under the default theme, the second after a single theme(geom: element-geom(...)) override re-tints both geoms."
+
+- slug: gribouille
+  section: basics
+  title: "Hero showcase"
+  description: 'The penguins flagship plot used for the docs hero: hull marks, mean-SD error bars, and Typst content cards layered on a <a href="../reference/datasets/penguins.qmd"><code>penguins</code></a> scatter, with the gribouille logo overlaid as a page foreground.'
+  alt: "Penguins scatter of body mass against flipper length with per-species hulls, horizontal and vertical mean-SD error bars, and three labelled species cards, overlaid with the stacked gribouille logo in the top-right corner."

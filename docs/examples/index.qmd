@@ -12,7 +12,7 @@ listing:
     sort-ui: false
     filter-ui: false
     feed: false
-    page-size: 100
+    page-size: 200
 ---
 
 Every example below lives in the [`examples/`](https://github.com/mcanouil/gribouille/tree/main/examples) directory of the repository.

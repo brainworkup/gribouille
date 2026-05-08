@@ -19,6 +19,8 @@ website:
               href: /examples/index.qmd#annotations
             - text: "Scales and colour"
               href: /examples/index.qmd#scales
+            - text: "Late-binding aesthetics"
+              href: /examples/index.qmd#late-binding
             - text: "Axes and legends"
               href: /examples/index.qmd#guides
             - text: "Facets and coordinates"

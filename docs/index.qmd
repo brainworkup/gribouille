@@ -325,10 +325,10 @@ Everything is data you can `let`, extend, and reuse across a Typst document.
 ::: {.light-content}
 
 ::: {.gallery-preview}
-[![Minimal scatter](/assets/typst-render/examples/minimal-light.svg)](examples/index.qmd)
 [![Multilayer trend](/assets/typst-render/examples/multilayer-light.svg)](examples/index.qmd)
-[![Smoother with ribbon](/assets/typst-render/examples/smooth-light.svg)](examples/index.qmd)
-[![Facets](/assets/typst-render/examples/facets-light.svg)](examples/index.qmd)
+[![Filled contour bands](/assets/typst-render/examples/contour-filled-light.svg)](examples/index.qmd)
+[![Area chart](/assets/typst-render/examples/geom-area-light.svg)](examples/index.qmd)
+[![Heatmap](/assets/typst-render/examples/geom-tile-light.svg)](examples/index.qmd)
 :::
 
 :::
@@ -336,10 +336,10 @@ Everything is data you can `let`, extend, and reuse across a Typst document.
 ::: {.dark-content}
 
 ::: {.gallery-preview}
-[![Minimal scatter](/assets/typst-render/examples/minimal-dark.svg)](examples/index.qmd)
 [![Multilayer trend](/assets/typst-render/examples/multilayer-dark.svg)](examples/index.qmd)
-[![Smoother with ribbon](/assets/typst-render/examples/smooth-dark.svg)](examples/index.qmd)
-[![Facets](/assets/typst-render/examples/facets-dark.svg)](examples/index.qmd)
+[![Filled contour bands](/assets/typst-render/examples/contour-filled-dark.svg)](examples/index.qmd)
+[![Area chart](/assets/typst-render/examples/geom-area-dark.svg)](examples/index.qmd)
+[![Heatmap](/assets/typst-render/examples/geom-tile-dark.svg)](examples/index.qmd)
 :::
 
 :::
