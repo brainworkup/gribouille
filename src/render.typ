@@ -2454,6 +2454,7 @@
 
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
+    hide(rect((0, 0), (width-units, height-units)), bounds: true)
     let _wrap-labeller = spec.facet.at("labeller", default: none)
     for (i, level) in levels.enumerate() {
       let col = calc.rem(i, ncol)
@@ -2627,6 +2628,7 @@
 
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
+    hide(rect((0, 0), (width-units, height-units)), bounds: true)
     for (r, row-lv) in row-levels.enumerate() {
       for (c, col-lv) in col-levels.enumerate() {
         let x0 = margin.left + c * (panel-w + gutter-x)
@@ -2821,6 +2823,8 @@
   let (inner-w, inner-h) = _fixed-inner-size(coord, trained, box-w, box-h)
 
   cetz.canvas(length: 1cm, {
+    import cetz.draw: hide, rect
+    hide(rect((0, 0), (width-units, height-units)), bounds: true)
     _draw-axis-and-layers(
       prepared,
       trained,
