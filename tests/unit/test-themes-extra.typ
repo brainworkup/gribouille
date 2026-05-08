@@ -10,9 +10,10 @@
 #import "../../src/theme/classic.typ": theme-classic
 #import "../../src/theme/void.typ": theme-void
 #import "../../src/theme/elements.typ": (
-  element-blank, element-line, element-rect, element-text,
+  element-blank, element-geom, element-line, element-rect, element-text,
 )
 #import "../../src/theme/defaults.typ": default-theme, merge-theme
+#import "../../src/theme/theme.typ": geom-defaults
 
 // Keys that merge-theme consumes: every default-theme key must survive a merge.
 #let _expected-keys = default-theme.keys()
@@ -123,5 +124,59 @@
 #assert.eq(m2.axis-title.size, 14pt)
 #assert.eq(m2.panel-background.fill, rgb("#f7f0e7"))
 #assert.eq(m2.panel-grid.colour, rgb("#d9cfbf"))
+
+// ── plot-background canvas via paper override ──────────────────────────────
+
+// Default minimal: blank panel, transparent canvas (no fill on plot-background).
+#let m-default = theme-minimal()
+#assert.eq(m-default.panel-background.kind, "element-blank")
+#assert.eq(m-default.plot-background.kind, "element-rect")
+#assert.eq(m-default.plot-background.at("fill", default: none), none)
+
+// Explicit paper paints the canvas; panel stays transparent.
+#let m-paper = theme-minimal(paper: rgb("#b22222"))
+#assert.eq(m-paper.paper, rgb("#b22222"))
+#assert.eq(m-paper.panel-background.kind, "element-blank")
+#assert.eq(m-paper.plot-background.fill, rgb("#b22222"))
+
+// Default void: transparent canvas, blank panel.
+#let v-default = theme-void()
+#assert.eq(v-default.panel-background.kind, "element-blank")
+#assert.eq(v-default.plot-background.kind, "element-rect")
+#assert.eq(v-default.plot-background.at("fill", default: none), none)
+
+// Explicit paper on void paints the canvas.
+#let v-paper = theme-void(paper: rgb("#fff7e6"))
+#assert.eq(v-paper.plot-background.fill, rgb("#fff7e6"))
+
+// Spot-override still trumps the paper-driven default.
+#let m-blank = theme-minimal(
+  paper: rgb("#b22222"),
+  plot-background: element-blank(),
+)
+#assert.eq(m-blank.plot-background.kind, "element-blank")
+
+// ── accent flows through element-geom ──────────────────────────────────────
+
+// Default theme-grey: theme.accent flows into geom-defaults.accent.
+#let g-default = geom-defaults(merge-theme(theme-grey()))
+#assert.eq(g-default.accent, rgb("#3366FF"))
+#assert.eq(g-default.ink, black)
+#assert.eq(g-default.paper, white)
+
+// Theme-level accent override propagates.
+#let g-accent = geom-defaults(merge-theme(theme-grey(accent: rgb("#cc0000"))))
+#assert.eq(g-accent.accent, rgb("#cc0000"))
+
+// element-geom accent wins over theme-level accent.
+#let g-elem = geom-defaults(merge-theme(theme-grey(
+  accent: rgb("#cc0000"),
+  geom: element-geom(accent: rgb("#00aa00")),
+)))
+#assert.eq(g-elem.accent, rgb("#00aa00"))
+
+// Theme without geom slot still surfaces theme.accent.
+#let g-empty = geom-defaults((kind: "theme", accent: rgb("#abcdef")))
+#assert.eq(g-empty.accent, rgb("#abcdef"))
 
 Extra theme tests passed.

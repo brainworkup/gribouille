@@ -2829,7 +2829,11 @@
 }
 
 #let _render-decorate(canvas, labs, theme) = {
-  if labs == none { return canvas }
+  let plot-bg = _rect-fill(theme, "plot-background")
+  let _wrap(content) = if plot-bg != none {
+    block(fill: plot-bg, breakable: false, content)
+  } else { content }
+  if labs == none { return _wrap(canvas) }
   let title = _text-style(theme, "plot-title")
   let subtitle = _text-style(theme, "plot-subtitle")
   let caption = _text-style(theme, "plot-caption")
@@ -2878,8 +2882,8 @@
     items.push(v(_gap-length(caption, "top")))
     items.push(caption-block)
   }
-  if items.len() == 1 { return canvas }
-  block(stack(dir: ttb, spacing: 0pt, ..items))
+  if items.len() == 1 { return _wrap(canvas) }
+  _wrap(block(stack(dir: ttb, spacing: 0pt, ..items)))
 }
 
 #let render-plot(spec) = {

@@ -382,6 +382,9 @@
 /// \@param fill Default fill colour for filled geoms (geom-col, geom-polygon, geom-point).
 /// \@param colour Default stroke colour for line and outline geoms.
 /// \@param linewidth Default stroke thickness (Typst length).
+/// \@param ink Foreground colour role; falls back to `theme.ink` when unset.
+/// \@param paper Background colour role; falls back to `theme.paper` when unset.
+/// \@param accent Highlight colour role used by \@geom-smooth and other accent-driven layers; falls back to `theme.accent` when unset.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -403,9 +406,19 @@
 /// ```
 ///
 /// \@see \@theme, \@element-text, \@element-line, \@element-rect, \@element-blank
-#let element-geom(fill: none, colour: none, linewidth: none) = (
+#let element-geom(
+  fill: none,
+  colour: none,
+  linewidth: none,
+  ink: none,
+  paper: none,
+  accent: none,
+) = (
   kind: "element-geom",
   fill: fill,
   colour: colour,
   linewidth: linewidth,
+  ink: ink,
+  paper: paper,
+  accent: accent,
 )

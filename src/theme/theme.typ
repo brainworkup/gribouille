@@ -24,6 +24,7 @@
     "axis-line": "line",
     "axis-ticks": "line",
     "panel-background": "rect",
+    "plot-background": "rect",
     "strip-background": "rect",
   )
   // Each axis family gains per-axis (-x, -y) and per-side (-x-bottom, -x-top,
@@ -105,6 +106,9 @@
 /// Returns the shape produced by \@element-geom; `none` slots leave per-geom
 /// fallbacks intact. The fall-through to an empty record is deliberate —
 /// keeps rendering robust when a partial user theme drops the `geom` key.
+/// `ink` / `paper` / `accent` slots inherit the theme-level scalars when
+/// `element-geom` left them unset, mirroring ggplot2 v4's role-oriented
+/// defaults.
 /// Geoms resolve once at layer setup and consult the fields they support.
 ///
 /// \@internal
@@ -112,8 +116,15 @@
 /// \@returns Element-geom record (always present; defaults are all `none`).
 #let geom-defaults(theme) = {
   let g = theme.at("geom", default: none)
-  if g != none and g.at("kind", default: none) == "element-geom" { return g }
-  _EMPTY-GEOM-DEFAULTS
+  if g == none or g.at("kind", default: none) != "element-geom" {
+    g = _EMPTY-GEOM-DEFAULTS
+  }
+  for role in ("ink", "paper", "accent") {
+    if g.at(role, default: none) == none {
+      g.insert(role, theme.at(role, default: none))
+    }
+  }
+  g
 }
 
 /// Pick a `theme.geom` field, falling back when the slot is `none`.
@@ -291,15 +302,17 @@
 ///
 /// - `panel-background` — panel fill behind the geoms. Default: `element-rect()`.
 ///
+/// - `plot-background` — outermost canvas behind the title, panel, legend, and caption. Default: `element-rect()` (transparent — no rect drawn unless `fill` is set).
+///
 /// - `strip-background` — facet strip fill behind the strip text. Default: `element-rect()`.
 ///
 /// **Colours and scalars**.
 ///
 /// - `ink` (colour) — foreground colour used wherever no other colour applies. Default: `black`.
 ///
-/// - `paper` (colour) — default canvas and panel background. Default: `white`.
+/// - `paper` (colour) — fallback fill for `panel-background` and `strip-background` when their own `fill` is unset. Default: `white`. \@theme-minimal and \@theme-void additionally copy an explicit `paper` into `plot-background.fill` so a single `paper:` argument paints the canvas.
 ///
-/// - `accent` (colour) — reserved for highlight elements (e.g. some geom defaults). Default: `rgb("#3366FF")`.
+/// - `accent` (colour) — highlight colour for layer defaults (e.g. \@geom-smooth's stroke). Default: `rgb("#3366FF")`.
 ///
 /// - `tick-labels` (boolean) — toggle every axis tick label at once. Default: `true`.
 ///

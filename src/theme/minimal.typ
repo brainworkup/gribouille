@@ -3,7 +3,7 @@
 ///! White panel with thin light grey gridlines, no axis lines, no tick marks.
 
 #import "defaults.typ": _tr-ink, _tr-paper
-#import "elements.typ": element-blank, element-line
+#import "elements.typ": element-blank, element-line, element-rect
 #import "theme.typ": _apply-overrides
 
 /// Minimal theme: white panel, light grey gridlines, no axis lines.
@@ -15,8 +15,8 @@
 /// \@since 0.0.1
 ///
 /// \@param ink Foreground colour (text). Default: `black`.
-/// \@param paper Background colour. Default: `white`.
-/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param paper Plot canvas fill. Default: transparent (no canvas drawn). Pass an explicit colour to paint the canvas behind the otherwise-blank panel.
+/// \@param accent Accent colour driving layer defaults like \@geom-smooth's stroke. Default: `rgb("#3366FF")`.
 /// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.
@@ -48,6 +48,20 @@
 /// )
 /// ```
 ///
+/// \@examples Paint the canvas behind the otherwise-blank panel by passing
+/// an explicit `paper` colour.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-minimal(paper: rgb("#fff7e6")),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@examples Spot-override individual elements without rebuilding the
 /// theme from scratch.
 /// ```
@@ -65,17 +79,24 @@
 /// \@see \@theme-grey, \@theme-classic, \@theme-void, \@theme
 #let theme-minimal(
   ink: _tr-ink,
-  paper: _tr-paper,
+  paper: auto,
   accent: rgb("#3366FF"),
   ..fields,
 ) = {
+  let _paper = if paper == auto { _tr-paper } else { paper }
+  let _plot-bg = if paper == auto {
+    element-rect()
+  } else {
+    element-rect(fill: _paper)
+  }
   let base = (
     kind: "theme",
     name: "minimal",
     ink: ink,
-    paper: paper,
+    paper: _paper,
     accent: accent,
     panel-background: element-blank(),
+    plot-background: _plot-bg,
     panel-grid: element-line(colour: rgb("#ebebeb"), thickness: 0.4pt),
     axis-line: element-blank(),
     tick-length: 0cm,

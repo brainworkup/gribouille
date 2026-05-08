@@ -50,6 +50,7 @@
 
   // Per-surface rect records
   panel-background: element-rect(),
+  plot-background: element-rect(),
   strip-background: element-rect(),
 
   // Layer-default aesthetics shared across supporting geoms. All-`none`

@@ -4,7 +4,7 @@
 ///! own without an axis frame (e.g. maps, annotated figures).
 
 #import "defaults.typ": _tr-ink
-#import "elements.typ": element-blank, element-text
+#import "elements.typ": element-blank, element-rect, element-text
 #import "theme.typ": _apply-overrides
 
 /// Void theme: no axes, no grid, no panel background.
@@ -14,8 +14,8 @@
 /// \@since 0.0.1
 ///
 /// \@param ink Foreground colour. Default: `black`.
-/// \@param paper Background colour. Default: transparent (`rgb(0, 0, 0, 0)`).
-/// \@param accent Accent colour. Default: `rgb("#3366FF")`.
+/// \@param paper Plot canvas fill. Default: transparent (no canvas drawn). Pass an explicit colour to paint the canvas behind the otherwise-blank panel.
+/// \@param accent Accent colour driving layer defaults like \@geom-smooth's stroke. Default: `rgb("#3366FF")`.
 /// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.
@@ -66,17 +66,24 @@
 /// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme
 #let theme-void(
   ink: _tr-ink,
-  paper: rgb(0, 0, 0, 0),
+  paper: auto,
   accent: rgb("#3366FF"),
   ..fields,
 ) = {
+  let _paper = if paper == auto { rgb(0, 0, 0, 0) } else { paper }
+  let _plot-bg = if paper == auto {
+    element-rect()
+  } else {
+    element-rect(fill: _paper)
+  }
   let base = (
     kind: "theme",
     name: "void",
     ink: ink,
-    paper: paper,
+    paper: _paper,
     accent: accent,
     panel-background: element-blank(),
+    plot-background: _plot-bg,
     panel-grid: element-blank(),
     axis-line: element-blank(),
     axis-title: element-text(size: 0pt),

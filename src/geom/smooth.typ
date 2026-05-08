@@ -5,6 +5,7 @@
 ///! pointwise confidence band drawn when `se: true`.
 
 #import "../deps.typ": cetz
+#import "../theme/theme.typ": geom-default, geom-defaults
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../stat/smooth.typ": stat-smooth
 #import "../utils/types.typ": parse-number
@@ -157,8 +158,10 @@
   let suppress-line = (
     aes-set(layer, mapping, "fill") and not aes-set(layer, mapping, "colour")
   )
-  let default-colour = if colour-pinned { layer.params.colour } else {
-    rgb("#3b5998")
+  let default-colour = if colour-pinned {
+    layer.params.colour
+  } else {
+    geom-default(geom-defaults(ctx.theme), "accent", rgb("#3366FF"))
   }
 
   // Partition by group key (scale-aware: only discrete aesthetics group).
