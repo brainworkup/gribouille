@@ -33,7 +33,7 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
 
 ```{typst}
 //| output-filename: "/assets/typst-render/index/penguins.svg"
-//| alt: "To be Updated"
+//| alt: "Scatter plot of flipper length versus body mass for Adelie, Chinstrap, and Gentoo penguins, with convex hulls, mean and standard deviation error bars, and annotated species cards describing each group."
 #set page(foreground: context {
   let bg = page.fill
   let dark-bg = if bg == auto or bg == none {
@@ -253,7 +253,7 @@ Stack geoms, scales, facets, and a theme until the plot is right.
 
 ```{typst}
 //| output-filename: "/assets/typst-render/index/showcase.svg"
-//| alt: "To be Updated"
+//| alt: "Faceted scatter plot of flipper length versus body mass for Adelie, Chinstrap, and Gentoo penguins, split by island, with a linear smoother fitted per species."
 #include "/examples/showcase.typ"
 ```
 
