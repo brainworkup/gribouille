@@ -52,6 +52,10 @@ Documentation: <https://m.canouil.dev/gribouille>.
 
 See [`typst.toml`](typst.toml) and [`src/deps.typ`](src/deps.typ) for the authoritative Typst compiler and CeTZ versions.
 
+## Contributing
+
+Short identifiers used across the source tree (`ctx`, `spec`, `mapping`, `cx`, `cy`, `lo`, `hi`, …) are catalogued in [`src/GLOSSARY.md`](src/GLOSSARY.md).
+
 ## License
 
 This project is licensed under the MIT License.
