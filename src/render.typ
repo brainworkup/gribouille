@@ -26,7 +26,9 @@
   apply-stages, eval-after-stat, is-late-binding, late-binding-kind,
   resolve-from-theme, stash-stages,
 )
-#import "utils/radial.typ": group-theta-breaks, radial-axis-of, radial-ctx
+#import "utils/radial.typ": (
+  group-theta-breaks, polar-canvas, radial-arc, radial-axis-of, radial-ctx,
+)
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
@@ -813,6 +815,36 @@
   )
 }
 
+// Cap trim is a small wedge at the named axis-arc end, capped at 2° so it
+// stays a visible-but-modest "fade" no matter how wide the theta sweep is.
+#let _THETA-CAP-FRAC = 0.02
+#let _THETA-CAP-MAX-RAD = calc.pi / 90
+#let _THETA-MINOR-TICK-FRAC = 0.03
+#let _THETA-CAP-VALUES = ("none", "both", "upper", "lower")
+
+// Read a `guide-axis-theta(...)` configuration off the plot spec. Returns
+// `none` when no theta guide is bound so the radial renderer keeps its
+// spoke-only legacy path.
+#let _read-theta-guide(spec) = {
+  let g = spec.at("guides", default: (:)).at("theta", default: none)
+  if g == none { return none }
+  let cap = g.at("cap", default: "none")
+  if not _THETA-CAP-VALUES.contains(cap) {
+    panic(
+      "guide-axis-theta cap must be one of "
+        + _THETA-CAP-VALUES.map(v => "\"" + v + "\"").join(", ")
+        + ", got \""
+        + cap
+        + "\".",
+    )
+  }
+  (
+    angle: g.at("angle", default: 0),
+    minor-ticks: g.at("minor-ticks", default: false),
+    cap: cap,
+  )
+}
+
 // Convert the axis-text font size in pt to cm. Used as a fallback ink-height
 // when no actual labels are measured (e.g. an axis with no breaks).
 #let _ax-text-cm(size-pt) = size-pt / 1pt * 0.0353
@@ -1393,6 +1425,7 @@
   }
 
   if is-radial {
+    let theta-guide = _read-theta-guide(spec)
     let (cx, cy) = outer-radial.centre
     let r-max = outer-radial.r-max
     let theta-range = outer-radial.theta-range
@@ -1448,6 +1481,40 @@
       }
     }
 
+    // Outer axis arc plus optional minor ticks. Spoke-only legacy plots
+    // skip this whole block; ggplot2 calls this guide_axis_theta.
+    if theta-guide != none and _ax-line.xb != none {
+      let (theta-lo, theta-hi) = (theta-range.at(0), theta-range.at(1))
+      let span = calc.abs(theta-hi - theta-lo)
+      let trim = if theta-guide.cap == "none" { 0 } else {
+        calc.min(span * _THETA-CAP-FRAC, _THETA-CAP-MAX-RAD)
+      }
+      let direction = if theta-hi >= theta-lo { 1 } else { -1 }
+      let arc-lo = if theta-guide.cap == "lower" or theta-guide.cap == "both" {
+        theta-lo + direction * trim
+      } else { theta-lo }
+      let arc-hi = if theta-guide.cap == "upper" or theta-guide.cap == "both" {
+        theta-hi - direction * trim
+      } else { theta-hi }
+      let arc-pts = radial-arc(arc-lo, arc-hi, r-max, outer-radial)
+      line(..arc-pts, stroke: _ax-line.xb)
+
+      if theta-guide.minor-ticks and theta-groups.len() >= 2 {
+        let minor-r = r-max * (1 + _THETA-MINOR-TICK-FRAC)
+        let prev = theta-groups.first().first().theta
+        for i in range(1, theta-groups.len()) {
+          let cur = theta-groups.at(i).first().theta
+          let mid = (prev + cur) / 2
+          line(
+            polar-canvas(outer-radial, mid, r-max),
+            polar-canvas(outer-radial, mid, minor-r),
+            stroke: _ax-line.xb,
+          )
+          prev = cur
+        }
+      }
+    }
+
     if (
       show-x-labels and theme.tick-labels and theta-trained != none
     ) {
@@ -1482,6 +1549,9 @@
             weight: theta-text.weight,
           )[#resolve-prose(label-text, eval-strings: theta-text.typst)],
           anchor: "center",
+          angle: if theta-guide == none { 0deg } else {
+            theta-guide.angle * 1deg
+          },
         )
       }
     }
