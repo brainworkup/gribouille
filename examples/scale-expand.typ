@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let pts = range(1, 11).map(i => (x: i, y: i))
 
@@ -20,8 +20,8 @@
   coord: coord-arg,
   labs: labs(x: "x", y: "y"),
   theme: theme-minimal(),
-  width: 6cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #grid(

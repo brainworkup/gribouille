@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let weeks = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 #let hours = ("06", "09", "12", "15", "18", "21")
@@ -35,6 +35,6 @@
     y: "Day",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

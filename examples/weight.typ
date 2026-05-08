@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 
@@ -25,8 +25,8 @@
     y: "Visitors",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 4.5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #let pts = ()
@@ -50,8 +50,8 @@
     y: "y",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #stack(dir: ttb, spacing: 0.5cm, bars, scatter)

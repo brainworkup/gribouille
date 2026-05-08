@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 #let cont = range(0, 10).map(i => (x: i, y: i, w: i + 1))
@@ -30,8 +30,8 @@
     scales: (scale-layer,),
     labs: labs(x: "x", y: "y", alpha: "w"),
     theme: theme-minimal(),
-    width: 8cm,
-    height: 4.5cm,
+    width: 12cm,
+    height: 9cm,
   ),
 )
 
@@ -53,8 +53,8 @@
       ),
       labs: labs(x: "x", y: "y", alpha: "Group"),
       theme: theme-minimal(),
-      width: 8cm,
-      height: 4.5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   cont-plot(

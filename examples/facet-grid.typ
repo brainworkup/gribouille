@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #plot(
   data: penguins,
@@ -17,6 +17,6 @@
     y: "Body mass (g)",
   ),
   theme: theme-minimal(),
-  width: 14cm,
-  height: 7.5cm,
+  width: 12cm,
+  height: 9cm,
 )

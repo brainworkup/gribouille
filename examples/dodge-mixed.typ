@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let sales = (
   (q: "Q1", product: "A", revenue: 10, width: 0.6),
@@ -26,6 +26,6 @@
     fill: "Product",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6.5cm,
+  width: 12cm,
+  height: 9cm,
 )

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let cities = (
   (x: 2.0, y: 5.3, name: "Alpha"),
@@ -32,8 +32,8 @@
       ),
       labs: labs(x: "x", y: "y"),
       theme: theme-minimal(),
-      width: 11cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -47,8 +47,8 @@
       ),
       labs: labs(x: "x", y: "y"),
       theme: theme-minimal(),
-      width: 11cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

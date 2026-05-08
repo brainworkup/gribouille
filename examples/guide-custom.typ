@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let d = (
   (x: 1, y: 1, g: "Setosa"),
@@ -24,13 +24,13 @@
         Petal-length subset; rows for the original
         Anderson sample. Refresh quarterly.
       ],
-      width: 4cm,
-      height: 1.6cm,
+      width: 12cm,
+      height: 9cm,
       title: "Notes",
     ),
   ),
   labs: labs(title: "guide-custom: free-form legend slot"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

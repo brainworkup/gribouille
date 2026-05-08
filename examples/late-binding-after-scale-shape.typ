@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let d = (
   (x: 1, y: 1, flag: true),
@@ -26,6 +26,6 @@
   layers: (geom-point(size: 4pt),),
   labs: labs(title: "Per-row shape via after-scale"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let regions = (
   (x0: 0.5, y0: 0.5, a: 1.4, b: 0.7, angle: 0, region: "Coastal"),
@@ -32,6 +32,6 @@
     fill: "Region",
   ),
   theme: theme-minimal(),
-  width: 10cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

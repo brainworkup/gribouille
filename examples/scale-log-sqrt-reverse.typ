@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
@@ -23,8 +23,8 @@
       scales: scales,
       labs: labs(x: "x", y: "2^x"),
       theme: theme-minimal(),
-      width: 7cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   )
 }

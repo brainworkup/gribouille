@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #plot(
   data: mpg,
@@ -17,6 +17,6 @@
     y: "Highway mpg",
   ),
   theme: theme-minimal(),
-  width: 14cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

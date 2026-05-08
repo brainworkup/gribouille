@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let scores = range(0, 13).map(i => (
   hour: i,
@@ -23,6 +23,6 @@
   ),
   labs: labs(title: "Half-day load"),
   theme: theme-minimal(),
-  width: 9cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )

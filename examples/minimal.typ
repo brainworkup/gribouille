@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let iris = (
   (sepal-length: 5.1, sepal-width: 3.5, species: "setosa"),
@@ -27,6 +27,6 @@
     fill: "Species",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

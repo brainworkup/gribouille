@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 
@@ -29,6 +29,6 @@
     y: "y",
   ),
   theme: theme-minimal(),
-  width: 16cm,
-  height: 6.5cm,
+  width: 12cm,
+  height: 9cm,
 )

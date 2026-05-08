@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let releases = (
   (xmin: 2018, xmax: 2019.5, ymin: 0, ymax: 2, version: "v1"),
@@ -32,6 +32,6 @@
     fill: "Version",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

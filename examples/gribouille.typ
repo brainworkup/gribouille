@@ -1,6 +1,6 @@
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #set page(foreground: context {
   let bg = page.fill
@@ -21,7 +21,7 @@
       } else {
         "/docs/assets/images/logo-stacked.svg"
       },
-      height: 1.5cm,
+      height: 9cm,
     ),
   )
 })

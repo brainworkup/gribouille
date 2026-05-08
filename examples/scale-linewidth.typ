@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let cont = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
 
@@ -32,8 +32,8 @@
       scales: (scale-linewidth-continuous(range: (0.4pt, 2.4pt)),),
       labs: labs(x: "x", y: "y", linewidth: "w"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -50,8 +50,8 @@
       ),
       labs: labs(x: "x", y: "y", linewidth: "Stroke"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -63,8 +63,8 @@
       scales: (scale-linewidth-binned(n-breaks: 4, range: (0.4pt, 2.4pt)),),
       labs: labs(x: "x", y: "y", linewidth: "w"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

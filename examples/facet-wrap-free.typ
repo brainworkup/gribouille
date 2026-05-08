@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let series = ()
 #for x in range(0, 12) {
@@ -26,6 +26,6 @@
     y: "Value",
   ),
   theme: theme-minimal(),
-  width: 16cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

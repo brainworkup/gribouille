@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let field = ()
 #for i in range(0, 7) {
@@ -38,6 +38,6 @@
     colour: "Magnitude",
   ),
   theme: theme-minimal(),
-  width: 8cm,
-  height: 7cm,
+  width: 12cm,
+  height: 9cm,
 )

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let _lcg(seed) = {
   calc.rem(seed * 1103515245 + 12345, 2147483648)
@@ -66,8 +66,8 @@
       ),
       labs: labs(x: x-name, y: "Sample quantile"),
       theme: theme-minimal(),
-      width: 6cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   )
 }

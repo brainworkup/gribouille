@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let zones = (
   (x: 0, y: 0, zone: "Lowlands"),
@@ -40,6 +40,6 @@
     fill: "Zone",
   ),
   theme: theme-minimal(),
-  width: 10cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

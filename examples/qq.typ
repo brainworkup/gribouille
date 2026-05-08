@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 // Linear-congruential generator: 80 normal-ish draws via the sum of 12
 // uniforms minus 6. Seeded for reproducibility.
@@ -38,6 +38,6 @@
     y: "Sample quantile",
   ),
   theme: theme-minimal(),
-  width: 10cm,
-  height: 6.5cm,
+  width: 12cm,
+  height: 9cm,
 )

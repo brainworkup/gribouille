@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let revenue = (
   (q: "Q1", revenue: 10),
@@ -31,8 +31,8 @@
       ),
       labs: labs(x: "Quarter", y: "Revenue (M)"),
       theme: theme-minimal(),
-      width: 11cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -48,8 +48,8 @@
       ),
       labs: labs(x: "Quarter", y: "Revenue (M)"),
       theme: theme-minimal(),
-      width: 11cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

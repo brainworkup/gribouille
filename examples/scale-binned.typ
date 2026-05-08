@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let continuous-d = range(0, 24).map(i => (x: i, y: i, z: i * 1.0))
 #let area-d = range(1, 11).map(i => (x: i, y: i, w: i * i))
@@ -27,8 +27,8 @@
       scales: (scale-fill-steps(n-breaks: 5),),
       labs: labs(x: "x", y: "y", fill: "z"),
       theme: common-theme,
-      width: 7cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -40,8 +40,8 @@
       scales: (scale-fill-fermenter(palette: "Spectral", n-breaks: 7),),
       labs: labs(x: "x", y: "y", fill: "z"),
       theme: common-theme,
-      width: 7cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -53,8 +53,8 @@
       scales: (scale-size-area(range: (1pt, 12pt)),),
       labs: labs(x: "x", y: "y", size: "w"),
       theme: common-theme,
-      width: 7cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

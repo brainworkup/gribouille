@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let discrete-d = (
   (x: 1, y: 1, g: "alpha"),
@@ -34,8 +34,8 @@
       scales: (scale-fill-grey(),),
       labs: labs(x: "x", y: "y", fill: "Group"),
       theme: theme0,
-      width: 6cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -47,8 +47,8 @@
       scales: (scale-fill-hue(),),
       labs: labs(x: "x", y: "y", fill: "Group"),
       theme: theme0,
-      width: 6cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -60,8 +60,8 @@
       scales: (scale-fill-distiller(palette: "Spectral"),),
       labs: labs(x: "x", y: "y", fill: "z"),
       theme: theme0,
-      width: 6cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

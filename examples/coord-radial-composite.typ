@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let summaries = (
   (cat: "A", lo: 1, mid: 2, hi: 3),
@@ -27,7 +27,7 @@
     coord: coord-radial(),
     labs: labs(title: "errorbar + pointrange under coord-radial"),
     theme: theme-minimal(),
-    width: 9cm,
+    width: 12cm,
     height: 9cm,
   ),
   plot(
@@ -37,7 +37,7 @@
     coord: coord-radial(),
     labs: labs(title: "crossbar wedges under coord-radial"),
     theme: theme-minimal(),
-    width: 9cm,
+    width: 12cm,
     height: 9cm,
   ),
 )

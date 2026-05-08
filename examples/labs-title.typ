@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let df = range(1, 16).map(i => (x: i, y: i + calc.rem(i * 7, 5)))
 
@@ -21,6 +21,6 @@
     y: "Count",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6.5cm,
+  width: 12cm,
+  height: 9cm,
 )

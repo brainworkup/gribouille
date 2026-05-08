@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let d = ()
 #for i in range(0, 60) {
@@ -20,8 +20,8 @@
   ),
   labs: labs(title: "Default quantiles (0.25, 0.5, 0.75)"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #plot(
@@ -33,6 +33,6 @@
   ),
   labs: labs(title: "Decile bands: quantiles (0.1, 0.5, 0.9)"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )

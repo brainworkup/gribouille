@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let panel(title, plot-body) = {
   set align(center)
@@ -18,8 +18,8 @@
   ),
   labs: labs(x: "Displacement (L)", y: "Highway mpg", colour: "Class"),
   theme: theme-minimal(),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
@@ -39,8 +39,8 @@
   scales: (scale-x-continuous(breaks: (-3, -1.5, 0, 1.5, 3)),),
   labs: labs(x: "x", y: "sin(x)"),
   theme: theme-minimal(),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #let p3 = plot(
@@ -57,8 +57,8 @@
   scales: (scale-x-continuous(name: "Highway mpg"),),
   labs: labs(y: ""),
   theme: theme-minimal(),
-  width: 8cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #stack(

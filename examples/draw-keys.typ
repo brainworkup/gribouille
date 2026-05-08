@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let forecast = (
   (week: 1, fit: 12.0, lo: 10.6, hi: 13.4, band: "95% CI", series: "Baseline"),
@@ -37,6 +37,6 @@
     fill: "Band",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

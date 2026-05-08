@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let make-panel(title, gs) = plot(
   data: mpg,
@@ -12,8 +12,8 @@
   scales: (scale-y-continuous(name: "Vehicles in sample"),),
   labs: labs(title: title, x: "Manufacturer"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 4.2cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #stack(

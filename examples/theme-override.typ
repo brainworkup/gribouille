@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let df = range(0, 12).map(i => (x: i, y: i * i * 0.1))
 
@@ -25,6 +25,6 @@
     x: "Step",
     y: "y = 0.1 × x²",
   ),
-  width: 11cm,
-  height: 6.5cm,
+  width: 12cm,
+  height: 9cm,
 )

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let connections = (
   (x: 0, y: 0, xend: 1, yend: 1.5, flow: "primary"),
@@ -30,8 +30,8 @@
       ),
       labs: labs(x: "Stage", y: "Lane", colour: "Flow"),
       theme: theme-minimal(),
-      width: 7cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   )
 }

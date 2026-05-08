@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let revenue = (
   (slice: "all", value: 30, region: "EU"),
@@ -20,6 +20,6 @@
   scales: (scale-y-continuous(expand: false),),
   labs: labs(title: "Revenue share", fill: "Region"),
   theme: theme-minimal(),
-  width: 8cm,
-  height: 8cm,
+  width: 12cm,
+  height: 9cm,
 )

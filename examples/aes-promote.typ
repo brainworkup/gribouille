@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let scatter-data = ()
 #for i in range(0, 24) {
@@ -37,8 +37,8 @@
       alpha: "Score",
     ),
     theme: theme-minimal(),
-    width: 11cm,
-    height: 5cm,
+    width: 12cm,
+    height: 9cm,
   ),
   plot(
     data: line-data,
@@ -52,7 +52,7 @@
       linewidth: "Weight",
     ),
     theme: theme-minimal(),
-    width: 11cm,
-    height: 5cm,
+    width: 12cm,
+    height: 9cm,
   ),
 )

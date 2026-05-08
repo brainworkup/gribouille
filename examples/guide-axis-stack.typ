@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let d = (
   (x: 1, y: 1),
@@ -34,5 +34,5 @@
   labs: labs(title: "guide-axis-stack: rotated labels + log minor ticks"),
   theme: theme-minimal(),
   width: 12cm,
-  height: 6cm,
+  height: 9cm,
 )

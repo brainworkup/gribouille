@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let pts = (
   (x: 1.0, y: 2.1, g: "a"),
@@ -29,8 +29,8 @@
       layers: (geom-point(size: 2.5pt),),
       labs: labs(x: "x", y: "y", fill: "Group"),
       theme: t,
-      width: 6cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   )
 }

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 
@@ -34,8 +34,8 @@
       scales: (scale-radius(range: (1pt, 8pt)),),
       labs: labs(x: "x", y: "y", size: "w"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -47,8 +47,8 @@
       scales: (scale-size-area(range: (1pt, 8pt)),),
       labs: labs(x: "x", y: "y", size: "w"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -65,8 +65,8 @@
       ),
       labs: labs(x: "x", y: "y", size: "Magnitude"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

@@ -5,7 +5,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let d = (
   (x: 1, y: 2),
@@ -26,6 +26,6 @@
   layers: (geom-point(size: 4pt, stroke: 0.6pt),),
   labs: labs(title: "Theme-pinned point colours"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

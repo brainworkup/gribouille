@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #theme-set(theme-minimal())
 
@@ -27,8 +27,8 @@
         y: "Body mass (g)",
         colour: "Species",
       ),
-      width: 11cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -44,8 +44,8 @@
         colour: "Species",
       ),
       theme: theme-dark(),
-      width: 11cm,
-      height: 5cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

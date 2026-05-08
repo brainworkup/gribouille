@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 #let df = range(1, 11).map(i => (x: i, y: calc.pow(10, i / 3)))
@@ -28,6 +28,6 @@
     y: "y (log10)",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6.5cm,
+  width: 12cm,
+  height: 9cm,
 )

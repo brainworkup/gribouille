@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let pts = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 
@@ -31,8 +31,8 @@
       scales: (scale-shape-binned(n-breaks: 4),),
       labs: labs(x: "x", y: "y", shape: "Bin"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -49,8 +49,8 @@
       ),
       labs: labs(x: "x", y: "y", shape: "Bin"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
   panel(
@@ -62,8 +62,8 @@
       scales: (scale-linetype-binned(n-breaks: 3),),
       labs: labs(x: "x", y: "y", linetype: "Bin"),
       theme: theme-minimal(),
-      width: 9cm,
-      height: 4cm,
+      width: 12cm,
+      height: 9cm,
     ),
   ),
 )

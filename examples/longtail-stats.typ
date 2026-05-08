@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 
@@ -24,8 +24,8 @@
     y: "F(x)",
   ),
   theme: theme-minimal(),
-  width: 7cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #let scatter = (
@@ -46,8 +46,8 @@
   layers: (geom-point(stat: "unique", size: 4pt, fill: accent),),
   labs: labs(x: "x", y: "y"),
   theme: theme-minimal(),
-  width: 7cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #grid(

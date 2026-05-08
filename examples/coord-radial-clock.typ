@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let hours = range(0, 24).map(h => (
   hour: h,
@@ -20,6 +20,6 @@
   scales: (scale-x-continuous(limits: (0, 24), expand: false),),
   labs: labs(title: "Daily load"),
   theme: theme-minimal(),
-  width: 9cm,
+  width: 12cm,
   height: 9cm,
 )

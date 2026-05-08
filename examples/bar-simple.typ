@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let fruits = (
   (fruit: "apple", count: 12),
@@ -18,6 +18,6 @@
   guides: guides(fill: guide-none()),
   labs: labs(title: "Counts per fruit", x: "Fruit", y: "Count"),
   theme: theme-grey(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

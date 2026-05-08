@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let accent = rgb("#1f77b4")
 
@@ -21,6 +21,6 @@
     y: "Highway mpg",
   ),
   theme: theme-minimal(),
-  width: 14cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )

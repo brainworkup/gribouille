@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let spiral = ()
 #for i in range(0, 60) {
@@ -29,6 +29,6 @@
     colour: "t",
   ),
   theme: theme-minimal(),
-  width: 9cm,
-  height: 7cm,
+  width: 12cm,
+  height: 9cm,
 )

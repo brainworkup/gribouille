@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let d = (
   (x: 1, y: 1),
@@ -24,8 +24,8 @@
   guides: guides(x: guide-axis-logticks(), y: guide-axis-logticks()),
   labs: labs(title: "coord-transform(x: \"log10\", y: \"log10\")"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 6cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 // Mixing with scale-level transform: coord-transform overrides the scale's
@@ -38,6 +38,6 @@
   coord: coord-transform(x: "log10"),
   labs: labs(title: "scale-y sqrt + coord-transform x log10"),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 5cm,
+  width: 12cm,
+  height: 9cm,
 )

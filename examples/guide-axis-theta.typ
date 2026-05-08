@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: 12cm)
 
 #let scores = (8, 6, 7, 9, 5, 8)
 #let car = range(scores.len()).map(i => (axis: i, score: scores.at(i)))
@@ -28,8 +28,8 @@
   guides: gs,
   labs: labs(title: title),
   theme: theme-minimal(),
-  width: 7cm,
-  height: 7cm,
+  width: 12cm,
+  height: 9cm,
 )
 
 #stack(
