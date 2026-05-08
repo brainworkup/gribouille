@@ -15,7 +15,11 @@ Documentation: <https://m.canouil.dev/gribouille>.
 ```typst
 #import "@preview/gribouille:0.0.1": *
 
-#let df = csv("penguins.csv", row-type: dictionary)
+#let species-colours = (
+  Adelie: rgb("#ff8c00"),
+  Chinstrap: rgb("#008B8B"),
+  Gentoo: rgb("#800080"),
+)
 
 #plot(
   data: penguins,
@@ -23,28 +27,53 @@ Documentation: <https://m.canouil.dev/gribouille>.
     x: "flipper-len",
     y: "body-mass",
     colour: "species",
+    fill: "species",
     shape: "species",
   ),
   layers: (
-    geom-point(size: 2pt, stroke: 0.5pt, alpha: 0.5),
+    geom-point(size: 2pt, alpha: 0.25, stroke: 0.5pt, colour: rgb("#ffffff")),
     geom-smooth(method: "lm", se: true, alpha: 0.2),
+    geom-mark(method: "hull", expand: 5pt, alpha: 0.25),
+    geom-errorbar(stat: stat-summary(fun: "mean-sd"), width: 5pt),
+    geom-errorbarh(stat: stat-summary(fun: "mean-sd"), height: 5pt),
+    geom-label(
+      stat: stat-summary(fun: "mean"),
+      mapping: aes(label: "species"),
+      colour: rgb("#ffffff"),
+      size: 8pt,
+    ),
   ),
   scales: (
     scale-x-continuous(),
-    scale-y-continuous(),
-    scale-colour-discrete(palette: (rgb("#ff8c00"), rgb("#800080"), rgb("#008B8B"))),
+    scale-y-continuous(labels: label-comma()),
+    scale-colour-discrete(
+      limits: species-colours.keys(),
+      palette: species-colours.values(),
+    ),
+    scale-fill-discrete(
+      limits: species-colours.keys(),
+      palette: species-colours.values(),
+    ),
   ),
   labs: labs(
-    title: "Penguins Dataset",
-    subtitle: "Flipper length vs body mass by species",
-    caption: "Data from Palmer Archipelago (Antarctica) penguin dataset",
+    title: typst("Penguins *Dataset*"),
+    subtitle: typst({
+      [Flipper length vs body mass by species: ]
+      species-colours
+        .pairs()
+        .map(p => text(fill: p.at(1), weight: "bold")[#p.at(0)])
+        .join(", ")
+    }),
+    caption: "Data from Palmer Archipelago (Antarctica) penguin dataset.",
     colour: "Species",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    fill: "Species",
+    shape: "Species",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
   ),
   theme: theme-minimal(),
-  width: 11cm,
-  height: 7cm,
+  width: 12cm,
+  height: 9cm,
 )
 ```
 
