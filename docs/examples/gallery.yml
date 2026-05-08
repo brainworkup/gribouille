@@ -668,3 +668,27 @@
   title: "Hero showcase"
   description: 'The penguins flagship plot used for the docs hero: hull marks, mean-SD error bars, and Typst content cards layered on a <a href="../reference/datasets/penguins.qmd"><code>penguins</code></a> scatter, with the gribouille logo overlaid as a page foreground.'
   alt: "Penguins scatter of body mass against flipper length with per-species hulls, horizontal and vertical mean-SD error bars, and three labelled species cards, overlaid with the stacked gribouille logo in the top-right corner."
+
+- slug: theme-sub
+  section: themes
+  title: "Theme shortcut groups"
+  description: 'Compose <a href="../reference/themes/theme.qmd"><code>theme</code></a> overrides via family-scoped <code>theme-sub-axis</code>, <code>theme-sub-legend</code>, and <code>theme-sub-plot</code> to keep verbose theme blocks readable.'
+  alt: "Dodged bar chart of quarterly revenue by segment styled with theme-sub-axis, theme-sub-legend, and theme-sub-plot shortcuts."
+
+- slug: stat-manual
+  section: stats
+  title: "stat-manual: closure escape hatch"
+  description: 'Splice a user closure into the layer pipeline via <code>stat-manual(fun: ...)</code>; here the closure decorates each row with a per-row index used as a text label.'
+  alt: "Line and points with a per-row index label drawn next to each marker, generated inside the layer via stat-manual."
+
+- slug: stat-connect
+  section: stats
+  title: "stat-connect: hv vs mid"
+  description: 'Insert intermediate vertices between consecutive points via <code>stat-connect</code>; two paths overlay the same data with <code>connection: "hv"</code> (step) and <code>connection: "mid"</code> (midpoint corner).'
+  alt: "Two coloured paths over the same dataset showing the difference between hv-step and mid-corner connection modes."
+
+- slug: stat-align
+  section: stats
+  title: "stat-align: shared x-grid"
+  description: 'Resample groups onto a shared x-grid via <code>stat-align</code> so stacked <a href="../reference/geoms/geom-area.qmd"><code>geom-area</code></a> layers join cleanly even when the per-group x values are mismatched.'
+  alt: "Two-group stacked area chart with mismatched input x values aligned onto a shared grid via stat-align."

@@ -95,10 +95,8 @@
 /// \@see \@geom-area, \@geom-ribbon, \@stat-identity
 #let stat-align() = (kind: "stat", name: "align", params: (:))
 
-/// Panel-level setup: compute the union x-grid + adjust offset once and
-/// thread them through to per-group `apply()` via params.
-///
-/// \@internal
+// Panel-level setup: compute the union x-grid + adjust offset once and
+// thread them through to per-group apply() via params.
 #let setup(data, mapping, params: (:)) = {
   if mapping == none { return params }
   let x-col = mapping.at("x", default: none)
