@@ -23,7 +23,7 @@
 #let theme0 = theme-minimal()
 
 #grid(
-  columns: 2,
+  rows: 2,
   column-gutter: 0.5cm,
   row-gutter: 0.5cm,
   panel(

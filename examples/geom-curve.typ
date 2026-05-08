@@ -37,7 +37,7 @@
 }
 
 #grid(
-  columns: 2,
+  rows: 2,
   column-gutter: 0.5cm,
   panel("curvature = 0.5", 0.5), panel("curvature = -0.5", -0.5),
 )

@@ -51,7 +51,7 @@
 )
 
 #grid(
-  columns: 2,
+  rows: 2,
   column-gutter: 0.6cm,
   panel("ECDF via stat-ecdf", ecdf),
   panel("Deduped scatter via stat-unique", dedup),
