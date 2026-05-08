@@ -1,11 +1,20 @@
 ///! Shortcut groups for theme element overrides.
 ///!
-///! Each `theme-sub-*` constructor expands its named arguments into a
-///! \@theme dict with the corresponding family-prefixed keys. Pure
-///! ergonomics: equivalent to calling \@theme directly with the long
-///! field names, but cuts the noise in long theme overrides.
+///! Each `theme-sub-*` constructor wraps \@theme with the prefixed surface
+///! keys for one family.
 
 #import "theme.typ": theme
+
+#let _axis-sub(suffix, title, text, line, ticks) = theme(
+  ..(
+    (
+      ("axis-title" + suffix): title,
+      ("axis-text" + suffix): text,
+      ("axis-line" + suffix): line,
+      ("axis-ticks" + suffix): ticks,
+    )
+  ),
+)
 
 /// Shortcut for both axes' title, text, line, and ticks.
 ///
@@ -42,11 +51,8 @@
 /// ```
 ///
 /// \@see \@theme, \@theme-sub-axis-x, \@theme-sub-axis-y
-#let theme-sub-axis(title: none, text: none, line: none, ticks: none) = theme(
-  axis-title: title,
-  axis-text: text,
-  axis-line: line,
-  axis-ticks: ticks,
+#let theme-sub-axis(title: none, text: none, line: none, ticks: none) = (
+  _axis-sub("", title, text, line, ticks)
 )
 
 /// Shortcut for both x axes (top + bottom).
@@ -63,11 +69,8 @@
 /// \@returns Theme dictionary with the named x-axis overrides applied.
 ///
 /// \@see \@theme-sub-axis, \@theme-sub-axis-y, \@theme-sub-axis-bottom, \@theme-sub-axis-top
-#let theme-sub-axis-x(title: none, text: none, line: none, ticks: none) = theme(
-  axis-title-x: title,
-  axis-text-x: text,
-  axis-line-x: line,
-  axis-ticks-x: ticks,
+#let theme-sub-axis-x(title: none, text: none, line: none, ticks: none) = (
+  _axis-sub("-x", title, text, line, ticks)
 )
 
 /// Shortcut for both y axes (left + right).
@@ -84,11 +87,8 @@
 /// \@returns Theme dictionary with the named y-axis overrides applied.
 ///
 /// \@see \@theme-sub-axis, \@theme-sub-axis-x, \@theme-sub-axis-left, \@theme-sub-axis-right
-#let theme-sub-axis-y(title: none, text: none, line: none, ticks: none) = theme(
-  axis-title-y: title,
-  axis-text-y: text,
-  axis-line-y: line,
-  axis-ticks-y: ticks,
+#let theme-sub-axis-y(title: none, text: none, line: none, ticks: none) = (
+  _axis-sub("-y", title, text, line, ticks)
 )
 
 /// Shortcut for the bottom x axis only.
@@ -97,10 +97,10 @@
 /// \@stability stable
 /// \@since 0.6.0
 ///
-/// \@param title Element for `axis-title-x-bottom`.
-/// \@param text Element for `axis-text-x-bottom`.
-/// \@param line Element for `axis-line-x-bottom`.
-/// \@param ticks Element for `axis-ticks-x-bottom`.
+/// \@param title Element override for the bottom x axis title.
+/// \@param text Element override for the bottom x axis tick labels.
+/// \@param line Element override for the bottom x axis line.
+/// \@param ticks Element override for the bottom x axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the bottom x axis.
 ///
@@ -110,12 +110,7 @@
   text: none,
   line: none,
   ticks: none,
-) = theme(
-  axis-title-x-bottom: title,
-  axis-text-x-bottom: text,
-  axis-line-x-bottom: line,
-  axis-ticks-x-bottom: ticks,
-)
+) = _axis-sub("-x-bottom", title, text, line, ticks)
 
 /// Shortcut for the top x axis only.
 ///
@@ -123,10 +118,10 @@
 /// \@stability stable
 /// \@since 0.6.0
 ///
-/// \@param title Element for `axis-title-x-top`.
-/// \@param text Element for `axis-text-x-top`.
-/// \@param line Element for `axis-line-x-top`.
-/// \@param ticks Element for `axis-ticks-x-top`.
+/// \@param title Element override for the top x axis title.
+/// \@param text Element override for the top x axis tick labels.
+/// \@param line Element override for the top x axis line.
+/// \@param ticks Element override for the top x axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the top x axis.
 ///
@@ -136,12 +131,7 @@
   text: none,
   line: none,
   ticks: none,
-) = theme(
-  axis-title-x-top: title,
-  axis-text-x-top: text,
-  axis-line-x-top: line,
-  axis-ticks-x-top: ticks,
-)
+) = _axis-sub("-x-top", title, text, line, ticks)
 
 /// Shortcut for the left y axis only.
 ///
@@ -149,10 +139,10 @@
 /// \@stability stable
 /// \@since 0.6.0
 ///
-/// \@param title Element for `axis-title-y-left`.
-/// \@param text Element for `axis-text-y-left`.
-/// \@param line Element for `axis-line-y-left`.
-/// \@param ticks Element for `axis-ticks-y-left`.
+/// \@param title Element override for the left y axis title.
+/// \@param text Element override for the left y axis tick labels.
+/// \@param line Element override for the left y axis line.
+/// \@param ticks Element override for the left y axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the left y axis.
 ///
@@ -162,12 +152,7 @@
   text: none,
   line: none,
   ticks: none,
-) = theme(
-  axis-title-y-left: title,
-  axis-text-y-left: text,
-  axis-line-y-left: line,
-  axis-ticks-y-left: ticks,
-)
+) = _axis-sub("-y-left", title, text, line, ticks)
 
 /// Shortcut for the right y axis only.
 ///
@@ -175,10 +160,10 @@
 /// \@stability stable
 /// \@since 0.6.0
 ///
-/// \@param title Element for `axis-title-y-right`.
-/// \@param text Element for `axis-text-y-right`.
-/// \@param line Element for `axis-line-y-right`.
-/// \@param ticks Element for `axis-ticks-y-right`.
+/// \@param title Element override for the right y axis title.
+/// \@param text Element override for the right y axis tick labels.
+/// \@param line Element override for the right y axis line.
+/// \@param ticks Element override for the right y axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the right y axis.
 ///
@@ -188,12 +173,7 @@
   text: none,
   line: none,
   ticks: none,
-) = theme(
-  axis-title-y-right: title,
-  axis-text-y-right: text,
-  axis-line-y-right: line,
-  axis-ticks-y-right: ticks,
-)
+) = _axis-sub("-y-right", title, text, line, ticks)
 
 /// Shortcut for legend text and title.
 ///
@@ -251,7 +231,7 @@
 /// \@param title \@element-text or \@element-typst for `plot-title`.
 /// \@param subtitle Same for `plot-subtitle`.
 /// \@param caption Same for `plot-caption`.
-/// \@param plot-margin \@margin record for `plot-margin`.
+/// \@param margin \@margin record for `plot-margin`.
 ///
 /// \@returns Theme dictionary with the named plot overrides applied.
 ///
@@ -260,12 +240,12 @@
   title: none,
   subtitle: none,
   caption: none,
-  plot-margin: none,
+  margin: none,
 ) = theme(
   plot-title: title,
   plot-subtitle: subtitle,
   plot-caption: caption,
-  plot-margin: plot-margin,
+  plot-margin: margin,
 )
 
 /// Shortcut for facet strip text and background.

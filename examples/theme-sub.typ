@@ -1,6 +1,4 @@
-// theme-sub-* shortcuts collapse the verbose `theme(axis-title-x = ..., axis-text-x = ..., ...)`
-// boilerplate into one named-arg call per family. Equivalent to using
-// `theme(...)` with the long keys; just less typing.
+// Family-scoped shortcuts compose with theme-minimal() via `+`.
 
 #import "../lib.typ": *
 
