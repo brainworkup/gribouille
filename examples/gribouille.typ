@@ -26,6 +26,12 @@
   )
 })
 
+#let species-colours = (
+  Adelie: rgb("#ff8c00"),
+  Chinstrap: rgb("#008B8B"),
+  Gentoo: rgb("#800080"),
+)
+
 #let species-card(name, note, colour, ink, paper) = context {
   block(
     width: auto,
@@ -75,81 +81,55 @@
           x: 183,
           y: 5000,
           species: "Adelie",
-          label: [
-            #species-card(
-              "Adelie",
-              "Compact and stable mass profile.",
-              rgb("#ff8c00"),
-              black,
-              white,
-            )
-          ],
+          description: "Smallest of the three; white eye-ring.",
         ),
         (
-          x: 211,
+          x: 208,
           y: 2900,
           species: "Chinstrap",
-          label: [
-            #species-card(
-              "Chinstrap",
-              "Similar centre to Adelie, with tighter spread.",
-              rgb("#008B8B"),
-              black,
-              white,
-            )
-          ],
+          description: "Thin black band under the chin.",
         ),
         (
           x: 203,
           y: 6150,
           species: "Gentoo",
-          label: [
-            #species-card(
-              "Gentoo",
-              "Heavier birds and broader variability.",
-              rgb("#800080"),
-              black,
-              white,
-            )
-          ],
+          description: "Largest brush-tailed; bright orange bill.",
         ),
       ),
       mapping: aes(
         x: "x",
         y: "y",
-        label: "label",
+        label: after-stat((row, ctx) => species-card(
+          row.species,
+          row.description,
+          species-colours.at(row.species),
+          ctx.theme.at("ink", default: black),
+          ctx.theme.at("paper", default: white),
+        )),
       ),
-      inherit-aes: false,
     ),
   ),
   scales: (
     scale-x-continuous(),
     scale-y-continuous(labels: label-comma()),
     scale-colour-discrete(
-      limits: ("Adelie", "Chinstrap", "Gentoo"),
-      palette: (
-        rgb("#ff8c00"),
-        rgb("#008B8B"),
-        rgb("#800080"),
-      ),
+      limits: species-colours.keys(),
+      palette: species-colours.values(),
     ),
     scale-fill-discrete(
-      limits: ("Adelie", "Chinstrap", "Gentoo"),
-      palette: (
-        rgb("#ff8c00"),
-        rgb("#008B8B"),
-        rgb("#800080"),
-      ),
+      limits: species-colours.keys(),
+      palette: species-colours.values(),
     ),
   ),
   labs: labs(
     title: typst("Penguins *Dataset*"),
-    subtitle: typst([
-      Flipper length vs body mass by species:
-      #text(fill: rgb("#ff8c00"), weight: "bold")[Adelie],
-      #text(fill: rgb("#008B8B"), weight: "bold")[Chinstrap],
-      #text(fill: rgb("#800080"), weight: "bold")[Gentoo]
-    ]),
+    subtitle: typst({
+      [Flipper length vs body mass by species: ]
+      species-colours
+        .pairs()
+        .map(p => text(fill: p.at(1), weight: "bold")[#p.at(0)])
+        .join(", ")
+    }),
     caption: "Data from Palmer Archipelago (Antarctica) penguin dataset.",
     colour: "Species",
     fill: "Species",
