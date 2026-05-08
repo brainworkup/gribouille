@@ -33,12 +33,6 @@
   description: "CSV-loaded dataset: flipper length versus body mass, coloured by species."
   alt: "Scatter plot of penguin body mass against flipper length, with points coloured by species revealing three separated clusters."
 
-- slug: showcase
-  section: basics
-  title: "Showcase"
-  description: 'Faceted penguins with a per-island linear smoother — the same plot used as the documentation site hero.'
-  alt: "Three side-by-side facet panels (one per island) of penguin flipper length against body mass, each with points coloured by species and a per-species linear smoother."
-
 - slug: dataset-mpg
   section: basics
   title: "Bundled mpg dataset"
@@ -662,12 +656,6 @@
   title: "theme(geom: element-geom(...))"
   description: 'Pin layer-default <code>fill</code>, <code>colour</code>, and <code>linewidth</code> across the supporting geoms via <a href="../reference/themes/element-geom.qmd"><code>element-geom</code></a> on <code>theme.geom</code>.'
   alt: "Two stacked rows of bar and line panels: the first under the default theme, the second after a single theme(geom: element-geom(...)) override re-tints both geoms."
-
-- slug: gribouille
-  section: basics
-  title: "Hero showcase"
-  description: 'The penguins flagship plot used for the docs hero: hull marks, mean-SD error bars, and Typst content cards layered on a <a href="../reference/datasets/penguins.qmd"><code>penguins</code></a> scatter, with the gribouille logo overlaid as a page foreground.'
-  alt: "Penguins scatter of body mass against flipper length with per-species hulls, horizontal and vertical mean-SD error bars, and three labelled species cards, overlaid with the stacked gribouille logo in the top-right corner."
 
 - slug: theme-sub
   section: themes
