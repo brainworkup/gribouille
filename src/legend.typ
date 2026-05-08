@@ -15,6 +15,7 @@
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-ref-col
 #import "utils/typst-markup.typ": resolve-prose
+#import "utils/margin.typ": length-to-cm
 #import "utils/aes-resolve.typ": resolve-label
 #import "utils/margin.typ": resolve-margin-side-cm
 
@@ -335,6 +336,22 @@
   (widths: widths, gap: gap, offsets: offsets, total: acc - gap)
 }
 
+// Default footprint (cm) for `guide-custom` when the user did not supply an
+// explicit length. Two columns wide so it sits next to the standard legends
+// without forcing the page to grow.
+#let _CUSTOM-DEFAULT-WIDTH = 3.0
+#let _CUSTOM-DEFAULT-HEIGHT = 2.0
+
+// Resolve a `guide-custom` width or height field to a cm float. Accepts a
+// length or `auto`; anything else panics so user typos surface loudly.
+#let _custom-dim-cm(value, fallback) = {
+  if value == auto { return fallback }
+  if type(value) == length { return length-to-cm(value, 0) }
+  panic(
+    "guide-custom width/height must be a length or `auto`; got " + repr(value),
+  )
+}
+
 // Per-guide width estimate. Stored on each guide so `estimate-width` is O(1).
 #let _guide-width(g) = {
   if g.kind == "swatch" {
@@ -362,6 +379,7 @@
     }
     return 0.65 + max-chars * _char-width
   }
+  if g.kind == "custom" { return g.cm-width }
   0.0
 }
 
@@ -462,6 +480,26 @@
     g.insert("width", _guide-width(g))
     guides.push(g)
   }
+
+  // Free-form `guide-custom` slots have no scale, so the merge loop above
+  // never sees them; surface them here in the order they appear in
+  // `spec.guides`. Cm dimensions are resolved up-front so the dispatch and
+  // measurement helpers stay O(1).
+  for g in overrides.values() {
+    if type(g) != dictionary { continue }
+    if g.at("kind", default: none) != "guide-custom" { continue }
+    let cm-w = _custom-dim-cm(g.width, _CUSTOM-DEFAULT-WIDTH)
+    let cm-h = _custom-dim-cm(g.height, _CUSTOM-DEFAULT-HEIGHT)
+    let custom = (
+      kind: "custom",
+      content: g.content,
+      cm-width: cm-w,
+      cm-height: cm-h,
+      title: g.title,
+    )
+    custom.insert("width", _guide-width(custom))
+    guides.push(custom)
+  }
   guides
 }
 
@@ -520,6 +558,11 @@
 #let _colourbar-height(title-h) = {
   let bar-h = 3.0
   title-h + bar-h + 0.3
+}
+
+#let _custom-height(guide, title-h) = {
+  let prefix = if guide.title != none { title-h } else { 0.0 }
+  prefix + guide.cm-height + 0.2
 }
 
 #let _draw-title(ox, cursor, theme, title) = {
@@ -699,6 +742,21 @@
   }
 }
 
+#let _draw-custom(guide, ox, cursor, theme, title-h) = {
+  let has-title = guide.title != none
+  if has-title { _draw-title(ox, cursor, theme, guide.title) }
+  let top = cursor - if has-title { title-h } else { 0.0 }
+  cetz.draw.content(
+    (ox, top),
+    box(
+      width: guide.cm-width * 1cm,
+      height: guide.cm-height * 1cm,
+      guide.content,
+    ),
+    anchor: "north-west",
+  )
+}
+
 #let draw(guides, ctx, origin, height, theme) = {
   if guides.len() == 0 { return }
   let (ox, oy) = origin
@@ -714,6 +772,9 @@
     } else if g.kind == "colourbar" {
       _draw-colourbar(g, ctx, ox, cursor, theme, title-h)
       cursor -= _colourbar-height(title-h)
+    } else if g.kind == "custom" {
+      _draw-custom(g, ox, cursor, theme, title-h)
+      cursor -= _custom-height(g, title-h)
     }
   }
 }

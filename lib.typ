@@ -22,6 +22,7 @@
 #import "src/guide/axis.typ": guide-axis, guide-axis-logticks
 #import "src/guide/axis-stack.typ": guide-axis-stack
 #import "src/guide/axis-theta.typ": guide-axis-theta
+#import "src/guide/custom.typ": guide-custom
 #import "src/guides.typ": guides
 #import "src/guide/draw-key.typ": (
   draw-key-blank, draw-key-line, draw-key-path, draw-key-point, draw-key-rect,
