@@ -100,6 +100,7 @@
 #import "src/stat/quantile.typ": stat-quantile
 #import "src/stat/manual.typ": stat-manual
 #import "src/stat/connect.typ": stat-connect
+#import "src/stat/align.typ": stat-align
 
 // Helpers.
 #import "src/plot.typ": get-alt-text

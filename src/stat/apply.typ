@@ -25,6 +25,7 @@
 #import "quantile.typ" as quantile-stat
 #import "manual.typ" as manual-stat
 #import "connect.typ" as connect-stat
+#import "align.typ" as align-stat
 #import "../utils/bin.typ": panel-bin-grid
 #import "../utils/bin2d.typ": panel-bin-grid-2d
 #import "../utils/hex.typ": panel-hex-grid
@@ -47,6 +48,7 @@
   quantile: quantile-stat.stat-quantile,
   manual: manual-stat.stat-manual,
   connect: connect-stat.stat-connect,
+  align: align-stat.stat-align,
 )
 
 #let stat-default-params(name) = {
@@ -69,6 +71,8 @@
     panel-bin-grid-2d(data, mapping, params)
   } else if _binning-hex-stats.contains(name) {
     panel-hex-grid(data, mapping, params)
+  } else if name == "align" {
+    align-stat.setup(data, mapping, params: params)
   } else {
     params
   }
@@ -123,6 +127,8 @@
     manual-stat.apply(data, mapping, params: params)
   } else if name == "connect" {
     connect-stat.apply(data, mapping, params: params)
+  } else if name == "align" {
+    align-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }
