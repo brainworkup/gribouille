@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let cities = (
   (x: 2.0, y: 5.3, name: "Alpha"),

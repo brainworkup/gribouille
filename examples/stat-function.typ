@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let frame = ((x: -calc.pi, y: -1.2), (x: calc.pi, y: 1.2))
 

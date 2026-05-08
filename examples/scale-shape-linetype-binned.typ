@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let pts = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 

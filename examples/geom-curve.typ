@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let connections = (
   (x: 0, y: 0, xend: 1, yend: 1.5, flow: "primary"),

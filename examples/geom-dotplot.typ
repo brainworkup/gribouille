@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let d = range(0, 80).map(i => (
   x: calc.sin(i * 0.27) * 3 + i * 0.06,

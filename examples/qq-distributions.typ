@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let _lcg(seed) = {
   calc.rem(seed * 1103515245 + 12345, 2147483648)

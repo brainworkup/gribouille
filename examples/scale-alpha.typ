@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 12cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let accent = rgb("#1f77b4")
 #let cont = range(0, 10).map(i => (x: i, y: i, w: i + 1))
