@@ -55,6 +55,7 @@
   ellipse: (outputs: ("x0", "y0", "a", "b", "angle")),
   quantile: (outputs: ("x", "y", "group", "quantile")),
   manual: (outputs: ()),
+  connect: (outputs: ("x", "y")),
 )
 
 /// Look up the metadata record for a stat by name.

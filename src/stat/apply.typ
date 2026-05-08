@@ -24,6 +24,7 @@
 #import "ellipse.typ" as ellipse-stat
 #import "quantile.typ" as quantile-stat
 #import "manual.typ" as manual-stat
+#import "connect.typ" as connect-stat
 #import "../utils/bin.typ": panel-bin-grid
 #import "../utils/bin2d.typ": panel-bin-grid-2d
 #import "../utils/hex.typ": panel-hex-grid
@@ -45,6 +46,7 @@
   ellipse: ellipse-stat.stat-ellipse,
   quantile: quantile-stat.stat-quantile,
   manual: manual-stat.stat-manual,
+  connect: connect-stat.stat-connect,
 )
 
 #let stat-default-params(name) = {
@@ -119,6 +121,8 @@
     quantile-stat.apply(data, mapping, params: params)
   } else if name == "manual" {
     manual-stat.apply(data, mapping, params: params)
+  } else if name == "connect" {
+    connect-stat.apply(data, mapping, params: params)
   } else {
     (data: data, mapping: mapping)
   }

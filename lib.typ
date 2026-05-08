@@ -99,6 +99,7 @@
 #import "src/stat/ellipse.typ": stat-ellipse
 #import "src/stat/quantile.typ": stat-quantile
 #import "src/stat/manual.typ": stat-manual
+#import "src/stat/connect.typ": stat-connect
 
 // Helpers.
 #import "src/plot.typ": get-alt-text
