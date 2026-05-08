@@ -4,26 +4,9 @@
 ///! step-, mid-, or linear-style connector by inserting intermediate
 ///! vertices. Pair with `geom-path` (or `geom-line`) to render.
 
-#let _CONNECTION-MODES = ("hv", "vh", "mid", "linear")
+#import "../utils/types.typ": parse-number
 
-#let _expand-gap(a, b, x-col, y-col, mode) = {
-  if mode == "linear" { return () }
-  let xa = a.at(x-col)
-  let ya = a.at(y-col)
-  let xb = b.at(x-col)
-  let yb = b.at(y-col)
-  if mode == "hv" {
-    return (a + ((x-col): xb, (y-col): ya),)
-  }
-  if mode == "vh" {
-    return (a + ((x-col): xa, (y-col): yb),)
-  }
-  let mid = (xa + xb) / 2
-  (
-    a + ((x-col): mid, (y-col): ya),
-    a + ((x-col): mid, (y-col): yb),
-  )
-}
+#let _CONNECTION-MODES = ("hv", "vh", "mid", "linear")
 
 /// Connection statistic: expand consecutive points with intermediate vertices.
 ///
@@ -38,7 +21,6 @@
 /// \@since 0.6.0
 ///
 /// \@param connection Connection mode (`"hv"` / `"vh"` / `"mid"` / `"linear"`).
-/// \@param na-rm Drop rows with `none` x or y. Defaults to `false`.
 ///
 /// \@returns Statistic object with `name: "connect"`, consumed by geom layers.
 ///
@@ -56,7 +38,7 @@
 /// ```
 ///
 /// \@see \@geom-step, \@geom-path
-#let stat-connect(connection: "hv", na-rm: false) = {
+#let stat-connect(connection: "hv") = {
   if not _CONNECTION-MODES.contains(connection) {
     panic(
       "stat-connect: connection must be one of "
@@ -65,11 +47,7 @@
         + repr(connection),
     )
   }
-  (
-    kind: "stat",
-    name: "connect",
-    params: (connection: connection, na-rm: na-rm),
-  )
+  (kind: "stat", name: "connect", params: (connection: connection))
 }
 
 #let apply(data, mapping, params: (:)) = {
@@ -80,26 +58,49 @@
     return (data: data, mapping: mapping)
   }
   let mode = params.at("connection", default: "hv")
-  let na-rm = params.at("na-rm", default: false)
 
-  let rows = data
-  if na-rm {
-    rows = rows.filter(r => (
-      r.at(x-col, default: none) != none and r.at(y-col, default: none) != none
-    ))
+  // Parse x/y to numeric: required for the midpoint mode and for
+  // order-correct sorting against string-typed numerics ("10" vs "2").
+  // Rows whose x or y doesn't parse are dropped silently.
+  let decorated = data
+    .map(r => {
+      let xv = parse-number(r.at(x-col, default: none))
+      let yv = parse-number(r.at(y-col, default: none))
+      (x: xv, y: yv, row: r)
+    })
+    .filter(p => p.x != none and p.y != none)
+
+  if decorated.len() < 2 {
+    return (data: decorated.map(p => p.row), mapping: mapping)
   }
-  let n = rows.len()
-  if n < 2 { return (data: rows, mapping: mapping) }
 
-  let sorted = rows.sorted(key: r => r.at(x-col))
-  let out = (sorted.first(),)
+  let sorted = decorated.sorted(key: p => p.x)
+  let rows = sorted.map(p => p.row)
+
+  if mode == "linear" {
+    return (data: rows, mapping: mapping)
+  }
+
+  let out = (rows.first(),)
+  let n = sorted.len()
+  let prev = sorted.first()
   for i in range(1, n) {
-    let prev = sorted.at(i - 1)
     let cur = sorted.at(i)
-    for v in _expand-gap(prev, cur, x-col, y-col, mode) {
-      out.push(v)
+    if mode == "hv" {
+      out.push(
+        prev.row + ((x-col): cur.row.at(x-col), (y-col): prev.row.at(y-col)),
+      )
+    } else if mode == "vh" {
+      out.push(
+        prev.row + ((x-col): prev.row.at(x-col), (y-col): cur.row.at(y-col)),
+      )
+    } else {
+      let mid = (prev.x + cur.x) / 2
+      out.push(prev.row + ((x-col): mid, (y-col): prev.row.at(y-col)))
+      out.push(prev.row + ((x-col): mid, (y-col): cur.row.at(y-col)))
     }
-    out.push(cur)
+    out.push(cur.row)
+    prev = cur
   }
   (data: out, mapping: mapping)
 }
