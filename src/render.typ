@@ -803,15 +803,37 @@
   (x: x-breaks, y: y-breaks, x-sec: x-sec-breaks, y-sec: y-sec-breaks)
 }
 
-// Read a `guide-axis(...)` configuration off the plot spec, falling back
-// to defaults (no rotation, no dodge) when none is set.
+// Normalise a single `guide-axis*` spec to the flat shape consumers expect.
+// Always carries a `stack` flag so callers can branch on the same field
+// regardless of whether the guide originated from a stack or stand-alone.
+#let _normalise-axis-guide(g) = (
+  angle: g.at("angle", default: 0),
+  n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
+  logticks: g.at("logticks", default: false),
+  stack: false,
+)
+
+// Read a `guide-axis(...)` or `guide-axis-stack(...)` configuration off the
+// plot spec. Single guides flatten to `(angle, n-dodge, logticks, stack)`;
+// stacks add `(guides, spacing)` plus aggregate fields so legacy consumers
+// (label-anchor, log-minors) still see a sensible single-row view.
 #let _read-axis-guide(spec, aes) = {
   let g = spec.at("guides", default: (:)).at(aes, default: none)
-  if g == none { return (angle: 0, n-dodge: 1, logticks: false) }
+  if g == none { return (angle: 0, n-dodge: 1, logticks: false, stack: false) }
+  if not g.at("stack", default: false) { return _normalise-axis-guide(g) }
+  let subs = g.guides.map(_normalise-axis-guide)
+  if subs.len() == 0 {
+    panic(
+      "guide-axis-stack requires at least one sub-guide; got an empty list.",
+    )
+  }
   (
-    angle: g.at("angle", default: 0),
-    n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
-    logticks: g.at("logticks", default: false),
+    angle: subs.first().angle,
+    n-dodge: subs.map(s => s.n-dodge).sum(),
+    logticks: subs.any(s => s.logticks),
+    stack: true,
+    guides: subs,
+    spacing: length-to-cm(g.at("spacing", default: 4pt), 0),
   )
 }
 
@@ -980,6 +1002,34 @@
   label-w-cm * calc.cos(a) + label-h-cm * calc.sin(a) + (n-dodge - 1) * 0.5
 }
 
+// Inter-row gap between dodged labels on the x and y axes (cm). The depth
+// helpers and the per-label draw closures both apply these so the reserved
+// axis area stays in sync with the actual ink.
+#let _X-LABEL-ROW-GAP = 0.35
+#let _Y-LABEL-COL-GAP = 0.5
+
+// One-element tuple for stand-alone guides, so callers can iterate uniformly
+// across stacks and singletons. Shared between x and y; placement on either
+// axis flows through the same rendering path.
+#let _axis-guide-rows(g) = if g.stack { g.guides } else { (g,) }
+
+// Stack-aware variants: a `guide-axis-stack` carries multiple sub-guides
+// rendered as separate label rows. Inter-row spacing is added once per gap
+// between successive rows; non-stack guides degenerate to a single row.
+#let _stacked-extent(g, per-row-fn) = {
+  let rows = _axis-guide-rows(g)
+  let spacing = if g.stack { g.spacing } else { 0 }
+  rows.map(per-row-fn).sum() + (rows.len() - 1) * spacing
+}
+#let _x-label-depth-stack(g, w, h) = _stacked-extent(
+  g,
+  s => _x-label-depth(s.angle, s.n-dodge, w, h),
+)
+#let _y-label-width-stack(g, w, h) = _stacked-extent(
+  g,
+  s => _y-label-width(s.angle, s.n-dodge, w, h),
+)
+
 #let _draw-axis-and-layers(
   prepared,
   trained,
@@ -1095,37 +1145,68 @@
       "north-west"
     }
   }
+  // Pre-compute row metadata for each axis: the sub-guide, the cumulative
+  // dodge offset (in row units) up to this sub-guide, and the inter-row gap
+  // offset (in cm). Lifted out of the per-break draw loops so legacy plots
+  // walk a single tuple instead of rebuilding it every label.
+  let _stack-rows(g, gap) = {
+    let rows = _axis-guide-rows(g)
+    let spacing = if g.stack { g.spacing } else { 0 }
+    let row-base = 0
+    let metas = ()
+    for (i, sub) in rows.enumerate() {
+      metas.push((sub: sub, dodge-base: row-base, stack-offset: i * spacing))
+      row-base += sub.n-dodge
+    }
+    metas
+  }
+  let _x-rows = _stack-rows(x-guide, _X-LABEL-ROW-GAP)
+  let _y-rows = _stack-rows(y-guide, _Y-LABEL-COL-GAP)
   let _draw-x-label(cx, label-text, idx) = {
     if not (show-x-labels and theme.tick-labels) { return }
-    let dodge-row = calc.rem(idx, x-guide.n-dodge)
-    let row-gap = 0.35
-    let cy = py-lo - _tick-len.xb - 0.1 - dodge-row * row-gap
-    content(
-      (cx, cy),
-      text(
-        size: _ax-text.xb.size,
-        fill: _ax-text.xb.fill,
-        weight: _ax-text.xb.weight,
-      )[#label-text],
-      anchor: _x-label-anchor(x-guide.angle),
-      angle: x-guide.angle * 1deg,
-    )
+    for r in _x-rows {
+      let dodge-row = calc.rem(idx, r.sub.n-dodge)
+      let cy = (
+        py-lo
+          - _tick-len.xb
+          - 0.1
+          - (r.dodge-base + dodge-row) * _X-LABEL-ROW-GAP
+          - r.stack-offset
+      )
+      content(
+        (cx, cy),
+        text(
+          size: _ax-text.xb.size,
+          fill: _ax-text.xb.fill,
+          weight: _ax-text.xb.weight,
+        )[#label-text],
+        anchor: _x-label-anchor(r.sub.angle),
+        angle: r.sub.angle * 1deg,
+      )
+    }
   }
   let _draw-y-label(cy, label-text, idx) = {
     if not (show-y-labels and theme.tick-labels) { return }
-    let dodge-col = calc.rem(idx, y-guide.n-dodge)
-    let col-gap = 0.5
-    let cx = px-lo - _tick-len.yl - 0.1 - dodge-col * col-gap
-    content(
-      (cx, cy),
-      text(
-        size: _ax-text.yl.size,
-        fill: _ax-text.yl.fill,
-        weight: _ax-text.yl.weight,
-      )[#label-text],
-      anchor: "east",
-      angle: y-guide.angle * 1deg,
-    )
+    for r in _y-rows {
+      let dodge-col = calc.rem(idx, r.sub.n-dodge)
+      let cx = (
+        px-lo
+          - _tick-len.yl
+          - 0.1
+          - (r.dodge-base + dodge-col) * _Y-LABEL-COL-GAP
+          - r.stack-offset
+      )
+      content(
+        (cx, cy),
+        text(
+          size: _ax-text.yl.size,
+          fill: _ax-text.yl.fill,
+          weight: _ax-text.yl.weight,
+        )[#label-text],
+        anchor: "east",
+        angle: r.sub.angle * 1deg,
+      )
+    }
   }
 
   let _axis-display(trained) = (
@@ -1676,18 +1757,8 @@
   }
   let _x-ext = _resolve-extents(x-extents, _ax-text.xb.size)
   let _y-ext = _resolve-extents(y-extents, _ax-text.yl.size)
-  let x-label-depth = _x-label-depth(
-    x-guide.angle,
-    x-guide.n-dodge,
-    _x-ext.width,
-    _x-ext.height,
-  )
-  let y-label-width = _y-label-width(
-    y-guide.angle,
-    y-guide.n-dodge,
-    _y-ext.width,
-    _y-ext.height,
-  )
+  let x-label-depth = _x-label-depth-stack(x-guide, _x-ext.width, _x-ext.height)
+  let y-label-width = _y-label-width-stack(y-guide, _y-ext.width, _y-ext.height)
   let x-title-cm = _ax-text-cm(_ax-title.xb.size)
   let y-title-cm = _ax-text-cm(_ax-title.yl.size)
   let x-title-gap = _text-margin-cm(_ax-title.xb, "top", 0.25em)
@@ -2953,15 +3024,13 @@
 
   let x-guide = _read-axis-guide(spec, "x")
   let y-guide = _read-axis-guide(spec, "y")
-  let x-label-depth = _x-label-depth(
-    x-guide.angle,
-    x-guide.n-dodge,
+  let x-label-depth = _x-label-depth-stack(
+    x-guide,
     x-extents.width,
     x-extents.height,
   )
-  let y-label-width = _y-label-width(
-    y-guide.angle,
-    y-guide.n-dodge,
+  let y-label-width = _y-label-width-stack(
+    y-guide,
     y-extents.width,
     y-extents.height,
   )
