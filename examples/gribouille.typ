@@ -21,7 +21,7 @@
       } else {
         "/docs/assets/images/logo-stacked.svg"
       },
-      height: 9cm,
+      height: 1cm,
     ),
   )
 })
