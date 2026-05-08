@@ -56,7 +56,7 @@
   quantile: (outputs: ("x", "y", "group", "quantile")),
   manual: (outputs: ()),
   connect: (outputs: ("x", "y")),
-  align: (outputs: ("x", "y", "align-padding")),
+  align: (outputs: ("x", "y")),
 )
 
 /// Look up the metadata record for a stat by name.

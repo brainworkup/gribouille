@@ -7,11 +7,15 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
+#import "../utils/resolution.typ": resolution
 
 #let _ZERO-CROSSING-FRACTION = 0.001
 
+// Parse, drop NA, sort by x. Duplicate-x rows are collapsed to one entry
+// per x with the mean y; matches `approx(ties = "ordered" / "mean")`
+// semantics so subsequent interpolation cannot silently drop a row.
 #let _parsed-pairs(data, x-col, y-col) = {
-  data
+  let parsed = data
     .map(r => {
       let xv = parse-number(r.at(x-col, default: none))
       let yv = parse-number(r.at(y-col, default: none))
@@ -20,6 +24,28 @@
     })
     .filter(p => p != none)
     .sorted(key: p => p.x)
+  if parsed.len() < 2 { return parsed }
+
+  let collapsed = ()
+  let i = 0
+  while i < parsed.len() {
+    let cur = parsed.at(i)
+    let j = i + 1
+    let sum = cur.y
+    let count = 1
+    while j < parsed.len() and parsed.at(j).x == cur.x {
+      sum += parsed.at(j).y
+      count += 1
+      j += 1
+    }
+    if count == 1 {
+      collapsed.push(cur)
+    } else {
+      collapsed.push((x: cur.x, y: sum / count, row: cur.row))
+    }
+    i = j
+  }
+  collapsed
 }
 
 #let _zero-crossings-for-group(pairs) = {
@@ -37,24 +63,6 @@
   crossings
 }
 
-#let _dedupe-sorted(values) = {
-  let out = ()
-  for v in values.sorted() {
-    if out.len() == 0 or out.last() != v { out.push(v) }
-  }
-  out
-}
-
-#let _min-diff(sorted-values) = {
-  if sorted-values.len() < 2 { return 0 }
-  let min-d = sorted-values.last() - sorted-values.first()
-  for i in range(1, sorted-values.len()) {
-    let d = sorted-values.at(i) - sorted-values.at(i - 1)
-    if d < min-d { min-d = d }
-  }
-  min-d
-}
-
 /// Align statistic: resample each group onto a shared x-grid.
 ///
 /// Builds the union of every group's x values plus zero-crossings within
@@ -62,9 +70,6 @@
 /// onto that grid; rows outside a group's input range are dropped, and
 /// the trimmed extremes are padded with `y = 0` so stacked areas join
 /// cleanly between groups.
-///
-/// Output rows carry an `align-padding` boolean: `true` for the leading
-/// and trailing zero-pad rows, `false` for interpolated points.
 ///
 /// \@category Stats
 /// \@stability stable
@@ -109,24 +114,19 @@
   }
   if xs.len() == 0 { return params }
 
-  let unique-loc = _dedupe-sorted(xs + crossings)
+  let unique-loc = (xs + crossings).dedup().sorted()
   let lo = unique-loc.first()
   let hi = unique-loc.last()
-  let range-span = hi - lo
-  let adjust = range-span * _ZERO-CROSSING-FRACTION
-  let diff = _min-diff(unique-loc)
+  // adjust: a small offset used for the leading/trailing zero-pad rows so
+  // stacked areas join cleanly without overlapping the first/last x. Bound
+  // it at one third of the smallest gap to avoid the pad colliding with a
+  // neighbouring location.
+  let adjust = (hi - lo) * _ZERO-CROSSING-FRACTION
+  let diff = resolution(unique-loc, zero: false)
   if diff > 0 and diff / 3 < adjust { adjust = diff / 3 }
 
-  let padded = ()
-  for v in unique-loc {
-    padded.push(v - adjust)
-    padded.push(v)
-    padded.push(v + adjust)
-  }
-  let final-loc = _dedupe-sorted(padded)
-
   let out = params
-  out.insert("unique-loc", final-loc)
+  out.insert("unique-loc", unique-loc)
   out.insert("adjust", adjust)
   out
 }
@@ -149,6 +149,8 @@
   let x-min = pairs.first().x
   let x-max = pairs.last().x
   let n = pairs.len()
+  // pi is a sweep index over `pairs`, advanced monotonically as `loc`
+  // increases. Both arrays are sorted by x, so the merge-walk is O(loc + n).
   let pi = 0
   let interpolated = ()
   for loc in unique-loc {
@@ -162,29 +164,18 @@
       let t = (loc - a.x) / (b.x - a.x)
       a.y + (b.y - a.y) * t
     }
-    interpolated.push(
-      a.row + ((x-col): loc, (y-col): yv, "align-padding": false),
-    )
+    interpolated.push(a.row + ((x-col): loc, (y-col): yv))
   }
 
   if interpolated.len() == 0 { return (data: (), mapping: mapping) }
 
-  let proto = pairs.first().row
+  let head-row = pairs.first().row
+  let tail-row = pairs.last().row
   let leading = (
-    proto
-      + (
-        (x-col): interpolated.first().at(x-col) - adjust,
-        (y-col): 0,
-        "align-padding": true,
-      )
+    head-row + ((x-col): interpolated.first().at(x-col) - adjust, (y-col): 0)
   )
   let trailing = (
-    proto
-      + (
-        (x-col): interpolated.last().at(x-col) + adjust,
-        (y-col): 0,
-        "align-padding": true,
-      )
+    tail-row + ((x-col): interpolated.last().at(x-col) + adjust, (y-col): 0)
   )
   (data: (leading,) + interpolated + (trailing,), mapping: mapping)
 }
