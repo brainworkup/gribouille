@@ -213,7 +213,7 @@
 #import "src/theme/test.typ": theme-test
 #import "src/theme/theme.typ": theme
 #import "src/theme/elements.typ": (
-  element-blank, element-line, element-rect, element-text, element-typst,
-  margin,
+  element-blank, element-geom, element-line, element-rect, element-text,
+  element-typst, margin,
 )
 #import "src/theme/current.typ": theme-get, theme-set

@@ -8,6 +8,8 @@
 ///! Base element keys (`text`, `line`, `rect`) set inherited parent fields:
 ///! specific child keys (e.g. `axis-text`) take priority at render time.
 
+#import "elements.typ": element-geom
+
 #let _surface-parent = {
   let out = (
     "axis-text": "text",
@@ -91,6 +93,27 @@
   let av = theme.at(base + "-" + axis, default: none)
   if av != none { return av }
   theme.at(base, default: 0pt)
+}
+
+// Empty layer-default record reused whenever the theme has no `geom` slot
+// or carries a non-element-geom record (theme drift, partial user theme).
+// Hoisted to module scope so per-render lookups don't re-allocate it.
+#let _EMPTY-GEOM-DEFAULTS = element-geom()
+
+/// Resolve `theme.geom` to a flat layer-defaults dict.
+///
+/// Returns the shape produced by \@element-geom; `none` slots leave per-geom
+/// fallbacks intact. The fall-through to an empty record is deliberate —
+/// keeps rendering robust when a partial user theme drops the `geom` key.
+/// Geoms resolve once at layer setup and consult the fields they support.
+///
+/// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@returns Element-geom record (always present; defaults are all `none`).
+#let geom-defaults(theme) = {
+  let g = theme.at("geom", default: none)
+  if g != none and g.at("kind", default: none) == "element-geom" { return g }
+  _EMPTY-GEOM-DEFAULTS
 }
 
 /// Whether a text surface is configured to evaluate strings as Typst markup.

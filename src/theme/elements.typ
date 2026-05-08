@@ -366,3 +366,46 @@
   bottom: bottom,
   left: left,
 )
+
+/// Layer-default aesthetics shared across geoms.
+///
+/// Pass the result to \@theme under the `geom` key to set defaults that the
+/// supporting geoms will pick up unless their own parameters override them.
+/// Mirrors ggplot2 v4's `element_geom()`. Constructor surfaces only the
+/// fields wired into the renderer today; more arrive as follow-up slices
+/// extend coverage to additional geoms.
+///
+/// \@category Themes
+/// \@stability experimental
+/// \@since 0.5.0
+///
+/// \@param fill Default fill colour for filled geoms (geom-col, geom-polygon, geom-point).
+/// \@param colour Default stroke colour for line and outline geoms.
+/// \@param linewidth Default stroke thickness (Typst length).
+///
+/// \@returns Element dictionary consumed by \@theme.
+///
+/// \@examples Pin a brand fill and bumped stroke thickness across the
+/// supporting geoms.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-col(),),
+///   theme: theme(geom: element-geom(
+///     fill: rgb("#cc3333"),
+///     linewidth: 1pt,
+///   )),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@theme, \@element-text, \@element-line, \@element-rect, \@element-blank
+#let element-geom(fill: none, colour: none, linewidth: none) = (
+  kind: "element-geom",
+  fill: fill,
+  colour: colour,
+  linewidth: linewidth,
+)
