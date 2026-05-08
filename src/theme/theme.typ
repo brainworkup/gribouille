@@ -116,6 +116,18 @@
   _EMPTY-GEOM-DEFAULTS
 }
 
+/// Pick a `theme.geom` field, falling back when the slot is `none`.
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@param field Field name to read (e.g. `"fill"`, `"colour"`, `"linewidth"`).
+/// \@param fallback Value returned when the slot is unset.
+/// \@returns The slot value or the fallback.
+#let geom-default(defaults, field, fallback) = {
+  let v = defaults.at(field, default: none)
+  if v != none { v } else { fallback }
+}
+
 /// Whether a text surface is configured to evaluate strings as Typst markup.
 ///
 /// \@internal

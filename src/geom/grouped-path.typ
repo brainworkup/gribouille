@@ -7,6 +7,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/radial.typ": project-point
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -51,6 +52,10 @@
   if x-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  // theme.geom.colour fills in for unmapped lines so a brand colour propagates;
+  // linewidth stays user-pinned (`layer.params.stroke`) so an explicit
+  // `geom-line(stroke: 1.2pt)` always beats theme defaults.
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
@@ -64,7 +69,7 @@
       mapping,
       ctx,
       leader,
-      ink,
+      theme-colour,
     )
     let dash = resolve-channel("linetype", layer, mapping, ctx, leader, none)
     let thickness = resolve-channel(

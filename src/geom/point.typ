@@ -14,6 +14,7 @@
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../guide/draw-marker.typ": draw-marker
 #import "../utils/late-binding.typ": after-scale-source, apply-after-scale
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
 ///
@@ -141,11 +142,13 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  let g-defaults = geom-defaults(ctx.theme)
+  let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    ink,
-    ink,
+    geom-default(g-defaults, "colour", ink),
+    geom-default(g-defaults, "fill", ink),
   )
 
   let shape-param = layer.params.shape
@@ -192,6 +195,7 @@
       ctx,
       row,
       default-colour,
+      default-thickness: default-thickness,
     )
     let shape-kind = if shape-pinned {
       shape-param
