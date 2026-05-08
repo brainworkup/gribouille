@@ -4,6 +4,12 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
+#let species-colours = (
+  Adelie: rgb("#ff8c00"),
+  Chinstrap: rgb("#008B8B"),
+  Gentoo: rgb("#800080"),
+)
+
 #plot(
   data: penguins,
   mapping: aes(
@@ -16,17 +22,11 @@
   layers: (
     geom-point(size: 2pt, alpha: 0.25, stroke: 0.5pt, colour: rgb("#ffffff")),
     geom-smooth(method: "lm", se: true, alpha: 0.2),
-    // geom-ellipse(stat: stat-ellipse(level: 0.95), alpha: 0.1),
     geom-mark(method: "hull", expand: 5pt, alpha: 0.25),
     geom-errorbar(stat: stat-summary(fun: "mean-sd"), width: 5pt),
     geom-errorbarh(stat: stat-summary(fun: "mean-sd"), height: 5pt),
     geom-label(
-      data: (
-        "flipper-len": (175, 207, 205),
-        "body-mass": (4250, 3150, 5750),
-        "species": ("Adelie", "Chinstrap", "Gentoo"),
-      ),
-      // stat: stat-summary(fun: "mean"),
+      stat: stat-summary(fun: "mean"),
       mapping: aes(label: "species"),
       colour: rgb("#ffffff"),
       size: 8pt,
@@ -35,25 +35,24 @@
   scales: (
     scale-x-continuous(),
     scale-y-continuous(labels: label-comma()),
-    scale-colour-discrete(palette: (
-      rgb("#ff8c00"),
-      rgb("#800080"),
-      rgb("#008B8B"),
-    )),
-    scale-fill-discrete(palette: (
-      rgb("#ff8c00"),
-      rgb("#800080"),
-      rgb("#008B8B"),
-    )),
+    scale-colour-discrete(
+      limits: species-colours.keys(),
+      palette: species-colours.values(),
+    ),
+    scale-fill-discrete(
+      limits: species-colours.keys(),
+      palette: species-colours.values(),
+    ),
   ),
   labs: labs(
     title: typst("Penguins *Dataset*"),
-    subtitle: typst([
-      Flipper length vs body mass by species:
-      #text(fill: rgb("#ff8c00"), weight: "bold")[Adelie],
-      #text(fill: rgb("#008B8B"), weight: "bold")[Chinstrap],
-      #text(fill: rgb("#800080"), weight: "bold")[Gentoo]
-    ]),
+    subtitle: typst({
+      [Flipper length vs body mass by species: ]
+      species-colours
+        .pairs()
+        .map(p => text(fill: p.at(1), weight: "bold")[#p.at(0)])
+        .join(", ")
+    }),
     caption: "Data from Palmer Archipelago (Antarctica) penguin dataset.",
     colour: "Species",
     fill: "Species",
