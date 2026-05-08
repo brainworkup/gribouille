@@ -75,7 +75,10 @@
     paper: paper,
     accent: accent,
     panel-background: element-rect(fill: col-mix(ink, paper, 0.498)),
-    panel-grid: element-line(colour: paper, thickness: 0.5pt),
+    panel-grid: element-line(
+      colour: col-mix(ink, paper, 0.7),
+      thickness: 0.5pt,
+    ),
     axis-line: element-line(colour: col-mix(ink, paper, 0.4), thickness: 0.5pt),
     axis-text: element-text(colour: col-mix(ink, paper, 0.302)),
   )

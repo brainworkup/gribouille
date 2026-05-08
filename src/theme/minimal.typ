@@ -2,6 +2,7 @@
 ///!
 ///! White panel with thin light grey gridlines, no axis lines, no tick marks.
 
+#import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-blank, element-line, element-rect
 #import "theme.typ": _apply-overrides
@@ -97,7 +98,10 @@
     accent: accent,
     panel-background: element-blank(),
     plot-background: _plot-bg,
-    panel-grid: element-line(colour: rgb("#ebebeb"), thickness: 0.4pt),
+    panel-grid: element-line(
+      colour: col-mix(ink, _paper, 0.7),
+      thickness: 0.4pt,
+    ),
     axis-line: element-blank(),
     tick-length: 0cm,
   )

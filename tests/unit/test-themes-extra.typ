@@ -89,7 +89,11 @@
 // Element override on top of a preset replaces the surface record.
 #let m1 = theme-minimal(axis-text: element-text(size: 11pt))
 #assert.eq(m1.axis-text.size, 11pt)
-#assert.eq(m1.panel-grid.colour, rgb("#ebebeb"))
+#assert.eq(m1.panel-grid.colour, color.mix(
+  (black, 0.3),
+  (white, 0.7),
+  space: rgb,
+))
 #assert.eq(m1.name, "minimal")
 
 // Structured rect override on theme-bw.
