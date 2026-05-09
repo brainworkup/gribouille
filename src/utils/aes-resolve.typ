@@ -216,3 +216,29 @@
   } else { fallback }
   if typst-mark and type(txt) == str { eval-as-markup(txt) } else { txt }
 }
+
+/// Merge a layer's aesthetic mapping with the plot-level mapping.
+///
+/// Layer keys override plot keys when present; `inherit-aes: false` on the
+/// layer drops the plot mapping entirely (so the layer mapping replaces it).
+/// `mapping-ref`/`typst-markup` annotations are preserved unchanged so
+/// downstream callers that rely on forced types still see them.
+///
+/// \@internal
+/// \@param layer Layer dict.
+/// \@param plot-mapping Plot-level mapping dict (or `none`).
+/// \@returns Merged mapping dict (or `none` when both layer and plot have no mapping).
+#let merge-mapping(layer, plot-mapping) = {
+  let mapping = layer.at("mapping", default: none)
+  if layer.at("inherit-aes", default: true) and plot-mapping != none {
+    let m = plot-mapping
+    if mapping != none {
+      for (k, v) in mapping.pairs() {
+        if v != none { m.insert(k, v) }
+      }
+    }
+    return m
+  }
+  if mapping != none { return mapping }
+  plot-mapping
+}

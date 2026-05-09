@@ -316,3 +316,13 @@
   if line != "" { lines.push(line) }
   lines.join("\n")
 }
+
+// Compact numeric tick formatter shared by axis ticks, secondary-axis ticks,
+// and legend colour-bar tick labels. Integers print as integers; near-integer
+// floats round to the nearest integer; everything else prints with up to
+// three significant decimal places.
+#let format-break(n) = {
+  if type(n) == int { return str(n) }
+  if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
+  str(calc.round(n, digits: 3))
+}

@@ -17,11 +17,14 @@
 )
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
+#import "utils/format.typ": format-break
 #import "utils/palette.typ": default-discrete, palette-at, spec-palette
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
-#import "utils/aes-resolve.typ": resolve-label, unwrap-mapping-refs
+#import "utils/aes-resolve.typ": (
+  merge-mapping, resolve-label, unwrap-mapping-refs,
+)
 #import "utils/late-binding.typ": (
   apply-stages, eval-after-stat, is-late-binding, late-binding-kind,
   resolve-from-theme, stash-stages,
@@ -190,24 +193,18 @@
   marks
 }
 
-#let _merge-mapping(layer, plot-mapping) = {
-  if layer.at("inherit-aes", default: true) and plot-mapping != none {
-    let m = plot-mapping
-    if layer.mapping != none {
-      for (k, v) in layer.mapping.pairs() {
-        if v != none { m.insert(k, v) }
-      }
-    }
-    m
-  } else if layer.mapping != none {
-    layer.mapping
-  } else {
-    plot-mapping
-  }
+#let _resolve-mapping(layer, plot-mapping) = {
+  _strip-mapping-refs(merge-mapping(layer, plot-mapping))
 }
 
-#let _resolve-mapping(layer, plot-mapping) = {
-  _strip-mapping-refs(_merge-mapping(layer, plot-mapping))
+// Axis title fallback: trained scale's `spec.name` wins; otherwise the bare
+// mapping column name (which may be `none` when neither is set). Used by
+// the cartesian title path and the faceted (wrap/grid) finishers.
+#let _axis-title(trained, mapping-name) = {
+  let from-scale = if trained != none and trained.spec != none {
+    trained.spec.name
+  } else { none }
+  if from-scale != none { from-scale } else { mapping-name }
 }
 
 // `data-trusted: true` on the layer signals that `layer.data` is already in
@@ -286,7 +283,7 @@
   let pre = _scale-pre-transforms(spec.at("scales", default: ()))
   if pre.len() == 0 { return spec }
   let new-layers = spec.layers.map(layer => {
-    let mapping = _merge-mapping(layer, spec.mapping)
+    let mapping = merge-mapping(layer, spec.mapping)
     let col-trans = _pre-transform-cols(mapping, pre)
     if col-trans.len() == 0 { return layer }
     let data = _resolve-data(layer, spec.data)
@@ -382,7 +379,7 @@
   // Keep mapping-ref annotations intact on the layer so scale training can
   // read forced types; only strip them when the renderer hands a mapping to
   // a geom's draw function.
-  let mapping = _merge-mapping(layer, plot-mapping)
+  let mapping = merge-mapping(layer, plot-mapping)
   if theme != none {
     let resolved = _apply-from-theme(layer, mapping, theme)
     layer = resolved.layer
@@ -607,11 +604,6 @@
   pretty(lo, hi, n: 5)
 }
 
-#let _format-break(n) = {
-  if type(n) == int { return str(n) }
-  if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
-  str(calc.round(n, digits: 3))
-}
 
 // Convert a numeric break back to a Typst datetime against a fixed epoch and
 // render it via `dt.display(fmt)`. `kind` selects the unit of `n`: `"date"`
@@ -642,7 +634,7 @@
       trained.at("date-format", default: ""),
     )
   }
-  _format-break(n)
+  format-break(n)
 }
 
 // Single-pass classifier feeding `_post-train`. Per layer it picks the
@@ -1008,7 +1000,7 @@
         typst-mark,
         idx,
         transformed,
-        _format-break(transformed),
+        format-break(transformed),
         typst-eval,
       )
     })
@@ -1433,7 +1425,7 @@
             fill: _ax-text.xt.fill,
             weight: _ax-text.xt.weight,
           )[#resolve-prose(
-            _format-break(mapped),
+            format-break(mapped),
             eval-strings: _ax-text.xt.typst,
           )],
           anchor: "south",
@@ -1488,7 +1480,7 @@
             fill: _ax-text.yr.fill,
             weight: _ax-text.yr.weight,
           )[#resolve-prose(
-            _format-break(mapped),
+            format-break(mapped),
             eval-strings: _ax-text.yr.typst,
           )],
           anchor: "west",
@@ -1773,18 +1765,8 @@
   let _mapping-y-name = if spec.mapping == none { none } else if flipped {
     mapping-ref-col(spec.mapping.at("x", default: none))
   } else { mapping-ref-col(spec.mapping.at("y", default: none)) }
-  let x-title = {
-    let from-scale = if x-trained != none and x-trained.spec != none {
-      x-trained.spec.name
-    } else { none }
-    if from-scale != none { from-scale } else { _mapping-x-name }
-  }
-  let y-title = {
-    let from-scale = if y-trained != none and y-trained.spec != none {
-      y-trained.spec.name
-    } else { none }
-    if from-scale != none { from-scale } else { _mapping-y-name }
-  }
+  let x-title = _axis-title(x-trained, _mapping-x-name)
+  let y-title = _axis-title(y-trained, _mapping-y-name)
   let _x-ext = _resolve-extents(x-extents, _ax-text.xb.size)
   let _y-ext = _resolve-extents(y-extents, _ax-text.yl.size)
   let x-label-depth = _x-label-depth-stack(x-guide, _x-ext.width, _x-ext.height)
@@ -2547,22 +2529,11 @@
 
     let x-trained = trained.at("x", default: none)
     let y-trained = trained.at("y", default: none)
-    let x-title = {
-      let from-scale = if x-trained != none and x-trained.spec != none {
-        x-trained.spec.name
-      } else { none }
-      if from-scale != none { from-scale } else if spec.mapping != none {
-        mapping-ref-col(spec.mapping.at("x", default: none))
-      } else { none }
+    let _map-name(axis) = if spec.mapping == none { none } else {
+      mapping-ref-col(spec.mapping.at(axis, default: none))
     }
-    let y-title = {
-      let from-scale = if y-trained != none and y-trained.spec != none {
-        y-trained.spec.name
-      } else { none }
-      if from-scale != none { from-scale } else if spec.mapping != none {
-        mapping-ref-col(spec.mapping.at("y", default: none))
-      } else { none }
-    }
+    let x-title = _axis-title(x-trained, _map-name("x"))
+    let y-title = _axis-title(y-trained, _map-name("y"))
     if x-title != none and _ax-title.xb.size > 0pt {
       content(
         (margin.left + grid-w / 2, 0.1),
@@ -2755,22 +2726,11 @@
 
     let x-trained = trained.at("x", default: none)
     let y-trained = trained.at("y", default: none)
-    let x-title = {
-      let from-scale = if x-trained != none and x-trained.spec != none {
-        x-trained.spec.name
-      } else { none }
-      if from-scale != none { from-scale } else if spec.mapping != none {
-        mapping-ref-col(spec.mapping.at("x", default: none))
-      } else { none }
+    let _map-name(axis) = if spec.mapping == none { none } else {
+      mapping-ref-col(spec.mapping.at(axis, default: none))
     }
-    let y-title = {
-      let from-scale = if y-trained != none and y-trained.spec != none {
-        y-trained.spec.name
-      } else { none }
-      if from-scale != none { from-scale } else if spec.mapping != none {
-        mapping-ref-col(spec.mapping.at("y", default: none))
-      } else { none }
-    }
+    let x-title = _axis-title(x-trained, _map-name("x"))
+    let y-title = _axis-title(y-trained, _map-name("y"))
     if x-title != none and _ax-title.xb.size > 0pt {
       content(
         (margin.left + grid-w / 2, 0.1),

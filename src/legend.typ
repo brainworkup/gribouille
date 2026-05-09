@@ -7,6 +7,7 @@
 
 #import "deps.typ": cetz
 #import "utils/pretty.typ": pretty
+#import "utils/format.typ": format-break
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/palette.typ": spec-palette
 #import "utils/level-resolve.typ": resolve-level
@@ -16,7 +17,7 @@
 #import "scale/train.typ": mapping-ref-col
 #import "utils/typst-markup.typ": resolve-prose
 #import "utils/margin.typ": length-to-cm
-#import "utils/aes-resolve.typ": resolve-label
+#import "utils/aes-resolve.typ": merge-mapping, resolve-label
 #import "utils/margin.typ": resolve-margin-side-cm
 
 // Aesthetic emission order. `x` and `y` train but never produce a guide; the
@@ -117,21 +118,6 @@
   v != auto and v != none
 }
 
-#let _resolve-merged-mapping(layer, plot-mapping) = {
-  let mapping = layer.at("mapping", default: none)
-  let inherits = layer.at("inherit-aes", default: true)
-  if inherits and plot-mapping != none {
-    let m = plot-mapping
-    if mapping != none {
-      for (k, v) in mapping.pairs() {
-        if v != none { m.insert(k, v) }
-      }
-    }
-    return m
-  }
-  if mapping != none { return mapping }
-  plot-mapping
-}
 
 // Layers that contribute to the guide for `aes-name`: those whose merged
 // mapping consumes the aesthetic, that match the structural eligibility for
@@ -141,7 +127,7 @@
   let plot-mapping = spec.at("mapping", default: none)
   let out = ()
   for layer in layers {
-    let merged = _resolve-merged-mapping(layer, plot-mapping)
+    let merged = merge-mapping(layer, plot-mapping)
     if merged == none { continue }
     if merged.at(aes-name, default: none) == none { continue }
     let geom = layer.at("geom", default: "")
@@ -157,7 +143,7 @@
 #let _column-for(spec, aes-name) = {
   let plot-mapping = spec.at("mapping", default: none)
   for layer in spec.at("layers", default: ()) {
-    let merged = _resolve-merged-mapping(layer, plot-mapping)
+    let merged = merge-mapping(layer, plot-mapping)
     if merged == none { continue }
     let raw = merged.at(aes-name, default: none)
     if raw != none { return mapping-ref-col(raw) }
@@ -298,12 +284,6 @@
   )
 }
 
-#let _format-break(n) = {
-  if type(n) == int { return str(n) }
-  if calc.abs(n - calc.round(n)) < 1e-9 { return str(calc.round(n)) }
-  str(calc.round(n, digits: 3))
-}
-
 #let _title-chars(g) = if g.title == none { 0 } else { g.title.len() }
 
 // Approximate per-character horizontal extent in canvas units.
@@ -362,7 +342,7 @@
   if g.kind == "size-ladder" {
     let label-chars = 0
     for b in g.breaks {
-      label-chars = calc.max(label-chars, _format-break(b).len())
+      label-chars = calc.max(label-chars, format-break(b).len())
     }
     return calc.max(_label-width(_title-chars(g)), _label-width(label-chars))
   }
@@ -375,7 +355,7 @@
     }
     let max-chars = _title-chars(g)
     for b in breaks {
-      max-chars = calc.max(max-chars, _format-break(b).len())
+      max-chars = calc.max(max-chars, format-break(b).len())
     }
     return 0.65 + max-chars * _char-width
   }
@@ -652,7 +632,7 @@
         labels,
         value,
         i,
-        _format-break(value),
+        format-break(value),
         typst-mark: guide.at("typst-mark", default: false),
       ),
       eval-strings: _legend-text.typst,
@@ -729,7 +709,7 @@
         labels,
         b,
         i,
-        _format-break(b),
+        format-break(b),
         typst-mark: typst-mark,
       ),
       eval-strings: _legend-text.typst,

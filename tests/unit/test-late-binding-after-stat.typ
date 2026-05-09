@@ -5,9 +5,9 @@
 #import "../../src/utils/late-binding.typ": (
   after-stat, is-late-binding, late-binding-kind,
 )
-#import "../../src/utils/aes-resolve.typ": aes-col
+#import "../../src/utils/aes-resolve.typ": aes-col, merge-mapping
 #import "../../src/aes.typ": aes
-#import "../../src/render.typ": _merge-mapping, _strip-mapping-refs
+#import "../../src/render.typ": _strip-mapping-refs
 #import "../../src/scale/train.typ": train
 
 // --- constructor + predicates ------------------------------------------
@@ -30,7 +30,7 @@
   data: none,
   inherit-aes: true,
 )
-#let merged = _merge-mapping(layer, aes(x: "x", fill: "sp"))
+#let merged = merge-mapping(layer, aes(x: "x", fill: "sp"))
 #assert.eq(merged.y.kind, "after-stat")
 #assert.eq(merged.x, "x")
 #assert.eq(merged.fill, "sp")
