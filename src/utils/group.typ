@@ -69,12 +69,16 @@
 #let partition-by-group(data, mapping, trained: none) = {
   let groups = (:)
   let order = ()
+  let seen = (:)
   for row in data {
     let key = group-key(row, mapping, trained: trained)
     let bucket = groups.at(key, default: ())
     bucket.push(row)
     groups.insert(key, bucket)
-    if not order.contains(key) { order.push(key) }
+    if not seen.at(key, default: false) {
+      seen.insert(key, true)
+      order.push(key)
+    }
   }
   order.map(k => (key: k, data: groups.at(k)))
 }

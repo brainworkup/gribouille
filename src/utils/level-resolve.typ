@@ -25,7 +25,10 @@
 
 #let discrete-index(trained, level) = {
   let s = str(level)
-  trained.domain.position(v => v == s)
+  let lookup = trained.at("level-index", default: none)
+  if lookup == none { trained.domain.position(v => v == s) } else {
+    lookup.at(s, default: none)
+  }
 }
 
 #let discrete-numeric(trained, level, range) = {

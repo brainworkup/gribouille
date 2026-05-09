@@ -85,21 +85,28 @@
 
   let keys = data.map(row => group-key(row, mapping))
   let levels = ()
+  let level-index = (:)
   for k in keys {
-    if not levels.contains(k) { levels.push(k) }
+    if level-index.at(k, default: none) != none { continue }
+    level-index.insert(k, levels.len())
+    levels.push(k)
   }
   let n-levels = levels.len()
   if n-levels <= 1 { return (data: data, mapping: mapping) }
 
   let buckets = (:)
   let bucket-order = ()
+  let bucket-seen = (:)
   for (i, row) in data.enumerate() {
     let xv = row.at(x-col, default: none)
     let bk = if xv == none { "" } else { str(xv) }
     let bucket = buckets.at(bk, default: ())
     bucket.push((i: i, row: row, key: keys.at(i)))
     buckets.insert(bk, bucket)
-    if not bucket-order.contains(bk) { bucket-order.push(bk) }
+    if not bucket-seen.at(bk, default: false) {
+      bucket-seen.insert(bk, true)
+      bucket-order.push(bk)
+    }
   }
 
   let n-data = data.len()
@@ -113,7 +120,7 @@
 
     if uniform {
       for entry in entries {
-        let idx = levels.position(v => v == entry.key)
+        let idx = level-index.at(entry.key, default: none)
         if idx == none { continue }
         let off = (idx + 0.5) / n-levels - 0.5
         offsets.at(entry.i) = off

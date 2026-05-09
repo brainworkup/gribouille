@@ -157,6 +157,16 @@
 // pass through unchanged because `mapping-ref-col` is a no-op on them.
 #let _strip-mapping-refs(mapping) = {
   if mapping == none { return none }
+  // Fast path: nothing carries a `mapping-ref` annotation.
+  let any-ref = false
+  for (_, v) in mapping.pairs() {
+    if v == none { continue }
+    if mapping-ref-col(v) != v {
+      any-ref = true
+      break
+    }
+  }
+  if not any-ref { return mapping }
   let out = mapping
   for (k, v) in mapping.pairs() {
     if v == none { continue }
@@ -215,13 +225,16 @@
 // transformation strips or synthesises rows.
 #let _raw-levels-for(spec, var) = {
   let seen = ()
+  let seen-set = (:)
   for layer in spec.layers {
     let d = _resolve-data(layer, spec.data)
     for row in d {
       let v = row.at(var, default: none)
       if v == none { continue }
       let s = str(v)
-      if not seen.contains(s) { seen.push(s) }
+      if seen-set.at(s, default: false) { continue }
+      seen-set.insert(s, true)
+      seen.push(s)
     }
   }
   seen
@@ -304,17 +317,19 @@
     if raw == none { continue }
     let col = mapping-ref-col(raw)
     if _resolve-forced-type(raw, new-data, col) != "discrete" { continue }
-    // Two passes: Typst closures capture variables read-only, so a single
-    // `.map` cannot update the level dict it consults.
+    // Build levels and the level→index map in a single pass; Typst closures
+    // capture variables read-only, so the value rewrite below still needs a
+    // second `.map`.
     let levels = ()
+    let level-map = (:)
     for row in new-data {
       let v = row.at(col, default: none)
       if v == none { continue }
       let s = str(v)
-      if not levels.contains(s) { levels.push(s) }
+      if level-map.at(s, default: none) != none { continue }
+      level-map.insert(s, levels.len() + 1)
+      levels.push(s)
     }
-    let level-map = (:)
-    for (i, lv) in levels.enumerate() { level-map.insert(lv, i + 1) }
     new-data = new-data.map(row => {
       let v = row.at(col, default: none)
       if v == none { return row }
@@ -534,10 +549,13 @@
   }
   let pal = spec-palette(trained, palette)
   if trained.type == "discrete" {
+    let lookup = trained.at("level-index", default: none)
     return value => {
       if value == none or value == "" { return ink }
       let s = str(value)
-      let idx = trained.domain.position(v => v == s)
+      let idx = if lookup == none {
+        trained.domain.position(v => v == s)
+      } else { lookup.at(s, default: none) }
       if idx == none { return ink }
       palette-at(pal, idx)
     }

@@ -154,6 +154,7 @@
 
 #let _discrete-domain-from-cache(cols) = {
   let seen = ()
+  let seen-set = (:)
   for col in cols {
     // `_prepare-layer` records the original level set on the layer when it
     // rewrites a discrete-marked column to numeric indices for `position-jitter`
@@ -164,10 +165,20 @@
     for v in source {
       if v == none or v == "" { continue }
       let s = str(v)
-      if not seen.contains(s) { seen.push(s) }
+      if seen-set.at(s, default: false) { continue }
+      seen-set.insert(s, true)
+      seen.push(s)
     }
   }
   seen
+}
+
+// Build a `(level: index)` dict from a discrete domain. O(1) level lookup
+// for downstream resolvers (palette index, colour mapping, position).
+#let _level-index(domain) = {
+  let idx = (:)
+  for (i, v) in domain.enumerate() { idx.insert(v, i) }
+  idx
 }
 
 #let _scale-type-from-cache(cols) = {
@@ -312,9 +323,13 @@
         domain = (transform-fwd(transform, lo), transform-fwd(transform, hi))
       }
     }
+    let level-index = if scale-type == "discrete" {
+      _level-index(domain)
+    } else { none }
     let entry = (
       type: scale-type,
       domain: domain,
+      level-index: level-index,
       spec: user-scale,
       transform: transform,
       pre-transformed: pre-transformed,
@@ -394,11 +409,14 @@
 // Used by positional discrete scales after expansion is applied. The default
 // viewport `(-0.5, n - 0.5)` reproduces the midpoint-of-equal-slots layout
 // used by non-positional discrete scales (colour, fill, shape, ...).
-#let map-discrete(value, domain, range, view-index: none) = {
+#let map-discrete(value, domain, range, view-index: none, level-index: none) = {
   let n = domain.len()
   if n == 0 { return none }
   let s = str(value)
-  let idx = domain.position(v => v == s)
+  let lookup = if level-index == none { _level-index(domain) } else {
+    level-index
+  }
+  let idx = lookup.at(s, default: none)
   if idx == none and (type(value) == int or type(value) == float) {
     // Numeric values that miss a string match are treated as 1-indexed
     // fractional level positions. `_prepare-layer` rewrites discrete-marked
@@ -463,6 +481,7 @@
       trained.domain,
       range,
       view-index: trained.at("view-index", default: none),
+      level-index: trained.at("level-index", default: none),
     )
   }
 }
