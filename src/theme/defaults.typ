@@ -75,16 +75,9 @@
   merged
 }
 
-// Resolve a colour by walking the inheritance chain.
-// Returns the first non-none value from key, then each parent key in order,
-// then falls back to black.
-#let resolve-colour(theme, key, ..parents) = {
+// Resolve a theme colour key, falling back to black when unset.
+#let resolve-colour(theme, key) = {
   let v = theme.at(key, default: none)
-  if v != none { return v }
-  for p in parents.pos() {
-    let pv = theme.at(p, default: none)
-    if pv != none { return pv }
-  }
-  black
+  if v == none { black } else { v }
 }
 

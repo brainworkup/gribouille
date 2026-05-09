@@ -11,6 +11,7 @@
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
+#import "../utils/types.typ": parse-number
 
 /// Dotplot layer: one dot per observation, stacked within bins.
 ///
@@ -105,10 +106,12 @@
   if first == none { return }
   let bin-width = first.at("width", default: none)
   if bin-width == none { return }
-  let cx-anchor = map-position(x-trained, first.at(mapping.x), ctx.px-range)
+  let first-x = parse-number(first.at(mapping.x))
+  if first-x == none { return }
+  let cx-anchor = map-position(x-trained, first-x, ctx.px-range)
   let cx-edge = map-position(
     x-trained,
-    first.at(mapping.x) + bin-width / 2,
+    first-x + bin-width / 2,
     ctx.px-range,
   )
   if cx-anchor == none or cx-edge == none { return }

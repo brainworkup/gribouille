@@ -709,7 +709,7 @@
     (ox, bar-bottom),
     (ox + bar-w, bar-top),
     fill: none,
-    stroke: (paint: luma(53%), thickness: 0.2pt),
+    stroke: (paint: ink, thickness: 0.2pt),
   )
   let breaks = guide.at("breaks", default: pretty(lo, hi, n: 5))
   let labels = guide.at("labels", default: auto)
@@ -722,7 +722,7 @@
     cetz.draw.line(
       (ox + bar-w, cy),
       (ox + bar-w + 0.1, cy),
-      stroke: (paint: luma(33%), thickness: 0.3pt),
+      stroke: (paint: ink, thickness: 0.3pt),
     )
     let tick-text = resolve-prose(
       resolve-label(

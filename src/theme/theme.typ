@@ -139,17 +139,6 @@
   if v != none { v } else { fallback }
 }
 
-/// Whether a text surface is configured to evaluate strings as Typst markup.
-///
-/// \@internal
-/// \@param theme Merged theme dictionary.
-/// \@param surface Text surface key, e.g. `"axis-text"`.
-/// \@returns Boolean.
-#let is-typst(theme, surface) = {
-  let el = resolve-element(theme, surface)
-  el.at("kind", default: none) == "element-typst"
-}
-
 // Default per-side text margin: every side `auto` so each consumption site
 // supplies its own renderer fallback.
 #let _empty-margin = (

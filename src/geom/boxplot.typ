@@ -138,7 +138,6 @@
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
-  if y-trained.type != "continuous" { return }
 
   let ink = ctx.theme.at("ink", default: black)
   let neutral-fill = rgb("#cccccc")
@@ -157,6 +156,7 @@
   if radial != none {
     let cat-trained = if radial.cat-is-theta { x-trained } else { y-trained }
     let val-trained = if radial.cat-is-theta { y-trained } else { x-trained }
+    if val-trained.type != "continuous" { return }
     let cat-col = if radial.cat-is-theta { x-col } else {
       mapping.at("y", default: none)
     }
@@ -313,6 +313,8 @@
     }
     return
   }
+
+  if y-trained.type != "continuous" { return }
 
   for row in data {
     let raw-x = row.at(x-col, default: none)

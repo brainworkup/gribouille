@@ -3,7 +3,6 @@
 ///! One panel per level of a discrete variable, wrapped into a grid of
 ///! `ncol` columns (or `nrow` rows).
 
-#import "shared.typ"
 #import "labellers.typ": label-value
 
 /// Wrap facets: one panel per level of a discrete variable.
@@ -110,9 +109,3 @@
   )
 }
 
-#let levels-for(prepared, var) = shared.levels-for(prepared, var)
-
-#let filter-layers(prepared, var, value) = shared.filter-layers-multi(
-  prepared,
-  ((var, value),),
-)

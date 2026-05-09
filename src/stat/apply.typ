@@ -30,106 +30,142 @@
 #import "../utils/bin2d.typ": panel-bin-grid-2d
 #import "../utils/hex.typ": panel-hex-grid
 
-#let _stat-constructors = (
-  bin: bin-stat.stat-bin,
-  bin_2d: bin2d-stat.stat-bin-2d,
-  bin_hex: bin-hex-stat.stat-bin-hex,
-  bindot: bindot-stat.stat-bindot,
-  contour: contour-stat.stat-contour,
-  contour_filled: contour-filled-stat.stat-contour-filled,
-  smooth: smooth-stat.stat-smooth,
-  boxplot: boxplot-stat.stat-boxplot,
-  summary: summary-stat.stat-summary,
-  summary_bin: summary-bin-stat.stat-summary-bin,
-  summary_2d: summary-2d-stat.stat-summary-2d,
-  summary_hex: summary-hex-stat.stat-summary-hex,
-  function: function-stat.stat-function,
-  ellipse: ellipse-stat.stat-ellipse,
-  quantile: quantile-stat.stat-quantile,
-  manual: manual-stat.stat-manual,
-  connect: connect-stat.stat-connect,
-  align: align-stat.stat-align,
+// Single source of truth for every stat. `setup:` is the optional panel-level
+// pre-pass invoked before per-group `apply()`; it is `none` when the stat
+// has no shared partition.
+#let _STATS = (
+  identity: (
+    apply: identity-stat.apply,
+    ctor: none,
+  ),
+  bin: (
+    apply: bin-stat.apply,
+    ctor: bin-stat.stat-bin,
+    setup: panel-bin-grid,
+  ),
+  bin_2d: (
+    apply: bin2d-stat.apply,
+    ctor: bin2d-stat.stat-bin-2d,
+    setup: panel-bin-grid-2d,
+  ),
+  bin_hex: (
+    apply: bin-hex-stat.apply,
+    ctor: bin-hex-stat.stat-bin-hex,
+    setup: panel-hex-grid,
+  ),
+  bindot: (
+    apply: bindot-stat.apply,
+    ctor: bindot-stat.stat-bindot,
+    setup: panel-bin-grid,
+  ),
+  contour: (
+    apply: contour-stat.apply,
+    ctor: contour-stat.stat-contour,
+  ),
+  contour_filled: (
+    apply: contour-filled-stat.apply,
+    ctor: contour-filled-stat.stat-contour-filled,
+  ),
+  count: (
+    apply: count-stat.apply,
+    ctor: count-stat.stat-count,
+  ),
+  sum: (
+    apply: sum-stat.apply,
+    ctor: sum-stat.stat-sum,
+  ),
+  smooth: (
+    apply: smooth-stat.apply,
+    ctor: smooth-stat.stat-smooth,
+  ),
+  boxplot: (
+    apply: boxplot-stat.apply,
+    ctor: boxplot-stat.stat-boxplot,
+  ),
+  summary: (
+    apply: summary-stat.apply,
+    ctor: summary-stat.stat-summary,
+  ),
+  summary_bin: (
+    apply: summary-bin-stat.apply,
+    ctor: summary-bin-stat.stat-summary-bin,
+    setup: panel-bin-grid,
+  ),
+  summary_2d: (
+    apply: summary-2d-stat.apply,
+    ctor: summary-2d-stat.stat-summary-2d,
+  ),
+  summary_hex: (
+    apply: summary-hex-stat.apply,
+    ctor: summary-hex-stat.stat-summary-hex,
+  ),
+  ecdf: (
+    apply: ecdf-stat.apply,
+    ctor: ecdf-stat.stat-ecdf,
+  ),
+  unique: (
+    apply: unique-stat.apply,
+    ctor: unique-stat.stat-unique,
+  ),
+  qq: (
+    apply: qq-stat.apply,
+    ctor: qq-stat.stat-qq,
+  ),
+  "qq-line": (
+    apply: qq-line-stat.apply,
+    ctor: qq-line-stat.stat-qq-line,
+  ),
+  function: (
+    apply: function-stat.apply,
+    ctor: function-stat.stat-function,
+  ),
+  ellipse: (
+    apply: ellipse-stat.apply,
+    ctor: ellipse-stat.stat-ellipse,
+  ),
+  quantile: (
+    apply: quantile-stat.apply,
+    ctor: quantile-stat.stat-quantile,
+  ),
+  manual: (
+    apply: manual-stat.apply,
+    ctor: manual-stat.stat-manual,
+  ),
+  connect: (
+    apply: connect-stat.apply,
+    ctor: connect-stat.stat-connect,
+  ),
+  align: (
+    apply: align-stat.apply,
+    ctor: align-stat.stat-align,
+    setup: (data, mapping, params) => align-stat.setup(
+      data,
+      mapping,
+      params: params,
+    ),
+  ),
 )
 
 #let stat-default-params(name) = {
-  let ctor = _stat-constructors.at(name, default: none)
+  let entry = _STATS.at(name, default: none)
+  if entry == none { return (:) }
+  let ctor = entry.at("ctor", default: none)
   if ctor == none { (:) } else { ctor().at("params", default: (:)) }
 }
 
-// Run a stat's optional panel-level setup once, before per-group `apply()`,
-// so any partition shared across groups (currently the bin grid for binning
-// stats) is computed from the full data and reused. Stats not listed here
-// return their input params unchanged.
-#let _binning-stats = ("bin", "bindot", "summary_bin")
-#let _binning-2d-stats = ("bin_2d", "summary_2d")
-#let _binning-hex-stats = ("bin_hex", "summary_hex")
-
 #let setup-stat(name, data, mapping, params) = {
-  if _binning-stats.contains(name) {
-    panel-bin-grid(data, mapping, params)
-  } else if _binning-2d-stats.contains(name) {
-    panel-bin-grid-2d(data, mapping, params)
-  } else if _binning-hex-stats.contains(name) {
-    panel-hex-grid(data, mapping, params)
-  } else if name == "align" {
-    align-stat.setup(data, mapping, params: params)
-  } else {
-    params
-  }
+  let entry = _STATS.at(name, default: none)
+  if entry == none { return params }
+  let setup = entry.at("setup", default: none)
+  if setup == none { return params }
+  setup(data, mapping, params)
 }
 
 #let apply-stat(name, data, mapping, params) = {
   if name == none or name == "identity" {
-    (data: data, mapping: mapping)
-  } else if name == "bin" {
-    bin-stat.apply(data, mapping, params: params)
-  } else if name == "bin_2d" {
-    bin2d-stat.apply(data, mapping, params: params)
-  } else if name == "bin_hex" {
-    bin-hex-stat.apply(data, mapping, params: params)
-  } else if name == "bindot" {
-    bindot-stat.apply(data, mapping, params: params)
-  } else if name == "contour" {
-    contour-stat.apply(data, mapping, params: params)
-  } else if name == "contour_filled" {
-    contour-filled-stat.apply(data, mapping, params: params)
-  } else if name == "count" {
-    count-stat.apply(data, mapping, params: params)
-  } else if name == "sum" {
-    sum-stat.apply(data, mapping, params: params)
-  } else if name == "smooth" {
-    smooth-stat.apply(data, mapping, params: params)
-  } else if name == "boxplot" {
-    boxplot-stat.apply(data, mapping, params: params)
-  } else if name == "summary" {
-    summary-stat.apply(data, mapping, params: params)
-  } else if name == "summary_bin" {
-    summary-bin-stat.apply(data, mapping, params: params)
-  } else if name == "summary_2d" {
-    summary-2d-stat.apply(data, mapping, params: params)
-  } else if name == "summary_hex" {
-    summary-hex-stat.apply(data, mapping, params: params)
-  } else if name == "ecdf" {
-    ecdf-stat.apply(data, mapping, params: params)
-  } else if name == "unique" {
-    unique-stat.apply(data, mapping, params: params)
-  } else if name == "qq" {
-    qq-stat.apply(data, mapping, params: params)
-  } else if name == "qq-line" {
-    qq-line-stat.apply(data, mapping, params: params)
-  } else if name == "function" {
-    function-stat.apply(data, mapping, params: params)
-  } else if name == "ellipse" {
-    ellipse-stat.apply(data, mapping, params: params)
-  } else if name == "quantile" {
-    quantile-stat.apply(data, mapping, params: params)
-  } else if name == "manual" {
-    manual-stat.apply(data, mapping, params: params)
-  } else if name == "connect" {
-    connect-stat.apply(data, mapping, params: params)
-  } else if name == "align" {
-    align-stat.apply(data, mapping, params: params)
-  } else {
-    (data: data, mapping: mapping)
+    return (data: data, mapping: mapping)
   }
+  let entry = _STATS.at(name, default: none)
+  if entry == none { return (data: data, mapping: mapping) }
+  (entry.apply)(data, mapping, params: params)
 }
