@@ -1,13 +1,6 @@
 ///! Horizontal line from `xmin` to `xmax` with vertical caps at each `y`.
 
-#import "../deps.typ": cetz
-#import "../utils/aes-resolve.typ": resolve-channel
-#import "../scale/train.typ": discrete-slot-width, map-axis, map-position
-#import "../utils/types.typ": parse-number
-#import "../utils/colour-resolve.typ": apply-alpha
-#import "../utils/radial.typ": (
-  RADIAL-DEFAULT-CAP-HALF, project-point, radial-tangent-cap,
-)
+#import "../utils/errorbar-draw.typ": _draw-errorbar-axis
 
 /// Horizontal errorbar layer: range with a vertical cap at each end.
 ///
@@ -95,111 +88,6 @@
   inherit-aes: inherit-aes,
 )
 
-#let _y-band(y-trained, raw-y, half-height, py-range) = {
-  if y-trained.type == "continuous" {
-    let raw-num = parse-number(raw-y)
-    if raw-num == none { return none }
-    (
-      map-axis(y-trained, raw-num - half-height, py-range),
-      map-axis(y-trained, raw-num + half-height, py-range),
-    )
-  } else {
-    let cy = map-position(y-trained, raw-y, py-range)
-    if cy == none { return none }
-    let half-px = discrete-slot-width(y-trained, py-range) * half-height
-    (cy - half-px, cy + half-px)
-  }
-}
-
 #let draw(layer, ctx) = {
-  let mapping = (ctx.resolve-mapping)(layer)
-  let data = (ctx.resolve-data)(layer)
-  if mapping == none { return }
-  let y-col = mapping.at("y", default: none)
-  let xmin-col = mapping.at("xmin", default: none)
-  let xmax-col = mapping.at("xmax", default: none)
-  if y-col == none or xmin-col == none or xmax-col == none { return }
-  let x-trained = ctx.trained.at("x", default: none)
-  let y-trained = ctx.trained.at("y", default: none)
-  if x-trained == none or y-trained == none { return }
-
-  let colour-pinned = (
-    layer.params.colour != auto and layer.params.colour != none
-  )
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
-  let resolve-colour = if colour-trained != none {
-    (ctx.resolve-colour)(colour-trained, ctx.palette)
-  } else { none }
-  let ink = ctx.theme.at("ink", default: black)
-
-  // `height` accepts a Typst length (cap span in panel units) or a number (cap
-  // span in y data units for continuous y, fraction of slot for discrete y).
-  let height-is-length = type(layer.params.height) == length
-  let half-height = if height-is-length {
-    (layer.params.height / 1cm) / 2
-  } else { layer.params.height / 2 }
-
-  for row in data {
-    let raw-y = row.at(y-col, default: none)
-    let cy = map-position(y-trained, raw-y, ctx.py-range)
-    let lo = parse-number(row.at(xmin-col, default: none))
-    let hi = parse-number(row.at(xmax-col, default: none))
-    if cy == none or lo == none or hi == none { continue }
-    let cx-lo = map-position(x-trained, lo, ctx.px-range)
-    let cx-hi = map-position(x-trained, hi, ctx.px-range)
-    if cx-lo == none or cx-hi == none { continue }
-
-    let (cap-lo, cap-hi) = if height-is-length {
-      (cy - half-height, cy + half-height)
-    } else {
-      let band = _y-band(y-trained, raw-y, half-height, ctx.py-range)
-      if band == none { (cy, cy) } else { band }
-    }
-
-    let colour = if colour-pinned {
-      layer.params.colour
-    } else if colour-col != none and resolve-colour != none {
-      resolve-colour(row.at(colour-col, default: none))
-    } else { ink }
-    let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
-    let final-colour = apply-alpha(colour, alpha)
-
-    let stroke-spec = (
-      paint: final-colour,
-      thickness: layer.params.stroke,
-      dash: layer.params.linetype,
-    )
-
-    if ctx.at("radial", default: none) != none {
-      let p-lo = project-point(ctx, lo, raw-y)
-      let p-hi = project-point(ctx, hi, raw-y)
-      if p-lo == none or p-hi == none { continue }
-      let (sx-lo, sy-lo) = p-lo
-      let (sx-hi, sy-hi) = p-hi
-      cetz.draw.line((sx-lo, sy-lo), (sx-hi, sy-hi), stroke: stroke-spec)
-      let cap = radial-tangent-cap(
-        p-lo,
-        p-hi,
-        if height-is-length { half-height } else { RADIAL-DEFAULT-CAP-HALF },
-      )
-      if cap == none { continue }
-      let (nx, ny) = cap
-      cetz.draw.line(
-        (sx-lo - nx, sy-lo - ny),
-        (sx-lo + nx, sy-lo + ny),
-        stroke: stroke-spec,
-      )
-      cetz.draw.line(
-        (sx-hi - nx, sy-hi - ny),
-        (sx-hi + nx, sy-hi + ny),
-        stroke: stroke-spec,
-      )
-      continue
-    }
-
-    cetz.draw.line((cx-lo, cy), (cx-hi, cy), stroke: stroke-spec)
-    cetz.draw.line((cx-lo, cap-lo), (cx-lo, cap-hi), stroke: stroke-spec)
-    cetz.draw.line((cx-hi, cap-lo), (cx-hi, cap-hi), stroke: stroke-spec)
-  }
+  _draw-errorbar-axis(layer, ctx, "x", layer.params.height)
 }

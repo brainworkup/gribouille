@@ -1,35 +1,39 @@
-///! Helper for the symmetric x-band shared by boxplot/errorbar/crossbar.
+///! Symmetric per-axis band shared by boxplot, errorbar(h), crossbar.
 
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "types.typ": parse-number
 
-/// Compute the panel x-coordinate range of a band centred on `raw-x`.
+/// Compute the panel coordinate range of a band centred on `raw`.
 ///
-/// For continuous x the band edges are mapped through `map-axis` so the
-/// half-width is interpreted in x data units and any scale `view-trans`
-/// expansion is honoured. For discrete x the band is sized as a fraction
-/// of the per-category slot width, accounting for `view-index` expansion.
+/// Axis-agnostic: `trained` and `range` may describe either x or y. For
+/// continuous scales the band edges are mapped through `map-axis` so the
+/// half-width is interpreted in data units and any `view-trans` expansion
+/// is honoured. For discrete scales the band is sized as a fraction of the
+/// per-category slot width, accounting for `view-index` expansion.
 ///
 /// \@internal
 ///
-/// \@param x-trained Trained x scale dictionary providing `type` and `domain`.
-/// \@param raw-x Row x value (numeric for continuous, raw level for discrete).
-/// \@param half-width Band half-width in x data units (continuous) or as a fraction of the slot (discrete).
-/// \@param px-range Pair `(lo, hi)` giving the panel x extent in cetz units.
+/// \@param trained Trained scale dict for the axis the band runs along.
+/// \@param raw Row value at the band centre.
+/// \@param half-width Band half-width in data units (continuous) or as a fraction of the slot (discrete).
+/// \@param range Pair `(lo, hi)` giving the panel extent on the same axis.
 ///
-/// \@returns Pair `(cx-lo, cx-hi)` of mapped band edges, or `none` when the centre cannot be mapped.
-#let x-band(x-trained, raw-x, half-width, px-range) = {
-  if x-trained.type == "continuous" {
-    let raw-num = parse-number(raw-x)
+/// \@returns Pair `(c-lo, c-hi)` of mapped band edges, or `none` when the centre cannot be mapped.
+#let axis-band(trained, raw, half-width, range) = {
+  if trained.type == "continuous" {
+    let raw-num = parse-number(raw)
     if raw-num == none { return none }
     (
-      map-axis(x-trained, raw-num - half-width, px-range),
-      map-axis(x-trained, raw-num + half-width, px-range),
+      map-axis(trained, raw-num - half-width, range),
+      map-axis(trained, raw-num + half-width, range),
     )
   } else {
-    let cx = map-position(x-trained, raw-x, px-range)
-    if cx == none { return none }
-    let half-px = discrete-slot-width(x-trained, px-range) * half-width
-    (cx - half-px, cx + half-px)
+    let c = map-position(trained, raw, range)
+    if c == none { return none }
+    let half = discrete-slot-width(trained, range) * half-width
+    (c - half, c + half)
   }
 }
+
+// Back-compat alias. Consumers should migrate to `axis-band`.
+#let x-band = axis-band

@@ -5,10 +5,7 @@
 ///! Under \@coord-flip the line is drawn as a vertical reference at the same
 ///! data value because the y axis becomes the rendered horizontal axis.
 
-#import "../deps.typ": cetz
-#import "../utils/aes-resolve.typ": resolve-channel
-#import "../scale/train.typ": map-axis-data
-#import "../utils/colour-resolve.typ": apply-alpha
+#import "../utils/ref-line.typ": _draw-axis-lines
 
 /// Horizontal reference line at one or more y intercepts.
 ///
@@ -85,74 +82,5 @@
 )
 
 #let draw(layer, ctx) = {
-  let flipped = ctx.at("flipped", default: false)
-  // Under flip, the user's y axis is the rendered horizontal axis, so an
-  // hline at `y = k` is drawn as a vertical line at horizontal position k.
-  // The trained scale carrying the user's original y values lives on
-  // `trained.x` after the renderer's flip swap.
-  let trained = ctx.trained.at(if flipped { "x" } else { "y" }, default: none)
-  if trained == none or trained.type != "continuous" { return }
-  let ys = layer.params.yintercept
-  if ys == none { return }
-  if type(ys) != array { ys = (ys,) }
-  let colour = if layer.params.colour == auto {
-    ctx.theme.at("ink", default: black)
-  } else { layer.params.colour }
-  let mapping = (ctx.resolve-mapping)(layer)
-  let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
-  let fill = apply-alpha(colour, alpha)
-  let thickness = resolve-channel(
-    "linewidth",
-    layer,
-    mapping,
-    ctx,
-    (:),
-    layer.params.stroke,
-  )
-  let stroke-spec = (
-    paint: fill,
-    thickness: thickness,
-    dash: layer.params.linetype,
-  )
-  let radial = ctx.at("radial", default: none)
-  if radial != none {
-    let (cx, cy) = radial.centre
-    let r-max = radial.r-max
-    if radial.theta-axis == "x" {
-      for y in ys {
-        let r = map-axis-data(trained, float(y), radial.r-range)
-        if r > 0 and r <= r-max {
-          cetz.draw.circle(
-            (cx, cy),
-            radius: r,
-            fill: none,
-            stroke: stroke-spec,
-          )
-        }
-      }
-    } else {
-      for y in ys {
-        let theta = map-axis-data(trained, float(y), radial.theta-range)
-        cetz.draw.line(
-          (cx, cy),
-          (cx + r-max * calc.cos(theta), cy + r-max * calc.sin(theta)),
-          stroke: stroke-spec,
-        )
-      }
-    }
-    return
-  }
-  if flipped {
-    let (py-lo, py-hi) = ctx.py-range
-    for y in ys {
-      let cx = map-axis-data(trained, float(y), ctx.px-range)
-      cetz.draw.line((cx, py-lo), (cx, py-hi), stroke: stroke-spec)
-    }
-  } else {
-    let (px-lo, px-hi) = ctx.px-range
-    for y in ys {
-      let cy = map-axis-data(trained, float(y), ctx.py-range)
-      cetz.draw.line((px-lo, cy), (px-hi, cy), stroke: stroke-spec)
-    }
-  }
+  _draw-axis-lines(layer.params.yintercept, "y", layer, ctx)
 }
