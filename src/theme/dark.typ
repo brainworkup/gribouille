@@ -5,7 +5,7 @@
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-line, element-rect, element-text
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Dark theme: dark grey panel, white grid, dark axis text.
 ///
@@ -67,13 +67,12 @@
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
-) = {
-  let base = (
-    kind: "theme",
-    name: "dark",
-    ink: ink,
-    paper: paper,
-    accent: accent,
+) = _preset(
+  "dark",
+  ink,
+  paper,
+  accent,
+  (
     panel-background: element-rect(fill: col-mix(ink, paper, 0.498)),
     panel-grid: element-line(
       colour: col-mix(ink, paper, 0.7),
@@ -81,6 +80,6 @@
     ),
     axis-line: element-line(colour: col-mix(ink, paper, 0.4), thickness: 0.5pt),
     axis-text: element-text(colour: col-mix(ink, paper, 0.302)),
-  )
-  _apply-overrides(base, fields)
-}
+  ),
+  fields,
+)

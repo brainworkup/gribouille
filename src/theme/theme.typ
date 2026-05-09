@@ -243,6 +243,36 @@
   out
 }
 
+/// Build a theme preset from a name and a surfaces dict, then apply user overrides.
+///
+/// `surfaces` is a flat dict whose keys match the theme's structured fields
+/// (`panel-background`, `panel-grid`, `axis-line`, `axis-text`, ...).
+/// `none`-valued surfaces are dropped so presets can declare "no override
+/// here" inline without polluting the resulting theme dict.
+///
+/// \@internal
+/// \@param name Preset display name (`"grey"`, `"bw"`, ...).
+/// \@param ink Foreground colour.
+/// \@param paper Background colour.
+/// \@param accent Accent colour.
+/// \@param surfaces Dict of surface keys to element records.
+/// \@param fields Rest-binding capture forwarded from the preset constructor.
+/// \@returns A theme dict ready for the renderer.
+#let _preset(name, ink, paper, accent, surfaces, fields) = {
+  let base = (
+    kind: "theme",
+    name: name,
+    ink: ink,
+    paper: paper,
+    accent: accent,
+  )
+  for (k, v) in surfaces.pairs() {
+    if v == none { continue }
+    base.insert(k, v)
+  }
+  _apply-overrides(base, fields)
+}
+
 /// Build a custom theme from per-element overrides.
 ///
 /// Pass named arguments like `axis-title: element-text(size: 12pt)` or `panel-grid: element-blank()`. Each surface is stored as an element record; the renderer reads them via `resolve-element` with cascade `surface → parent → defaults`.

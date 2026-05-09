@@ -4,7 +4,7 @@
 
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-blank, element-line, element-rect
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Classic theme: white panel, axis borders, no gridlines.
 ///
@@ -65,16 +65,15 @@
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
-) = {
-  let base = (
-    kind: "theme",
-    name: "classic",
-    ink: ink,
-    paper: paper,
-    accent: accent,
+) = _preset(
+  "classic",
+  ink,
+  paper,
+  accent,
+  (
     panel-background: element-rect(fill: paper),
     panel-grid: element-blank(),
     axis-line: element-line(colour: ink, thickness: 0.6pt),
-  )
-  _apply-overrides(base, fields)
-}
+  ),
+  fields,
+)

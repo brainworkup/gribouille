@@ -5,7 +5,7 @@
 
 #import "defaults.typ": _tr-ink
 #import "elements.typ": element-blank, element-rect, element-text
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Void theme: no axes, no grid, no panel background.
 ///
@@ -76,19 +76,20 @@
   } else {
     element-rect(fill: _paper)
   }
-  let base = (
-    kind: "theme",
-    name: "void",
-    ink: ink,
-    paper: _paper,
-    accent: accent,
-    panel-background: element-blank(),
-    plot-background: _plot-bg,
-    panel-grid: element-blank(),
-    axis-line: element-blank(),
-    axis-title: element-text(size: 0pt),
-    tick-length: 0cm,
-    tick-labels: false,
+  _preset(
+    "void",
+    ink,
+    _paper,
+    accent,
+    (
+      panel-background: element-blank(),
+      plot-background: _plot-bg,
+      panel-grid: element-blank(),
+      axis-line: element-blank(),
+      axis-title: element-text(size: 0pt),
+      tick-length: 0cm,
+      tick-labels: false,
+    ),
+    fields,
   )
-  _apply-overrides(base, fields)
 }

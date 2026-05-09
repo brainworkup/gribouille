@@ -5,7 +5,7 @@
 
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-blank, element-line, element-rect, element-text
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Test theme: white panel, red axes, no grid, for visual debugging.
 ///
@@ -44,7 +44,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   theme: theme-test(strip-fill: rgb("#ffe8b3")),
+///   theme: theme-test(strip-background: element-rect(fill: rgb("#ffe8b3"))),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -75,19 +75,18 @@
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
-) = {
-  let base = (
-    kind: "theme",
-    name: "test",
-    ink: ink,
-    paper: paper,
-    accent: accent,
+) = _preset(
+  "test",
+  ink,
+  paper,
+  accent,
+  (
     panel-background: element-rect(fill: paper),
     panel-grid: element-blank(),
     axis-line: element-line(colour: rgb("#cc0000"), thickness: 1pt),
     axis-text: element-text(colour: rgb("#cc0000")),
     strip-background: element-rect(fill: rgb("#ffd6d6")),
     strip-text: element-text(colour: rgb("#cc0000")),
-  )
-  _apply-overrides(base, fields)
-}
+  ),
+  fields,
+)

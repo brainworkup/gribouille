@@ -5,7 +5,7 @@
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-line, element-rect
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Black-and-white theme: white panel, black axes, light grey grid.
 ///
@@ -66,19 +66,18 @@
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
-) = {
-  let base = (
-    kind: "theme",
-    name: "bw",
-    ink: ink,
-    paper: paper,
-    accent: accent,
+) = _preset(
+  "bw",
+  ink,
+  paper,
+  accent,
+  (
     panel-background: element-rect(fill: paper),
     panel-grid: element-line(
       colour: col-mix(ink, paper, 0.7),
       thickness: 0.4pt,
     ),
     axis-line: element-line(colour: ink, thickness: 0.5pt),
-  )
-  _apply-overrides(base, fields)
-}
+  ),
+  fields,
+)

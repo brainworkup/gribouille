@@ -5,7 +5,7 @@
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-line, element-rect, element-text
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Linedraw theme: white panel, strong black axes, very faint grid.
 ///
@@ -66,13 +66,12 @@
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
-) = {
-  let base = (
-    kind: "theme",
-    name: "linedraw",
-    ink: ink,
-    paper: paper,
-    accent: accent,
+) = _preset(
+  "linedraw",
+  ink,
+  paper,
+  accent,
+  (
     panel-background: element-rect(fill: paper),
     panel-grid: element-line(
       colour: col-mix(ink, paper, 0.7),
@@ -80,6 +79,6 @@
     ),
     axis-line: element-line(colour: ink, thickness: 0.8pt),
     axis-text: element-text(colour: ink),
-  )
-  _apply-overrides(base, fields)
-}
+  ),
+  fields,
+)

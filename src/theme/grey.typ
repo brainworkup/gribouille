@@ -7,7 +7,7 @@
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
 #import "elements.typ": element-line, element-rect, element-text
-#import "theme.typ": _apply-overrides
+#import "theme.typ": _preset
 
 /// Grey theme: light grey panel with white gridlines.
 ///
@@ -58,7 +58,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   theme: theme-grey(panel-fill: rgb("#f7f0e7")),
+///   theme: theme-grey(panel-background: element-rect(fill: rgb("#f7f0e7"))),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -70,13 +70,12 @@
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
-) = {
-  let base = (
-    kind: "theme",
-    name: "grey",
-    ink: ink,
-    paper: paper,
-    accent: accent,
+) = _preset(
+  "grey",
+  ink,
+  paper,
+  accent,
+  (
     panel-background: element-rect(fill: col-mix(ink, paper, 0.92)),
     panel-grid: element-line(
       colour: col-mix(ink, paper, 0.7),
@@ -85,6 +84,6 @@
     axis-line: element-line(colour: ink, thickness: 0.5pt),
     axis-text: element-text(colour: col-mix(ink, paper, 0.302)),
     strip-background: element-rect(fill: col-mix(ink, paper, 0.85)),
-  )
-  _apply-overrides(base, fields)
-}
+  ),
+  fields,
+)
