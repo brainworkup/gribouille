@@ -1242,109 +1242,71 @@
   let _x-disp = _axis-display(x-trained)
   let _y-disp = _axis-display(y-trained)
 
-  if not is-radial and x-trained != none and x-trained.type == "continuous" {
-    let breaks = if axis-breaks != none and axis-breaks.x != none {
-      axis-breaks.x
-    } else { _axis-breaks(x-trained) }
+  // Draw the cartesian axis ticks, gridlines, and labels for one axis.
+  // Continuous and discrete axes share everything except how `cx`/`cy` is
+  // mapped, where the labels come from, and whether gridlines are drawn
+  // (continuous only, since discrete ticks already mark every level).
+  let _draw-cartesian-axis(axis, trained, disp, ax-text-typst, draw-label) = {
+    if is-radial or trained == none { return }
+    let is-continuous = trained.type == "continuous"
+    if not is-continuous and trained.type != "discrete" { return }
+    let stroke = if axis == "x" { _ax-ticks.xb } else { _ax-ticks.yl }
+    let tick-len = if axis == "x" { _tick-len.xb } else { _tick-len.yl }
+    let range = if axis == "x" { px-range } else { py-range }
+    let breaks = if is-continuous {
+      if axis-breaks != none and axis-breaks.at(axis, default: none) != none {
+        axis-breaks.at(axis)
+      } else { _axis-breaks(trained) }
+    } else { trained.domain }
     for (idx, b) in breaks.enumerate() {
-      let cx = map-axis-data(x-trained, b, px-range)
-      if grid-stroke != none {
-        line((cx, py-lo), (cx, py-hi), stroke: grid-stroke)
+      let c = if is-continuous {
+        map-axis-data(trained, b, range)
+      } else { map-position(trained, b, range) }
+      if is-continuous and grid-stroke != none {
+        if axis == "x" {
+          line((c, py-lo), (c, py-hi), stroke: grid-stroke)
+        } else {
+          line((px-lo, c), (px-hi, c), stroke: grid-stroke)
+        }
       }
-      if _should-draw-tick(_ax-ticks.xb, _tick-len.xb) {
-        line((cx, py-lo), (cx, py-lo - _tick-len.xb), stroke: _ax-ticks.xb)
+      if _should-draw-tick(stroke, tick-len) {
+        if axis == "x" {
+          line((c, py-lo), (c, py-lo - tick-len), stroke: stroke)
+        } else {
+          line((px-lo - tick-len, c), (px-lo, c), stroke: stroke)
+        }
       }
-      _draw-x-label(
-        cx,
+      let fallback = if is-continuous { _axis-label(trained, b) } else { b }
+      draw-label(
+        c,
         resolve-prose(
           resolve-label(
-            _x-disp.labels,
+            disp.labels,
             b,
             idx,
-            _axis-label(x-trained, b),
-            typst-mark: _x-disp.typst-mark,
+            fallback,
+            typst-mark: disp.typst-mark,
           ),
-          eval-strings: _ax-text.xb.typst,
-        ),
-        idx,
-      )
-    }
-  } else if (
-    not is-radial and x-trained != none and x-trained.type == "discrete"
-  ) {
-    for (idx, level) in x-trained.domain.enumerate() {
-      let cx = map-position(x-trained, level, px-range)
-      if _should-draw-tick(_ax-ticks.xb, _tick-len.xb) {
-        line((cx, py-lo), (cx, py-lo - _tick-len.xb), stroke: _ax-ticks.xb)
-      }
-      _draw-x-label(
-        cx,
-        resolve-prose(
-          resolve-label(
-            _x-disp.labels,
-            level,
-            idx,
-            level,
-            typst-mark: _x-disp.typst-mark,
-          ),
-          eval-strings: _ax-text.xb.typst,
+          eval-strings: ax-text-typst,
         ),
         idx,
       )
     }
   }
-
-  if not is-radial and y-trained != none and y-trained.type == "continuous" {
-    let breaks = if axis-breaks != none and axis-breaks.y != none {
-      axis-breaks.y
-    } else { _axis-breaks(y-trained) }
-    for (idx, b) in breaks.enumerate() {
-      let cy = map-axis-data(y-trained, b, py-range)
-      if grid-stroke != none {
-        line((px-lo, cy), (px-hi, cy), stroke: grid-stroke)
-      }
-      if _should-draw-tick(_ax-ticks.yl, _tick-len.yl) {
-        line((px-lo - _tick-len.yl, cy), (px-lo, cy), stroke: _ax-ticks.yl)
-      }
-      _draw-y-label(
-        cy,
-        resolve-prose(
-          resolve-label(
-            _y-disp.labels,
-            b,
-            idx,
-            _axis-label(y-trained, b),
-            typst-mark: _y-disp.typst-mark,
-          ),
-          eval-strings: _ax-text.yl.typst,
-        ),
-        idx,
-      )
-    }
-  } else if (
-    not is-radial and y-trained != none and y-trained.type == "discrete"
-  ) {
-    for (idx, level) in y-trained.domain.enumerate() {
-      let cy = map-position(y-trained, level, py-range)
-      if _should-draw-tick(_ax-ticks.yl, _tick-len.yl) {
-        line((px-lo - _tick-len.yl, cy), (px-lo, cy), stroke: _ax-ticks.yl)
-      }
-      _draw-y-label(
-        cy,
-        resolve-prose(
-          resolve-label(
-            _y-disp.labels,
-            level,
-            idx,
-            level,
-            typst-mark: _y-disp.typst-mark,
-          ),
-          eval-strings: _ax-text.yl.typst,
-        ),
-        idx,
-      )
-    }
-  }
+  _draw-cartesian-axis(
+    "x",
+    x-trained,
+    _x-disp,
+    _ax-text.xb.typst,
+    _draw-x-label,
+  )
+  _draw-cartesian-axis(
+    "y",
+    y-trained,
+    _y-disp,
+    _ax-text.yl.typst,
+    _draw-y-label,
+  )
 
   // Minor log ticks: opt-in via guide-axis-logticks() on a log10-trans axis.
   // Emits half-length, unlabelled ticks at sub-decade positions (2, 3, ..., 9
