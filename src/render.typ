@@ -2150,30 +2150,50 @@
   ),
 )
 
-// Width reserved between the panel right edge and the legend (or canvas edge)
-// for the secondary y-axis ticks, labels, and title. Matches the primary
-// formula so the title-to-label gap is symmetric on left and right.
-#let _sec-y-extent(sec, tick-len, sec-extents, ax-title) = {
-  if sec == none { return 0.0 }
-  let label-w = _y-label-width(0, 1, sec-extents.width, sec-extents.height)
-  let title-cm = if sec.at("name", default: none) != none {
-    _ax-text-cm(ax-title.size)
-  } else { 0.0 }
-  let gap = _text-margin-cm(ax-title, "left", 0.25em)
-  tick-len + 0.1 + label-w + gap + title-cm + 0.05
+// Draw one facet strip: a filled rectangle with the labeller text centred
+// inside. Shared between facet-wrap (top strip) and facet-grid (top + side
+// strips). `angle` is `-90deg` for the rotated row-strip, else `0deg`.
+#let _draw-strip(corner-lo, corner-hi, label-text, style, angle: 0deg) = {
+  cetz.draw.rect(
+    corner-lo,
+    corner-hi,
+    fill: style.strip-fill,
+    stroke: none,
+  )
+  let (cx, cy) = (
+    (corner-lo.at(0) + corner-hi.at(0)) / 2,
+    (corner-lo.at(1) + corner-hi.at(1)) / 2,
+  )
+  cetz.draw.content(
+    (cx, cy),
+    text(
+      size: style.strip-text.size,
+      fill: style.strip-text.fill,
+      weight: style.strip-text.weight,
+    )[#resolve-prose(label-text, eval-strings: style.strip-text.typst)],
+    angle: angle,
+  )
 }
 
-// Height reserved between the panel top edge and the canvas top for the
-// secondary x-axis ticks, labels, and title.
-#let _sec-x-extent(sec, tick-len, sec-extents, ax-title) = {
+// Reserved extent between the panel and the canvas edge for the secondary
+// axis ticks, labels, and title. `axis` selects orientation: `"y"` (right
+// edge, label width) or `"x"` (top edge, label depth). Matches the primary
+// formula so the title-to-label gap stays symmetric on opposing edges.
+#let _sec-extent(sec, tick-len, sec-extents, ax-title, axis) = {
   if sec == none { return 0.0 }
-  let label-d = _x-label-depth(0, 1, sec-extents.width, sec-extents.height)
+  let label-extent = if axis == "y" {
+    _y-label-width(0, 1, sec-extents.width, sec-extents.height)
+  } else {
+    _x-label-depth(0, 1, sec-extents.width, sec-extents.height)
+  }
   let title-cm = if sec.at("name", default: none) != none {
     _ax-text-cm(ax-title.size)
   } else { 0.0 }
-  let gap = _text-margin-cm(ax-title, "bottom", 0.25em)
-  tick-len + 0.1 + label-d + gap + title-cm + 0.05
+  let gap-side = if axis == "y" { "left" } else { "bottom" }
+  let gap = _text-margin-cm(ax-title, gap-side, 0.25em)
+  tick-len + 0.1 + label-extent + gap + title-cm + 0.05
 }
+
 
 // Build the four-sided margin used by the canvas layout. `theme-margin` may
 // be `none` or a non-margin value (use the dynamic default verbatim) or a
@@ -2463,12 +2483,6 @@
       let y0 = (
         margin.bottom + (nrow - 1 - row) * (panel-h + gutter-y + strip-h)
       )
-      rect(
-        (x0, y0 + panel-h),
-        (x0 + panel-w, y0 + panel-h + strip-h),
-        fill: style.strip-fill,
-        stroke: none,
-      )
       let panel-layers = panels.at(i).layers
       let panel-count = _panel-row-count(panel-layers)
       let strip-text = labellers.format(
@@ -2477,13 +2491,11 @@
         level,
         count: panel-count,
       )
-      content(
-        (x0 + panel-w / 2, y0 + panel-h + strip-h / 2),
-        text(
-          size: style.strip-text.size,
-          fill: style.strip-text.fill,
-          weight: style.strip-text.weight,
-        )[#resolve-prose(strip-text, eval-strings: style.strip-text.typst)],
+      _draw-strip(
+        (x0, y0 + panel-h),
+        (x0 + panel-w, y0 + panel-h + strip-h),
+        strip-text,
+        style,
       )
       let panel-trained = if panel-trained-list.len() == 0 {
         trained
@@ -2673,25 +2685,17 @@
       let strip-y = margin.bottom + grid-h
       for (c, col-lv) in col-levels.enumerate() {
         let x0 = margin.left + c * (panel-w + gutter-x)
-        rect(
-          (x0, strip-y),
-          (x0 + panel-w, strip-y + top-strip),
-          fill: style.strip-fill,
-          stroke: none,
-        )
         let strip-text = labellers.format(
           _grid-labeller,
           col-var,
           col-lv,
           count: _col-count(c),
         )
-        content(
-          (x0 + panel-w / 2, strip-y + top-strip / 2),
-          text(
-            size: style.strip-text.size,
-            fill: style.strip-text.fill,
-            weight: style.strip-text.weight,
-          )[#resolve-prose(strip-text, eval-strings: style.strip-text.typst)],
+        _draw-strip(
+          (x0, strip-y),
+          (x0 + panel-w, strip-y + top-strip),
+          strip-text,
+          style,
         )
       }
     }
@@ -2700,25 +2704,17 @@
       let strip-x = margin.left + grid-w
       for (r, row-lv) in row-levels.enumerate() {
         let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
-        rect(
-          (strip-x, y0),
-          (strip-x + right-strip, y0 + panel-h),
-          fill: style.strip-fill,
-          stroke: none,
-        )
         let strip-text = labellers.format(
           _grid-labeller,
           row-var,
           row-lv,
           count: _row-count(r),
         )
-        content(
-          (strip-x + right-strip / 2, y0 + panel-h / 2),
-          text(
-            size: style.strip-text.size,
-            fill: style.strip-text.fill,
-            weight: style.strip-text.weight,
-          )[#resolve-prose(strip-text, eval-strings: style.strip-text.typst)],
+        _draw-strip(
+          (strip-x, y0),
+          (strip-x + right-strip, y0 + panel-h),
+          strip-text,
+          style,
           angle: -90deg,
         )
       }
@@ -3007,17 +3003,19 @@
     typst-eval: ax-text.yr.typst,
   )
 
-  let sec-x-extent = _sec-x-extent(
+  let sec-x-extent = _sec-extent(
     x-sec,
     tick-len.xt,
     x-sec-extents,
     ax-title.xt,
+    "x",
   )
-  let sec-y-extent = _sec-y-extent(
+  let sec-y-extent = _sec-extent(
     y-sec,
     tick-len.yr,
     y-sec-extents,
     ax-title.yr,
+    "y",
   )
 
   let x-guide = _read-axis-guide(spec, "x")
