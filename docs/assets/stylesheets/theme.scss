@@ -718,6 +718,31 @@ header#title-block-header .subtitle {
   padding: 1.5rem 0;
 }
 
+// --- Tooltips. -----------------------------------------------------------
+// Tippy.js (loaded by Quarto in tippy.umd.min.js) styled with the gribouille
+// palette. Bound by assets/scripts/tooltips.html on navbar/footer surfaces.
+.tippy-box[data-theme~="gb"] {
+  background: var(--gb-ink);
+  color: var(--gb-paper);
+  border: 1px solid var(--gb-primary);
+  border-radius: var(--gb-radius-sm);
+  box-shadow: var(--gb-shadow-lift);
+  font-family: $font-family-sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 0.15rem 0.25rem;
+  animation: gb-fade-in 0.15s var(--gb-ease);
+}
+
+// Bootstrap tooltips (e.g., code-copy "Copied!") fade in to match.
+.tooltip { animation: gb-fade-in 0.2s var(--gb-ease); }
+
+@keyframes gb-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 // --- Misc. --------------------------------------------------------------
 hr {
   border: 0;
