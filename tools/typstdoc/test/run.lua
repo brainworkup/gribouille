@@ -763,6 +763,99 @@ describe("resolve: cross-references", function()
 end)
 
 -- -----------------------------------------------------------------------
+describe("theme_keys: extractor + table render", function()
+  local theme_keys = require("theme_keys")
+
+  local DEFAULTS_BODY = [[
+#let _tr-ink = black
+#let _tr-paper = white
+
+#let default-theme = (
+  kind: "theme",
+  name: "grey",
+
+  ink: _tr-ink,
+  paper: _tr-paper,
+  accent: rgb("#3366FF"),
+
+  text: element-text(size: 9pt),
+  line: element-line(thickness: 0.5pt),
+  rect: element-rect(),
+
+  axis-text: element-text(size: 8pt),
+  axis-title: element-text(size: 9pt),
+  panel-grid: element-line(thickness: 0.5pt),
+  panel-background: element-rect(),
+
+  plot-margin: margin(),
+  tick-length: 0.1cm,
+  tick-labels: true,
+)
+]]
+
+  local THEME_BODY = [[
+#let _surface-parent = {
+  let out = (
+    "axis-text": "text",
+    "axis-title": "text",
+    "panel-grid": "line",
+    "panel-background": "rect",
+  )
+  for fam in ("axis-text", "axis-title") {
+    out.insert(fam + "-x", fam)
+  }
+  out
+}
+]]
+
+  it("read_default_theme classifies every value kind", function()
+    local path = tmpfile("theme_defaults", DEFAULTS_BODY)
+    local _, defaults = theme_keys.read_default_theme(path)
+    assert_eq(defaults["text"].kind, "element-text")
+    assert_eq(defaults["text"].default, "element-text(size: 9pt)")
+    assert_eq(defaults["line"].kind, "element-line")
+    assert_eq(defaults["rect"].kind, "element-rect")
+    assert_eq(defaults["ink"].kind, "colour")
+    assert_eq(defaults["ink"].default, "black")
+    assert_eq(defaults["paper"].default, "white")
+    assert_eq(defaults["accent"].default, 'rgb("#3366FF")')
+    assert_eq(defaults["plot-margin"].kind, "margin")
+    assert_eq(defaults["plot-margin"].default, "margin()")
+    assert_eq(defaults["tick-length"].kind, "length")
+    assert_eq(defaults["tick-length"].default, "0.1cm")
+    assert_eq(defaults["tick-labels"].kind, "boolean")
+    assert_eq(defaults["tick-labels"].default, "true")
+    assert_true(defaults["kind"] ~= nil, "raw `kind` key still surfaces from parsing")
+  end)
+
+  it("read_surface_parent reads explicit entries and expands axis families", function()
+    local path = tmpfile("theme_parents", THEME_BODY)
+    local parents = theme_keys.read_surface_parent(path)
+    assert_eq(parents["axis-text"], "text")
+    assert_eq(parents["panel-grid"], "line")
+    assert_eq(parents["axis-text-x"], "axis-text")
+    assert_eq(parents["axis-text-x-bottom"], "axis-text-x")
+    assert_eq(parents["axis-text-y-right"], "axis-text-y")
+    assert_eq(parents["axis-line-x"], "axis-line",
+      "axis-line variants are added even when not in the explicit dict")
+    assert_eq(parents["tick-length-x"], "tick-length",
+      "tick-length variants reconstructed for the scalar cascade")
+  end)
+
+  it("render_table emits a header and one row per record", function()
+    local records = {
+      { key = "text", type_str = "@element-text", default_str = "element-text(size: 9pt)", parent_str = "(root)" },
+      { key = "axis-text-x", type_str = "@element-text or @element-typst", default_str = "inherits", parent_str = "axis-text" },
+    }
+    local out = theme_keys.render_table(records)
+    assert_contains(out, "| Key | Type | Default | Parent |")
+    assert_contains(out, "| --- | --- | --- | --- |")
+    assert_contains(out, "| `text` | @element-text | `element-text(size: 9pt)` | (root) |")
+    assert_contains(out, "| `axis-text-x` | @element-text or @element-typst | inherits | `axis-text` |")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
 cleanup()
 
 io.write(string.format("\n%d passed, %d failed\n", T.passed, T.failed))
