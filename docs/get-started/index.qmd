@@ -317,6 +317,7 @@ Wiring it to the `plot-subtitle` theme surface lets the subtitle mix prose with 
   rgb("#D55E00"),
   rgb("#009E73"),
 )
+#let n = penguins.species.len()
 
 #plot(
   data: penguins,
@@ -338,7 +339,7 @@ Wiring it to the `plot-subtitle` theme surface lets the subtitle mix prose with 
   facet: facet-wrap("island"),
   labs: labs(
     title: "Penguin Body Mass Scales With Flipper Length",
-    subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = 344$ birds",
+    subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = " + str(n) + "$ birds",
     x: "Flipper Length (mm)",
     y: "Body Mass (g)",
     colour: "Species",
@@ -372,6 +373,7 @@ Every row also carries an `island` value so [`facet-wrap`](../reference/facets/f
   rgb("#D55E00"),
   rgb("#009E73"),
 )
+#let n = penguins.species.len()
 
 #let species-counts = (
   (island: "Torgersen", flipper-len: 172, body-mass: 6200, species: "Adelie",    label: $N_"Adelie" = 52$),
@@ -413,7 +415,7 @@ Every row also carries an `island` value so [`facet-wrap`](../reference/facets/f
   facet: facet-wrap("island"),
   labs: labs(
     title: "Penguin Body Mass Scales With Flipper Length",
-    subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = 344$ birds",
+    subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = " + str(n) + "$ birds",
     x: "Flipper Length (mm)",
     y: "Body Mass (g)",
     colour: "Species",
