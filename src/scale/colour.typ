@@ -8,6 +8,340 @@
 #import "../utils/palette.typ": brewer-palette
 #import "../utils/colour.typ": grey-palette, hue-palette
 
+// Internal builders shared by every `scale-colour-*` / `scale-fill-*` twin.
+// Each takes the aesthetic name as the first positional argument and the
+// per-family kwargs after; the `scale-colour-{name}` / `scale-fill-{name}`
+// public wrappers forward `..args` so default values live exactly here.
+
+#let _scale-continuous(
+  aesthetic,
+  name: none,
+  palette: auto,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: palette,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+#let _scale-discrete(
+  aesthetic,
+  name: none,
+  palette: auto,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  palette: palette,
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-manual(
+  aesthetic,
+  values: (),
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  palette: values,
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-identity(aesthetic, name: none) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "identity",
+  name: name,
+)
+
+#let _scale-viridis-d(
+  aesthetic,
+  option: "viridis",
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  palette: viridis-mod.palette(option),
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-viridis-c(
+  aesthetic,
+  option: "viridis",
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: viridis-mod.palette(option),
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+#let _scale-viridis-b(
+  aesthetic,
+  option: "viridis",
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: viridis-mod.palette(option),
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+#let _scale-brewer(
+  aesthetic,
+  palette: "Set1",
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  palette: brewer-palette(palette),
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-gradient(
+  aesthetic,
+  low: rgb("#132B43"),
+  high: rgb("#56B1F7"),
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: (low, high),
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+#let _scale-gradient2(
+  aesthetic,
+  low: rgb("#1F77B4"),
+  mid: rgb("#FFFFFF"),
+  high: rgb("#D62728"),
+  midpoint: 0,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: (low, mid, high),
+  midpoint: midpoint,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+#let _scale-gradientn(
+  aesthetic,
+  colours: (),
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: colours,
+  limits: limits,
+  breaks: breaks,
+  labels: labels,
+)
+
+#let _scale-grey(
+  aesthetic,
+  start: 0.2,
+  end: 0.8,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  palette: grey-palette(10, start: start, end: end),
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-hue(
+  aesthetic,
+  h: (15deg, 375deg),
+  c: 100,
+  l: 65,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "discrete",
+  name: name,
+  palette: hue-palette(12, h: h, c: c, l: l),
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-distiller(
+  aesthetic,
+  palette: "Spectral",
+  direction: 1,
+  name: none,
+  limits: none,
+  breaks: auto,
+  labels: auto,
+) = {
+  let stops = brewer-palette(palette)
+  if direction < 0 { stops = stops.rev() }
+  (
+    kind: "scale",
+    aesthetic: aesthetic,
+    type: "continuous",
+    name: name,
+    palette: stops,
+    limits: limits,
+    breaks: breaks,
+    labels: labels,
+  )
+}
+
+#let _scale-steps(
+  aesthetic,
+  low: rgb("#132B43"),
+  high: rgb("#56B1F7"),
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: (low, high),
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+#let _scale-steps2(
+  aesthetic,
+  low: rgb("#005A32"),
+  mid: white,
+  high: rgb("#A50026"),
+  midpoint: 0,
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: (low, mid, high),
+  midpoint: midpoint,
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+#let _scale-stepsn(
+  aesthetic,
+  colours: (),
+  n-breaks: 5,
+  name: none,
+  limits: none,
+  labels: auto,
+) = (
+  kind: "scale",
+  aesthetic: aesthetic,
+  type: "continuous",
+  name: name,
+  palette: colours,
+  limits: limits,
+  labels: labels,
+  binned: true,
+  n-breaks: n-breaks,
+)
+
+#let _scale-fermenter(
+  aesthetic,
+  palette: "Spectral",
+  n-breaks: 5,
+  direction: 1,
+  name: none,
+  limits: none,
+  labels: auto,
+) = {
+  let stops = brewer-palette(palette)
+  if direction < 0 { stops = stops.rev() }
+  (
+    kind: "scale",
+    aesthetic: aesthetic,
+    type: "continuous",
+    name: name,
+    palette: stops,
+    limits: limits,
+    labels: labels,
+    binned: true,
+    n-breaks: n-breaks,
+  )
+}
+
 /// Continuous colour scale mapping a numeric column to stroke colours.
 ///
 /// \@category Scales
@@ -51,22 +385,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-viridis-c, \@scale-colour-discrete, \@scale-fill-continuous
-#let scale-colour-continuous(
-  name: none,
-  palette: auto,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: palette,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-colour-continuous(..args) = _scale-continuous("colour", ..args)
 
 /// Discrete colour scale mapping categorical levels to stroke colours.
 ///
@@ -137,20 +456,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-manual, \@scale-colour-viridis-d, \@scale-fill-discrete
-#let scale-colour-discrete(
-  name: none,
-  palette: auto,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "discrete",
-  name: name,
-  palette: palette,
-  limits: limits,
-  labels: labels,
-)
+#let scale-colour-discrete(..args) = _scale-discrete("colour", ..args)
 
 /// Continuous fill scale mapping a numeric column to fill colours.
 ///
@@ -201,22 +507,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-viridis-c, \@scale-fill-discrete, \@scale-colour-continuous
-#let scale-fill-continuous(
-  name: none,
-  palette: auto,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: palette,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-fill-continuous(..args) = _scale-continuous("fill", ..args)
 
 /// Discrete fill scale mapping categorical levels to fill colours.
 ///
@@ -268,20 +559,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-manual, \@scale-fill-viridis-d, \@scale-colour-discrete
-#let scale-fill-discrete(
-  name: none,
-  palette: auto,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "discrete",
-  name: name,
-  palette: palette,
-  limits: limits,
-  labels: labels,
-)
+#let scale-fill-discrete(..args) = _scale-discrete("fill", ..args)
 
 /// Manual discrete colour scale: supply the colour array directly.
 ///
@@ -340,15 +618,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-discrete, \@scale-fill-manual
-#let scale-colour-manual(values: (), name: none, limits: none, labels: auto) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "discrete",
-  name: name,
-  palette: values,
-  limits: limits,
-  labels: labels,
-)
+#let scale-colour-manual(..args) = _scale-manual("colour", ..args)
 
 /// Manual discrete fill scale: supply the colour array directly.
 ///
@@ -403,15 +673,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-discrete, \@scale-colour-manual
-#let scale-fill-manual(values: (), name: none, limits: none, labels: auto) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "discrete",
-  name: name,
-  palette: values,
-  limits: limits,
-  labels: labels,
-)
+#let scale-fill-manual(..args) = _scale-manual("fill", ..args)
 
 /// Discrete viridis colour scale.
 ///
@@ -467,20 +729,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-viridis-c, \@scale-colour-viridis-b, \@scale-fill-viridis-d
-#let scale-colour-viridis-d(
-  option: "viridis",
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "discrete",
-  name: name,
-  palette: viridis-mod.palette(option),
-  limits: limits,
-  labels: labels,
-)
+#let scale-colour-viridis-d(..args) = _scale-viridis-d("colour", ..args)
 
 /// Continuous viridis colour scale.
 ///
@@ -526,22 +775,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-viridis-d, \@scale-colour-viridis-b, \@scale-fill-viridis-c
-#let scale-colour-viridis-c(
-  option: "viridis",
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: viridis-mod.palette(option),
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-colour-viridis-c(..args) = _scale-viridis-c("colour", ..args)
 
 /// Binned viridis colour scale.
 ///
@@ -588,23 +822,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-viridis-c, \@scale-colour-viridis-d, \@scale-fill-viridis-b
-#let scale-colour-viridis-b(
-  option: "viridis",
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: viridis-mod.palette(option),
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-colour-viridis-b(..args) = _scale-viridis-b("colour", ..args)
 
 /// Discrete viridis fill scale.
 ///
@@ -658,20 +876,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-viridis-c, \@scale-fill-viridis-b, \@scale-colour-viridis-d
-#let scale-fill-viridis-d(
-  option: "viridis",
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "discrete",
-  name: name,
-  palette: viridis-mod.palette(option),
-  limits: limits,
-  labels: labels,
-)
+#let scale-fill-viridis-d(..args) = _scale-viridis-d("fill", ..args)
 
 /// Continuous viridis fill scale.
 ///
@@ -720,22 +925,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-viridis-d, \@scale-fill-viridis-b, \@scale-colour-viridis-c
-#let scale-fill-viridis-c(
-  option: "viridis",
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: viridis-mod.palette(option),
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-fill-viridis-c(..args) = _scale-viridis-c("fill", ..args)
 
 /// Colour scale that uses each row's value as the stroke colour directly.
 ///
@@ -771,12 +961,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-manual, \@scale-fill-identity
-#let scale-colour-identity(name: none) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "identity",
-  name: name,
-)
+#let scale-colour-identity(..args) = _scale-identity("colour", ..args)
 
 /// Fill scale that uses each row's value as the fill colour directly.
 ///
@@ -809,12 +994,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-manual, \@scale-colour-identity
-#let scale-fill-identity(name: none) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "identity",
-  name: name,
-)
+#let scale-fill-identity(..args) = _scale-identity("fill", ..args)
 
 /// Binned viridis fill scale.
 ///
@@ -863,23 +1043,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-viridis-c, \@scale-fill-viridis-d, \@scale-colour-viridis-b
-#let scale-fill-viridis-b(
-  option: "viridis",
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: viridis-mod.palette(option),
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-fill-viridis-b(..args) = _scale-viridis-b("fill", ..args)
 
 /// Discrete ColorBrewer colour scale.
 ///
@@ -938,20 +1102,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-brewer, \@scale-colour-discrete
-#let scale-colour-brewer(
-  palette: "Set1",
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "discrete",
-  name: name,
-  palette: brewer-palette(palette),
-  limits: limits,
-  labels: labels,
-)
+#let scale-colour-brewer(..args) = _scale-brewer("colour", ..args)
 
 /// Discrete ColorBrewer fill scale.
 ///
@@ -1003,20 +1154,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-brewer, \@scale-fill-discrete
-#let scale-fill-brewer(
-  palette: "Set1",
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "discrete",
-  name: name,
-  palette: brewer-palette(palette),
-  limits: limits,
-  labels: labels,
-)
+#let scale-fill-brewer(..args) = _scale-brewer("fill", ..args)
 
 /// Continuous two-stop colour gradient.
 ///
@@ -1066,23 +1204,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-gradient2, \@scale-colour-gradientn, \@scale-fill-gradient
-#let scale-colour-gradient(
-  low: rgb("#132B43"),
-  high: rgb("#56B1F7"),
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: (low, high),
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-colour-gradient(..args) = _scale-gradient("colour", ..args)
 
 /// Continuous diverging colour gradient through a midpoint.
 ///
@@ -1137,26 +1259,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-gradient, \@scale-colour-gradientn, \@scale-fill-gradient2
-#let scale-colour-gradient2(
-  low: rgb("#1F77B4"),
-  mid: rgb("#FFFFFF"),
-  high: rgb("#D62728"),
-  midpoint: 0,
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: (low, mid, high),
-  midpoint: midpoint,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-colour-gradient2(..args) = _scale-gradient2("colour", ..args)
 
 /// Continuous n-stop colour gradient.
 ///
@@ -1208,22 +1311,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-gradient, \@scale-colour-gradient2, \@scale-fill-gradientn
-#let scale-colour-gradientn(
-  colours: (),
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: colours,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-colour-gradientn(..args) = _scale-gradientn("colour", ..args)
 
 /// Continuous two-stop fill gradient.
 ///
@@ -1262,23 +1350,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-gradient, \@scale-fill-gradient2, \@scale-fill-gradientn
-#let scale-fill-gradient(
-  low: rgb("#132B43"),
-  high: rgb("#56B1F7"),
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: (low, high),
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-fill-gradient(..args) = _scale-gradient("fill", ..args)
 
 /// Continuous diverging fill gradient through a midpoint.
 ///
@@ -1317,26 +1389,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-gradient2, \@scale-fill-gradient, \@scale-fill-gradientn
-#let scale-fill-gradient2(
-  low: rgb("#1F77B4"),
-  mid: rgb("#FFFFFF"),
-  high: rgb("#D62728"),
-  midpoint: 0,
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: (low, mid, high),
-  midpoint: midpoint,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-fill-gradient2(..args) = _scale-gradient2("fill", ..args)
 
 /// Continuous n-stop fill gradient.
 ///
@@ -1373,22 +1426,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-gradientn, \@scale-fill-gradient, \@scale-fill-gradient2
-#let scale-fill-gradientn(
-  colours: (),
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: colours,
-  limits: limits,
-  breaks: breaks,
-  labels: labels,
-)
+#let scale-fill-gradientn(..args) = _scale-gradientn("fill", ..args)
 
 /// Discrete grey colour scale.
 ///
@@ -1443,21 +1481,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-grey, \@scale-colour-discrete
-#let scale-colour-grey(
-  start: 0.2,
-  end: 0.8,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "discrete",
-  name: name,
-  palette: grey-palette(10, start: start, end: end),
-  limits: limits,
-  labels: labels,
-)
+#let scale-colour-grey(..args) = _scale-grey("colour", ..args)
 
 /// Discrete grey fill scale.
 ///
@@ -1493,21 +1517,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-grey, \@scale-fill-discrete
-#let scale-fill-grey(
-  start: 0.2,
-  end: 0.8,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "discrete",
-  name: name,
-  palette: grey-palette(10, start: start, end: end),
-  limits: limits,
-  labels: labels,
-)
+#let scale-fill-grey(..args) = _scale-grey("fill", ..args)
 
 /// Discrete equally-spaced hue colour scale.
 ///
@@ -1572,22 +1582,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-hue, \@scale-colour-discrete
-#let scale-colour-hue(
-  h: (15deg, 375deg),
-  c: 100,
-  l: 65,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "discrete",
-  name: name,
-  palette: hue-palette(12, h: h, c: c, l: l),
-  limits: limits,
-  labels: labels,
-)
+#let scale-colour-hue(..args) = _scale-hue("colour", ..args)
 
 /// Discrete equally-spaced hue fill scale.
 ///
@@ -1624,22 +1619,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-hue, \@scale-fill-discrete
-#let scale-fill-hue(
-  h: (15deg, 375deg),
-  c: 100,
-  l: 65,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "discrete",
-  name: name,
-  palette: hue-palette(12, h: h, c: c, l: l),
-  limits: limits,
-  labels: labels,
-)
+#let scale-fill-hue(..args) = _scale-hue("fill", ..args)
 
 /// Continuous ColorBrewer colour scale.
 ///
@@ -1688,27 +1668,7 @@
 /// ```
 ///
 /// \@see \@scale-fill-distiller, \@scale-colour-gradientn, \@scale-colour-brewer
-#let scale-colour-distiller(
-  palette: "Spectral",
-  direction: 1,
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = {
-  let stops = brewer-palette(palette)
-  if direction < 0 { stops = stops.rev() }
-  (
-    kind: "scale",
-    aesthetic: "colour",
-    type: "continuous",
-    name: name,
-    palette: stops,
-    limits: limits,
-    breaks: breaks,
-    labels: labels,
-  )
-}
+#let scale-colour-distiller(..args) = _scale-distiller("colour", ..args)
 
 /// Continuous alpha (opacity) scale mapping a numeric column to opacities.
 ///
@@ -1944,27 +1904,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-distiller, \@scale-fill-gradientn, \@scale-fill-brewer
-#let scale-fill-distiller(
-  palette: "Spectral",
-  direction: 1,
-  name: none,
-  limits: none,
-  breaks: auto,
-  labels: auto,
-) = {
-  let stops = brewer-palette(palette)
-  if direction < 0 { stops = stops.rev() }
-  (
-    kind: "scale",
-    aesthetic: "fill",
-    type: "continuous",
-    name: name,
-    palette: stops,
-    limits: limits,
-    breaks: breaks,
-    labels: labels,
-  )
-}
+#let scale-fill-distiller(..args) = _scale-distiller("fill", ..args)
 
 /// Binned two-stop colour gradient.
 ///
@@ -2016,24 +1956,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-steps2, \@scale-colour-stepsn, \@scale-fill-steps
-#let scale-colour-steps(
-  low: rgb("#132B43"),
-  high: rgb("#56B1F7"),
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: (low, high),
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-colour-steps(..args) = _scale-steps("colour", ..args)
 
 /// Binned diverging colour gradient through a midpoint.
 ///
@@ -2089,27 +2012,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-steps, \@scale-colour-stepsn, \@scale-fill-steps2
-#let scale-colour-steps2(
-  low: rgb("#005A32"),
-  mid: white,
-  high: rgb("#A50026"),
-  midpoint: 0,
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: (low, mid, high),
-  midpoint: midpoint,
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-colour-steps2(..args) = _scale-steps2("colour", ..args)
 
 /// Binned n-stop colour gradient.
 ///
@@ -2161,23 +2064,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-steps, \@scale-colour-steps2, \@scale-fill-stepsn
-#let scale-colour-stepsn(
-  colours: (),
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "colour",
-  type: "continuous",
-  name: name,
-  palette: colours,
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-colour-stepsn(..args) = _scale-stepsn("colour", ..args)
 
 /// Binned ColorBrewer colour scale.
 ///
@@ -2230,28 +2117,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-distiller, \@scale-fill-fermenter
-#let scale-colour-fermenter(
-  palette: "Spectral",
-  n-breaks: 5,
-  direction: 1,
-  name: none,
-  limits: none,
-  labels: auto,
-) = {
-  let stops = brewer-palette(palette)
-  if direction < 0 { stops = stops.rev() }
-  (
-    kind: "scale",
-    aesthetic: "colour",
-    type: "continuous",
-    name: name,
-    palette: stops,
-    limits: limits,
-    labels: labels,
-    binned: true,
-    n-breaks: n-breaks,
-  )
-}
+#let scale-colour-fermenter(..args) = _scale-fermenter("colour", ..args)
 
 /// Binned two-stop fill gradient.
 ///
@@ -2287,24 +2153,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-steps, \@scale-fill-steps2, \@scale-fill-stepsn
-#let scale-fill-steps(
-  low: rgb("#132B43"),
-  high: rgb("#56B1F7"),
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: (low, high),
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-fill-steps(..args) = _scale-steps("fill", ..args)
 
 /// Binned diverging fill gradient through a midpoint.
 ///
@@ -2342,27 +2191,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-steps2, \@scale-fill-steps, \@scale-fill-stepsn
-#let scale-fill-steps2(
-  low: rgb("#005A32"),
-  mid: white,
-  high: rgb("#A50026"),
-  midpoint: 0,
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: (low, mid, high),
-  midpoint: midpoint,
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-fill-steps2(..args) = _scale-steps2("fill", ..args)
 
 /// Binned n-stop fill gradient.
 ///
@@ -2400,23 +2229,7 @@
 /// ```
 ///
 /// \@see \@scale-colour-stepsn, \@scale-fill-steps, \@scale-fill-steps2
-#let scale-fill-stepsn(
-  colours: (),
-  n-breaks: 5,
-  name: none,
-  limits: none,
-  labels: auto,
-) = (
-  kind: "scale",
-  aesthetic: "fill",
-  type: "continuous",
-  name: name,
-  palette: colours,
-  limits: limits,
-  labels: labels,
-  binned: true,
-  n-breaks: n-breaks,
-)
+#let scale-fill-stepsn(..args) = _scale-stepsn("fill", ..args)
 
 /// Binned ColorBrewer fill scale.
 ///
@@ -2453,25 +2266,4 @@
 /// ```
 ///
 /// \@see \@scale-colour-fermenter, \@scale-fill-distiller
-#let scale-fill-fermenter(
-  palette: "Spectral",
-  n-breaks: 5,
-  direction: 1,
-  name: none,
-  limits: none,
-  labels: auto,
-) = {
-  let stops = brewer-palette(palette)
-  if direction < 0 { stops = stops.rev() }
-  (
-    kind: "scale",
-    aesthetic: "fill",
-    type: "continuous",
-    name: name,
-    palette: stops,
-    limits: limits,
-    labels: labels,
-    binned: true,
-    n-breaks: n-breaks,
-  )
-}
+#let scale-fill-fermenter(..args) = _scale-fermenter("fill", ..args)
