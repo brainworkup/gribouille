@@ -138,14 +138,24 @@
 )
 
 #let _continuous-domain-from-cache(cols, aesthetic) = {
-  let all-vals = ()
+  // Single-pass min/max: avoid building an intermediate array per column,
+  // which matters for plots with thousands of rows across multiple layers.
+  let lo = none
+  let hi = none
   for col in cols {
-    let numeric = col.values.map(parse-number).filter(v => v != none)
-    all-vals += numeric
+    for raw in col.values {
+      let v = parse-number(raw)
+      if v == none { continue }
+      if lo == none {
+        lo = v
+        hi = v
+      } else {
+        if v < lo { lo = v }
+        if v > hi { hi = v }
+      }
+    }
   }
-  if all-vals.len() == 0 { return (0.0, 1.0) }
-  let lo = calc.min(..all-vals)
-  let hi = calc.max(..all-vals)
+  if lo == none { return (0.0, 1.0) }
   if lo == hi and not _SYNTHETIC-FEEDERS.contains(aesthetic) {
     return (lo - 0.5, hi + 0.5)
   }

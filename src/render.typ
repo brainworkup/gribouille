@@ -109,42 +109,10 @@
 )
 
 // Layers whose `geom` is missing from this set panic under `coord-radial`
-// rather than silently falling back to cartesian rendering.
-#let _RADIAL-AWARE = (
-  "col",
-  "point",
-  "line",
-  "path",
-  "step",
-  "segment",
-  "polygon",
-  "area",
-  "ribbon",
-  "rect",
-  "tile",
-  "hline",
-  "vline",
-  "abline",
-  "text",
-  "label",
-  "smooth",
-  "typst",
-  "blank",
-  "function",
-  "mark",
-  "hex",
-  "ellipse",
-  "curve",
-  "spoke",
-  "errorbar",
-  "errorbarh",
-  "linerange",
-  "pointrange",
-  "crossbar",
-  "dotplot",
-  "boxplot",
-  "rug",
-)
+// rather than silently falling back to cartesian rendering. Every registered
+// geom is currently radial-aware; the check above guards against typos and
+// future geoms that intentionally opt out.
+#let _RADIAL-AWARE = _geom-draw.keys()
 
 #import "legend.typ" as legend-mod
 #import "facet/labellers.typ" as labellers
@@ -182,8 +150,17 @@
 // inside `mapping-ref` wrappers). Returns an empty dict when nothing is
 // typst-tagged.
 #let _typst-marks-of(mapping) = {
+  if mapping == none { return (:) }
+  // Fast path: if no value is typst-tagged we don't allocate at all.
+  let any = false
+  for (_, v) in mapping.pairs() {
+    if v != none and is-typst-markup(v) {
+      any = true
+      break
+    }
+  }
+  if not any { return (:) }
   let marks = (:)
-  if mapping == none { return marks }
   for (k, v) in mapping.pairs() {
     if v == none { continue }
     if is-typst-markup(v) { marks.insert(k, true) }
