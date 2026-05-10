@@ -72,6 +72,60 @@
   palette-at(pal, bin-index(value, lo, hi, n))
 }
 
+// Colour/fill: palette-driven on discrete; continuous mapper on numeric.
+#let _resolve-colour-aes(trained, value, palette, ink) = {
+  let pal = spec-palette(trained, palette)
+  if pal == none { return ink }
+  if trained.type == "discrete" {
+    let idx = discrete-index(trained, value)
+    if idx == none { return ink }
+    return palette-at(pal, idx)
+  }
+  resolve-continuous-colour(trained, value, pal, ink)
+}
+
+// Shape / linetype: palette-driven on discrete; binned on numeric (returns
+// `none` when the trained scale is not binned, which is treated as
+// "drop this aesthetic" by the caller).
+#let _resolve-palette-aes(trained, value, fallback-palette) = {
+  if trained.type == "discrete" {
+    let idx = discrete-index(trained, value)
+    if idx == none { return none }
+    return palette-at(spec-palette(trained, fallback-palette), idx)
+  }
+  resolve-binned(trained, value, fallback-palette)
+}
+
+// Size / linewidth / stroke / alpha: numeric range; discrete uses the
+// trained spec's palette when present, else equal-spacing across the range.
+#let _resolve-numeric-aes(trained, value, range-fallback) = {
+  let range = spec-range(trained, range-fallback)
+  if trained.type == "discrete" {
+    let pal = spec-palette(trained, none)
+    if pal != none and pal.len() > 0 {
+      let idx = discrete-index(trained, value)
+      if idx == none { return none }
+      return palette-at(pal, idx)
+    }
+    return discrete-numeric(trained, value, range)
+  }
+  continuous-numeric(trained, value, range)
+}
+
+// Per-aesthetic dispatch table. Each entry is a closure
+// `(trained, value, palette, ink) -> resolved` so the public `resolve-level`
+// only does table lookup + identity / none handling.
+#let _RESOLVERS = (
+  colour: (t, v, p, ink) => _resolve-colour-aes(t, v, p, ink),
+  fill: (t, v, p, ink) => _resolve-colour-aes(t, v, p, ink),
+  shape: (t, v, _, _) => _resolve-palette-aes(t, v, default-shapes),
+  linetype: (t, v, _, _) => _resolve-palette-aes(t, v, default-linetypes),
+  size: (t, v, _, _) => _resolve-numeric-aes(t, v, (1pt, 6pt)),
+  linewidth: (t, v, _, _) => _resolve-numeric-aes(t, v, (0.4pt, 1.4pt)),
+  stroke: (t, v, _, _) => _resolve-numeric-aes(t, v, (0.2pt, 1.4pt)),
+  alpha: (t, v, _, _) => _resolve-numeric-aes(t, v, (0.1, 1)),
+)
+
 // Resolve a single aesthetic for a given value. `value` is a discrete level
 // string when `trained.type == "discrete"` and a number when continuous.
 //
@@ -81,91 +135,7 @@
 #let resolve-level(aesthetic, trained, value, palette: none, ink: black) = {
   if trained == none { return none }
   if trained.type == "identity" { return value }
-
-  if aesthetic == "colour" or aesthetic == "fill" {
-    let pal = spec-palette(trained, palette)
-    if pal == none { return ink }
-    if trained.type == "discrete" {
-      let idx = discrete-index(trained, value)
-      if idx == none { return ink }
-      return palette-at(pal, idx)
-    }
-    return resolve-continuous-colour(trained, value, pal, ink)
-  }
-
-  if aesthetic == "shape" {
-    if trained.type == "discrete" {
-      let idx = discrete-index(trained, value)
-      if idx == none { return none }
-      return palette-at(spec-palette(trained, default-shapes), idx)
-    }
-    return resolve-binned(trained, value, default-shapes)
-  }
-
-  if aesthetic == "linetype" {
-    if trained.type == "discrete" {
-      let idx = discrete-index(trained, value)
-      if idx == none { return none }
-      return palette-at(spec-palette(trained, default-linetypes), idx)
-    }
-    return resolve-binned(trained, value, default-linetypes)
-  }
-
-  if aesthetic == "size" {
-    let range = spec-range(trained, (1pt, 6pt))
-    if trained.type == "discrete" {
-      let pal = spec-palette(trained, none)
-      if pal != none and pal.len() > 0 {
-        let idx = discrete-index(trained, value)
-        if idx == none { return none }
-        return palette-at(pal, idx)
-      }
-      return discrete-numeric(trained, value, range)
-    }
-    return continuous-numeric(trained, value, range)
-  }
-
-  if aesthetic == "linewidth" {
-    let range = spec-range(trained, (0.4pt, 1.4pt))
-    if trained.type == "discrete" {
-      let pal = spec-palette(trained, none)
-      if pal != none and pal.len() > 0 {
-        let idx = discrete-index(trained, value)
-        if idx == none { return none }
-        return palette-at(pal, idx)
-      }
-      return discrete-numeric(trained, value, range)
-    }
-    return continuous-numeric(trained, value, range)
-  }
-
-  if aesthetic == "stroke" {
-    let range = spec-range(trained, (0.2pt, 1.4pt))
-    if trained.type == "discrete" {
-      let pal = spec-palette(trained, none)
-      if pal != none and pal.len() > 0 {
-        let idx = discrete-index(trained, value)
-        if idx == none { return none }
-        return palette-at(pal, idx)
-      }
-      return discrete-numeric(trained, value, range)
-    }
-    return continuous-numeric(trained, value, range)
-  }
-
-  if aesthetic == "alpha" {
-    let range = spec-range(trained, (0.1, 1))
-    if trained.type == "discrete" {
-      let pal = spec-palette(trained, none)
-      if pal != none and pal.len() > 0 {
-        let idx = discrete-index(trained, value)
-        if idx == none { return none }
-        return palette-at(pal, idx)
-      }
-      return discrete-numeric(trained, value, range)
-    }
-    return continuous-numeric(trained, value, range)
-  }
-
-  none
+  let handler = _RESOLVERS.at(aesthetic, default: none)
+  if handler == none { return none }
+  handler(trained, value, palette, ink)
 }
