@@ -283,6 +283,10 @@ local function parse_doc_block(doc_lines, file, start_line)
     return first == "- " or first == "* " or first == "+ "
   end
 
+  local function is_table_line(s)
+    return s:sub(1, 1) == "|"
+  end
+
   while i <= n do
     local line = doc_lines[i]
     local trimmed_line = util.trim(line)
@@ -428,7 +432,7 @@ local function parse_doc_block(doc_lines, file, start_line)
         i = j - 1
       end
     else
-      if is_list_line(trimmed_line) then
+      if is_list_line(trimmed_line) or is_table_line(trimmed_line) then
         flush_para()
         table.insert(list_items, trimmed_line)
       else
