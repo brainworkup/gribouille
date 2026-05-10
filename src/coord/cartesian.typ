@@ -16,6 +16,7 @@
 /// \@param xlim Pair `(lo, hi)` clipping the drawn x range, or `none`.
 /// \@param ylim Pair `(lo, hi)` clipping the drawn y range, or `none`.
 /// \@param expand Whether to add a small margin around the data range.
+/// \@param clip Set to `"off"` to let geoms (typically annotations) draw past the panel rectangle. Defaults to `"on"`.
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.
 ///
@@ -46,11 +47,29 @@
 /// )
 /// ```
 ///
+/// \@examples Set `clip: "off"` so an annotation placed at the data edge can
+/// extend past the panel rectangle.
+/// ```
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 2pt),
+///     annotate("typst", x: 9, y: 4.5, label: [Long label]),
+///   ),
+///   coord: coord-cartesian(clip: "off"),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@plot, \@scale-x-continuous
-#let coord-cartesian(xlim: none, ylim: none, expand: true) = (
+#let coord-cartesian(xlim: none, ylim: none, expand: true, clip: "on") = (
   kind: "coord",
   coord: "cartesian",
   xlim: xlim,
   ylim: ylim,
   expand: expand,
+  clip: clip,
 )

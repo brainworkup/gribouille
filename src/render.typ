@@ -1652,7 +1652,11 @@
       }
     }
   })
-  let clip-on = if inner-radial != none { inner-radial.clip } else { true }
+  let clip-on = if inner-radial != none {
+    inner-radial.clip
+  } else if coord != none {
+    coord.at("clip", default: "on") != "off"
+  } else { true }
   content(
     (px-lo, py-lo),
     if clip-on {
