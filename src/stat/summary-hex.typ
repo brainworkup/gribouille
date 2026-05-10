@@ -2,9 +2,8 @@
 ///! per hex cell.
 
 #import "../utils/aes-resolve.typ": stat-output-mapping
-#import "../utils/hex.typ": hex-bin-of, resolve-hex-grid
+#import "../utils/hex.typ": hex-cells
 #import "../utils/summaries.typ": reduce-scalar
-#import "../utils/types.typ": parse-number
 
 /// Hex-grid summary statistic.
 ///
@@ -35,46 +34,20 @@
     (x: "x", y: "y", fill: "value"),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
-  let x-col = mapping.at("x", default: none)
-  let y-col = mapping.at("y", default: none)
   let z-col = mapping.at("z", default: none)
-  if x-col == none or y-col == none or z-col == none {
-    return (data: (), mapping: new-mapping)
-  }
-  let triples = data
-    .map(r => {
-      let xv = parse-number(r.at(x-col, default: none))
-      let yv = parse-number(r.at(y-col, default: none))
-      let zv = r.at(z-col, default: none)
-      if xv == none or yv == none or zv == none { return none }
-      (x: xv, y: yv, z: zv)
-    })
-    .filter(p => p != none)
-  if triples.len() == 0 { return (data: (), mapping: new-mapping) }
-  let grid = resolve-hex-grid(
-    triples.map(t => t.x),
-    triples.map(t => t.y),
+  if z-col == none { return (data: (), mapping: new-mapping) }
+  let result = hex-cells(
+    data,
+    mapping.at("x", default: none),
+    mapping.at("y", default: none),
     params,
+    z-col: z-col,
   )
-  // Sparse cell dict, mirroring `bin-hex.apply`: hex grids are sparser
-  // than their rectangular bounding box and a flat array would
-  // over-allocate. The cell entry holds the z bucket plus the centre so
-  // that capture happens once on first insert.
-  let cells = (:)
-  for t in triples {
-    let cell = hex-bin-of(t.x, t.y, grid)
-    let key = str(cell.ix) + "," + str(cell.iy)
-    let prev = cells.at(key, default: none)
-    if prev == none {
-      cells.insert(key, (zs: (t.z,), cx: cell.cx, cy: cell.cy))
-    } else {
-      prev.zs.push(t.z)
-      cells.insert(key, prev)
-    }
-  }
+  if result == none { return (data: (), mapping: new-mapping) }
+  let grid = result.grid
   let fun = params.at("fun", default: "mean")
   let rows = ()
-  for c in cells.values() {
+  for c in result.cells.values() {
     let value = reduce-scalar(fun, c.zs)
     if value == none { continue }
     rows.push((

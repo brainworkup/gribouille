@@ -3,6 +3,7 @@
 // combined lattice.
 
 #import "bin.typ": bin-domain
+#import "summaries.typ": read-weight
 #import "types.typ": parse-number
 
 #let _SQRT3-OVER-2 = calc.sqrt(3) / 2
@@ -88,6 +89,62 @@
   } else {
     (ix: ib, iy: 2 * jb + 1, cx: cxb, cy: cyb)
   }
+}
+
+// Aggregate `data` rows into a sparse hex bin dict.
+//
+// Returns `(grid, cells)` where:
+//   `grid`  : `(x-lo, y-lo, dx, dy)` lattice descriptor.
+//   `cells` : sparse dict keyed by `"ix,iy"`. Each entry carries
+//             `(count, cx, cy)` (when collecting weights only) or
+//             `(zs, cx, cy)` (when `z-col` is mapped). `zs` is the list of
+//             z-values for that cell; the centre is captured on first insert.
+//
+// Returns `none` when columns unmapped or no rows parse.
+#let hex-cells(data, x-col, y-col, params, weight-col: none, z-col: none) = {
+  if x-col == none or y-col == none { return none }
+  let collect-z = z-col != none
+  let entries = ()
+  for r in data {
+    let xv = parse-number(r.at(x-col, default: none))
+    let yv = parse-number(r.at(y-col, default: none))
+    if xv == none or yv == none { continue }
+    let entry = (x: xv, y: yv, w: read-weight(r, weight-col))
+    if collect-z {
+      let zv = r.at(z-col, default: none)
+      if zv == none { continue }
+      entry.z = zv
+    }
+    entries.push(entry)
+  }
+  if entries.len() == 0 { return none }
+  let grid = resolve-hex-grid(
+    entries.map(e => e.x),
+    entries.map(e => e.y),
+    params,
+  )
+  let cells = (:)
+  for e in entries {
+    let cell = hex-bin-of(e.x, e.y, grid)
+    let key = str(cell.ix) + "," + str(cell.iy)
+    let prev = cells.at(key, default: none)
+    if collect-z {
+      if prev == none {
+        cells.insert(key, (zs: (e.z,), cx: cell.cx, cy: cell.cy))
+      } else {
+        prev.zs.push(e.z)
+        cells.insert(key, prev)
+      }
+    } else {
+      if prev == none {
+        cells.insert(key, (count: e.w, cx: cell.cx, cy: cell.cy))
+      } else {
+        prev.count += e.w
+        cells.insert(key, prev)
+      }
+    }
+  }
+  (grid: grid, cells: cells)
 }
 
 // Six pointy-top vertices around `(cx, cy)`. The circumradius is `2 * dy / 3`,

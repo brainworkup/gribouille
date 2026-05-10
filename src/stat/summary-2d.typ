@@ -42,12 +42,14 @@
     ),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
+  let z-col = mapping.at("z", default: none)
+  if z-col == none { return (data: (), mapping: new-mapping) }
   let cells = bin-2d-cells(
     data,
     mapping.at("x", default: none),
     mapping.at("y", default: none),
     params,
-    z-col: mapping.at("z", default: none),
+    z-col: z-col,
   )
   if cells == none { return (data: (), mapping: new-mapping) }
   let grid = cells.grid
