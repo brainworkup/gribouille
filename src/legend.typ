@@ -289,9 +289,15 @@
 // Approximate per-character horizontal extent in canvas units.
 #let _char-width = 0.18
 
-// Approximate label extent capped so the legend column does not outgrow the
-// available space.
-#let _label-width(chars) = calc.min(2.5, 0.6 + chars * _char-width)
+// Glyph diameter + label gap before the first label character. Must match
+// the offsets used by _draw-swatch and _draw-size-ladder so reserved width
+// matches drawn width.
+#let _SWATCH-LEAD = 0.39
+#let _LADDER-LEAD = 0.47
+
+// Approximate label text width capped so a single oversized level can't
+// blow out the legend column.
+#let _label-width(chars) = calc.min(2.0, 0.05 + chars * _char-width)
 
 // Per-column widths, gap, cumulative left-offsets, and total grid width for a
 // column-major swatch layout. Each column sizes to its own widest label so a
@@ -304,7 +310,7 @@
       if i >= levels.len() { break }
       chars = calc.max(chars, levels.at(i).len())
     }
-    _label-width(chars)
+    _SWATCH-LEAD + _label-width(chars)
   })
   let gap = calc.max(0.15, 0.1 * calc.max(..widths))
   let offsets = ()
@@ -344,7 +350,10 @@
     for b in g.breaks {
       label-chars = calc.max(label-chars, format-break(b).len())
     }
-    return calc.max(_label-width(_title-chars(g)), _label-width(label-chars))
+    return calc.max(
+      _label-width(_title-chars(g)),
+      _LADDER-LEAD + _label-width(label-chars),
+    )
   }
   if g.kind == "colourbar" {
     let breaks = if g.at("breaks", default: none) != none {
