@@ -617,143 +617,158 @@
   format-break(n)
 }
 
+// Per-row min/max accumulator helper used by the `_scan-*` passes.
+#let _track-min-max(lo, hi, v) = (
+  if lo == none { v } else { calc.min(lo, v) },
+  if hi == none { v } else { calc.max(hi, v) },
+)
+
+// Bounding box of every ellipse layer's data, accounting for rotation.
+// Axis-aligned bbox of an ellipse with semi-axes (a, b) and major-axis
+// rotation theta — using `max(|a|, |b|)` instead would inflate the box by
+// an order of magnitude when units differ between axes (e.g. flipper-length
+// in mm vs body-mass in g).
+#let _scan-ellipse(layer, mapping, layer-data, acc) = {
+  if mapping == none { return acc }
+  let x0-col = mapping.at("x0", default: none)
+  let y0-col = mapping.at("y0", default: none)
+  if x0-col == none or y0-col == none { return acc }
+  let a-col = mapping.at("a", default: none)
+  let b-col = mapping.at("b", default: none)
+  let angle-col = mapping.at("angle", default: none)
+  let params = layer.at("params", default: (:))
+  let a-fb = params.at("a", default: 1)
+  let b-fb = params.at("b", default: 1)
+  let angle-fb = params.at("angle", default: 0)
+  let _read(row, col, fallback) = if col == none { fallback } else {
+    let v = parse-number(row.at(col, default: none))
+    if v == none { fallback } else { v }
+  }
+  for row in layer-data {
+    let x0 = parse-number(row.at(x0-col, default: none))
+    let y0 = parse-number(row.at(y0-col, default: none))
+    if x0 == none or y0 == none { continue }
+    let a = _read(row, a-col, a-fb)
+    let b = _read(row, b-col, b-fb)
+    let theta = _read(row, angle-col, angle-fb)
+    let cos-t = calc.cos(theta)
+    let sin-t = calc.sin(theta)
+    let x-half = calc.sqrt(
+      (a * cos-t) * (a * cos-t) + (b * sin-t) * (b * sin-t),
+    )
+    let y-half = calc.sqrt(
+      (a * sin-t) * (a * sin-t) + (b * cos-t) * (b * cos-t),
+    )
+    let (xlo, xhi) = _track-min-max(acc.x-min, acc.x-max, x0 - x-half)
+    acc.x-min = xlo
+    acc.x-max = if acc.x-max == none { x0 + x-half } else {
+      calc.max(acc.x-max, x0 + x-half)
+    }
+    let (ylo, yhi) = _track-min-max(acc.y-min, acc.y-max, y0 - y-half)
+    acc.y-min = ylo
+    acc.y-max = if acc.y-max == none { y0 + y-half } else {
+      calc.max(acc.y-max, y0 + y-half)
+    }
+  }
+  acc
+}
+
+// Project `geom-col` layer x values + bar-fraction into the panel-level
+// `cols` accumulator.
+#let _scan-col(layer, mapping, layer-data) = {
+  let x-col = if mapping == none { none } else {
+    mapping.at("x", default: none)
+  }
+  let xs = if x-col != none {
+    layer-data
+      .map(r => parse-number(r.at(x-col, default: none)))
+      .filter(v => v != none)
+  } else { () }
+  (
+    bar-frac: layer.at("params", default: (:)).at("width", default: 0.9),
+    xs: xs,
+  )
+}
+
+// Fold per-row width / ymin / ymax aggregates: the panel-level bin half-max
+// (so outer bins stay inside the panel) and the ribbon y-range (so ymin/ymax
+// extend the trained y domain).
+#let _scan-rows(mapping, layer-data, acc) = {
+  let ymin-col = if mapping == none { none } else {
+    mapping.at("ymin", default: none)
+  }
+  let ymax-col = if mapping == none { none } else {
+    mapping.at("ymax", default: none)
+  }
+  let scan-width = (
+    layer-data.len() > 0
+      and layer-data.first().at("width", default: none) != none
+  )
+  if not (scan-width or ymin-col != none or ymax-col != none) { return acc }
+  for row in layer-data {
+    if scan-width {
+      let w = row.at("width", default: none)
+      if w != none and (type(w) == int or type(w) == float) {
+        acc.bin-half-max = calc.max(acc.bin-half-max, w / 2)
+      }
+    }
+    for col in (ymin-col, ymax-col) {
+      if col == none { continue }
+      let v = parse-number(row.at(col, default: none))
+      if v == none { continue }
+      let (lo, hi) = _track-min-max(acc.ribbon-y-min, acc.ribbon-y-max, v)
+      acc.ribbon-y-min = lo
+      acc.ribbon-y-max = hi
+    }
+  }
+  acc
+}
+
 // Single-pass classifier feeding `_post-train`. Per layer it picks the
 // minimal row scan needed (col layers project parsed x values; binned and
 // ribbon layers fold per-row aggregates) so non-col, non-binned, non-ribbon
 // layers skip the row loop entirely.
 #let _post-train-scan(layers) = {
-  let needs-y-zero = false
-  let any-fill = false
-  let cols = ()
-  let bin-half-max = 0.0
-  let ribbon-y-min = none
-  let ribbon-y-max = none
-  let ellipse-x-min = none
-  let ellipse-x-max = none
-  let ellipse-y-min = none
-  let ellipse-y-max = none
+  let acc = (
+    needs-y-zero: false,
+    any-fill: false,
+    cols: (),
+    bin-half-max: 0.0,
+    ribbon-y-min: none,
+    ribbon-y-max: none,
+    x-min: none,
+    x-max: none,
+    y-min: none,
+    y-max: none,
+  )
   for layer in layers {
     let geom = layer.at("geom", default: none)
-    if geom == "col" or geom == "area" { needs-y-zero = true }
-
     let mapping = layer.at("mapping", default: none)
     let layer-data = layer.at("data", default: ())
 
-    if geom == "ellipse" and mapping != none {
-      let x0-col = mapping.at("x0", default: none)
-      let y0-col = mapping.at("y0", default: none)
-      let a-col = mapping.at("a", default: none)
-      let b-col = mapping.at("b", default: none)
-      let angle-col = mapping.at("angle", default: none)
-      if x0-col != none and y0-col != none {
-        let params = layer.at("params", default: (:))
-        let a-fb = params.at("a", default: 1)
-        let b-fb = params.at("b", default: 1)
-        let angle-fb = params.at("angle", default: 0)
-        for row in layer-data {
-          let x0 = parse-number(row.at(x0-col, default: none))
-          let y0 = parse-number(row.at(y0-col, default: none))
-          if x0 == none or y0 == none { continue }
-          let a = if a-col == none { a-fb } else {
-            let v = parse-number(row.at(a-col, default: none))
-            if v == none { a-fb } else { v }
-          }
-          let b = if b-col == none { b-fb } else {
-            let v = parse-number(row.at(b-col, default: none))
-            if v == none { b-fb } else { v }
-          }
-          let theta = if angle-col == none { angle-fb } else {
-            let v = parse-number(row.at(angle-col, default: none))
-            if v == none { angle-fb } else { v }
-          }
-          // Axis-aligned bounding box of an ellipse with semi-axes a, b and
-          // major-axis rotation theta (radians from the x-axis). Using the
-          // circular max(|a|, |b|) blows the box up by an order of magnitude
-          // when units differ between axes (e.g. flipper-len mm vs body-mass g).
-          let cos-t = calc.cos(theta)
-          let sin-t = calc.sin(theta)
-          let x-half = calc.sqrt(
-            (a * cos-t) * (a * cos-t) + (b * sin-t) * (b * sin-t),
-          )
-          let y-half = calc.sqrt(
-            (a * sin-t) * (a * sin-t) + (b * cos-t) * (b * cos-t),
-          )
-          ellipse-x-min = if ellipse-x-min == none { x0 - x-half } else {
-            calc.min(ellipse-x-min, x0 - x-half)
-          }
-          ellipse-x-max = if ellipse-x-max == none { x0 + x-half } else {
-            calc.max(ellipse-x-max, x0 + x-half)
-          }
-          ellipse-y-min = if ellipse-y-min == none { y0 - y-half } else {
-            calc.min(ellipse-y-min, y0 - y-half)
-          }
-          ellipse-y-max = if ellipse-y-max == none { y0 + y-half } else {
-            calc.max(ellipse-y-max, y0 + y-half)
-          }
-        }
-      }
+    if geom == "col" or geom == "area" { acc.needs-y-zero = true }
+    if geom == "ellipse" {
+      acc = _scan-ellipse(layer, mapping, layer-data, acc)
     }
-    let ymin-col = if mapping != none {
-      mapping.at("ymin", default: none)
-    } else { none }
-    let ymax-col = if mapping != none {
-      mapping.at("ymax", default: none)
-    } else { none }
-    let scan-width = (
-      layer-data.len() > 0
-        and layer-data.first().at("width", default: none) != none
-    )
-
     if geom == "col" {
       if layer.at("position", default: "identity") == "fill" {
-        any-fill = true
+        acc.any-fill = true
       }
-      let x-col = if mapping != none {
-        mapping.at("x", default: none)
-      } else { none }
-      let xs = if x-col != none {
-        layer-data
-          .map(r => parse-number(r.at(x-col, default: none)))
-          .filter(v => v != none)
-      } else { () }
-      cols.push((
-        bar-frac: layer.at("params", default: (:)).at("width", default: 0.9),
-        xs: xs,
-      ))
+      acc.cols.push(_scan-col(layer, mapping, layer-data))
     }
-
-    if not (scan-width or ymin-col != none or ymax-col != none) { continue }
-    for row in layer-data {
-      if scan-width {
-        let w = row.at("width", default: none)
-        if w != none and (type(w) == int or type(w) == float) {
-          bin-half-max = calc.max(bin-half-max, w / 2)
-        }
-      }
-      for col in (ymin-col, ymax-col) {
-        if col == none { continue }
-        let v = parse-number(row.at(col, default: none))
-        if v == none { continue }
-        ribbon-y-min = if ribbon-y-min == none { v } else {
-          calc.min(ribbon-y-min, v)
-        }
-        ribbon-y-max = if ribbon-y-max == none { v } else {
-          calc.max(ribbon-y-max, v)
-        }
-      }
-    }
+    acc = _scan-rows(mapping, layer-data, acc)
   }
   (
-    needs-y-zero: needs-y-zero,
-    any-fill: any-fill,
-    cols: cols,
-    bin-half-max: bin-half-max,
-    ribbon-y-min: ribbon-y-min,
-    ribbon-y-max: ribbon-y-max,
-    ellipse-x-min: ellipse-x-min,
-    ellipse-x-max: ellipse-x-max,
-    ellipse-y-min: ellipse-y-min,
-    ellipse-y-max: ellipse-y-max,
+    needs-y-zero: acc.needs-y-zero,
+    any-fill: acc.any-fill,
+    cols: acc.cols,
+    bin-half-max: acc.bin-half-max,
+    ribbon-y-min: acc.ribbon-y-min,
+    ribbon-y-max: acc.ribbon-y-max,
+    ellipse-x-min: acc.x-min,
+    ellipse-x-max: acc.x-max,
+    ellipse-y-min: acc.y-min,
+    ellipse-y-max: acc.y-max,
   )
 }
 
