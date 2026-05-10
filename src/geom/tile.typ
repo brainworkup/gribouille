@@ -8,7 +8,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": radial-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
-#import "../utils/band.typ": x-band
+#import "../utils/band.typ": axis-band
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
@@ -122,7 +122,7 @@
     neutral-fill,
   )
 
-  // `x-band` is axis-agnostic despite its name: it builds a centred (lo, hi)
+  // `axis-band` is axis-agnostic despite its name: it builds a centred (lo, hi)
   // pair from a half-width given in data units (continuous) or slot fractions
   // (discrete). Reused here for both x and y.
   let radial = ctx.at("radial", default: none)
@@ -157,10 +157,10 @@
 
     if radial != none {
       let cat-is-theta = radial.cat-is-theta
-      let xe = x-band(x-trained, x, w / 2, if cat-is-theta {
+      let xe = axis-band(x-trained, x, w / 2, if cat-is-theta {
         radial.theta-range
       } else { radial.r-range })
-      let ye = x-band(y-trained, y, h / 2, if cat-is-theta {
+      let ye = axis-band(y-trained, y, h / 2, if cat-is-theta {
         radial.r-range
       } else { radial.theta-range })
       if xe == none or ye == none { continue }
@@ -178,8 +178,8 @@
         stroke: stroke-spec,
       )
     } else {
-      let xe = x-band(x-trained, x, w / 2, ctx.px-range)
-      let ye = x-band(y-trained, y, h / 2, ctx.py-range)
+      let xe = axis-band(x-trained, x, w / 2, ctx.px-range)
+      let ye = axis-band(y-trained, y, h / 2, ctx.py-range)
       if xe == none or ye == none { continue }
       let (cx0, cx1) = xe
       let (cy0, cy1) = ye

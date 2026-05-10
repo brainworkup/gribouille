@@ -3,7 +3,7 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
-#import "../utils/band.typ": x-band
+#import "../utils/band.typ": axis-band
 #import "../utils/radial.typ": (
   polar-canvas, radial-arc, radial-axis-ranges, radial-category-span,
   radial-wedge,
@@ -210,7 +210,7 @@
     let cy-hi = map-position(y-trained, hi, ctx.py-range)
     if cy-mid == none or cy-lo == none or cy-hi == none { continue }
 
-    let band = x-band(x-trained, raw-x, half-width, ctx.px-range)
+    let band = axis-band(x-trained, raw-x, half-width, ctx.px-range)
     let (cx-lo, cx-hi) = if band == none { (cx, cx) } else { band }
 
     let final-fill = resolve-channel(

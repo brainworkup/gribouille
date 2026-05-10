@@ -22,9 +22,7 @@
 #import "utils/colour.typ": resolve-continuous-colour
 #import "utils/group.typ": group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
-#import "utils/aes-resolve.typ": (
-  merge-mapping, resolve-label, unwrap-mapping-refs,
-)
+#import "utils/aes-resolve.typ": merge-mapping, resolve-label
 #import "utils/late-binding.typ": (
   apply-stages, eval-after-stat, is-late-binding, late-binding-kind,
   resolve-from-theme, stash-stages,

@@ -8,7 +8,7 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
-#import "../utils/band.typ": x-band
+#import "../utils/band.typ": axis-band
 #import "../utils/radial.typ": (
   polar-canvas, radial-arc, radial-axis-ranges, radial-category-span,
   radial-wedge,
@@ -348,10 +348,10 @@
     let cy-whisker-lo = map-axis(y-trained, whisker-lo, ctx.py-range)
     let cy-whisker-hi = map-axis(y-trained, whisker-hi, ctx.py-range)
 
-    let box-band = x-band(x-trained, raw-x, half-width, ctx.px-range)
-    let cap-band = x-band(x-trained, raw-x, cap-half, ctx.px-range)
-    if box-band == none or cap-band == none { continue }
-    let (cx-lo, cx-hi) = box-band
+    let boaxis-band = axis-band(x-trained, raw-x, half-width, ctx.px-range)
+    let cap-band = axis-band(x-trained, raw-x, cap-half, ctx.px-range)
+    if boaxis-band == none or cap-band == none { continue }
+    let (cx-lo, cx-hi) = boaxis-band
     let (cap-lo, cap-hi) = cap-band
 
     let final-fill = resolve-channel(

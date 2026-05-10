@@ -35,5 +35,3 @@
   }
 }
 
-// Back-compat alias. Consumers should migrate to `axis-band`.
-#let x-band = axis-band
