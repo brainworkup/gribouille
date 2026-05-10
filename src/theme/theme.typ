@@ -339,18 +339,18 @@
 ///
 /// - `plot-margin` (\@margin record) — padding around the plot canvas. Use `margin(left: 2cm)` to override one side and let the others fall through to the renderer's default. Default: `margin()` (every side `auto`).
 ///
-/// **Key reference**. Each row lists a key, its accepted type, the default applied when it is unset, and the parent it inherits from (root rows are at the top of an inheritance chain). Children with `inherits` for the default fall back through the parent chain until a default is found.
+/// **Key reference**. Each row lists a key, its accepted type, the default applied when it is unset, and the parent it inherits from (root rows are at the top of an inheritance chain). Children with `inherits` for the default fall back through the parent chain until a default is found. Rows are grouped by family.
 ///
 /// | Key | Type | Default | Parent |
 /// | --- | --- | --- | --- |
 /// | `text` | \@element-text or \@element-typst | `element-text(size: 9pt)` | (root) |
-/// | `axis-text` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
-/// | `axis-text-x` | \@element-text or \@element-typst | inherits | `axis-text` |
-/// | `axis-text-x-bottom` | \@element-text or \@element-typst | inherits | `axis-text-x` |
-/// | `axis-text-x-top` | \@element-text or \@element-typst | inherits | `axis-text-x` |
-/// | `axis-text-y` | \@element-text or \@element-typst | inherits | `axis-text` |
-/// | `axis-text-y-left` | \@element-text or \@element-typst | inherits | `axis-text-y` |
-/// | `axis-text-y-right` | \@element-text or \@element-typst | inherits | `axis-text-y` |
+/// | `line` | \@element-line | `element-line(thickness: 0.5pt)` | (root) |
+/// | `rect` | \@element-rect | `element-rect()` | (root) |
+/// | `plot-title` | \@element-text or \@element-typst | `element-text(size: 12pt, weight: "bold")` | `text` |
+/// | `plot-subtitle` | \@element-text or \@element-typst | `element-text(size: 9pt)` | `text` |
+/// | `plot-caption` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
+/// | `plot-background` | \@element-rect or \@element-blank | `element-rect()` | `rect` |
+/// | `plot-margin` | \@margin record | `margin()` | (root) |
 /// | `axis-title` | \@element-text or \@element-typst | `element-text(size: 9pt)` | `text` |
 /// | `axis-title-x` | \@element-text or \@element-typst | inherits | `axis-title` |
 /// | `axis-title-x-bottom` | \@element-text or \@element-typst | inherits | `axis-title-x` |
@@ -358,14 +358,13 @@
 /// | `axis-title-y` | \@element-text or \@element-typst | inherits | `axis-title` |
 /// | `axis-title-y-left` | \@element-text or \@element-typst | inherits | `axis-title-y` |
 /// | `axis-title-y-right` | \@element-text or \@element-typst | inherits | `axis-title-y` |
-/// | `legend-text` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
-/// | `legend-title` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
-/// | `strip-text` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
-/// | `plot-title` | \@element-text or \@element-typst | `element-text(size: 12pt, weight: "bold")` | `text` |
-/// | `plot-subtitle` | \@element-text or \@element-typst | `element-text(size: 9pt)` | `text` |
-/// | `plot-caption` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
-/// | `line` | \@element-line | `element-line(thickness: 0.5pt)` | (root) |
-/// | `panel-grid` | \@element-line or \@element-blank | `element-line(thickness: 0.5pt)` | `line` |
+/// | `axis-text` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
+/// | `axis-text-x` | \@element-text or \@element-typst | inherits | `axis-text` |
+/// | `axis-text-x-bottom` | \@element-text or \@element-typst | inherits | `axis-text-x` |
+/// | `axis-text-x-top` | \@element-text or \@element-typst | inherits | `axis-text-x` |
+/// | `axis-text-y` | \@element-text or \@element-typst | inherits | `axis-text` |
+/// | `axis-text-y-left` | \@element-text or \@element-typst | inherits | `axis-text-y` |
+/// | `axis-text-y-right` | \@element-text or \@element-typst | inherits | `axis-text-y` |
 /// | `axis-line` | \@element-line or \@element-blank | `element-line(thickness: 0.5pt)` | `line` |
 /// | `axis-line-x` | \@element-line or \@element-blank | inherits | `axis-line` |
 /// | `axis-line-x-bottom` | \@element-line or \@element-blank | inherits | `axis-line-x` |
@@ -380,13 +379,6 @@
 /// | `axis-ticks-y` | \@element-line or \@element-blank | inherits | `axis-ticks` |
 /// | `axis-ticks-y-left` | \@element-line or \@element-blank | inherits | `axis-ticks-y` |
 /// | `axis-ticks-y-right` | \@element-line or \@element-blank | inherits | `axis-ticks-y` |
-/// | `rect` | \@element-rect | `element-rect()` | (root) |
-/// | `panel-background` | \@element-rect or \@element-blank | `element-rect()` | `rect` |
-/// | `plot-background` | \@element-rect or \@element-blank | `element-rect()` | `rect` |
-/// | `strip-background` | \@element-rect or \@element-blank | `element-rect()` | `rect` |
-/// | `ink` | colour | `black` | (root) |
-/// | `paper` | colour | `white` | (root) |
-/// | `accent` | colour | `rgb("#3366FF")` | (root) |
 /// | `tick-labels` | boolean | `true` | (root) |
 /// | `tick-length` | length | `0.1cm` | (root) |
 /// | `tick-length-x` | length | inherits | `tick-length` |
@@ -395,7 +387,15 @@
 /// | `tick-length-y` | length | inherits | `tick-length` |
 /// | `tick-length-y-left` | length | inherits | `tick-length-y` |
 /// | `tick-length-y-right` | length | inherits | `tick-length-y` |
-/// | `plot-margin` | \@margin record | `margin()` | (root) |
+/// | `panel-grid` | \@element-line or \@element-blank | `element-line(thickness: 0.5pt)` | `line` |
+/// | `panel-background` | \@element-rect or \@element-blank | `element-rect()` | `rect` |
+/// | `legend-title` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
+/// | `legend-text` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
+/// | `strip-text` | \@element-text or \@element-typst | `element-text(size: 8pt)` | `text` |
+/// | `strip-background` | \@element-rect or \@element-blank | `element-rect()` | `rect` |
+/// | `ink` | colour | `black` | (root) |
+/// | `paper` | colour | `white` | (root) |
+/// | `accent` | colour | `rgb("#3366FF")` | (root) |
 ///
 /// \@category Themes
 /// \@stability stable
