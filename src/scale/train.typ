@@ -235,16 +235,10 @@
   x
 }
 
-#let train(
-  scales: (),
-  layers: (),
-  mapping: none,
-  data: none,
-  aesthetics: none,
-) = {
-  let trained = (:)
-  let aes-list = if aesthetics == none { all-aesthetics } else { aesthetics }
-
+// Build the per-aesthetic cache that downstream stages consult.
+// Each cache entry holds `(cols, typst-mark)` where `cols` is the array of
+// column descriptors collected across every layer that maps the aesthetic.
+#let _train-cache(layers, mapping, data, aes-list) = {
   let cache = (:)
   for a in aes-list { cache.insert(a, (cols: (), typst-mark: false)) }
   for layer in layers {
@@ -271,98 +265,102 @@
       cache.insert(a, entry)
     }
   }
+  cache
+}
 
-  for a in aes-list {
-    let user-scale = _find-user-scale(scales, a)
-    let cached = cache.at(a)
-    let cols = cached.cols
-    let mapped = cols.len() > 0
-    let typst-mark = cached.typst-mark
-    if not mapped and user-scale == none { continue }
-    let scale-type = if user-scale != none {
-      user-scale.type
-    } else {
-      _scale-type-from-cache(cols)
-    }
-    let domain = if scale-type == "identity" {
-      ()
-    } else if scale-type == "continuous" {
-      _continuous-domain-from-cache(cols, a)
-    } else {
-      _discrete-domain-from-cache(cols)
-    }
-    if (
-      scale-type != "identity"
-        and user-scale != none
-        and user-scale.at("limits", default: none) != none
-    ) {
-      domain = user-scale.limits
-    }
-    if (
-      scale-type == "continuous"
-        and user-scale != none
-        and user-scale.at("extend", default: none) != none
-        and (user-scale.at("limits", default: none) == none)
-    ) {
-      let (lo, hi) = domain
-      for v in user-scale.extend {
-        let n = parse-number(v)
-        if n == none { continue }
-        lo = calc.min(lo, n)
-        hi = calc.max(hi, n)
-      }
-      if lo == hi {
-        lo -= 0.5
-        hi += 0.5
-      }
-      domain = (lo, hi)
-    }
-    let transform = if user-scale != none {
-      user-scale.at("transform", default: "identity")
-    } else { "identity" }
-    // Domain values cached above are already in stat space when the
-    // renderer's preprocess pass has run for this transform.
-    let pre-transformed = (
-      scale-type == "continuous"
-        and (transform == "log10" or transform == "sqrt")
-    )
-    if pre-transformed {
-      // User-supplied limits come in data space; lift them to stat space.
-      if user-scale != none and user-scale.at("limits", default: none) != none {
-        let (lo, hi) = domain
-        domain = (transform-fwd(transform, lo), transform-fwd(transform, hi))
-      }
-    }
-    let level-index = if scale-type == "discrete" {
-      _level-index(domain)
-    } else { none }
-    let entry = (
-      type: scale-type,
-      domain: domain,
-      level-index: level-index,
-      spec: user-scale,
-      transform: transform,
-      pre-transformed: pre-transformed,
-      typst-mark: typst-mark,
-    )
-    if user-scale != none and user-scale.at("temporal", default: none) != none {
-      entry.insert("temporal", user-scale.temporal)
-      entry.insert("date-format", user-scale.at("date-format", default: ""))
-    }
-    trained.insert(a, entry)
+// Compute the scale type, raw domain, and any user-limit / extend overrides
+// for a single aesthetic. Returns `none` when there is nothing to train.
+#let _train-entry(aes, cached, user-scale) = {
+  let cols = cached.cols
+  let mapped = cols.len() > 0
+  if not mapped and user-scale == none { return none }
+  let scale-type = if user-scale != none {
+    user-scale.type
+  } else {
+    _scale-type-from-cache(cols)
   }
+  let domain = if scale-type == "identity" {
+    ()
+  } else if scale-type == "continuous" {
+    _continuous-domain-from-cache(cols, aes)
+  } else {
+    _discrete-domain-from-cache(cols)
+  }
+  if (
+    scale-type != "identity"
+      and user-scale != none
+      and user-scale.at("limits", default: none) != none
+  ) {
+    domain = user-scale.limits
+  }
+  if (
+    scale-type == "continuous"
+      and user-scale != none
+      and user-scale.at("extend", default: none) != none
+      and (user-scale.at("limits", default: none) == none)
+  ) {
+    let (lo, hi) = domain
+    for v in user-scale.extend {
+      let n = parse-number(v)
+      if n == none { continue }
+      lo = calc.min(lo, n)
+      hi = calc.max(hi, n)
+    }
+    if lo == hi {
+      lo -= 0.5
+      hi += 0.5
+    }
+    domain = (lo, hi)
+  }
+  let transform = if user-scale != none {
+    user-scale.at("transform", default: "identity")
+  } else { "identity" }
+  // Domain values cached above are already in stat space when the renderer's
+  // preprocess pass has run for this transform.
+  let pre-transformed = (
+    scale-type == "continuous" and (transform == "log10" or transform == "sqrt")
+  )
+  if (
+    pre-transformed
+      and user-scale != none
+      and user-scale.at("limits", default: none) != none
+  ) {
+    // User-supplied limits come in data space; lift them to stat space.
+    let (lo, hi) = domain
+    domain = (transform-fwd(transform, lo), transform-fwd(transform, hi))
+  }
+  let level-index = if scale-type == "discrete" {
+    _level-index(domain)
+  } else { none }
+  let entry = (
+    type: scale-type,
+    domain: domain,
+    level-index: level-index,
+    spec: user-scale,
+    transform: transform,
+    pre-transformed: pre-transformed,
+    typst-mark: cached.typst-mark,
+  )
+  if user-scale != none and user-scale.at("temporal", default: none) != none {
+    entry.insert("temporal", user-scale.temporal)
+    entry.insert("date-format", user-scale.at("date-format", default: ""))
+  }
+  entry
+}
 
-  // Fold the directional aesthetics into the positional axes so the x and y
-  // domains span every column that contributes a position. Without this,
-  // `geom-segment(x: 0, xend: 4, ...)` would clip the panel at x = 0.
+// Fold the directional aesthetics (xmin/xmax/xend, ymin/ymax/yend) into the
+// x and y axes so positional geoms (segment, rect, ribbon, ...) extend the
+// trained domain. Without this, `geom-segment(x: 0, xend: 4, ...)` would
+// clip the panel at x = 0.
+#let _fold-positional(trained, cache) = {
   for axis in ("x", "y") {
     let sources = _SYNTHETIC-FEEDERS.filter(s => s.starts-with(axis))
     let target = trained.at(axis, default: none)
     if target != none and target.type != "continuous" { continue }
     // Discard the (0, 1) fallback from `_continuous-domain-from-cache` when
     // the axis itself has no aesthetic mapping; otherwise that fallback would
-    // contaminate a domain that should be defined entirely by the feeders
-    // (e.g. `geom-rect()` with only xmin/xmax mapped).
+    // contaminate a domain defined entirely by the feeders (e.g.
+    // `geom-rect()` with only xmin/xmax mapped).
     let target-mapped = cache.at(axis).cols.len() > 0
     let lo = if target != none and target-mapped {
       target.domain.at(0)
@@ -402,8 +400,25 @@
     }
     trained.insert(axis, entry)
   }
-
   trained
+}
+
+#let train(
+  scales: (),
+  layers: (),
+  mapping: none,
+  data: none,
+  aesthetics: none,
+) = {
+  let aes-list = if aesthetics == none { all-aesthetics } else { aesthetics }
+  let cache = _train-cache(layers, mapping, data, aes-list)
+  let trained = (:)
+  for a in aes-list {
+    let entry = _train-entry(a, cache.at(a), _find-user-scale(scales, a))
+    if entry == none { continue }
+    trained.insert(a, entry)
+  }
+  _fold-positional(trained, cache)
 }
 
 #let map-continuous(value, domain, range) = {
