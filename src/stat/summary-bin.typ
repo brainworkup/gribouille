@@ -4,11 +4,8 @@
 ///! each bin reduces the y values inside to a `(y, ymin, ymax)` summary
 ///! using one of the helpers in `src/utils/summaries.typ`.
 
-#import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": summarise
-#import "../utils/bin.typ": (
-  bin-midpoint, bin-of, panel-bin-grid, resolve-bin-grid,
-)
+#import "../utils/bin.typ": bin-1d-cells, bin-midpoint, panel-bin-grid
 #import "../utils/aes-resolve.typ": stat-output-mapping
 
 /// Summary statistic over uniform x bins.
@@ -94,34 +91,17 @@
   if x-col == none or y-col == none {
     return (data: (), mapping: new-mapping)
   }
-  if data.len() == 0 { return (data: (), mapping: new-mapping) }
 
   let weight-col = mapping.at("weight", default: none)
-  let pairs = data
-    .map(r => (
-      x: parse-number(r.at(x-col, default: none)),
-      y: r.at(y-col, default: none),
-      w: if weight-col == none { 1 } else { r.at(weight-col, default: none) },
-    ))
-    .filter(p => p.x != none)
-  if pairs.len() == 0 { return (data: (), mapping: new-mapping) }
-
-  let grid = resolve-bin-grid(pairs.map(p => p.x), params)
-  let buckets = range(grid.n-bins).map(_ => (ys: (), ws: ()))
-  for p in pairs {
-    let idx = bin-of(p.x, grid.lo, grid.width, grid.n-bins)
-    let bucket = buckets.at(idx)
-    bucket.ys.push(p.y)
-    bucket.ws.push(p.w)
-    buckets.at(idx) = bucket
-  }
+  let cells = bin-1d-cells(data, x-col, weight-col, params, y-col: y-col)
+  if cells == none { return (data: (), mapping: new-mapping) }
 
   let fun = params.at("fun", default: "mean-se")
   let fun-args = params.at("fun-args", default: (:))
 
   let out = ()
-  for i in range(grid.n-bins) {
-    let bucket = buckets.at(i)
+  for i in range(cells.grid.n-bins) {
+    let bucket = cells.buckets.at(i)
     if bucket.ys.len() == 0 { continue }
     let weights = if weight-col == none { none } else { bucket.ws }
     let summary = summarise(
@@ -132,7 +112,7 @@
     )
     if summary.y == none { continue }
     out.push((
-      x: bin-midpoint(grid.lo, grid.width, i),
+      x: bin-midpoint(cells.grid.lo, cells.grid.width, i),
       y: summary.y,
       ymin: summary.ymin,
       ymax: summary.ymax,
