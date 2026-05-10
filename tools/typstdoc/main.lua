@@ -191,6 +191,7 @@ local function main(argv)
     check = opts.check,
   })
 
+  parser.set_root(opts.root)
   local lib_info = parser.parse_lib(opts.lib)
   local files, all_functions, modules = parse_sources(opts.src, lib_info)
 

@@ -1,7 +1,14 @@
 local util = require("util")
 local model = require("model")
+local theme_keys = require("theme_keys")
 
 local M = {}
+
+local repo_root
+
+function M.set_root(path)
+  repo_root = path
+end
 
 local VALID_CATEGORIES = {
   Core = true, Labs = true, Geoms = true, Stats = true, Scales = true,
@@ -16,6 +23,7 @@ local KNOWN_TAGS = {
   ["@param"] = true, ["@arity"] = true, ["@returns"] = true,
   ["@examples"] = true, ["@examples-static"] = true, ["@see"] = true,
   ["@internal"] = true, ["@advanced"] = true,
+  ["@theme-keys"] = true,
 }
 
 local PIPELINE_HOOKS = { draw = true, apply = true }
@@ -325,6 +333,12 @@ local function parse_doc_block(doc_lines, file, start_line)
         for ref in rest:gmatch("@[%w%-_]+") do
           table.insert(doc.see, ref)
         end
+      elseif tag == "@theme-keys" then
+        if not repo_root then
+          error_at(file, start_line + i - 1,
+            "@theme-keys requires parser.set_root() before parse_file()")
+        end
+        table.insert(doc.description, theme_keys.render(repo_root))
       elseif tag == "@param" then
         local variadic = false
         local body = rest
