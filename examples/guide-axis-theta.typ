@@ -33,7 +33,7 @@
 )
 
 #stack(
-  dir: ltr,
+  dir: ttb,
   spacing: 0.4cm,
   make-panel("Default radial axis", (:)),
   make-panel("guide-axis-theta(minor-ticks: true)", guides(

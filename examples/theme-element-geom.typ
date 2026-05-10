@@ -21,7 +21,7 @@
 )
 
 #let make-row(title, custom-theme) = stack(
-  dir: ltr,
+  dir: ttb,
   spacing: 0.4cm,
   plot(
     data: d,
