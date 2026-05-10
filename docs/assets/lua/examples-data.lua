@@ -11,7 +11,6 @@ local function read_file(path)
   return body
 end
 
--- Mirrors `docs/assets/lua/typst.lua`; keep both in sync.
 local function rewrite_lib_import(source)
   local version = os.getenv('VERSION') or '?.?.?'
   local replacement = '#import "@preview/gribouille:' .. version .. '": *'

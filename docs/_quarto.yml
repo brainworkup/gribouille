@@ -119,6 +119,3 @@ metadata-files:
   - _sidebar-reference.yml
   - _sidebar-get-started.yml
   - _sidebar-examples.yml
-
-shortcodes:
-  - assets/lua/typst.lua
