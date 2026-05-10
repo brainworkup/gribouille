@@ -360,7 +360,7 @@
     return 0.65 + max-chars * _char-width
   }
   if g.kind == "custom" { return g.cm-width }
-  0.0
+  panic("legend._guide-width: unknown guide kind \"" + g.kind + "\"")
 }
 
 #let guides-for(spec, trained) = {
@@ -755,6 +755,8 @@
     } else if g.kind == "custom" {
       _draw-custom(g, ox, cursor, theme, title-h)
       cursor -= _custom-height(g, title-h)
+    } else {
+      panic("legend.draw: unknown guide kind \"" + g.kind + "\"")
     }
   }
 }
