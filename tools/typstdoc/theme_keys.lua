@@ -197,23 +197,23 @@ end
 local function type_for(key, parents, defaults)
   local root = family_root(parents, key)
   if root == "text" then
-    if key == "text" then return "\\@element-text" end
-    return "\\@element-text or \\@element-typst"
+    if key == "text" then return "@element-text" end
+    return "@element-text or @element-typst"
   end
   if root == "line" then
-    if key == "line" then return "\\@element-line" end
-    return "\\@element-line or \\@element-blank"
+    if key == "line" then return "@element-line" end
+    return "@element-line or @element-blank"
   end
   if root == "rect" then
-    if key == "rect" then return "\\@element-rect" end
-    return "\\@element-rect or \\@element-blank"
+    if key == "rect" then return "@element-rect" end
+    return "@element-rect or @element-blank"
   end
   local entry = defaults[key]
   if entry then
     if entry.kind == "colour" then return "colour" end
     if entry.kind == "length" then return "length" end
     if entry.kind == "boolean" then return "boolean" end
-    if entry.kind == "margin" then return "\\@margin record" end
+    if entry.kind == "margin" then return "@margin record" end
   end
   -- tick-length variants inherit from tick-length scalar.
   if key:match("^tick%-length") then return "length" end
