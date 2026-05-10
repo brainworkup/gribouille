@@ -140,12 +140,12 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
-  let neutral-fill = rgb("#cccccc")
+  let accent-fill = ctx.theme.at("accent", default: rgb("#3366FF"))
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
     ink,
-    neutral-fill,
+    accent-fill,
   )
   let outlier-colour-param = layer.params.outlier-colour
   let stroke-thickness = layer.params.stroke
