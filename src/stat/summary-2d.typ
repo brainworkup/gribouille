@@ -1,7 +1,6 @@
 #import "../utils/aes-resolve.typ": stat-output-mapping
-#import "../utils/bin2d.typ": bin-midpoint-2d, bin-of-2d, resolve-bin-grid-2d
+#import "../utils/bin2d.typ": bin-2d-cells, bin-midpoint-2d
 #import "../utils/summaries.typ": reduce-scalar
-#import "../utils/types.typ": parse-number
 
 /// Two-dimensional summary statistic.
 ///
@@ -43,40 +42,20 @@
     ),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
-  let x-col = mapping.at("x", default: none)
-  let y-col = mapping.at("y", default: none)
-  let z-col = mapping.at("z", default: none)
-  if x-col == none or y-col == none or z-col == none {
-    return (data: (), mapping: new-mapping)
-  }
-  let triples = data
-    .map(r => {
-      let xv = parse-number(r.at(x-col, default: none))
-      let yv = parse-number(r.at(y-col, default: none))
-      let zv = r.at(z-col, default: none)
-      if xv == none or yv == none or zv == none { return none }
-      (x: xv, y: yv, z: zv)
-    })
-    .filter(p => p != none)
-  if triples.len() == 0 { return (data: (), mapping: new-mapping) }
-  let grid = resolve-bin-grid-2d(
-    triples.map(t => t.x),
-    triples.map(t => t.y),
+  let cells = bin-2d-cells(
+    data,
+    mapping.at("x", default: none),
+    mapping.at("y", default: none),
     params,
+    z-col: mapping.at("z", default: none),
   )
+  if cells == none { return (data: (), mapping: new-mapping) }
+  let grid = cells.grid
   let ny = grid.y-n-bins
-  let buckets = range(grid.x-n-bins * ny).map(_ => ())
-  for t in triples {
-    let (ix, iy) = bin-of-2d(t.x, t.y, grid)
-    let k = ix * ny + iy
-    let bucket = buckets.at(k)
-    bucket.push(t.z)
-    buckets.at(k) = bucket
-  }
   let fun = params.at("fun", default: "mean")
   let rows = ()
-  for k in range(buckets.len()) {
-    let bucket = buckets.at(k)
+  for k in range(cells.buckets.len()) {
+    let bucket = cells.buckets.at(k)
     if bucket.len() == 0 { continue }
     let value = reduce-scalar(fun, bucket)
     if value == none { continue }

@@ -2,6 +2,7 @@
 // `(x-lo, x-n-bins, x-width, y-lo, y-n-bins, y-width)`.
 
 #import "bin.typ": bin-config, bin-domain, bin-midpoint, bin-of
+#import "summaries.typ": read-weight
 #import "types.typ": parse-number
 
 #let _split-pair(value, fallback: none) = {
@@ -74,3 +75,54 @@
   bin-midpoint(grid.x-lo, grid.x-width, ix),
   bin-midpoint(grid.y-lo, grid.y-width, iy),
 )
+
+// Aggregate `data` rows into a 2-D bin grid keyed on `(x-col, y-col)`.
+//
+// Returns `(grid, counts, buckets, total)` where:
+//   `grid`    : `(x-lo, x-n-bins, x-width, y-lo, y-n-bins, y-width)`.
+//   `counts`  : flat array of `x-n-bins * y-n-bins` weighted counts. Index
+//               `k = ix * y-n-bins + iy`.
+//   `buckets` : flat array of cell value lists. Empty when `z-col` is `none`.
+//               Each entry is the list of `z-col` cell values for that bin.
+//   `total`   : sum of `counts`.
+//
+// Returns `none` when columns unmapped or no rows parse.
+#let bin-2d-cells(data, x-col, y-col, params, weight-col: none, z-col: none) = {
+  if x-col == none or y-col == none { return none }
+  let collect-z = z-col != none
+  let entries = ()
+  for r in data {
+    let xv = parse-number(r.at(x-col, default: none))
+    let yv = parse-number(r.at(y-col, default: none))
+    if xv == none or yv == none { continue }
+    let entry = (x: xv, y: yv, w: read-weight(r, weight-col))
+    if collect-z {
+      let zv = r.at(z-col, default: none)
+      if zv == none { continue }
+      entry.z = zv
+    }
+    entries.push(entry)
+  }
+  if entries.len() == 0 { return none }
+  let grid = resolve-bin-grid-2d(
+    entries.map(e => e.x),
+    entries.map(e => e.y),
+    params,
+  )
+  let cell-count = grid.x-n-bins * grid.y-n-bins
+  let counts = range(cell-count).map(_ => 0)
+  let buckets = if collect-z { range(cell-count).map(_ => ()) } else { () }
+  let total = 0
+  for e in entries {
+    let (ix, iy) = bin-of-2d(e.x, e.y, grid)
+    let k = ix * grid.y-n-bins + iy
+    counts.at(k) = counts.at(k) + e.w
+    total = total + e.w
+    if collect-z {
+      let bucket = buckets.at(k)
+      bucket.push(e.z)
+      buckets.at(k) = bucket
+    }
+  }
+  (grid: grid, counts: counts, buckets: buckets, total: total)
+}
