@@ -169,15 +169,7 @@ function M.read_surface_parent(path)
   for child, parent in body:gmatch('"([%w%-]+)"%s*:%s*"([%w%-]+)"') do
     parents[child] = parent
   end
-  for _, fam in ipairs(AXIS_FAMILIES) do
-    parents[fam .. "-x"] = fam
-    parents[fam .. "-y"] = fam
-    parents[fam .. "-x-bottom"] = fam .. "-x"
-    parents[fam .. "-x-top"] = fam .. "-x"
-    parents[fam .. "-y-left"] = fam .. "-y"
-    parents[fam .. "-y-right"] = fam .. "-y"
-  end
-  for _, base in ipairs(SCALAR_VARIANTS) do
+  local function expand_variants(base)
     parents[base .. "-x"] = base
     parents[base .. "-y"] = base
     parents[base .. "-x-bottom"] = base .. "-x"
@@ -185,6 +177,8 @@ function M.read_surface_parent(path)
     parents[base .. "-y-left"] = base .. "-y"
     parents[base .. "-y-right"] = base .. "-y"
   end
+  for _, fam in ipairs(AXIS_FAMILIES) do expand_variants(fam) end
+  for _, base in ipairs(SCALAR_VARIANTS) do expand_variants(base) end
   return parents
 end
 
@@ -294,10 +288,15 @@ function M.render_table(records)
   return table.concat(out, "\n")
 end
 
+local cache = {}
+
 function M.render(root)
+  if cache[root] then return cache[root] end
   local _, defaults = M.read_default_theme(root .. "/src/theme/defaults.typ")
   local parents = M.read_surface_parent(root .. "/src/theme/theme.typ")
-  return M.render_table(M.build_records(defaults, parents))
+  local rendered = M.render_table(M.build_records(defaults, parents))
+  cache[root] = rendered
+  return rendered
 end
 
 return M
