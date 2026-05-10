@@ -116,7 +116,7 @@
     let bucket = groups.at(key, default: ())
     bucket.push(row)
     groups.insert(key, bucket)
-    if not samples.keys().contains(key) { samples.insert(key, row) }
+    if samples.at(key, default: none) == none { samples.insert(key, row) }
   }
 
   let weight-col = mapping.at("weight", default: none)
