@@ -1,16 +1,50 @@
 // Default colour palettes.
-// Discrete defaults avoid purple-ish hues.
+// The library default discrete palette is Okabe-Ito: CVD-safety takes
+// priority over the older "no purple" preference, so #cc79a7 is intentional.
 
-#let default-discrete = (
-  rgb("#1f77b4"),
-  rgb("#2ca02c"),
-  rgb("#d62728"),
-  rgb("#ff7f0e"),
-  rgb("#17becf"),
-  rgb("#8c564b"),
-  rgb("#e377c2"),
-  rgb("#7f7f7f"),
+/// Okabe-Ito colour-vision-deficiency-safe qualitative palette.
+///
+/// Eight-colour array (Wong 2011, Nature Methods) used as the library default
+/// for unmapped discrete colour and fill aesthetics. Order matches
+/// `ggthemes::scale_colour_colorblind`: orange, sky blue, bluish green,
+/// yellow, blue, vermilion, reddish purple, grey. Black is omitted to avoid
+/// clashing with axes and text on a white background.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.5.0
+///
+/// \@examples Pass the palette to a manual scale to opt into Okabe-Ito on a
+/// per-aesthetic basis (the same colours are also the library default).
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-manual(values: okabe-ito),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-colour-okabe-ito, \@scale-fill-okabe-ito, \@brewer-palette
+#let okabe-ito = (
+  rgb("#e69f00"),
+  rgb("#56b4e9"),
+  rgb("#009e73"),
+  rgb("#f0e442"),
+  rgb("#0072b2"),
+  rgb("#d55e00"),
+  rgb("#cc79a7"),
+  rgb("#999999"),
 )
+
+#let default-discrete = okabe-ito
 
 // Shape palette: keywords resolved by geom-point's `_draw-shape`.
 // Covers the most common shape indices without overlap.

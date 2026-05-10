@@ -5,7 +5,7 @@
 ///! file for easy discovery.
 
 #import "../utils/viridis.typ" as viridis-mod
-#import "../utils/palette.typ": brewer-palette
+#import "../utils/palette.typ": brewer-palette, okabe-ito
 #import "../utils/colour.typ": grey-palette, hue-palette
 
 // Internal builders shared by every `scale-colour-*` / `scale-fill-*` twin.
@@ -135,6 +135,19 @@
   type: "discrete",
   name: name,
   palette: brewer-palette(palette),
+  limits: limits,
+  labels: labels,
+)
+
+#let _scale-okabe-ito(
+  aesthetic,
+  name: none,
+  limits: none,
+  labels: auto,
+) = _scale-discrete(
+  aesthetic,
+  palette: okabe-ito,
+  name: name,
   limits: limits,
   labels: labels,
 )
@@ -1155,6 +1168,79 @@
 ///
 /// \@see \@scale-colour-brewer, \@scale-fill-discrete
 #let scale-fill-brewer(..args) = _scale-brewer("fill", ..args)
+
+/// Discrete Okabe-Ito colour-vision-deficiency-safe colour scale.
+///
+/// Maps categorical levels to the eight-colour Okabe-Ito palette
+/// (Wong 2011, Nature Methods) in the order they first appear in the data.
+/// This palette is also the library default for unmapped discrete colour
+/// aesthetics; use this helper when you want to opt in explicitly or set
+/// `name`, `limits`, or `labels`.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.5.0
+///
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Three categorical levels mapped to the first three Okabe-Ito hues.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "sp"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-colour-okabe-ito(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-fill-okabe-ito, \@scale-colour-brewer, \@scale-colour-discrete
+#let scale-colour-okabe-ito(..args) = _scale-okabe-ito("colour", ..args)
+
+/// Discrete Okabe-Ito colour-vision-deficiency-safe fill scale.
+///
+/// Fill counterpart of \@scale-colour-okabe-ito. Also the library default
+/// for unmapped discrete fill aesthetics.
+///
+/// \@category Scales
+/// \@stability stable
+/// \@since 0.5.0
+///
+/// \@param name Legend title. Overrides any name set via \@labs when both are present.
+/// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param labels Array of legend labels aligned with `limits`, or `auto`.
+///
+/// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Categorical bars filled with the Okabe-Ito palette.
+/// ```
+/// #let d = (
+///   (grp: "a", y: 1),
+///   (grp: "b", y: 2),
+///   (grp: "c", y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: "y", fill: "grp"),
+///   layers: (geom-col(),),
+///   scales: (scale-fill-okabe-ito(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@scale-colour-okabe-ito, \@scale-fill-brewer, \@scale-fill-discrete
+#let scale-fill-okabe-ito(..args) = _scale-okabe-ito("fill", ..args)
 
 /// Continuous two-stop colour gradient.
 ///

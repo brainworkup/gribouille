@@ -142,6 +142,7 @@
   scale-fill-viridis-b, scale-fill-viridis-c, scale-fill-viridis-d,
 )
 #import "src/scale/colour.typ": scale-colour-brewer, scale-fill-brewer
+#import "src/scale/colour.typ": scale-colour-okabe-ito, scale-fill-okabe-ito
 #import "src/scale/colour.typ": (
   scale-colour-gradient, scale-colour-gradient2, scale-colour-gradientn,
 )
@@ -158,7 +159,7 @@
 #import "src/scale/colour.typ": (
   scale-fill-fermenter, scale-fill-steps, scale-fill-steps2, scale-fill-stepsn,
 )
-#import "src/utils/palette.typ": brewer-palette
+#import "src/utils/palette.typ": brewer-palette, okabe-ito
 #import "src/scale/size.typ": (
   scale-radius, scale-size-area, scale-size-binned, scale-size-binned-area,
   scale-size-continuous, scale-size-identity, scale-size-manual,
