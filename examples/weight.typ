@@ -54,4 +54,9 @@
   height: 9cm,
 )
 
-#stack(dir: ttb, spacing: 0.5cm, bars, scatter)
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
+  bars,
+  scatter,
+)

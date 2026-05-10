@@ -7,30 +7,22 @@
 #let accent = rgb("#1f77b4")
 #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 
-#let panel(title, theme-arg) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", title),
-    plot(
-      data: d,
-      mapping: aes(x: "x", y: "y"),
-      layers: (
-        geom-line(stroke: 1pt, colour: accent),
-        geom-point(size: 2pt, fill: accent),
-      ),
-      labs: labs(x: "x", y: "y"),
-      theme: theme-arg,
-      width: 12cm,
-      height: 9cm,
-    ),
-  )
-}
+#let panel(title, theme-arg) = plot(
+  data: d,
+  mapping: aes(x: "x", y: "y"),
+  layers: (
+    geom-line(stroke: 1pt, colour: accent),
+    geom-point(size: 2pt, fill: accent),
+  ),
+  labs: labs(title: title, x: "x", y: "y"),
+  theme: theme-arg,
+  width: 12cm,
+  height: 9cm,
+)
 
-#stack(
-  dir: ttb,
-  spacing: 0.4cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.4cm,
   panel("Default plot-margin", theme-minimal()),
   panel(
     "margin(top: 0.6cm, right: 0.6cm, bottom: 0.9cm, left: 1.6cm)",

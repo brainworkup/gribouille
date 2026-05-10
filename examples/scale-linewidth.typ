@@ -28,56 +28,52 @@
   (x: 2, y: 4, g: "thick"),
 )
 
-#let panel(title, body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
-}
-
-#stack(
-  dir: ttb,
-  spacing: 0.4cm,
-  panel(
-    "scale-linewidth-continuous",
-    plot(
-      data: cont,
-      mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
-      layers: (geom-line(),),
-      scales: (scale-linewidth-continuous(range: (0.4pt, 2.4pt)),),
-      labs: labs(x: "x", y: "y", linewidth: "w"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.4cm,
+  plot(
+    data: cont,
+    mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
+    layers: (geom-line(),),
+    scales: (scale-linewidth-continuous(range: (0.4pt, 2.4pt)),),
+    labs: labs(
+      title: "scale-linewidth-continuous",
+      x: "x",
+      y: "y",
+      linewidth: "w",
     ),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "scale-linewidth-manual",
-    plot(
-      data: manual,
-      mapping: aes(x: "x", y: "y", linewidth: "g", group: "g"),
-      layers: (geom-line(),),
-      scales: (
-        scale-linewidth-manual(
-          values: (0.4pt, 1.2pt, 2.4pt),
-          limits: ("thin", "medium", "thick"),
-        ),
+  plot(
+    data: manual,
+    mapping: aes(x: "x", y: "y", linewidth: "g", group: "g"),
+    layers: (geom-line(),),
+    scales: (
+      scale-linewidth-manual(
+        values: (0.4pt, 1.2pt, 2.4pt),
+        limits: ("thin", "medium", "thick"),
       ),
-      labs: labs(x: "x", y: "y", linewidth: "Stroke"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
     ),
+    labs: labs(
+      title: "scale-linewidth-manual",
+      x: "x",
+      y: "y",
+      linewidth: "Stroke",
+    ),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "scale-linewidth-binned",
-    plot(
-      data: cont,
-      mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
-      layers: (geom-line(),),
-      scales: (scale-linewidth-binned(n-breaks: 4, range: (0.4pt, 2.4pt)),),
-      labs: labs(x: "x", y: "y", linewidth: "w"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
-    ),
+  plot(
+    data: cont,
+    mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
+    layers: (geom-line(),),
+    scales: (scale-linewidth-binned(n-breaks: 4, range: (0.4pt, 2.4pt)),),
+    labs: labs(title: "scale-linewidth-binned", x: "x", y: "y", linewidth: "w"),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
 )

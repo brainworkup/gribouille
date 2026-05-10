@@ -7,33 +7,31 @@
 
 #let pts = range(1, 11).map(i => (x: i, y: i))
 
-#let panel(title, body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
-}
-
-#let base(scales: (), coord-arg: none) = plot(
+#let base(title, scales: (), coord-arg: none) = plot(
   data: pts,
   mapping: aes(x: "x", y: "y"),
   layers: (geom-point(size: 2.5pt, fill: rgb("#1f77b4")),),
   scales: scales,
   coord: coord-arg,
-  labs: labs(x: "x", y: "y"),
+  labs: labs(title: title, x: "x", y: "y"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,
 )
 
 #grid(
-  rows: 3,
-  column-gutter: 0.5cm,
+  columns: 1,
   row-gutter: 0.5cm,
-  panel("default (5% expand)", base()),
-  panel("expand: false", base(scales: (
-    scale-x-continuous(expand: false),
-    scale-y-continuous(expand: false),
-  ))),
-  panel("coord-cartesian(expand: false)", base(
+  base("default (5% expand)"),
+  base(
+    "expand: false",
+    scales: (
+      scale-x-continuous(expand: false),
+      scale-y-continuous(expand: false),
+    ),
+  ),
+  base(
+    "coord-cartesian(expand: false)",
     coord-arg: coord-cartesian(expand: false),
-  )),
+  ),
 )

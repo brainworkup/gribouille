@@ -11,33 +11,26 @@
   (x: 1, y: -1, xend: 2, yend: 0.5, flow: "feedback"),
 )
 
-#let panel(title, curvature) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", title),
-    plot(
-      data: connections,
-      mapping: aes(x: "x", y: "y", xend: "xend", yend: "yend", colour: "flow"),
-      layers: (
-        geom-curve(curvature: curvature, stroke: 1.2pt),
-        geom-point(size: 3pt),
-      ),
-      scales: (
-        scale-x-continuous(breaks: (0, 1, 2)),
-        scale-y-continuous(breaks: (-1, 0, 1, 1.5)),
-      ),
-      labs: labs(x: "Stage", y: "Lane", colour: "Flow"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
-    ),
-  )
-}
+#let panel(title, curvature) = plot(
+  data: connections,
+  mapping: aes(x: "x", y: "y", xend: "xend", yend: "yend", colour: "flow"),
+  layers: (
+    geom-curve(curvature: curvature, stroke: 1.2pt),
+    geom-point(size: 3pt),
+  ),
+  scales: (
+    scale-x-continuous(breaks: (0, 1, 2)),
+    scale-y-continuous(breaks: (-1, 0, 1, 1.5)),
+  ),
+  labs: labs(title: title, x: "Stage", y: "Lane", colour: "Flow"),
+  theme: theme-minimal(),
+  width: 12cm,
+  height: 9cm,
+)
 
 #grid(
-  rows: 2,
-  column-gutter: 0.5cm,
-  panel("curvature = 0.5", 0.5), panel("curvature = -0.5", -0.5),
+  columns: 1,
+  row-gutter: 0.5cm,
+  panel("curvature = 0.5", 0.5),
+  panel("curvature = -0.5", -0.5),
 )

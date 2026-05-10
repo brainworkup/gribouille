@@ -32,9 +32,9 @@
   height: 9cm,
 )
 
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
   panel("Decade ticks only", (:)),
   panel(
     "guide-axis-logticks() on x and y",

@@ -16,9 +16,9 @@
   height: 9cm,
 )
 
-#stack(
-  dir: ttb,
-  spacing: 0.4cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.4cm,
   make-panel("Default tick labels overlap", (:)),
   make-panel("guides(x: guide-axis(angle: 30))", guides(
     x: guide-axis(angle: 30),

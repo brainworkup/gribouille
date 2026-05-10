@@ -51,30 +51,21 @@
   out
 }
 
-#let panel(title, data, dist, x-name) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", title),
-    plot(
-      data: data,
-      mapping: aes(y: "v"),
-      layers: (
-        geom-qq-line(stroke: 0.8pt, distribution: dist),
-        geom-qq(size: 2pt, alpha: 0.85, distribution: dist),
-      ),
-      labs: labs(x: x-name, y: "Sample quantile"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
-    ),
-  )
-}
+#let panel(title, data, dist, x-name) = plot(
+  data: data,
+  mapping: aes(y: "v"),
+  layers: (
+    geom-qq-line(stroke: 0.8pt, distribution: dist),
+    geom-qq(size: 2pt, alpha: 0.85, distribution: dist),
+  ),
+  labs: labs(title: title, x: x-name, y: "Sample quantile"),
+  theme: theme-minimal(),
+  width: 12cm,
+  height: 9cm,
+)
 
 #grid(
-  rows: 3,
-  column-gutter: 0.5cm,
+  columns: 1,
   row-gutter: 0.5cm,
   panel("normal", _draw-normal(80), "normal", "Normal quantile"),
   panel("uniform", _draw-uniform(80), "uniform", "Uniform quantile"),

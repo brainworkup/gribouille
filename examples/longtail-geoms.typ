@@ -4,11 +4,6 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let panel(title, plot-body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), plot-body)
-}
-
 #let p1 = plot(
   data: mpg,
   mapping: aes(x: "displ", y: "hwy", colour: "class"),
@@ -16,7 +11,12 @@
     geom-point(size: 2.5pt, alpha: 0.85),
     geom-rug(sides: "bl"),
   ),
-  labs: labs(x: "Displacement (L)", y: "Highway mpg", colour: "Class"),
+  labs: labs(
+    title: "geom-rug for marginal observations",
+    x: "Displacement (L)",
+    y: "Highway mpg",
+    colour: "Class",
+  ),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,
@@ -37,7 +37,11 @@
     ),
   ),
   scales: (scale-x-continuous(breaks: (-3, -1.5, 0, 1.5, 3)),),
-  labs: labs(x: "x", y: "sin(x)"),
+  labs: labs(
+    title: "geom-blank as a frame for geom-function",
+    x: "x",
+    y: "sin(x)",
+  ),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,
@@ -55,16 +59,16 @@
     geom-rug(sides: "b", colour: rgb("#2ca02c"), length: 0.4cm),
   ),
   scales: (scale-x-continuous(name: "Highway mpg"),),
-  labs: labs(y: ""),
+  labs: labs(title: "Forced x-range to highlight rug density", y: ""),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,
 )
 
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
-  panel("geom-rug for marginal observations", p1),
-  panel("geom-blank as a frame for geom-function", p2),
-  panel("Forced x-range to highlight rug density", p3),
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
+  p1,
+  p2,
+  p3,
 )

@@ -11,45 +11,38 @@
   (q: "Q4", revenue: 22),
 )
 
-#let panel(title, body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
-}
-
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
-  panel(
-    "Default cartesian",
-    plot(
-      data: revenue,
-      mapping: aes(x: "q", y: "revenue", fill: "q"),
-      layers: (geom-col(),),
-      guides: guides(fill: guide-none()),
-      scales: (
-        scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
-      ),
-      labs: labs(x: "Quarter", y: "Revenue (M)"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
+  plot(
+    data: revenue,
+    mapping: aes(x: "q", y: "revenue", fill: "q"),
+    layers: (geom-col(),),
+    guides: guides(fill: guide-none()),
+    scales: (
+      scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
     ),
+    labs: labs(
+      title: "Default cartesian",
+      x: "Quarter",
+      y: "Revenue (M)",
+    ),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "coord-flip()",
-    plot(
-      data: revenue,
-      mapping: aes(x: "q", y: "revenue", fill: "q"),
-      layers: (geom-col(),),
-      coord: coord-flip(),
-      guides: guides(fill: guide-none()),
-      scales: (
-        scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
-      ),
-      labs: labs(x: "Quarter", y: "Revenue (M)"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
+  plot(
+    data: revenue,
+    mapping: aes(x: "q", y: "revenue", fill: "q"),
+    layers: (geom-col(),),
+    coord: coord-flip(),
+    guides: guides(fill: guide-none()),
+    scales: (
+      scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
     ),
+    labs: labs(title: "coord-flip()", x: "Quarter", y: "Revenue (M)"),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
 )

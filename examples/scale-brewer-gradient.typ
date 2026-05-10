@@ -15,68 +15,69 @@
 #let continuous-d = range(0, 16).map(i => (x: i, y: i, z: i * 1.0))
 #let diverging-d = range(-7, 8).map(i => (x: i, y: i, z: i * 1.0))
 
-#let panel(title, body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
-}
-
 #let theme0 = theme-minimal()
 
 #grid(
-  rows: 2,
-  column-gutter: 0.5cm,
+  columns: 1,
   row-gutter: 0.5cm,
-  panel(
-    "scale-fill-brewer (Set1)",
-    plot(
-      data: discrete-d,
-      mapping: aes(x: "x", y: "y", fill: "g"),
-      layers: (geom-point(size: 4pt),),
-      scales: (scale-fill-brewer(palette: "Set1"),),
-      labs: labs(x: "x", y: "y", fill: "Group"),
-      theme: theme0,
-      width: 12cm,
-      height: 9cm,
+  plot(
+    data: discrete-d,
+    mapping: aes(x: "x", y: "y", fill: "g"),
+    layers: (geom-point(size: 4pt),),
+    scales: (scale-fill-brewer(palette: "Set1"),),
+    labs: labs(
+      title: "scale-fill-brewer (Set1)",
+      x: "x",
+      y: "y",
+      fill: "Group",
     ),
+    theme: theme0,
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "scale-fill-brewer (Spectral)",
-    plot(
-      data: discrete-d,
-      mapping: aes(x: "x", y: "y", fill: "g"),
-      layers: (geom-point(size: 4pt),),
-      scales: (scale-fill-brewer(palette: "Spectral"),),
-      labs: labs(x: "x", y: "y", fill: "Group"),
-      theme: theme0,
-      width: 12cm,
-      height: 9cm,
+  plot(
+    data: discrete-d,
+    mapping: aes(x: "x", y: "y", fill: "g"),
+    layers: (geom-point(size: 4pt),),
+    scales: (scale-fill-brewer(palette: "Spectral"),),
+    labs: labs(
+      title: "scale-fill-brewer (Spectral)",
+      x: "x",
+      y: "y",
+      fill: "Group",
     ),
+    theme: theme0,
+    width: 12cm,
+    height: 9cm,
   ),
-
-  panel(
-    "scale-fill-gradient (two-stop)",
-    plot(
-      data: continuous-d,
-      mapping: aes(x: "x", y: "y", fill: "z"),
-      layers: (geom-point(size: 4pt),),
-      scales: (scale-fill-gradient(),),
-      labs: labs(x: "x", y: "y", fill: "z"),
-      theme: theme0,
-      width: 12cm,
-      height: 9cm,
+  plot(
+    data: continuous-d,
+    mapping: aes(x: "x", y: "y", fill: "z"),
+    layers: (geom-point(size: 4pt),),
+    scales: (scale-fill-gradient(),),
+    labs: labs(
+      title: "scale-fill-gradient (two-stop)",
+      x: "x",
+      y: "y",
+      fill: "z",
     ),
+    theme: theme0,
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "scale-fill-gradient2 (around 0)",
-    plot(
-      data: diverging-d,
-      mapping: aes(x: "x", y: "y", fill: "z"),
-      layers: (geom-point(size: 4pt),),
-      scales: (scale-fill-gradient2(midpoint: 0),),
-      labs: labs(x: "x", y: "y", fill: "z"),
-      theme: theme0,
-      width: 12cm,
-      height: 9cm,
+  plot(
+    data: diverging-d,
+    mapping: aes(x: "x", y: "y", fill: "z"),
+    layers: (geom-point(size: 4pt),),
+    scales: (scale-fill-gradient2(midpoint: 0),),
+    labs: labs(
+      title: "scale-fill-gradient2 (around 0)",
+      x: "x",
+      y: "y",
+      fill: "z",
     ),
+    theme: theme0,
+    width: 12cm,
+    height: 9cm,
   ),
 )

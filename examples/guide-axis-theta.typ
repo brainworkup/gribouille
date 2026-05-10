@@ -32,9 +32,9 @@
   height: 9cm,
 )
 
-#stack(
-  dir: ttb,
-  spacing: 0.4cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.4cm,
   make-panel("Default radial axis", (:)),
   make-panel("guide-axis-theta(minor-ticks: true)", guides(
     theta: guide-axis-theta(minor-ticks: true),

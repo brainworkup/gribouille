@@ -14,9 +14,9 @@
   (cat: "E", lo: 2.4, mid: 3.6, hi: 4.8),
 )
 
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
   plot(
     data: summaries,
     mapping: aes(x: "cat", y: "mid", ymin: "lo", ymax: "hi", colour: "cat"),

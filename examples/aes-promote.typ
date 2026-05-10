@@ -22,9 +22,9 @@
   }
 }
 
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
   plot(
     data: scatter-data,
     mapping: aes(x: "x", y: "y", alpha: "score"),

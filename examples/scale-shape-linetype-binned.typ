@@ -14,56 +14,57 @@
   }
 }
 
-#let panel(title, body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
-}
-
-#stack(
-  dir: ttb,
-  spacing: 0.4cm,
-  panel(
-    "scale-shape-binned(n-breaks: 4)",
-    plot(
-      data: pts,
-      mapping: aes(x: "x", y: "y", shape: "w"),
-      layers: (geom-point(size: 4pt),),
-      scales: (scale-shape-binned(n-breaks: 4),),
-      labs: labs(x: "x", y: "y", shape: "Bin"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.4cm,
+  plot(
+    data: pts,
+    mapping: aes(x: "x", y: "y", shape: "w"),
+    layers: (geom-point(size: 4pt),),
+    scales: (scale-shape-binned(n-breaks: 4),),
+    labs: labs(
+      title: "scale-shape-binned(n-breaks: 4)",
+      x: "x",
+      y: "y",
+      shape: "Bin",
     ),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "scale-shape-binned with custom palette",
-    plot(
-      data: pts,
-      mapping: aes(x: "x", y: "y", shape: "w"),
-      layers: (geom-point(size: 4pt),),
-      scales: (
-        scale-shape-binned(
-          n-breaks: 6,
-          palette: ("circle", "square", "triangle", "diamond", "cross", "x"),
-        ),
+  plot(
+    data: pts,
+    mapping: aes(x: "x", y: "y", shape: "w"),
+    layers: (geom-point(size: 4pt),),
+    scales: (
+      scale-shape-binned(
+        n-breaks: 6,
+        palette: ("circle", "square", "triangle", "diamond", "cross", "x"),
       ),
-      labs: labs(x: "x", y: "y", shape: "Bin"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
     ),
+    labs: labs(
+      title: "scale-shape-binned with custom palette",
+      x: "x",
+      y: "y",
+      shape: "Bin",
+    ),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
-  panel(
-    "scale-linetype-binned(n-breaks: 3)",
-    plot(
-      data: lined,
-      mapping: aes(x: "x", y: "y", linetype: "q", group: "q"),
-      layers: (geom-line(stroke: 1pt),),
-      scales: (scale-linetype-binned(n-breaks: 3),),
-      labs: labs(x: "x", y: "y", linetype: "Bin"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
+  plot(
+    data: lined,
+    mapping: aes(x: "x", y: "y", linetype: "q", group: "q"),
+    layers: (geom-line(stroke: 1pt),),
+    scales: (scale-linetype-binned(n-breaks: 3),),
+    labs: labs(
+      title: "scale-linetype-binned(n-breaks: 3)",
+      x: "x",
+      y: "y",
+      linetype: "Bin",
     ),
+    theme: theme-minimal(),
+    width: 12cm,
+    height: 9cm,
   ),
 )

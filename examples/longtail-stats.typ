@@ -6,11 +6,6 @@
 
 #let accent = rgb("#1f77b4")
 
-#let panel(title, body) = {
-  set align(center)
-  stack(dir: ttb, spacing: 0.2cm, text(weight: "bold", title), body)
-}
-
 #let ecdf = plot(
   data: mpg,
   mapping: aes(x: "hwy"),
@@ -20,6 +15,7 @@
     scale-y-continuous(name: "F(x)", limits: (0, 1)),
   ),
   labs: labs(
+    title: "ECDF via stat-ecdf",
     x: "Highway mpg",
     y: "F(x)",
   ),
@@ -44,15 +40,15 @@
   data: scatter,
   mapping: aes(x: "x", y: "y"),
   layers: (geom-point(stat: "unique", size: 4pt, fill: accent),),
-  labs: labs(x: "x", y: "y"),
+  labs: labs(title: "Deduped scatter via stat-unique", x: "x", y: "y"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,
 )
 
 #grid(
-  rows: 2,
-  column-gutter: 0.6cm,
-  panel("ECDF via stat-ecdf", ecdf),
-  panel("Deduped scatter via stat-unique", dedup),
+  columns: 1,
+  row-gutter: 0.6cm,
+  ecdf,
+  dedup,
 )

@@ -20,9 +20,9 @@
   (x: 4, y: 16),
 )
 
-#let make-row(title, custom-theme) = stack(
-  dir: ttb,
-  spacing: 0.4cm,
+#let make-row(title, custom-theme) = grid(
+  columns: 1,
+  row-gutter: 0.4cm,
   plot(
     data: d,
     mapping: aes(x: "q", y: "revenue"),
@@ -43,9 +43,9 @@
   ),
 )
 
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
   make-row("Default theme", theme-minimal()),
   make-row(
     "theme(geom: element-geom(fill: red, colour: red, linewidth: 1.2pt))",

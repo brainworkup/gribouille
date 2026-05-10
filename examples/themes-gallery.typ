@@ -17,32 +17,22 @@
   (x: 5.5, y: 5.0, g: "b"),
 )
 
-#let panel(title, t) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", title),
-    plot(
-      data: pts,
-      mapping: aes(x: "x", y: "y", fill: "g"),
-      layers: (geom-point(size: 2.5pt),),
-      labs: labs(x: "x", y: "y", fill: "Group"),
-      theme: t,
-      width: 12cm,
-      height: 9cm,
-    ),
-  )
-}
+#let panel(title, t) = plot(
+  data: pts,
+  mapping: aes(x: "x", y: "y", fill: "g"),
+  layers: (geom-point(size: 2.5pt),),
+  labs: labs(title: title, x: "x", y: "y", fill: "Group"),
+  theme: t,
+  width: 12cm,
+  height: 9cm,
+)
 
 #grid(
-  rows: 3,
-  column-gutter: 0.4cm,
+  columns: 1,
   row-gutter: 0.4cm,
   panel("theme-minimal", theme-minimal()),
   panel("theme-bw", theme-bw()),
   panel("theme-linedraw", theme-linedraw()),
-
   panel("theme-light", theme-light()),
   panel("theme-dark", theme-dark()),
   panel("theme-test", theme-test()),

@@ -9,31 +9,23 @@
 #let red = rgb("#d62728")
 #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: 2 * (i / 2) + 1))
 
-#let panel(title, scales) = {
-  set align(center)
-  stack(
-    dir: ttb,
-    spacing: 0.2cm,
-    text(weight: "bold", title),
-    plot(
-      data: d,
-      mapping: aes(x: "x", y: "y"),
-      layers: (
-        geom-point(size: 3pt, colour: accent),
-        geom-smooth(method: "lm", colour: red, fill: red, alpha: 0.15),
-      ),
-      scales: scales,
-      labs: labs(x: "x", y: "y"),
-      theme: theme-minimal(),
-      width: 12cm,
-      height: 9cm,
-    ),
-  )
-}
+#let panel(title, scales) = plot(
+  data: d,
+  mapping: aes(x: "x", y: "y"),
+  layers: (
+    geom-point(size: 3pt, colour: accent),
+    geom-smooth(method: "lm", colour: red, fill: red, alpha: 0.15),
+  ),
+  scales: scales,
+  labs: labs(title: title, x: "x", y: "y"),
+  theme: theme-minimal(),
+  width: 12cm,
+  height: 9cm,
+)
 
-#stack(
-  dir: ttb,
-  spacing: 0.5cm,
+#grid(
+  columns: 1,
+  row-gutter: 0.5cm,
   panel("Linear x: smooth fits a curved line on power-law data", ()),
   panel(
     "Log10 x (pre-stat): smooth fits a straight line in log space",
