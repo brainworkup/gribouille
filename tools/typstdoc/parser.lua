@@ -633,16 +633,25 @@ function M.validate_function(fn, lib_info, opts)
     local doc_names = {}
     for _, p in ipairs(doc.params) do doc_names[p.name] = p end
 
+    -- A `..args` rest binding forwards arbitrary kwargs to a delegate;
+    -- the doc block then describes the *delegate's* params, so we relax
+    -- both directions of the param/signature check.
+    local has_variadic = false
     for _, p in ipairs(fn.signature_params) do
-      if not doc_names[p.name] then
+      if p.variadic then has_variadic = true; break end
+    end
+    for _, p in ipairs(fn.signature_params) do
+      if not doc_names[p.name] and not p.variadic then
         error_at(fn.file, fn.line,
           string.format("@param `%s` missing from doc block for `%s`", p.name, fn.name))
       end
     end
-    for _, p in ipairs(doc.params) do
-      if not sig_names[p.name] then
-        error_at(fn.file, fn.line,
-          string.format("@param `%s` not in signature of `%s`", p.name, fn.name))
+    if not has_variadic then
+      for _, p in ipairs(doc.params) do
+        if not sig_names[p.name] then
+          error_at(fn.file, fn.line,
+            string.format("@param `%s` not in signature of `%s`", p.name, fn.name))
+        end
       end
     end
   end
