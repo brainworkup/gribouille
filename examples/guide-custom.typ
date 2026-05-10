@@ -21,11 +21,10 @@
     note: guide-custom(
       [
         #set text(size: 7pt)
-        Petal-length subset; rows for the original
-        Anderson sample. Refresh quarterly.
+        Petal-length subset; rows for the original Anderson sample. Refresh quarterly.
       ],
-      width: 12cm,
-      height: 9cm,
+      width: 3cm,
+      height: auto,
       title: "Notes",
     ),
   ),
