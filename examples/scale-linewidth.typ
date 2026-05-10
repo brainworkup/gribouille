@@ -4,7 +4,20 @@
 
 #set page(width: auto, height: auto, margin: 0.5cm)
 
-#let cont = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
+#let cont = (
+  (x: 1, y: 1, w: 1, g: "low"),
+  (x: 2, y: 2, w: 1, g: "low"),
+  (x: 3, y: 3, w: 1, g: "low"),
+  (x: 4, y: 4, w: 1, g: "low"),
+  (x: 1, y: 2, w: 5, g: "mid"),
+  (x: 2, y: 3, w: 5, g: "mid"),
+  (x: 3, y: 4, w: 5, g: "mid"),
+  (x: 4, y: 5, w: 5, g: "mid"),
+  (x: 1, y: 3, w: 9, g: "high"),
+  (x: 2, y: 4, w: 9, g: "high"),
+  (x: 3, y: 5, w: 9, g: "high"),
+  (x: 4, y: 6, w: 9, g: "high"),
+)
 
 #let manual = (
   (x: 1, y: 1, g: "thin"),
