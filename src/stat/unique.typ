@@ -64,7 +64,7 @@
     let xv = if x-col != none { row.at(x-col, default: none) } else { none }
     let yv = if y-col != none { row.at(y-col, default: none) } else { none }
     let key = str(xv) + "\u{1}" + str(yv)
-    if seen.keys().contains(key) { continue }
+    if seen.at(key, default: false) { continue }
     seen.insert(key, true)
     rows.push(row)
   }

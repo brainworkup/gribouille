@@ -110,9 +110,14 @@
 
 // Layers whose `geom` is missing from this set panic under `coord-radial`
 // rather than silently falling back to cartesian rendering. Every registered
-// geom is currently radial-aware; the check above guards against typos and
-// future geoms that intentionally opt out.
-#let _RADIAL-AWARE = _geom-draw.keys()
+// geom is currently radial-aware; the check below guards against typos and
+// future geoms that intentionally opt out. Stored as a dict-set so per-layer
+// membership tests are O(1) instead of an array scan.
+#let _RADIAL-AWARE = {
+  let s = (:)
+  for k in _geom-draw.keys() { s.insert(k, true) }
+  s
+}
 
 #import "legend.typ" as legend-mod
 #import "facet/labellers.typ" as labellers
@@ -1617,7 +1622,7 @@
   inner-ctx.radial = inner-radial
   if inner-radial != none {
     for layer in prepared {
-      if not _RADIAL-AWARE.contains(layer.geom) {
+      if not _RADIAL-AWARE.at(layer.geom, default: false) {
         panic("coord-radial does not support geom-" + layer.geom + ".")
       }
     }
