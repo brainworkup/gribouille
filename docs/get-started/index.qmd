@@ -230,10 +230,10 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
   ),
   facet: facet-wrap("island"),
   labs: labs(
-    title: "Penguin body mass scales with flipper length",
+    title: "Penguin Body Mass Scales With Flipper Length",
     subtitle: "Same trend on every island, even though sample sizes differ",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
     colour: "Species",
     fill: "Species",
   ),
@@ -247,18 +247,18 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
 
 :::
 
-### 7. Stats and positions: a different geom on the same data
+### 7. Format tick labels with `label-comma`
 
-A geom is not always one mark per row.
-[`geom-bar`](../reference/geoms/geom-bar.qmd) ships with `stat: "count"` baked in, so it derives `y` from the row count.
-The `position: "dodge"` parameter spreads the species side by side instead of stacking.
+Tick labels accept any formatter callable.
+[`scale-y-continuous`](../reference/scales/scale-y-continuous.qmd) with `labels: label-comma()` renders body mass as `3,000`, `4,000`, ... instead of bare digits.
+Sibling formatters [`label-percent`](../reference/helpers/label-percent.qmd), [`label-currency`](../reference/helpers/label-currency.qmd), and [`label-scientific`](../reference/helpers/label-scientific.qmd) share the same call shape.
 
 ::: {layout-ncol="2" layout-valign="center"}
 
 ```{typst}
 //| echo: true
 //| output-filename: "step-7.svg"
-//| alt: "Dodged bars showing how many penguins of each species live on each island."
+//| alt: "Polished faceted scatter whose body-mass tick labels carry thousands separators."
 #let cb = (
   rgb("#0072B2"),
   rgb("#D55E00"),
@@ -267,11 +267,162 @@ The `position: "dodge"` parameter spreads the species side by side instead of st
 
 #plot(
   data: penguins,
-  mapping: aes(x: "island", fill: "species"),
-  layers: (geom-bar(position: "dodge"),),
-  scales: (scale-fill-discrete(palette: cb),),
-  labs: labs(x: "Island", y: "Count", fill: "Species"),
-  theme: theme-minimal(),
+  mapping: aes(
+    x: "flipper-len",
+    y: "body-mass",
+    colour: "species",
+    fill: "species",
+  ),
+  layers: (
+    geom-point(size: 2pt, alpha: 0.6),
+    geom-smooth(method: "lm", alpha: 0.2),
+  ),
+  scales: (
+    scale-colour-discrete(palette: cb),
+    scale-fill-discrete(palette: cb),
+    scale-y-continuous(labels: label-comma()),
+  ),
+  facet: facet-wrap("island"),
+  labs: labs(
+    title: "Penguin Body Mass Scales With Flipper Length",
+    subtitle: "Same trend on every island, even though sample sizes differ",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
+    colour: "Species",
+    fill: "Species",
+  ),
+  theme: theme-minimal(
+    plot-title: element-text(size: 12pt, weight: "bold")
+  ),
+  width: 12cm,
+  height: 9cm,
+)
+```
+
+:::
+
+### 8. Render Typst markup in the subtitle with `element-typst`
+
+[`element-typst`](../reference/themes/element-typst.qmd) is a drop-in replacement for [`element-text`](../reference/themes/element-text.qmd) that evaluates plain strings as Typst markup.
+Wiring it to the `plot-subtitle` theme surface lets the subtitle mix prose with math: anything between `$ $` becomes a rendered formula while the rest reads as ordinary text.
+
+::: {layout-ncol="2" layout-valign="center"}
+
+```{typst}
+//| echo: true
+//| output-filename: "step-8.svg"
+//| alt: "Step 7 plot with a subtitle whose linear-fit formula renders as Typst math."
+#let cb = (
+  rgb("#0072B2"),
+  rgb("#D55E00"),
+  rgb("#009E73"),
+)
+
+#plot(
+  data: penguins,
+  mapping: aes(
+    x: "flipper-len",
+    y: "body-mass",
+    colour: "species",
+    fill: "species",
+  ),
+  layers: (
+    geom-point(size: 2pt, alpha: 0.6),
+    geom-smooth(method: "lm", alpha: 0.2),
+  ),
+  scales: (
+    scale-colour-discrete(palette: cb),
+    scale-fill-discrete(palette: cb),
+    scale-y-continuous(labels: label-comma()),
+  ),
+  facet: facet-wrap("island"),
+  labs: labs(
+    title: "Penguin Body Mass Scales With Flipper Length",
+    subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = 344$ birds",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
+    colour: "Species",
+    fill: "Species",
+  ),
+  theme: theme-minimal(
+    plot-title: element-text(size: 12pt, weight: "bold"),
+    plot-subtitle: element-typst(size: 9pt),
+  ),
+  width: 12cm,
+  height: 9cm,
+)
+```
+
+:::
+
+### 9. Annotate inside the panel with `geom-typst`
+
+[`geom-typst`](../reference/geoms/geom-typst.qmd) is the Typst-markup sibling of [`geom-text`](../reference/geoms/geom-text.qmd): every value of the `label` aesthetic renders as Typst at the row's `(x, y)`.
+The annotation layer carries one row per `(species, island)` cell so each `$N_"species" = ...$` label rides the colour scale defined in step 4.
+Every row also carries an `island` value so [`facet-wrap`](../reference/facets/facet-wrap.qmd) routes it to the right panel.
+
+::: {layout-ncol="2" layout-valign="center"}
+
+```{typst}
+//| echo: true
+//| output-filename: "step-9.svg"
+//| alt: "Step 8 plot with per-species sample-size labels rendered as Typst math inside each facet panel."
+#let cb = (
+  rgb("#0072B2"),
+  rgb("#D55E00"),
+  rgb("#009E73"),
+)
+
+#let species-counts = (
+  (island: "Torgersen", flipper-len: 172, body-mass: 6200, species: "Adelie",    label: $N_"Adelie" = 52$),
+  (island: "Biscoe",    flipper-len: 172, body-mass: 6200, species: "Adelie",    label: $N_"Adelie" = 44$),
+  (island: "Dream",     flipper-len: 172, body-mass: 6200, species: "Adelie",    label: $N_"Adelie" = 56$),
+  (island: "Dream",     flipper-len: 172, body-mass: 5700, species: "Chinstrap", label: $N_"Chinstrap" = 68$),
+  (island: "Biscoe",    flipper-len: 172, body-mass: 5700, species: "Gentoo",    label: $N_"Gentoo" = 124$),
+)
+
+#plot(
+  data: penguins,
+  mapping: aes(
+    x: "flipper-len",
+    y: "body-mass",
+    colour: "species",
+    fill: "species",
+  ),
+  layers: (
+    geom-point(size: 2pt, alpha: 0.6),
+    geom-smooth(method: "lm", alpha: 0.2),
+    geom-typst(
+      data: species-counts,
+      mapping: aes(
+        x: "flipper-len",
+        y: "body-mass",
+        colour: "species",
+        label: "label",
+      ),
+      inherit-aes: false,
+      anchor: "west",
+      size: 9pt,
+    ),
+  ),
+  scales: (
+    scale-colour-discrete(palette: cb),
+    scale-fill-discrete(palette: cb),
+    scale-y-continuous(labels: label-comma()),
+  ),
+  facet: facet-wrap("island"),
+  labs: labs(
+    title: "Penguin Body Mass Scales With Flipper Length",
+    subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = 344$ birds",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
+    colour: "Species",
+    fill: "Species",
+  ),
+  theme: theme-minimal(
+    plot-title: element-text(size: 12pt, weight: "bold"),
+    plot-subtitle: element-typst(size: 9pt),
+  ),
   width: 12cm,
   height: 9cm,
 )
