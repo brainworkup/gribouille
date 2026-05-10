@@ -330,6 +330,9 @@
     none
   }
   let fill-paint = if fill != none { apply-alpha(fill, alpha) } else { none }
+  // Alpha-only ladders carry no colour/fill. Without this, every glyph
+  // renders identically opaque because the ink fallback skips apply-alpha.
+  let ink-paint = apply-alpha(ink, alpha)
 
   if key == "point" {
     let kind = bundle.at("shape", default: "circle")
@@ -349,7 +352,7 @@
         (paint: stroke-paint, thickness: outline-w),
       )
     } else {
-      draw-marker((cx, cy), kind, size, ink, none)
+      draw-marker((cx, cy), kind, size, ink-paint, none)
     }
     return
   }
@@ -359,7 +362,7 @@
       fill-paint
     } else if stroke-paint != none {
       stroke-paint
-    } else { ink }
+    } else { ink-paint }
     let outline = if (
       fill-paint != none and stroke-paint != none and stroke-paint != fill-paint
     ) {
@@ -379,7 +382,7 @@
       stroke-paint
     } else if fill-paint != none {
       fill-paint
-    } else { ink }
+    } else { ink-paint }
     cetz.draw.line(
       (cx - r * 1.4, cy),
       (cx + r * 1.4, cy),
@@ -393,7 +396,7 @@
       stroke-paint
     } else if fill-paint != none {
       fill-paint
-    } else { ink }
+    } else { ink-paint }
     cetz.draw.line(
       (cx - r * 1.4, cy - r * 0.6),
       (cx - r * 0.4, cy + r * 0.6),
@@ -408,7 +411,7 @@
     fill-paint
   } else if stroke-paint != none {
     stroke-paint
-  } else { ink }
+  } else { ink-paint }
   cetz.draw.rect(
     (cx - r, cy - r),
     (cx + r, cy + r),
