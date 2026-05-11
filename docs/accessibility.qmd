@@ -35,21 +35,21 @@ The visible labels (title, subtitle, caption, axis and legend titles) belong on 
 ::: {.callout-tip}
 ## Which knob do I set?
 
-- Embedding a plot in a **Quarto document** through the `typst-render` extension: set `alt` on the code block, not on `plot()`. See [Plots in Quarto](#plots-in-quarto).
+- Embedding a plot in a **Quarto document** through the [`typst-render`](https://github.com/mcanouil/quarto-typst-render) extension: set `alt` on the code block, not on `plot()`. See [Plots in Quarto](#plots-in-quarto).
 - Compiling a **Typst document yourself** to PDF: set `alt:` on the `plot()` call. See [Tagged PDF from Typst](#tagged-pdf-from-typst).
 
 :::
 
 ## Plots in Quarto
 
-The `typst-render` extension compiles each `{typst}` block to a standalone image before it reaches the page, so the reader gets an `<img>` (HTML output) or an embedded `image()` call (Typst output), never your source.
+The [`typst-render`](https://github.com/mcanouil/quarto-typst-render) extension compiles each `{typst}` block to a standalone image before it reaches the page, so the reader gets an `<img>` (HTML output) or an embedded `image()` call (Typst output), never your source.
 The alt text the reader hears therefore has to come from the **code block**, not from `plot(alt: …)`: an SVG carries no PDF structure tags, so a `figure(alt: …)` produced inside the block would be discarded along with the rest of the source.
-Set it with the `alt` cell option (alias `fig-alt`); pair it with `fig-cap` and `label: fig-…` when you want a numbered, cross-referenceable figure:
+Set it with the `alt` cell option; pair it with `cap` and `label: fig-…` when you want a numbered, cross-referenceable figure:
 
 ````markdown
 ```{typst}
 //| label: fig-penguins
-//| fig-cap: "Penguin body mass against flipper length, coloured by species."
+//| cap: "Penguin body mass against flipper length, coloured by species."
 //| alt: "Body mass rises with flipper length for all three penguin species."
 //| output-filename: "/assets/typst-render/my-page/penguins.svg"
 #import "@preview/gribouille:{{< env VERSION >}}": *
@@ -63,10 +63,10 @@ Set it with the `alt` cell option (alias `fig-alt`); pair it with `fig-cap` and 
 
 `alt` becomes the `alt` attribute on the rendered `<img>` in HTML and the `alt` argument of `image()` in Quarto Typst output, so the description survives in every format.
 `output-filename` follows this project's convention of a leading `/` (resolved against the Quarto project root); in your own project use whatever path your `_quarto.yml` expects.
-Keep a `plot(alt: …)` inside the block only if you also compile the same `.typ` file directly, as in the next section; through `typst-render` it has no effect.
+Keep a `plot(alt: …)` inside the block only if you also compile the same `.typ` file directly, as in the next section; through [`typst-render`](https://github.com/mcanouil/quarto-typst-render) it has no effect.
 The [Get Started](get-started/index.qmd) tutorial sets `alt` on every example block, so each step is a worked example of this pattern.
 
-For example, this page renders a penguins plot through `typst-render` like so:
+For example, this page renders a penguins plot through [`typst-render`](https://github.com/mcanouil/quarto-typst-render) like so:
 
 ```{typst}
 //| echo: false
