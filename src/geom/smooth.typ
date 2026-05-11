@@ -89,8 +89,8 @@
 ///     geom-smooth(method: "lm", alpha: 0.2),
 ///   ),
 ///   labs: labs(
-///     x: "Flipper length (mm)",
-///     y: "Body mass (g)",
+///     x: "Flipper Length (mm)",
+///     y: "Body Mass (g)",
 ///     colour: "Species",
 ///     fill: "Species",
 ///   ),

@@ -28,7 +28,7 @@
   scales: (scale-y-continuous(expand: (0%, 20%)),),
   guides: guides(fill: guide-none()),
   labs: labs(
-    title: "Category counts via stat-count",
+    title: "Category Counts via Stat-Count",
     x: "Category",
     y: "Count",
   ),

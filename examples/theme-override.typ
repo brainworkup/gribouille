@@ -20,7 +20,7 @@
     panel-grid: element-line(colour: rgb("#d9cfbf")),
   ),
   labs: labs(
-    title: "theme() overrides",
+    title: "theme() Overrides",
     subtitle: "Larger axis titles, a cream panel fill, and a soft grid",
     x: "Step",
     y: "y = 0.1 × x²",

@@ -10,7 +10,7 @@
   layers: (geom-point(size: 4pt, alpha: 0.9),),
   scales: (scale-fill-viridis-c(),),
   labs: labs(
-    title: "Viridis continuous fill",
+    title: "Viridis Continuous Fill",
     subtitle: "Colour encodes city mpg across the displacement / highway plane",
     x: "Displacement (L)",
     y: "Highway mpg",

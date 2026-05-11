@@ -36,7 +36,7 @@
   layers: (geom-point(size: 3pt),),
   scales: (scale-y-continuous(transform: "sqrt"),),
   coord: coord-transform(x: "log10"),
-  labs: labs(title: "scale-y sqrt + coord-transform x log10"),
+  labs: labs(title: "Scale-Y Sqrt + Coord-Transform X log10"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,

@@ -22,10 +22,10 @@
   ),
   coord: coord-fixed(),
   labs: labs(
-    title: "geom-path follows row order",
+    title: "Geom-Path Follows Row Order",
     subtitle: "Colour encodes traversal time along the spiral",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
     colour: "t",
   ),
   theme: theme-minimal(),

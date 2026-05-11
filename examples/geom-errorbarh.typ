@@ -22,7 +22,7 @@
     geom-point(size: 3.5pt, fill: rgb("#1f77b4")),
   ),
   labs: labs(
-    title: "Highway fuel economy by vehicle class",
+    title: "Highway Fuel Economy by Vehicle Class",
     subtitle: "Horizontal error bars span the 95% confidence interval around each mean",
     x: "Highway mpg",
     y: "Class",

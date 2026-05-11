@@ -13,10 +13,10 @@
   ),
   scales: (scale-x-date(date-format: "[year]-[month repr:numerical]"),),
   labs: labs(
-    title: "US personal savings rate during the recession",
+    title: "US Personal Savings Rate During the Recession",
     subtitle: "Monthly observations, 2008-2009",
     x: "Month",
-    y: "Personal savings rate (%)",
+    y: "Personal Savings Rate (%)",
     caption: "Source: bundled economics dataset",
   ),
   theme: theme-minimal(),

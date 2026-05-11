@@ -14,7 +14,7 @@
     geom-line(stroke: 1pt, colour: accent),
     geom-point(size: 2pt, fill: accent),
   ),
-  labs: labs(title: title, x: "x", y: "y"),
+  labs: labs(title: title, x: "X", y: "Y"),
   theme: theme-arg,
   width: 12cm,
   height: 9cm,

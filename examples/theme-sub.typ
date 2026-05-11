@@ -20,7 +20,7 @@
   mapping: aes(x: "q", y: "revenue", fill: "segment"),
   layers: (geom-col(position: "dodge"),),
   labs: labs(
-    title: "Quarterly revenue by segment",
+    title: "Quarterly Revenue by Segment",
     x: "Quarter",
     y: "Revenue (m£)",
     fill: "Segment",

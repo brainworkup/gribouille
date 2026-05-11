@@ -24,7 +24,7 @@
     fill: from-theme("accent"),
   ),
   layers: (geom-point(size: 4pt, stroke: 0.6pt),),
-  labs: labs(title: "Theme-pinned point colours"),
+  labs: labs(title: "Theme-Pinned Point Colours"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,

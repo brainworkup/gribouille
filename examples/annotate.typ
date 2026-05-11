@@ -36,7 +36,7 @@
     ),
   ),
   labs: labs(
-    title: "Annotated series",
+    title: "Annotated Series",
     subtitle: "annotate() places ad-hoc layers without joining the data table",
     x: "Index",
     y: "Value",

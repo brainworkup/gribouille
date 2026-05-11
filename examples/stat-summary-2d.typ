@@ -21,7 +21,7 @@
   layers: (geom-rect(stat: stat-summary-2d(fun: "mean", bins: 25)),),
   scales: (scale-fill-viridis-c(),),
   labs: labs(
-    title: "Mean radius reduced over a 25-by-25 grid",
+    title: "Mean Radius Reduced over a 25-by-25 Grid",
     fill: "mean(r)",
   ),
   theme: theme-minimal(),

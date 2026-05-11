@@ -31,7 +31,7 @@
     scale-y-continuous(name: "Forecast", labels: label-comma()),
   ),
   labs: labs(
-    title: "Forecast with confidence band",
+    title: "Forecast with Confidence Band",
     subtitle: "Line legend uses a stroke glyph; ribbon legend uses a rectangle",
     colour: "Series",
     fill: "Band",

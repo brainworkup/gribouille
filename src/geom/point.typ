@@ -90,8 +90,8 @@
 ///   ),
 ///   layers: (geom-point(size: 2pt, alpha: 0.85),),
 ///   labs: labs(
-///     x: "Flipper length (mm)",
-///     y: "Body mass (g)",
+///     x: "Flipper Length (mm)",
+///     y: "Body Mass (g)",
 ///     fill: "Species",
 ///     shape: "Species",
 ///   ),

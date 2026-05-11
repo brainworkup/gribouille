@@ -31,10 +31,10 @@
   scales: (scale-colour-viridis-c(),),
   coord: coord-fixed(),
   labs: labs(
-    title: "Radial vector field",
+    title: "Radial Vector Field",
     subtitle: "Spoke direction = atan2(Δy, Δx); colour = distance from origin",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
     colour: "Magnitude",
   ),
   theme: theme-minimal(),

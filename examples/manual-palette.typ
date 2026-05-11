@@ -24,9 +24,9 @@
     scale-y-continuous(labels: label-comma()),
   ),
   labs: labs(
-    title: "Penguin species drawn with a custom palette",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    title: "Penguin Species Drawn with a Custom Palette",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
     colour: "Species",
     fill: "Species",
   ),

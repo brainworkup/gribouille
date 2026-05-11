@@ -30,7 +30,7 @@
   ),
   layers: (geom-point(size: 5pt, stroke: 0.8pt),),
   labs: labs(
-    title: "Outline darkened from the fill palette via after-scale",
+    title: "Outline Darkened from the Fill Palette via After-Scale",
     fill: "Group",
   ),
   theme: theme-minimal(),

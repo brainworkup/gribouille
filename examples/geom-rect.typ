@@ -25,10 +25,10 @@
     scale-x-continuous(breaks: (2018, 2020, 2022, 2024)),
   ),
   labs: labs(
-    title: "Cumulative releases per major version",
+    title: "Cumulative Releases per Major Version",
     subtitle: "Each box spans the version's lifetime on the timeline",
     x: "Year",
-    y: "Releases shipped",
+    y: "Releases Shipped",
     fill: "Version",
   ),
   theme: theme-minimal(),

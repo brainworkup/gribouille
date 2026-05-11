@@ -28,7 +28,7 @@
   layers: (geom-bar(),),
   guides: guides(fill: guide-none()),
   labs: labs(
-    title: "Explicit after-stat binding",
+    title: "Explicit After-Stat Binding",
     x: "Group",
     y: "Count",
   ),

@@ -11,7 +11,7 @@
   facet: facet-wrap("cyl", ncol: 3),
   guides: guides(colour: guide-none()),
   labs: labs(
-    title: "Highway fuel economy by cylinder count",
+    title: "Highway Fuel Economy by Cylinder Count",
     x: "Displacement (L)",
     y: "Highway mpg",
   ),

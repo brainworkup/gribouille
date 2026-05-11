@@ -18,10 +18,10 @@
   ),
   scales: (scale-y-continuous(labels: label-comma()),),
   labs: labs(
-    title: "Penguin species clusters",
+    title: "Penguin Species Clusters",
     subtitle: "stat-ellipse draws the 95% covariance ellipse around each group",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
     colour: "Species",
     fill: "Species",
   ),

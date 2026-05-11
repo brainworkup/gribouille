@@ -30,7 +30,7 @@
   ),
   layers: (geom-point(size: 5pt, stroke: 0.8pt),),
   labs: labs(
-    title: "Outline trained on `sp`, darkened via stage",
+    title: "Outline Trained on `Sp`, Darkened via Stage",
     fill: "Group",
   ),
   theme: theme-minimal(),

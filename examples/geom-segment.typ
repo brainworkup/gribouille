@@ -52,7 +52,7 @@
     scale-x-continuous(breaks: (2020, 2022, 2024)),
   ),
   labs: labs(
-    title: "Team headcount, 2020 to 2024",
+    title: "Team Headcount, 2020 To 2024",
     subtitle: "Each segment connects start and end values per team",
     x: "Year",
     y: "Headcount",

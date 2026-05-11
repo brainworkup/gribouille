@@ -63,7 +63,7 @@
 ///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),
 ///   layers: (geom-point(size: 2pt),),
 ///   guides: guides(fill: guide-legend(title: "Species", ncol: 3)),
-///   labs: labs(x: "Flipper length (mm)", y: "Body mass (g)"),
+///   labs: labs(x: "Flipper Length (mm)", y: "Body Mass (g)"),
 ///   width: 14cm,
 ///   height: 6cm,
 /// )

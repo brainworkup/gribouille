@@ -25,7 +25,7 @@
     scale-y-continuous(name: "Value"),
   ),
   labs: labs(
-    title: "Trend with an explicit ribbon band",
+    title: "Trend with an Explicit Ribbon Band",
     subtitle: "ymin and ymax aesthetics drive geom-ribbon directly",
   ),
   theme: theme-minimal(),

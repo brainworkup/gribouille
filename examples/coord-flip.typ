@@ -23,7 +23,7 @@
       scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
     ),
     labs: labs(
-      title: "Default cartesian",
+      title: "Default Cartesian",
       x: "Quarter",
       y: "Revenue (M)",
     ),

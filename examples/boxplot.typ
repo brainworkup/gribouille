@@ -10,7 +10,7 @@
   layers: (geom-boxplot(),),
   guides: guides(fill: guide-none()),
   labs: labs(
-    title: "Highway fuel economy by vehicle class",
+    title: "Highway Fuel Economy by Vehicle Class",
     subtitle: "Boxes show the inter-quartile range; whiskers and dots flag outliers",
     x: "Class",
     y: "Highway mpg",

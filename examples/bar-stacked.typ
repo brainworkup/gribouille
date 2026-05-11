@@ -22,7 +22,7 @@
   layers: (geom-col(position: "stack"),),
   scales: (scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),),
   labs: labs(
-    title: "Revenue by quarter",
+    title: "Revenue by Quarter",
     subtitle: "Stacked bars highlight per-quarter totals",
     x: "Quarter",
     y: "Revenue (M)",

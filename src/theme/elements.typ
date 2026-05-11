@@ -126,7 +126,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   labs: labs(title: "Mean $bar(x)$ over time"),
+///   labs: labs(title: "Mean $bar(x)$ over Time"),
 ///   theme: theme(plot-title: element-typst(size: 14pt, weight: "bold")),
 ///   width: 10cm,
 ///   height: 6cm,

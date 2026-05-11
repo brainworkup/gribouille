@@ -31,7 +31,7 @@
     ),
   ),
   labs: labs(
-    title: "Constant content labels via geom-typst and annotate",
+    title: "Constant Content Labels via Geom-Typst and Annotate",
     x: "Index",
     y: "Value",
   ),

@@ -18,10 +18,10 @@
   layers: (geom-point(size: 4pt),),
   scales: (scale-colour-identity(), scale-shape-identity()),
   labs: labs(
-    title: "Identity scales pass column values straight to aesthetics",
+    title: "Identity Scales Pass Column Values Straight to Aesthetics",
     subtitle: "Hex strings drive fill; shape names drive marker glyphs",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
   ),
   theme: theme-minimal(),
   width: 12cm,

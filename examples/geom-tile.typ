@@ -29,9 +29,9 @@
     scale-y-discrete(limits: weeks.rev()),
   ),
   labs: labs(
-    title: "Hourly request volume by day",
+    title: "Hourly Request Volume by Day",
     subtitle: "Peak load lands midday on weekdays",
-    x: "Hour of day",
+    x: "Hour of Day",
     y: "Day",
   ),
   theme: theme-minimal(),

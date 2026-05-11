@@ -19,7 +19,7 @@
   layers: (geom-bar(fill: accent),),
   scales: (scale-y-continuous(labels: label-comma()),),
   labs: labs(
-    title: "Pre-aggregated counts via weight",
+    title: "Pre-Aggregated Counts via Weight",
     subtitle: "geom-bar sums the weight column instead of counting rows",
     x: "Region",
     y: "Visitors",
@@ -45,9 +45,9 @@
     geom-smooth(method: "lm", colour: accent, fill: accent, alpha: 0.2),
   ),
   labs: labs(
-    title: "Weighted least squares ignores down-weighted outliers",
-    x: "x",
-    y: "y",
+    title: "Weighted Least Squares Ignores Down-Weighted Outliers",
+    x: "X",
+    y: "Y",
   ),
   theme: theme-minimal(),
   width: 12cm,

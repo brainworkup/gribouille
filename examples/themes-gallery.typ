@@ -21,7 +21,7 @@
   data: pts,
   mapping: aes(x: "x", y: "y", fill: "g"),
   layers: (geom-point(size: 2.5pt),),
-  labs: labs(title: title, x: "x", y: "y", fill: "Group"),
+  labs: labs(title: title, x: "X", y: "Y", fill: "Group"),
   theme: t,
   width: 12cm,
   height: 9cm,

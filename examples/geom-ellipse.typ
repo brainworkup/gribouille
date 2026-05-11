@@ -25,7 +25,7 @@
   scales: (scale-fill-brewer(palette: "Set2"),),
   coord: coord-fixed(),
   labs: labs(
-    title: "Catchment regions sketched as ellipses",
+    title: "Catchment Regions Sketched as Ellipses",
     subtitle: "Each ellipse is parameterised by centre, semi-axes, and rotation",
     x: "Easting (km)",
     y: "Northing (km)",

@@ -33,10 +33,10 @@
   ),
   coord: coord-fixed(),
   labs: labs(
-    title: "Stylised altitude zones",
+    title: "Stylised Altitude Zones",
     subtitle: "One filled polygon per zone, drawn from row order",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
     fill: "Zone",
   ),
   theme: theme-minimal(),

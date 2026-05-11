@@ -28,7 +28,7 @@
     )),
   ),
   labs: labs(
-    title: "Revenue by quarter, dodged",
+    title: "Revenue by Quarter, Dodged",
     subtitle: "Side-by-side bars compare products within each quarter",
     x: "Quarter",
     y: "Revenue (M)",

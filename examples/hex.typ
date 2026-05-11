@@ -22,7 +22,7 @@
   layers: (geom-hex(bins: 22),),
   scales: (scale-fill-viridis-c(option: "viridis"),),
   labs: labs(
-    title: "Spiral cloud binned into pointy-top hexagons",
+    title: "Spiral Cloud Binned into Pointy-Top Hexagons",
     subtitle: "Cells coloured by count, empty bins suppressed",
     fill: "count",
   ),

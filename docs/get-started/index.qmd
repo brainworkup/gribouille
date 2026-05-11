@@ -230,7 +230,7 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
   ),
   facet: facet-wrap("island"),
   labs: labs(
-    title: "Penguin Body Mass Scales With Flipper Length",
+    title: "Penguin Body Mass Scales with Flipper Length",
     subtitle: "Same trend on every island, even though sample sizes differ",
     x: "Flipper Length (mm)",
     y: "Body Mass (g)",
@@ -284,7 +284,7 @@ Sibling formatters [`label-percent`](../reference/helpers/label-percent.qmd), [`
   ),
   facet: facet-wrap("island"),
   labs: labs(
-    title: "Penguin Body Mass Scales With Flipper Length",
+    title: "Penguin Body Mass Scales with Flipper Length",
     subtitle: "Same trend on every island, even though sample sizes differ",
     x: "Flipper Length (mm)",
     y: "Body Mass (g)",
@@ -338,7 +338,7 @@ Wiring it to the `plot-subtitle` theme surface lets the subtitle mix prose with 
   ),
   facet: facet-wrap("island"),
   labs: labs(
-    title: "Penguin Body Mass Scales With Flipper Length",
+    title: "Penguin Body Mass Scales with Flipper Length",
     subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = " + str(n) + "$ birds",
     x: "Flipper Length (mm)",
     y: "Body Mass (g)",
@@ -414,7 +414,7 @@ Every row also carries an `island` value so [`facet-wrap`](../reference/facets/f
   ),
   facet: facet-wrap("island"),
   labs: labs(
-    title: "Penguin Body Mass Scales With Flipper Length",
+    title: "Penguin Body Mass Scales with Flipper Length",
     subtitle: "Linear fit: $hat(y) = beta_0 + beta_1 dot.c x$ for $n = " + str(n) + "$ birds",
     x: "Flipper Length (mm)",
     y: "Body Mass (g)",

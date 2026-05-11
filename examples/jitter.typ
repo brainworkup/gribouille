@@ -19,7 +19,7 @@
   ),
   guides: guides(colour: guide-none()),
   labs: labs(
-    title: "Highway mpg per vehicle class",
+    title: "Highway mpg per Vehicle Class",
     subtitle: "Jitter spreads coincident points so cluster density reads",
     x: "Class",
     y: "Highway mpg",

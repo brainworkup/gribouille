@@ -67,7 +67,7 @@
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
 ///   labs: labs(
-///     title: "Coloured groups",
+///     title: "Coloured Groups",
 ///     colour: "Species",
 ///     alt: "Three points coloured by species",
 ///   ),
@@ -84,11 +84,11 @@
 ///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),
 ///   layers: (geom-point(size: 2pt, alpha: 0.85),),
 ///   labs: labs(
-///     title: "Penguin body mass scales with flipper length",
+///     title: "Penguin Body Mass Scales with Flipper Length",
 ///     subtitle: "Three species across the Palmer Archipelago",
 ///     caption: "Data: palmerpenguins (Horst, Hill & Gorman, 2020)",
-///     x: "Flipper length (mm)",
-///     y: "Body mass (g)",
+///     x: "Flipper Length (mm)",
+///     y: "Body Mass (g)",
 ///     fill: "Species",
 ///     alt: "Scatter of body mass against flipper length, coloured by species.",
 ///   ),

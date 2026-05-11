@@ -23,10 +23,10 @@
   facet: facet-wrap("line", ncol: 3),
   coord: coord-fixed(ratio: 1),
   labs: labs(
-    title: "coord-fixed inside facet-wrap",
+    title: "Coord-Fixed Inside Facet-Wrap",
     subtitle: "Every panel locks the same 1:1 ratio",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
   ),
   theme: theme-minimal(),
   width: 12cm,

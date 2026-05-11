@@ -22,10 +22,10 @@
   ),
   scales: (scale-y-log10(labels: label-comma()),),
   labs: labs(
-    title: "Reference lines on a log10 y axis",
+    title: "Reference Lines on a log10 Y Axis",
     subtitle: "yintercept = (10, 100, 1000) lands at the correct log positions",
-    x: "x",
-    y: "y (log10)",
+    x: "X",
+    y: "Y (log10)",
   ),
   theme: theme-minimal(),
   width: 12cm,

@@ -26,10 +26,10 @@
     scale-y-continuous(labels: label-comma()),
   ),
   labs: labs(
-    title: "Active users at each release",
+    title: "Active Users at Each Release",
     subtitle: "Step interpolation reflects discrete release events",
     x: "Year",
-    y: "Active users",
+    y: "Active Users",
   ),
   theme: theme-minimal(),
   width: 12cm,

@@ -16,10 +16,10 @@
     geom-vline(xintercept: 10, colour: rgb("#1f77b4")),
   ),
   labs: labs(
-    title: "Trend with reference lines",
+    title: "Trend with Reference Lines",
     subtitle: "abline, hline, and vline highlight expected values without joining the data",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
   ),
   theme: theme-minimal(),
   width: 12cm,

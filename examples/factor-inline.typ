@@ -15,10 +15,10 @@
   mapping: aes(x: "x", y: "y", fill: as-factor("cluster")),
   layers: (geom-point(size: 4pt),),
   labs: labs(
-    title: "Numeric column coerced to factor",
+    title: "Numeric Column Coerced to Factor",
     subtitle: "as-factor() forces fill onto a discrete scale without changing the data",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
     fill: "Cluster",
   ),
   theme: theme-minimal(),

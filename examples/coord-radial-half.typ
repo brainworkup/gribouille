@@ -21,7 +21,7 @@
   scales: (
     scale-x-continuous(limits: (0, 12), expand: false),
   ),
-  labs: labs(title: "Half-day load"),
+  labs: labs(title: "Half-Day Load"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,

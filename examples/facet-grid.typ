@@ -12,9 +12,9 @@
   scales: (scale-y-continuous(labels: label-comma()),),
   guides: guides(colour: guide-none()),
   labs: labs(
-    title: "Penguin morphology by sex and species",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    title: "Penguin Morphology by Sex and Species",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
   ),
   theme: theme-minimal(),
   width: 12cm,

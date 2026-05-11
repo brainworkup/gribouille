@@ -15,7 +15,7 @@
     scale-y-continuous(name: "F(x)", limits: (0, 1)),
   ),
   labs: labs(
-    title: "ECDF via stat-ecdf",
+    title: "ECDF via Stat-Ecdf",
     x: "Highway mpg",
     y: "F(x)",
   ),
@@ -40,7 +40,7 @@
   data: scatter,
   mapping: aes(x: "x", y: "y"),
   layers: (geom-point(stat: "unique", size: 4pt, fill: accent),),
-  labs: labs(title: "Deduped scatter via stat-unique", x: "x", y: "y"),
+  labs: labs(title: "Deduped Scatter via Stat-Unique", x: "X", y: "Y"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,

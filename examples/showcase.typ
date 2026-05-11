@@ -19,10 +19,10 @@
   facet: facet-wrap("island", labeller: label-both()),
   scales: (scale-y-continuous(labels: label-comma()),),
   labs: labs(
-    title: "Penguin morphology by island",
+    title: "Penguin Morphology by Island",
     subtitle: "Flipper length versus body mass with a per-species linear fit",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
     colour: "Species",
     fill: "Species",
   ),

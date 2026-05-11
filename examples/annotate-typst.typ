@@ -37,7 +37,7 @@
     ),
   ),
   labs: labs(
-    title: "Annotations rendered as Typst markup",
+    title: "Annotations Rendered as Typst Markup",
     x: "Index",
     y: "Value",
   ),

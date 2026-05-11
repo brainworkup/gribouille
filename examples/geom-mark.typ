@@ -19,8 +19,8 @@
   ),
   labs: labs(
     title: title,
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
     fill: "Species",
   ),
   theme: theme-minimal(),

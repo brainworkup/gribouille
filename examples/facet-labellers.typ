@@ -11,7 +11,7 @@
   facet: facet-wrap("cyl", ncol: 3, labeller: label-both()),
   guides: guides(colour: guide-none()),
   labs: labs(
-    title: "Highway mpg per cylinder count",
+    title: "Highway mpg per Cylinder Count",
     subtitle: "label-both() prefixes each strip with the facet variable name",
     x: "Displacement (L)",
     y: "Highway mpg",

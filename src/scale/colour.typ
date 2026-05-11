@@ -462,7 +462,7 @@
 ///     palette: (rgb("#0072B2"), rgb("#D55E00"), rgb("#009E73")),
 ///     limits: ("Adelie", "Chinstrap", "Gentoo"),
 ///   ),),
-///   labs: labs(x: "Flipper length (mm)", y: "Body mass (g)", colour: "Species"),
+///   labs: labs(x: "Flipper Length (mm)", y: "Body Mass (g)", colour: "Species"),
 ///   width: 11cm,
 ///   height: 6cm,
 /// )

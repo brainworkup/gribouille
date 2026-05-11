@@ -22,9 +22,9 @@
     scale-y-continuous(labels: label-comma()),
   ),
   labs: labs(
-    title: "Penguin species with the Okabe-Ito palette",
-    x: "Flipper length (mm)",
-    y: "Body mass (g)",
+    title: "Penguin Species with the Okabe-Ito Palette",
+    x: "Flipper Length (mm)",
+    y: "Body Mass (g)",
     colour: "Species",
     fill: "Species",
   ),

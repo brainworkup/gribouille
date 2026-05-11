@@ -41,7 +41,7 @@
 ///   data: mtcars,
 ///   mapping: aes(x: "wt", y: "mpg", colour: "cyl"),
 ///   layers: (geom-point(size: 3pt),),
-///   labs: labs(title: "Fuel economy vs. weight"),
+///   labs: labs(title: "Fuel Economy vs. Weight"),
 ///   width: 12cm,
 ///   height: 7cm,
 /// )
@@ -65,7 +65,7 @@
 ///   ),
 ///   facet: facet-wrap("grp"),
 ///   theme: theme-minimal(),
-///   labs: labs(title: "Per-group trend"),
+///   labs: labs(title: "Per-Group Trend"),
 ///   width: 12cm,
 ///   height: 6cm,
 /// )

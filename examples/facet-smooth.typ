@@ -15,7 +15,7 @@
   ),
   facet: facet-wrap("cyl", ncol: 3, labeller: label-both()),
   labs: labs(
-    title: "Per-panel linear smoother",
+    title: "Per-Panel Linear Smoother",
     subtitle: "Each fit follows only the rows in its own panel",
     x: "Displacement (L)",
     y: "Highway mpg",

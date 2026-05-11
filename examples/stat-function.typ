@@ -25,9 +25,9 @@
   ),
   scales: (scale-x-continuous(breaks: (-3, -1.5, 0, 1.5, 3)),),
   labs: labs(
-    title: "Two analytic curves over a shared x-range",
+    title: "Two Analytic Curves over a Shared X-Range",
     subtitle: "stat-function samples each function across xlim and routes the points to geom-line",
-    x: "x",
+    x: "X",
     y: "f(x)",
   ),
   theme: theme-minimal(),

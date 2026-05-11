@@ -16,10 +16,10 @@
   ),
   coord: coord-cartesian(xlim: (5, 15), ylim: (0, 250)),
   labs: labs(
-    title: "coord-cartesian zoom",
+    title: "Coord-Cartesian Zoom",
     subtitle: "xlim and ylim clip the view; rows outside the window stay in the data",
-    x: "x",
-    y: "y",
+    x: "X",
+    y: "Y",
   ),
   theme: theme-minimal(),
   width: 12cm,

@@ -36,10 +36,10 @@
     scale-colour-brewer(palette: "Dark2"),
   ),
   labs: labs(
-    title: "Dose-response trial across four weeks",
+    title: "Dose-Response Trial Across Four Weeks",
     subtitle: "Each dose arm is dodged off the week, then jittered within its column",
     x: "Week",
-    y: "Response score",
+    y: "Response Score",
     colour: "Arm",
   ),
   theme: theme-minimal(),

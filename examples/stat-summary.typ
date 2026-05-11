@@ -29,7 +29,7 @@
     ),
   ),
   labs: labs(
-    title: "Highway fuel economy by cylinder count",
+    title: "Highway Fuel Economy by Cylinder Count",
     subtitle: "Mean ± 1 SE on top of the raw jittered observations",
     x: "Cylinders",
     y: "Highway mpg",

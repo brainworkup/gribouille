@@ -26,9 +26,9 @@
   ),
   scales: (scale-colour-brewer(palette: "Dark2"),),
   labs: labs(
-    title: "One shape and one linetype per group",
+    title: "One Shape and One Linetype per Group",
     subtitle: "Using shape + linetype + colour together makes groups legible without colour alone",
-    x: "t",
+    x: "T",
     y: "Value",
     colour: "Group",
     shape: "Group",

@@ -32,7 +32,7 @@
   data: d,
   mapping: aes(x: "x"),
   layers: (geom-dotplot(bins: 14, stackratio: 1.4),),
-  labs: labs(title: "geom-dotplot(stackratio: 1.4) leaves a gap between dots"),
+  labs: labs(title: "geom-dotplot(stackratio: 1.4) Leaves a Gap Between Dots"),
   theme: theme-minimal(),
   width: 12cm,
   height: 9cm,

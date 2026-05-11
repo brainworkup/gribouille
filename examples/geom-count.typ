@@ -11,7 +11,7 @@
   layers: (geom-count(fill: rgb("#1f77b4"), alpha: 0.7),),
   scales: (scale-x-continuous(breaks: (4, 6, 8)),),
   labs: labs(
-    title: "Vehicle frequency by cylinder count and class",
+    title: "Vehicle Frequency by Cylinder Count and Class",
     subtitle: "Marker area scales with the number of rows in each cell",
     x: "Cylinders",
     y: "Class",

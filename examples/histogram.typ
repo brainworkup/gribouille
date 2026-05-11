@@ -9,7 +9,7 @@
   mapping: aes(x: "hwy"),
   layers: (geom-histogram(bins: 12, fill: rgb("#1f77b4"), alpha: 0.85),),
   labs: labs(
-    title: "Distribution of highway fuel economy",
+    title: "Distribution of Highway Fuel Economy",
     subtitle: "12 equal-width bins via stat-bin",
     x: "Highway mpg",
     y: "Vehicles",

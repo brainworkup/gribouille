@@ -20,7 +20,7 @@
   data: d,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (geom-area(stat: stat-align(), position: "stack", alpha: 0.7),),
-  labs: labs(title: "stat-align: stacked areas on a shared x-grid"),
+  labs: labs(title: "Stat-Align: Stacked Areas on a Shared X-Grid"),
   theme: theme-minimal(),
   width: 14cm,
   height: 8cm,

@@ -64,7 +64,7 @@
 ///   data: penguins,
 ///   mapping: aes(x: "body-mass", fill: "species"),
 ///   layers: (geom-histogram(binwidth: 250),),
-///   labs: labs(x: "Body mass (g)", y: "Count", fill: "Species"),
+///   labs: labs(x: "Body Mass (g)", y: "Count", fill: "Species"),
 ///   width: 11cm,
 ///   height: 6cm,
 /// )

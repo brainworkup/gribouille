@@ -331,7 +331,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   labs: labs(y: "Cumulative response (per protocol)"),
+///   labs: labs(y: "Cumulative Response (Per Protocol)"),
 ///   theme: theme(
 ///     tick-length: 0.25cm,
 ///     tick-labels: false,

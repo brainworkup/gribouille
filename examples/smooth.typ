@@ -14,7 +14,7 @@
     geom-smooth(method: "lm", colour: accent, fill: accent, alpha: 0.2),
   ),
   labs: labs(
-    title: "Engine displacement versus highway fuel economy",
+    title: "Engine Displacement Versus Highway Fuel Economy",
     subtitle: "Linear fit with 95% confidence band",
     x: "Displacement (L)",
     y: "Highway mpg",

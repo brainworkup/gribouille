@@ -21,9 +21,9 @@
   mapping: aes(x: "sepal-length", y: "sepal-width", fill: "species"),
   layers: (geom-point(size: 3pt),),
   labs: labs(
-    title: "Iris sepal dimensions",
-    x: "Sepal length (cm)",
-    y: "Sepal width (cm)",
+    title: "Iris Sepal Dimensions",
+    x: "Sepal Length (cm)",
+    y: "Sepal Width (cm)",
     fill: "Species",
   ),
   theme: theme-minimal(),

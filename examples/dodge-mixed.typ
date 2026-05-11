@@ -19,7 +19,7 @@
   layers: (geom-col(position: "dodge"),),
   scales: (scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),),
   labs: labs(
-    title: "Revenue with mixed-width dodge slots",
+    title: "Revenue with Mixed-Width Dodge Slots",
     subtitle: "Each row supplies its own dodge slot width via the width column",
     x: "Quarter",
     y: "Revenue (M)",

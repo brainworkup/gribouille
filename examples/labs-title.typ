@@ -14,7 +14,7 @@
     geom-point(size: 3pt, fill: rgb("#1f77b4")),
   ),
   labs: labs(
-    title: "Monthly counts",
+    title: "Monthly Counts",
     subtitle: "First half of the experiment",
     caption: "Source: simulated dataset.",
     x: "Month",

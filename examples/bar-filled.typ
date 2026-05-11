@@ -22,7 +22,7 @@
   layers: (geom-col(position: "fill"),),
   scales: (scale-y-continuous(labels: label-percent()),),
   labs: labs(
-    title: "Product share of revenue per quarter",
+    title: "Product Share of Revenue per Quarter",
     subtitle: "position-fill normalises each quarter total to 100%",
     x: "Quarter",
     y: "Share",
