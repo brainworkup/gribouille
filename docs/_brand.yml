@@ -18,49 +18,49 @@ logo:
 
 color:
   palette:
-    paper-light:      "#FAF6EE"
-    paper-dark:       "#161B1E"
-    ink-light:        "#2B2B2B"
-    ink-dark:         "#F4EDDF"
-    muted-light:      "#5C6660"
-    muted-dark:       "#A9A79E"
-    surface-light:    "#FFFDF7"
-    surface-dark:     "#1F272B"
-    crayon-red:       "#C74F2E"
-    crayon-red-dk:    "#E87858"
-    crayon-teal:      "#2B4A7F"
-    crayon-teal-dk:   "#6683B8"
-    crayon-mustard:   "#D9A021"
-    crayon-must-dk:   "#E8C066"
-    crayon-mint:      "#7FC8A9"
-    crayon-mint-dk:   "#9CDCC0"
+    paper-light: "#FAF6EE"
+    paper-dark: "#161B1E"
+    ink-light: "#2B2B2B"
+    ink-dark: "#F4EDDF"
+    muted-light: "#5C6660"
+    muted-dark: "#A9A79E"
+    surface-light: "#FFFDF7"
+    surface-dark: "#1F272B"
+    crayon-red: "#C74F2E"
+    crayon-red-dk: "#E87858"
+    crayon-teal: "#2B4A7F"
+    crayon-teal-dk: "#6683B8"
+    crayon-mustard: "#D9A021"
+    crayon-must-dk: "#E8C066"
+    crayon-mint: "#7FC8A9"
+    crayon-mint-dk: "#9CDCC0"
   foreground:
     light: ink-light
-    dark:  ink-dark
+    dark: ink-dark
   background:
     light: paper-light
-    dark:  paper-dark
+    dark: paper-dark
   primary:
     light: crayon-red
-    dark:  crayon-red-dk
+    dark: crayon-red-dk
   secondary:
     light: crayon-teal
-    dark:  crayon-teal-dk
+    dark: crayon-teal-dk
   tertiary:
     light: crayon-mustard
-    dark:  crayon-must-dk
+    dark: crayon-must-dk
   success:
     light: crayon-mint
-    dark:  crayon-mint-dk
+    dark: crayon-mint-dk
   info:
     light: crayon-teal
-    dark:  crayon-teal-dk
+    dark: crayon-teal-dk
   warning:
     light: crayon-mustard
-    dark:  crayon-must-dk
+    dark: crayon-must-dk
   danger: "#B23A2B"
   light: paper-light
-  dark:  ink-light
+  dark: ink-light
 
 typography:
   fonts:
