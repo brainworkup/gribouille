@@ -3,7 +3,6 @@ title: "Gribouille"
 subtitle: "A layered grammar of graphics for Typst."
 toc: false
 sidebar: false
-image: /assets/typst-render/examples/penguins-light.svg
 engine: markdown
 include-in-header:
   - text: |
