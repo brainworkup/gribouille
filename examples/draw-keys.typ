@@ -28,7 +28,7 @@
   ),
   scales: (
     scale-x-continuous(name: "Week"),
-    scale-y-continuous(name: "Forecast", labels: label-comma()),
+    scale-y-continuous(name: "Forecast", labels: format-comma()),
   ),
   labs: labs(
     title: "Forecast with Confidence Band",

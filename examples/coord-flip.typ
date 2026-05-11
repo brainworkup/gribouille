@@ -20,7 +20,7 @@
     layers: (geom-col(),),
     guides: guides(fill: guide-none()),
     scales: (
-      scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
+      scale-y-continuous(labels: format-currency(symbol: "$", digits: 0)),
     ),
     labs: labs(
       title: "Default Cartesian",
@@ -38,7 +38,7 @@
     coord: coord-flip(),
     guides: guides(fill: guide-none()),
     scales: (
-      scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),
+      scale-y-continuous(labels: format-currency(symbol: "$", digits: 0)),
     ),
     labs: labs(title: "coord-flip()", x: "Quarter", y: "Revenue (M)"),
     theme: theme-minimal(),

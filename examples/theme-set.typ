@@ -14,7 +14,7 @@
     data: penguins,
     mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
     layers: (geom-point(size: 2pt, alpha: 0.85),),
-    scales: (scale-y-continuous(labels: label-comma()),),
+    scales: (scale-y-continuous(labels: format-comma()),),
     labs: labs(
       title: "Inherits the Global Theme-Minimal",
       x: "Flipper Length (mm)",
@@ -28,7 +28,7 @@
     data: penguins,
     mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
     layers: (geom-point(size: 2pt, alpha: 0.85),),
-    scales: (scale-y-continuous(labels: label-comma()),),
+    scales: (scale-y-continuous(labels: format-comma()),),
     labs: labs(
       title: "Explicit Theme-Dark Overrides the Global",
       x: "Flipper Length (mm)",

@@ -21,7 +21,7 @@
   scales: (
     scale-colour-manual(values: palette),
     scale-fill-manual(values: palette),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
   ),
   labs: labs(
     title: "Penguin Species Drawn with a Custom Palette",

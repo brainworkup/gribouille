@@ -20,7 +20,9 @@
   data: sales,
   mapping: aes(x: "q", y: "revenue", fill: "product"),
   layers: (geom-col(position: "stack"),),
-  scales: (scale-y-continuous(labels: label-currency(symbol: "$", digits: 0)),),
+  scales: (
+    scale-y-continuous(labels: format-currency(symbol: "$", digits: 0)),
+  ),
   labs: labs(
     title: "Revenue by Quarter",
     subtitle: "Stacked bars highlight per-quarter totals",

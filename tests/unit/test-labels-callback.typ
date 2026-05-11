@@ -2,8 +2,8 @@
 // composes with the format helpers.
 
 #import "../../lib.typ": (
-  aes, geom-col, geom-point, label-comma, label-number, label-percent,
-  label-scientific, label-title, labs, plot, scale-x-continuous,
+  aes, format-comma, format-number, format-percent, format-scientific,
+  format-title, geom-col, geom-point, labs, plot, scale-x-continuous,
   scale-x-discrete, scale-y-continuous, typst,
 )
 
@@ -14,20 +14,20 @@
   (x: 4567890, y: 0.00000001),
 )
 
-// label-number on x, label-scientific on y.
+// format-number on x, format-scientific on y.
 #plot(
   data: d,
   mapping: aes(x: "x", y: "y"),
   layers: (geom-point(size: 3pt),),
   scales: (
-    scale-x-continuous(labels: label-comma()),
-    scale-y-continuous(labels: label-scientific()),
+    scale-x-continuous(labels: format-comma()),
+    scale-y-continuous(labels: format-scientific()),
   ),
   width: 10cm,
   height: 6cm,
 )
 
-// label-percent.
+// format-percent.
 #let pct = (
   (x: "a", y: 0.1),
   (x: "b", y: 0.5),
@@ -37,12 +37,12 @@
   data: pct,
   mapping: aes(x: "x", y: "y"),
   layers: (geom-col(),),
-  scales: (scale-y-continuous(labels: label-percent()),),
+  scales: (scale-y-continuous(labels: format-percent()),),
   width: 10cm,
   height: 6cm,
 )
 
-// label-title with typst() composition: discrete fill swatches show
+// format-title with typst() composition: discrete fill swatches show
 // title-cased labels (string returns) without markup eval.
 #let groups = (
   (x: "alpha", y: 4),
@@ -53,7 +53,7 @@
   data: groups,
   mapping: aes(x: "x", y: "y", fill: "x"),
   layers: (geom-col(),),
-  scales: (scale-x-discrete(labels: label-title()),),
+  scales: (scale-x-discrete(labels: format-title()),),
   width: 10cm,
   height: 6cm,
 )

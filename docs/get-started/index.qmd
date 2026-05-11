@@ -247,11 +247,11 @@ The single [`theme`](../reference/themes/theme.qmd) call further tweaks the titl
 
 :::
 
-### 7. Format tick labels with `label-comma`
+### 7. Format tick labels with `format-comma`
 
 Tick labels accept any formatter callable.
-[`scale-y-continuous`](../reference/scales/scale-y-continuous.qmd) with `labels: label-comma()` renders body mass as `3,000`, `4,000`, ... instead of bare digits.
-Sibling formatters [`label-percent`](../reference/helpers/label-percent.qmd), [`label-currency`](../reference/helpers/label-currency.qmd), and [`label-scientific`](../reference/helpers/label-scientific.qmd) share the same call shape.
+[`scale-y-continuous`](../reference/scales/scale-y-continuous.qmd) with `labels: format-comma()` renders body mass as `3,000`, `4,000`, ... instead of bare digits.
+Sibling formatters [`format-percent`](../reference/helpers/format-percent.qmd), [`format-currency`](../reference/helpers/format-currency.qmd), and [`format-scientific`](../reference/helpers/format-scientific.qmd) share the same call shape.
 
 ::: {layout-ncol="2" layout-valign="center"}
 
@@ -280,7 +280,7 @@ Sibling formatters [`label-percent`](../reference/helpers/label-percent.qmd), [`
   scales: (
     scale-colour-discrete(palette: cb),
     scale-fill-discrete(palette: cb),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
   ),
   facet: facet-wrap("island"),
   labs: labs(
@@ -334,7 +334,7 @@ Wiring it to the `plot-subtitle` theme surface lets the subtitle mix prose with 
   scales: (
     scale-colour-discrete(palette: cb),
     scale-fill-discrete(palette: cb),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
   ),
   facet: facet-wrap("island"),
   labs: labs(
@@ -410,7 +410,7 @@ Every row also carries an `island` value so [`facet-wrap`](../reference/facets/f
   scales: (
     scale-colour-discrete(palette: cb),
     scale-fill-discrete(palette: cb),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
   ),
   facet: facet-wrap("island"),
   labs: labs(

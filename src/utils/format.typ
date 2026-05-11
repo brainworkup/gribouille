@@ -80,12 +80,12 @@
 ///   data: ((x: 1, y: 1234.5), (x: 2, y: 23456.7)),
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(),),
-///   scales: (scale-y-continuous(labels: label-number()),),
+///   scales: (scale-y-continuous(labels: format-number()),),
 ///   width: 8cm,
 ///   height: 5cm,
 /// )
 /// ```
-#let label-number(
+#let format-number(
   big-mark: ",",
   decimal-mark: ".",
   digits: auto,
@@ -102,7 +102,7 @@
   prefix + formatted + suffix
 }
 
-/// Shorthand for `label-number(big-mark: ",")`.
+/// Shorthand for `format-number(big-mark: ",")`.
 ///
 /// \@category Helpers
 /// \@stability stable
@@ -113,7 +113,7 @@
 /// \@param suffix String appended to every formatted value.
 ///
 /// \@returns A closure `value => string`.
-#let label-comma(digits: auto, prefix: "", suffix: "") = label-number(
+#let format-comma(digits: auto, prefix: "", suffix: "") = format-number(
   big-mark: ",",
   decimal-mark: ".",
   digits: digits,
@@ -137,7 +137,7 @@
 /// \@param digits Decimal digits to keep.
 ///
 /// \@returns A closure `value => string`.
-#let label-percent(
+#let format-percent(
   scale: 100,
   suffix: "%",
   big-mark: "",
@@ -172,7 +172,7 @@
 /// \@param digits Decimal digits to keep.
 ///
 /// \@returns A closure `value => string`.
-#let label-currency(
+#let format-currency(
   symbol: "$",
   big-mark: ",",
   decimal-mark: ".",
@@ -192,7 +192,7 @@
 ///
 /// Returns a `typst()`-tagged string so the render path evaluates the
 /// result as Typst math markup. Values within `[10^(-3), 10^3)` are
-/// formatted as plain numbers via `label-number`.
+/// formatted as plain numbers via `format-number`.
 ///
 /// \@category Helpers
 /// \@stability stable
@@ -201,7 +201,7 @@
 /// \@param digits Significant decimal digits in the mantissa.
 ///
 /// \@returns A closure `value => content`.
-#let label-scientific(digits: 2) = value => {
+#let format-scientific(digits: 2) = value => {
   if value == none { return none }
   let v = if type(value) == str { parse-number(value) } else { value }
   if v == none { return str(value) }
@@ -249,7 +249,7 @@
 /// \@since 0.1.0
 ///
 /// \@returns A closure `value => string`.
-#let label-title() = value => {
+#let format-title() = value => {
   if value == none { return none }
   let s = str(value)
   if s == "" { return s }
@@ -270,7 +270,7 @@
 /// \@since 0.1.0
 ///
 /// \@returns A closure `value => string`.
-#let label-upper() = value => {
+#let format-upper() = value => {
   if value == none { return none }
   _to-upper(str(value))
 }
@@ -282,7 +282,7 @@
 /// \@since 0.1.0
 ///
 /// \@returns A closure `value => string`.
-#let label-lower() = value => {
+#let format-lower() = value => {
   if value == none { return none }
   _to-lower(str(value))
 }
@@ -296,7 +296,7 @@
 /// \@param width Maximum line width in characters.
 ///
 /// \@returns A closure `value => string`.
-#let label-wrap(width: 20) = value => {
+#let format-wrap(width: 20) = value => {
   if value == none { return none }
   let s = str(value)
   if s.len() <= width { return s }

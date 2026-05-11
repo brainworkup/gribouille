@@ -22,7 +22,7 @@
   layers: (geom-col(position: "dodge"),),
   scales: (
     scale-x-discrete(expand: false),
-    scale-y-continuous(expand: (0%, 10%), labels: label-currency(
+    scale-y-continuous(expand: (0%, 10%), labels: format-currency(
       symbol: "$",
       digits: 0,
     )),

@@ -20,7 +20,7 @@
   data: sales,
   mapping: aes(x: "q", y: "revenue", fill: "product"),
   layers: (geom-col(position: "fill"),),
-  scales: (scale-y-continuous(labels: label-percent()),),
+  scales: (scale-y-continuous(labels: format-percent()),),
   labs: labs(
     title: "Product Share of Revenue per Quarter",
     subtitle: "position-fill normalises each quarter total to 100%",

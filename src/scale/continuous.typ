@@ -114,14 +114,14 @@
 /// )
 /// ```
 ///
-/// \@examples Apply `label-comma()` to format penguin body-mass tick labels
+/// \@examples Apply `format-comma()` to format penguin body-mass tick labels
 /// with thousands separators on the x axis.
 /// ```
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "body-mass", y: "flipper-len", fill: "species"),
 ///   layers: (geom-point(size: 2pt),),
-///   scales: (scale-x-continuous(name: "Body mass (g)", labels: label-comma()),),
+///   scales: (scale-x-continuous(name: "Body mass (g)", labels: format-comma()),),
 ///   width: 11cm,
 ///   height: 6cm,
 /// )

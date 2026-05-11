@@ -105,8 +105,8 @@
 // Helpers.
 #import "src/plot.typ": get-alt-text
 #import "src/utils/format.typ": (
-  label-comma, label-currency, label-lower, label-number, label-percent,
-  label-scientific, label-title, label-upper, label-wrap,
+  format-comma, format-currency, format-lower, format-number, format-percent,
+  format-scientific, format-title, format-upper, format-wrap,
 )
 #import "src/utils/summaries.typ": (
   mean, mean-cl-boot, mean-cl-normal, mean-sd, mean-se, median, median-hilow,

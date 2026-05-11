@@ -19,7 +19,7 @@
   scales: (
     scale-colour-okabe-ito(),
     scale-fill-okabe-ito(),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
   ),
   labs: labs(
     title: "Penguin Species with the Okabe-Ito Palette",

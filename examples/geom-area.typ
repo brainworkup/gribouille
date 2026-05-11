@@ -13,7 +13,7 @@
   ),
   scales: (
     scale-x-date(),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
   ),
   labs: labs(
     title: "Monthly US Unemployment, 2008-2009",

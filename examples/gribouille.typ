@@ -111,7 +111,7 @@
   ),
   scales: (
     scale-x-continuous(),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
     scale-colour-discrete(
       limits: species-colours.keys(),
       palette: species-colours.values(),

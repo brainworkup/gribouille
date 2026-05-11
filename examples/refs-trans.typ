@@ -20,7 +20,7 @@
       linetype: "dashed",
     ),
   ),
-  scales: (scale-y-log10(labels: label-comma()),),
+  scales: (scale-y-log10(labels: format-comma()),),
   labs: labs(
     title: "Reference Lines on a log10 Y Axis",
     subtitle: "yintercept = (10, 100, 1000) lands at the correct log positions",

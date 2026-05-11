@@ -142,7 +142,7 @@ The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](
   ),
   scales: (
     scale-x-continuous(),
-    scale-y-continuous(labels: label-comma()),
+    scale-y-continuous(labels: format-comma()),
     scale-colour-discrete(
       limits: species-colours.keys(),
       palette: species-colours.values(),
@@ -231,7 +231,7 @@ Stack geoms, scales, facets, and a theme until the plot is right.
     geom-smooth(method: "lm", alpha: 0.2),
   ),
   facet: facet-wrap("island", labeller: label-both()),
-  scales: (scale-y-continuous(labels: label-comma()),),
+  scales: (scale-y-continuous(labels: format-comma()),),
   labs: labs(
     title: "Penguin Morphology by Island",
     subtitle: "Flipper length versus body mass with a per-species linear fit",

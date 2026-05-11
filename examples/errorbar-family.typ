@@ -19,7 +19,7 @@
   layers: layers,
   scales: (
     scale-x-continuous(breaks: (1, 2, 3, 4)),
-    scale-y-continuous(labels: label-currency(symbol: "$", digits: 1)),
+    scale-y-continuous(labels: format-currency(symbol: "$", digits: 1)),
   ),
   labs: labs(title: title, x: "Quarter", y: "Revenue"),
   theme: theme-minimal(),

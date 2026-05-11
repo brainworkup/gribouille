@@ -17,7 +17,7 @@
   data: totals,
   mapping: aes(x: "region", weight: "visitors"),
   layers: (geom-bar(fill: accent),),
-  scales: (scale-y-continuous(labels: label-comma()),),
+  scales: (scale-y-continuous(labels: format-comma()),),
   labs: labs(
     title: "Pre-Aggregated Counts via Weight",
     subtitle: "geom-bar sums the weight column instead of counting rows",
