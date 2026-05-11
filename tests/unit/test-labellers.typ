@@ -22,17 +22,17 @@
 )
 #assert.eq(lab.format(lab.label-context(), "cyl", "6"), "6")
 
-// label-wrap-gen: hard-splits on whitespace at or before the limit.
-#let wrapped = lab.format(lab.label-wrap-gen(width: 5), "x", "hello world")
+// label-wrap: hard-splits on whitespace at or before the limit.
+#let wrapped = lab.format(lab.label-wrap(width: 5), "x", "hello world")
 #assert.eq(wrapped, "hello\nworld")
 
-// label-wrap-gen with no usable space: hard split at the width.
-#let hard = lab.format(lab.label-wrap-gen(width: 4), "x", "abcdefgh")
+// label-wrap with no usable space: hard split at the width.
+#let hard = lab.format(lab.label-wrap(width: 4), "x", "abcdefgh")
 #assert.eq(hard, "abcd\nefgh")
 
-// label-wrap-gen with an inner labeller composes the two transformations.
+// label-wrap with an inner labeller composes the two transformations.
 #let composed = lab.format(
-  lab.label-wrap-gen(width: 4, inner: lab.label-both()),
+  lab.label-wrap(width: 4, inner: lab.label-both()),
   "cyl",
   "8",
 )

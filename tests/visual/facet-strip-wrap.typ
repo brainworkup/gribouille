@@ -1,6 +1,6 @@
 // facet strip bands grow to fit wrapped labels.
 //
-// Long facet-level names wrapped with `label-wrap-gen` would otherwise
+// Long facet-level names wrapped with `label-wrap` would otherwise
 // overflow the fixed strip band and be cropped by the panel; the band is now
 // sized to the rendered label height. Two plots: facet-wrap (top strips) and
 // facet-grid (top strips plus rotated side strips, both wrapped).
@@ -25,7 +25,7 @@
     data: data,
     mapping: aes(x: "x", y: "y"),
     layers: (geom-point(),),
-    facet: facet-wrap("grp", ncol: 3, labeller: label-wrap-gen(width: 10)),
+    facet: facet-wrap("grp", ncol: 3, labeller: label-wrap(width: 10)),
     width: 12cm,
     height: 4cm,
   ),
@@ -36,7 +36,7 @@
     facet: facet-grid(
       rows: "side",
       cols: "grp",
-      labeller: label-wrap-gen(width: 10),
+      labeller: label-wrap(width: 10),
     ),
     width: 12cm,
     height: 6cm,

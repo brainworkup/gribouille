@@ -2137,7 +2137,7 @@
 }
 
 // cm extent of a strip band sized to the tallest label, floored at `base`.
-// A wrapped labeller (`label-wrap-gen`) emits `\n`-joined lines, so the
+// A wrapped labeller (`label-wrap`) emits `\n`-joined lines, so the
 // rendered height grows with the line count; `pad` keeps the same breathing
 // room the old fixed constants gave a single line. For the rotated row-strip
 // the measured height is the band's *width*, which is exactly what the caller

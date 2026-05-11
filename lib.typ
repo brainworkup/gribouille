@@ -202,7 +202,7 @@
 #import "src/facet/wrap.typ": facet-wrap
 #import "src/facet/grid.typ": facet-grid
 #import "src/facet/labellers.typ": (
-  label-both, label-context, label-value, label-wrap-gen, labeller,
+  label-both, label-context, label-value, label-wrap, labeller,
 )
 
 // Themes.
