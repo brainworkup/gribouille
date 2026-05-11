@@ -164,11 +164,11 @@ local function write_reference(opts, all_functions, modules, lib_info)
   end
 
   for _, cat in ipairs(lib_info.category_order) do
-    local body, rel_path = render.render_category_index(cat, all_functions, modules)
+    local body, rel_path = render.render_category_index(cat, all_functions, modules, index, opts.strict)
     util.write_file(opts.out .. "/" .. rel_path, body)
   end
 
-  local top_body, top_path = render.render_top_index(lib_info.category_order, all_functions)
+  local top_body, top_path = render.render_top_index(lib_info.category_order, all_functions, index, opts.strict)
   util.write_file(opts.out .. "/" .. top_path, top_body)
 
   util.write_file(opts.sidebar, render.render_sidebar(lib_info.category_order, all_functions))

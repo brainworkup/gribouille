@@ -5,17 +5,21 @@ local M = {}
 
 local function yaml_escape(s)
   if not s then return "" end
-  if s:find('[:"#]') or s:match("^%s") or s:match("%s$") then
+  if s:find('[:"#`%[]') or s:match("^%s") or s:match("%s$") then
     return string.format('"%s"', s:gsub('"', '\\"'))
   end
   return s
 end
 
-local function emit_frontmatter(fn)
+local function resolved_summary(fn, from_qmd, index, strict)
+  return resolve.resolve_refs_in_text(fn.doc.summary, from_qmd, index, strict, fn.file, fn.line)
+end
+
+local function emit_frontmatter(fn, from_qmd, index, strict)
   local lines = { "---" }
   table.insert(lines, "title: " .. yaml_escape(fn.name))
   if fn.doc.summary then
-    table.insert(lines, "subtitle: " .. yaml_escape(fn.doc.summary))
+    table.insert(lines, "subtitle: " .. yaml_escape(resolved_summary(fn, from_qmd, index, strict)))
   end
   if fn.doc.category then
     table.insert(lines, "category: " .. yaml_escape(fn.doc.category))
@@ -193,7 +197,7 @@ function M.render_function(fn, index, opts)
   local cat_slug = util.slugify(fn.doc.category)
   local from_qmd = string.format("%s/%s.qmd", cat_slug, fn.name)
   local pieces = {
-    emit_frontmatter(fn),
+    emit_frontmatter(fn, from_qmd, index, strict),
     emit_stability_callout(fn.doc.stability),
     emit_description(fn.doc.description, from_qmd, index, strict, fn.file, fn.line),
     emit_usage(fn),
@@ -211,8 +215,8 @@ function M.render_function(fn, index, opts)
   return body, from_qmd
 end
 
-function M.render_category_index(category, functions, modules)
-  local cat_slug = util.slugify(category)
+function M.render_category_index(category, functions, modules, index, strict)
+  local from_qmd = string.format("%s/index.qmd", util.slugify(category))
   local lines = {
     "---",
     "title: " .. yaml_escape(category),
@@ -229,7 +233,7 @@ function M.render_category_index(category, functions, modules)
     end
   end
   for _, para in ipairs(module_desc) do
-    table.insert(lines, para)
+    table.insert(lines, resolve.resolve_refs_in_text(para, from_qmd, index, strict))
     table.insert(lines, "")
   end
 
@@ -251,7 +255,7 @@ function M.render_category_index(category, functions, modules)
     table.insert(lines, "## Functions")
     table.insert(lines, "")
     for _, fn in ipairs(main) do
-      table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, fn.doc.summary))
+      table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, resolved_summary(fn, from_qmd, index, strict)))
     end
     table.insert(lines, "")
   end
@@ -262,17 +266,18 @@ function M.render_category_index(category, functions, modules)
     table.insert(lines, "## Advanced")
     table.insert(lines, "")
     for _, fn in ipairs(advanced) do
-      table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, fn.doc.summary))
+      table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, resolved_summary(fn, from_qmd, index, strict)))
     end
     table.insert(lines, "")
     table.insert(lines, ":::")
     table.insert(lines, "")
   end
 
-  return table.concat(lines, "\n"):gsub("\n\n\n+", "\n\n"):gsub("\n+$", "\n"), string.format("%s/index.qmd", cat_slug)
+  return table.concat(lines, "\n"):gsub("\n\n\n+", "\n\n"):gsub("\n+$", "\n"), from_qmd
 end
 
-function M.render_top_index(category_order, functions)
+function M.render_top_index(category_order, functions, index, strict)
+  local from_qmd = "index.qmd"
   local lines = {
     "---",
     "title: Reference",
@@ -297,7 +302,7 @@ function M.render_top_index(category_order, functions)
       table.insert(lines, "")
       for _, fn in ipairs(fns) do
         if not (fn.doc.is_internal or fn.doc.is_advanced) then
-          table.insert(lines, string.format("- [`%s`](%s/%s.qmd) - %s", fn.name, slug, fn.name, fn.doc.summary))
+          table.insert(lines, string.format("- [`%s`](%s/%s.qmd) - %s", fn.name, slug, fn.name, resolved_summary(fn, from_qmd, index, strict)))
         end
       end
       table.insert(lines, "")

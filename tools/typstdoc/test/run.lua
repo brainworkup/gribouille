@@ -763,6 +763,73 @@ describe("resolve: cross-references", function()
 end)
 
 -- -----------------------------------------------------------------------
+describe("render: summaries resolve cross-references", function()
+  local render = require("render")
+
+  local function parsed_functions(body)
+    local f = tmpfile("xref_summary", body)
+    return parser.parse_file(f).functions
+  end
+
+  local TWO_GEOMS = [[
+/// A foo that pairs with \@bar.
+///
+/// @category Geoms
+#let foo() = none
+
+/// A bar.
+///
+/// @category Geoms
+#let bar() = none
+]]
+
+  it("resolves @ref in the top index bullet", function()
+    local fns = parsed_functions(TWO_GEOMS)
+    local index = resolve.build_index(fns)
+    local body = render.render_top_index({ "Geoms" }, fns, index, false)
+    assert_contains(body, "- [`foo`](geoms/foo.qmd) - A foo that pairs with [`bar`](geoms/bar.qmd).")
+    assert_true(not body:find("@bar", 1, true), "bare @bar should be resolved away")
+  end)
+
+  it("resolves @ref in the category index bullet", function()
+    local fns = parsed_functions([[
+/// A foo that pairs with \@aes.
+///
+/// @category Geoms
+#let foo() = none
+
+/// Bind columns.
+///
+/// @category Core
+#let aes() = none
+]])
+    local index = resolve.build_index(fns)
+    local body = render.render_category_index("Geoms", fns, {}, index, false)
+    assert_contains(body, "- [`foo`](foo.qmd) - A foo that pairs with [`aes`](../core/aes.qmd).")
+  end)
+
+  it("resolves @ref in the function-page subtitle", function()
+    local fns = parsed_functions(TWO_GEOMS)
+    local index = resolve.build_index(fns)
+    local body = render.render_function(fns[1], index, { strict = false })
+    assert_contains(body, 'subtitle: "A foo that pairs with [`bar`](bar.qmd)."')
+  end)
+
+  it("errors on unresolved @ref in a summary under strict", function()
+    local fns = parsed_functions([[
+/// A foo that pairs with \@missing.
+///
+/// @category Geoms
+#let foo() = none
+]])
+    local index = resolve.build_index(fns)
+    assert_throws(function()
+      render.render_top_index({ "Geoms" }, fns, index, true)
+    end, "unresolved")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
 describe("theme_keys: extractor + table render", function()
   local theme_keys = require("theme_keys")
 
