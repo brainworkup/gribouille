@@ -9,6 +9,7 @@
 /// All other parameters mirror \@geom-point.
 ///
 /// \@category Geoms
+/// \@subcategory Points
 /// \@stability stable
 /// \@since 0.0.1
 ///

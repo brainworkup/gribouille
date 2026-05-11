@@ -12,6 +12,7 @@
 /// `binwidth` wins.
 ///
 /// \@category Stats
+/// \@subcategory Binning
 /// \@stability stable
 /// \@since 0.0.1
 ///

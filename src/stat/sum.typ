@@ -13,6 +13,7 @@
 /// `"n"` column so geoms picking up the aesthetic see counts directly.
 ///
 /// \@category Stats
+/// \@subcategory Summaries
 /// \@stability stable
 /// \@since 0.0.1
 ///

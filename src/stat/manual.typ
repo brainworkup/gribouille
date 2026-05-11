@@ -10,6 +10,7 @@
 /// running totals).
 ///
 /// \@category Stats
+/// \@subcategory Functions and helpers
 /// \@stability stable
 /// \@since 0.6.0
 ///

@@ -39,6 +39,7 @@
 /// rendered with `dt.display(date-format)`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -108,6 +109,7 @@
 /// of the form `YYYY-MM-DD`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -166,6 +168,7 @@
 /// and rendered with `dt.display(date-format)`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -220,6 +223,7 @@
 /// `YYYY-MM-DD HH:MM[:SS]`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -278,6 +282,7 @@
 /// pattern should be used.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability experimental
 /// \@since 0.0.1
 ///
@@ -334,6 +339,7 @@
 /// `[0, 86400)`) or ISO-8601 strings of the form `HH:MM[:SS]`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability experimental
 /// \@since 0.0.1
 ///

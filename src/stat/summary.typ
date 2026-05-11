@@ -28,6 +28,7 @@
 /// the form `(values, ..fun-args) -> (y, ymin, ymax)`.
 ///
 /// \@category Stats
+/// \@subcategory Summaries
 /// \@stability stable
 /// \@since 0.0.1
 ///

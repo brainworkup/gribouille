@@ -15,6 +15,7 @@
 /// through the polygon draw path.
 ///
 /// \@category Geoms
+/// \@subcategory Polygons and shapes
 /// \@stability stable
 /// \@since 0.4.0
 ///

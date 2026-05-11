@@ -6,6 +6,7 @@
 /// Continuous stroke scale mapping a numeric column to outline thickness.
 ///
 /// \@category Scales
+/// \@subcategory Stroke scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -51,6 +52,7 @@
 /// Manual discrete stroke scale: supply a per-level array of Typst lengths.
 ///
 /// \@category Scales
+/// \@subcategory Stroke scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -83,6 +85,7 @@
 /// into `n-breaks` bins for the legend.
 ///
 /// \@category Scales
+/// \@subcategory Stroke scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -120,6 +123,7 @@
 /// carries the visual outcome verbatim.
 ///
 /// \@category Scales
+/// \@subcategory Stroke scales
 /// \@stability stable
 /// \@since 0.4.0
 ///

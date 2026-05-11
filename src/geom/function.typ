@@ -16,6 +16,7 @@
 /// returns `none` are dropped silently.
 ///
 /// \@category Geoms
+/// \@subcategory Lines and paths
 /// \@stability stable
 /// \@since 0.0.1
 ///

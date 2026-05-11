@@ -358,6 +358,7 @@
 /// Continuous colour scale mapping a numeric column to stroke colours.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -403,6 +404,7 @@
 /// Discrete colour scale mapping categorical levels to stroke colours.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -474,6 +476,7 @@
 /// Continuous fill scale mapping a numeric column to fill colours.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -525,6 +528,7 @@
 /// Discrete fill scale mapping categorical levels to fill colours.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -580,6 +584,7 @@
 /// `limits` fixes the level order.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: manual and identity
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -639,6 +644,7 @@
 /// `limits` fixes the level order.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: manual and identity
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -694,6 +700,7 @@
 /// and `"cividis"`.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -750,6 +757,7 @@
 /// and `"cividis"`.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -796,6 +804,7 @@
 /// coloured from the chosen viridis palette.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -843,6 +852,7 @@
 /// and `"cividis"`.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -897,6 +907,7 @@
 /// and `"cividis"`.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -947,6 +958,7 @@
 /// because the column carries the visual outcome verbatim.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: manual and identity
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -981,6 +993,7 @@
 /// Values must be hex strings or `color` values; see \@scale-colour-identity.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: manual and identity
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -1015,6 +1028,7 @@
 /// coloured from the chosen viridis palette.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -1065,6 +1079,7 @@
 /// in the order they first appear in the data.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1122,6 +1137,7 @@
 /// Fill counterpart of \@scale-colour-brewer. Same palette names apply.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1178,6 +1194,7 @@
 /// `name`, `limits`, or `labels`.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.5.0
 ///
@@ -1213,6 +1230,7 @@
 /// for unmapped discrete fill aesthetics.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.5.0
 ///
@@ -1248,6 +1266,7 @@
 /// Defaults to a blue ramp.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1298,6 +1317,7 @@
 /// `mid` to `high` for values at or above it.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1354,6 +1374,7 @@
 /// colours (for example a ColorBrewer palette used as a continuous ramp).
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1404,6 +1425,7 @@
 /// Fill counterpart of \@scale-colour-gradient.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1443,6 +1465,7 @@
 /// Fill counterpart of \@scale-colour-gradient2.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1482,6 +1505,7 @@
 /// Fill counterpart of \@scale-colour-gradientn.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -1520,6 +1544,7 @@
 /// (lighter), each in `[0, 1]` where 0 is black and 1 is white.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1574,6 +1599,7 @@
 /// Fill counterpart of \@scale-colour-grey.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1618,6 +1644,7 @@
 /// differ by a full turn.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1675,6 +1702,7 @@
 /// Fill counterpart of \@scale-colour-hue.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: discrete
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1714,6 +1742,7 @@
 /// canonical order, `-1` reverses it.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1759,6 +1788,7 @@
 /// Continuous alpha (opacity) scale mapping a numeric column to opacities.
 ///
 /// \@category Scales
+/// \@subcategory Alpha scales
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1822,6 +1852,7 @@
 /// than the evenly-spaced range that the discrete inference would assign.
 ///
 /// \@category Scales
+/// \@subcategory Alpha scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -1872,6 +1903,7 @@
 /// legend swatches snap to bin centres.
 ///
 /// \@category Scales
+/// \@subcategory Alpha scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -1922,6 +1954,7 @@
 /// No legend is drawn because the column carries the visual outcome verbatim.
 ///
 /// \@category Scales
+/// \@subcategory Alpha scales
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1960,6 +1993,7 @@
 /// Fill counterpart of \@scale-colour-distiller.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: continuous
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -1999,6 +2033,7 @@
 /// ramp. Defaults to a blue ramp.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2050,6 +2085,7 @@
 /// using a three-stop palette that pivots through `mid` at `midpoint`.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2106,6 +2142,7 @@
 /// `n-breaks` equal-width bins.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2159,6 +2196,7 @@
 /// the palette: `1` keeps the canonical order, `-1` reverses it.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2210,6 +2248,7 @@
 /// Fill counterpart of \@scale-colour-steps.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2246,6 +2285,7 @@
 /// Fill counterpart of \@scale-colour-steps2.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2284,6 +2324,7 @@
 /// Fill counterpart of \@scale-colour-stepsn.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -2322,6 +2363,7 @@
 /// Fill counterpart of \@scale-colour-fermenter.
 ///
 /// \@category Scales
+/// \@subcategory Colour and fill: binned
 /// \@stability stable
 /// \@since 0.3.0
 ///

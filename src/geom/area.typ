@@ -19,6 +19,7 @@
 /// mappings split rows into separate filled polygons drawn back to front.
 ///
 /// \@category Geoms
+/// \@subcategory Areas and ribbons
 /// \@stability stable
 /// \@since 0.0.1
 ///

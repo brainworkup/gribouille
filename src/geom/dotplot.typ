@@ -21,6 +21,7 @@
 /// (1 means dots touch).
 ///
 /// \@category Geoms
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.4.0
 ///

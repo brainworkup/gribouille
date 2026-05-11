@@ -15,6 +15,40 @@ local function resolved_summary(fn, from_qmd, index, strict)
   return resolve.resolve_refs_in_text(fn.doc.summary, from_qmd, index, strict, fn.file, fn.line)
 end
 
+local function by_name(a, b) return a.name < b.name end
+
+-- Split a function list into the ones with no @subcategory (kept directly under
+-- the category) and named groups (one per distinct @subcategory). Groups and the
+-- functions inside them are alphabetically ordered for stable output; a list with
+-- no @subcategory tags yields an empty `groups`, so callers fall back to today's
+-- flat rendering unchanged.
+local function group_by_subcategory(fns)
+  local ungrouped = {}
+  local by_sub = {}
+  local order = {}
+  for _, fn in ipairs(fns) do
+    local sub = fn.doc and fn.doc.subcategory
+    if sub then
+      if not by_sub[sub] then
+        by_sub[sub] = {}
+        table.insert(order, sub)
+      end
+      table.insert(by_sub[sub], fn)
+    else
+      table.insert(ungrouped, fn)
+    end
+  end
+  table.sort(ungrouped, by_name)
+  table.sort(order)
+  local groups = {}
+  for _, name in ipairs(order) do
+    local g = by_sub[name]
+    table.sort(g, by_name)
+    table.insert(groups, { name = name, fns = g })
+  end
+  return { ungrouped = ungrouped, groups = groups }
+end
+
 local function emit_frontmatter(fn, from_qmd, index, strict)
   local lines = { "---" }
   table.insert(lines, "title: " .. yaml_escape(fn.name))
@@ -23,6 +57,9 @@ local function emit_frontmatter(fn, from_qmd, index, strict)
   end
   if fn.doc.category then
     table.insert(lines, "category: " .. yaml_escape(fn.doc.category))
+  end
+  if fn.doc.subcategory then
+    table.insert(lines, "subcategory: " .. yaml_escape(fn.doc.subcategory))
   end
   if fn.doc.stability and fn.doc.stability ~= "stable" then
     table.insert(lines, "stability: " .. yaml_escape(fn.doc.stability))
@@ -248,15 +285,25 @@ function M.render_category_index(category, functions, modules, index, strict)
       end
     end
   end
-  table.sort(main, function(a, b) return a.name < b.name end)
-  table.sort(advanced, function(a, b) return a.name < b.name end)
+  table.sort(advanced, by_name)
 
-  if #main > 0 then
-    table.insert(lines, "## Functions")
-    table.insert(lines, "")
-    for _, fn in ipairs(main) do
+  local function emit_bullets(fns)
+    for _, fn in ipairs(fns) do
       table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, resolved_summary(fn, from_qmd, index, strict)))
     end
+  end
+
+  local grouped = group_by_subcategory(main)
+  if #grouped.ungrouped > 0 then
+    table.insert(lines, "## Functions")
+    table.insert(lines, "")
+    emit_bullets(grouped.ungrouped)
+    table.insert(lines, "")
+  end
+  for _, g in ipairs(grouped.groups) do
+    table.insert(lines, "## " .. g.name)
+    table.insert(lines, "")
+    emit_bullets(g.fns)
     table.insert(lines, "")
   end
 
@@ -265,9 +312,7 @@ function M.render_category_index(category, functions, modules, index, strict)
     table.insert(lines, "")
     table.insert(lines, "## Advanced")
     table.insert(lines, "")
-    for _, fn in ipairs(advanced) do
-      table.insert(lines, string.format("- [`%s`](%s.qmd) - %s", fn.name, fn.name, resolved_summary(fn, from_qmd, index, strict)))
-    end
+    emit_bullets(advanced)
     table.insert(lines, "")
     table.insert(lines, ":::")
     table.insert(lines, "")
@@ -297,13 +342,26 @@ function M.render_top_index(category_order, functions, index, strict)
     local fns = by_cat[cat]
     if fns and #fns > 0 then
       local slug = util.slugify(cat)
-      table.sort(fns, function(a, b) return a.name < b.name end)
       table.insert(lines, string.format("## [%s](%s/index.qmd)", cat, slug))
       table.insert(lines, "")
+      local visible = {}
       for _, fn in ipairs(fns) do
         if not (fn.doc.is_internal or fn.doc.is_advanced) then
+          table.insert(visible, fn)
+        end
+      end
+      local function emit_bullets(list)
+        for _, fn in ipairs(list) do
           table.insert(lines, string.format("- [`%s`](%s/%s.qmd) - %s", fn.name, slug, fn.name, resolved_summary(fn, from_qmd, index, strict)))
         end
+      end
+      local grouped = group_by_subcategory(visible)
+      emit_bullets(grouped.ungrouped)
+      for _, g in ipairs(grouped.groups) do
+        table.insert(lines, "")
+        table.insert(lines, "### " .. g.name)
+        table.insert(lines, "")
+        emit_bullets(g.fns)
       end
       table.insert(lines, "")
     end
@@ -320,7 +378,7 @@ function M.render_sidebar(category_order, functions)
     "      title: Reference",
     "      style: docked",
     "      align: left",
-    "      collapse-level: 2",
+    "      collapse-level: 3",
     "      contents:",
     "        - section: Reference",
     "          href: reference/index.qmd",
@@ -337,12 +395,19 @@ function M.render_sidebar(category_order, functions)
     local fns = by_cat[cat]
     if fns and #fns > 0 then
       local slug = util.slugify(cat)
-      table.sort(fns, function(a, b) return a.name < b.name end)
       table.insert(lines, string.format("            - section: %s", cat))
       table.insert(lines, string.format("              href: reference/%s/index.qmd", slug))
       table.insert(lines, "              contents:")
-      for _, fn in ipairs(fns) do
+      local grouped = group_by_subcategory(fns)
+      for _, fn in ipairs(grouped.ungrouped) do
         table.insert(lines, string.format("                - reference/%s/%s.qmd", slug, fn.name))
+      end
+      for _, g in ipairs(grouped.groups) do
+        table.insert(lines, string.format("                - section: %s", yaml_escape(g.name)))
+        table.insert(lines, "                  contents:")
+        for _, fn in ipairs(g.fns) do
+          table.insert(lines, string.format("                    - reference/%s/%s.qmd", slug, fn.name))
+        end
       end
     end
   end

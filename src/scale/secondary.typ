@@ -11,6 +11,7 @@
 /// the right edge for y, optionally with a different title.
 ///
 /// \@category Scales
+/// \@subcategory Secondary axes
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -69,6 +70,7 @@
 /// or pass any callable, e.g. `x => x * 9 / 5 + 32` for Celsius to Fahrenheit.
 ///
 /// \@category Scales
+/// \@subcategory Secondary axes
 /// \@stability stable
 /// \@since 0.0.1
 ///

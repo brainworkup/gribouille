@@ -12,6 +12,7 @@
 /// and `"vh"` (vertical first, then horizontal).
 ///
 /// \@category Geoms
+/// \@subcategory Lines and paths
 /// \@stability stable
 /// \@since 0.0.1
 ///

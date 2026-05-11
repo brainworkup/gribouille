@@ -19,6 +19,7 @@
 /// per-category slot width for discrete x.
 ///
 /// \@category Geoms
+/// \@subcategory Intervals and errors
 /// \@stability stable
 /// \@since 0.0.1
 ///

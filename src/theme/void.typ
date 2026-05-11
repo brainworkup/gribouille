@@ -10,6 +10,7 @@
 /// Void theme: no axes, no grid, no panel background.
 ///
 /// \@category Themes
+/// \@subcategory Complete themes
 /// \@stability stable
 /// \@since 0.0.1
 ///

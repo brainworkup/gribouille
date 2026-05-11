@@ -10,6 +10,7 @@
 /// `bins` and `binwidth` accept either a scalar or an `(x, y)` pair.
 ///
 /// \@category Geoms
+/// \@subcategory Rectangles and bins
 /// \@stability stable
 /// \@since 0.4.0
 ///

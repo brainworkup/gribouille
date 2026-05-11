@@ -282,6 +282,7 @@
 /// \@theme-keys
 ///
 /// \@category Themes
+/// \@subcategory Modify a theme
 /// \@stability stable
 /// \@since 0.0.1
 ///

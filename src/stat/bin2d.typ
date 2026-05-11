@@ -10,6 +10,7 @@
 /// an `(x, y)` pair. `binwidth` wins on each axis where both are set.
 ///
 /// \@category Stats
+/// \@subcategory Binning
 /// \@stability stable
 /// \@since 0.4.0
 ///

@@ -9,6 +9,7 @@
 /// per-category slot height for discrete y.
 ///
 /// \@category Geoms
+/// \@subcategory Intervals and errors
 /// \@stability stable
 /// \@since 0.0.1
 ///

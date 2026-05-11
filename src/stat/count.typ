@@ -11,6 +11,7 @@
 /// first-seen order of x levels.
 ///
 /// \@category Stats
+/// \@subcategory Summaries
 /// \@stability stable
 /// \@since 0.0.1
 ///

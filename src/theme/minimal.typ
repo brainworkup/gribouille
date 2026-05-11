@@ -12,6 +12,7 @@
 /// For the gribouille default (grey panel with white gridlines) use \@theme-grey.
 ///
 /// \@category Themes
+/// \@subcategory Complete themes
 /// \@stability stable
 /// \@since 0.0.1
 ///

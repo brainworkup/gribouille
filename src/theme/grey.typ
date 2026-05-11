@@ -14,6 +14,7 @@
 /// This is the gribouille default theme.
 ///
 /// \@category Themes
+/// \@subcategory Complete themes
 /// \@stability stable
 /// \@since 0.0.1
 ///

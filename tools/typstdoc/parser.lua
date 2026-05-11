@@ -19,7 +19,7 @@ local VALID_CATEGORIES = {
 local VALID_STABILITY = { stable = true, experimental = true, deprecated = true }
 
 local KNOWN_TAGS = {
-  ["@category"] = true, ["@stability"] = true, ["@since"] = true,
+  ["@category"] = true, ["@subcategory"] = true, ["@stability"] = true, ["@since"] = true,
   ["@param"] = true, ["@arity"] = true, ["@returns"] = true,
   ["@examples"] = true, ["@examples-static"] = true, ["@see"] = true,
   ["@internal"] = true, ["@advanced"] = true,
@@ -315,6 +315,15 @@ local function parse_doc_block(doc_lines, file, start_line)
           error_at(file, start_line + i - 1, "duplicate @category")
         end
         doc.category = cat
+      elseif tag == "@subcategory" then
+        local sub = util.trim(rest)
+        if sub == "" then
+          error_at(file, start_line + i - 1, "empty @subcategory")
+        end
+        if doc.subcategory then
+          error_at(file, start_line + i - 1, "duplicate @subcategory")
+        end
+        doc.subcategory = sub
       elseif tag == "@stability" then
         local st = util.trim(rest)
         if not VALID_STABILITY[st] then

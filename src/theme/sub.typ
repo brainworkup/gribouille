@@ -19,6 +19,7 @@
 /// Shortcut for both axes' title, text, line, and ticks.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -58,6 +59,7 @@
 /// Shortcut for both x axes (top + bottom).
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -76,6 +78,7 @@
 /// Shortcut for both y axes (left + right).
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -94,6 +97,7 @@
 /// Shortcut for the bottom x axis only.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -115,6 +119,7 @@
 /// Shortcut for the top x axis only.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -136,6 +141,7 @@
 /// Shortcut for the left y axis only.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -157,6 +163,7 @@
 /// Shortcut for the right y axis only.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -178,6 +185,7 @@
 /// Shortcut for legend text and title.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -208,6 +216,7 @@
 /// Shortcut for panel grid and background.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -225,6 +234,7 @@
 /// Shortcut for plot title, subtitle, caption, and outer margin.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///
@@ -251,6 +261,7 @@
 /// Shortcut for facet strip text and background.
 ///
 /// \@category Themes
+/// \@subcategory Sub-theme accessors
 /// \@stability stable
 /// \@since 0.6.0
 ///

@@ -117,6 +117,7 @@
 /// or as `fun: "mean"` to draw a plain point summary with no band.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -151,6 +152,7 @@
 /// consistent with `src/stat/boxplot.typ` and `median-hilow`.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -177,6 +179,7 @@
 /// same convention as `median-hilow` and `src/stat/boxplot.typ`.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -207,6 +210,7 @@
 /// not reordered: pass them in `(low, central, high)` order.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -247,6 +251,7 @@
 /// `(y: <mean>, ymin: <mean - mult * se>, ymax: <mean + mult * se>)`.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -295,6 +300,7 @@
 /// `(0, 1)` is supported.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -342,6 +348,7 @@
 /// Mean and standard-deviation band: `mean ± mult * sd`.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -383,6 +390,7 @@
 /// returns the median with the IQR (25th to 75th percentile).
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -433,6 +441,7 @@
 /// produce identical bounds.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -493,6 +502,7 @@
 /// string names panic.
 ///
 /// \@category Helpers
+/// \@subcategory Summary functions
 /// \@stability stable
 /// \@since 0.0.1
 ///

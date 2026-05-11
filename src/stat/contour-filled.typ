@@ -13,6 +13,7 @@
 /// `bins: 10` produces ~11 levels and 10 bands).
 ///
 /// \@category Stats
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.4.0
 ///

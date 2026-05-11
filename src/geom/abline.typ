@@ -17,6 +17,7 @@
 /// and y scales; discrete scales are skipped silently.
 ///
 /// \@category Geoms
+/// \@subcategory Reference lines
 /// \@stability stable
 /// \@since 0.0.1
 ///

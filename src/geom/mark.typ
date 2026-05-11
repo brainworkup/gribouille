@@ -130,6 +130,7 @@
 /// clusters, regions, or category groupings.
 ///
 /// \@category Geoms
+/// \@subcategory Polygons and shapes
 /// \@stability stable
 /// \@since 0.4.0
 ///

@@ -18,6 +18,7 @@
 /// within its bin, so geom-dotplot can place dots at increasing heights.
 ///
 /// \@category Stats
+/// \@subcategory Binning
 /// \@stability stable
 /// \@since 0.4.0
 ///

@@ -9,6 +9,7 @@
 /// `legend-text`, or `legend-title`.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -103,6 +104,7 @@
 /// values still pass through unchanged.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -173,6 +175,7 @@
 /// Pass the result to \@theme under keys like `panel-grid` or `axis-line`.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -223,6 +226,7 @@
 /// Pass the result to \@theme under keys like `panel-background`.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -273,6 +277,7 @@
 /// to turn them off entirely.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -321,6 +326,7 @@
 /// the result to \@theme under the `plot-margin` key.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -376,6 +382,7 @@
 /// extend coverage to additional geoms.
 ///
 /// \@category Themes
+/// \@subcategory Theme elements
 /// \@stability experimental
 /// \@since 0.5.0
 ///

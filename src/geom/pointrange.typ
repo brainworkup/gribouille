@@ -11,6 +11,7 @@
 /// line and the point outline; `fill` paints the point body.
 ///
 /// \@category Geoms
+/// \@subcategory Intervals and errors
 /// \@stability stable
 /// \@since 0.0.1
 ///

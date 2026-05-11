@@ -10,6 +10,7 @@
 /// Light theme: light grey panel, white grid, soft grey axes.
 ///
 /// \@category Themes
+/// \@subcategory Complete themes
 /// \@stability stable
 /// \@since 0.0.1
 ///

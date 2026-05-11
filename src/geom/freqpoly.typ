@@ -9,6 +9,7 @@
 /// Frequency polygon: a line through per-bin counts of the x aesthetic.
 ///
 /// \@category Geoms
+/// \@subcategory Bars and histograms
 /// \@stability stable
 /// \@since 0.0.1
 ///

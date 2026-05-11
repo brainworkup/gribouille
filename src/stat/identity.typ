@@ -8,6 +8,7 @@
 /// Useful as an explicit marker; most geoms default to this statistic.
 ///
 /// \@category Stats
+/// \@subcategory Functions and helpers
 /// \@stability stable
 /// \@since 0.0.1
 ///

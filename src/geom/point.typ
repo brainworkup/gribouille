@@ -24,6 +24,7 @@
 /// parameters below.
 ///
 /// \@category Geoms
+/// \@subcategory Points
 /// \@stability stable
 /// \@since 0.0.1
 ///

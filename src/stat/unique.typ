@@ -9,6 +9,7 @@
 /// `mapping.y`. Mapping is returned unchanged.
 ///
 /// \@category Stats
+/// \@subcategory Summaries
 /// \@stability stable
 /// \@since 0.0.1
 ///

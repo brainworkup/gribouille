@@ -14,6 +14,7 @@
 /// an aesthetic to the `quantile` column emitted by the stat.
 ///
 /// \@category Geoms
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.4.0
 ///

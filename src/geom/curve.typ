@@ -22,6 +22,7 @@
 /// symmetric bow; smaller or larger angles bias the apex toward one end.
 ///
 /// \@category Geoms
+/// \@subcategory Lines and paths
 /// \@stability stable
 /// \@since 0.4.0
 ///

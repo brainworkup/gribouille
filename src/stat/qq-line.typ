@@ -33,6 +33,7 @@
 /// and `"exponential"`.
 ///
 /// \@category Stats
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.0.1
 ///

@@ -11,6 +11,7 @@
 /// mapped or set as fixed layer parameters.
 ///
 /// \@category Geoms
+/// \@subcategory Intervals and errors
 /// \@stability stable
 /// \@since 0.0.1
 ///

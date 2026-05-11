@@ -13,6 +13,7 @@
 /// plot mapping by default; it draws purely from the `yintercept` parameter.
 ///
 /// \@category Geoms
+/// \@subcategory Reference lines
 /// \@stability stable
 /// \@since 0.0.1
 ///

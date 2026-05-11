@@ -28,6 +28,7 @@ function M.new_doc_block()
     summary = nil,
     description = {},
     category = nil,
+    subcategory = nil,
     stability = "stable",
     since = nil,
     params = {},

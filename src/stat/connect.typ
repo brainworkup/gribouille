@@ -17,6 +17,7 @@
 /// - `"linear"`: pass-through (no intermediate vertices).
 ///
 /// \@category Stats
+/// \@subcategory Functions and helpers
 /// \@stability stable
 /// \@since 0.6.0
 ///

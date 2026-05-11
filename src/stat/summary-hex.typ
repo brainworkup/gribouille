@@ -12,6 +12,7 @@
 /// as the `value` column.
 ///
 /// \@category Stats
+/// \@subcategory Summaries
 /// \@stability stable
 /// \@since 0.4.0
 ///

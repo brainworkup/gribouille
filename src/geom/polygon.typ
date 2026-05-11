@@ -16,6 +16,7 @@
 /// split rows into separate polygons.
 ///
 /// \@category Geoms
+/// \@subcategory Polygons and shapes
 /// \@stability stable
 /// \@since 0.0.1
 ///

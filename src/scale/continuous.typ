@@ -70,6 +70,7 @@
 /// `transform` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -152,6 +153,7 @@
 /// `transform` accepts `"identity"`, `"log10"`, `"sqrt"`, and `"reverse"`.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -219,6 +221,7 @@
 /// All x values must be strictly positive.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -277,6 +280,7 @@
 /// All y values must be strictly positive.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -336,6 +340,7 @@
 /// All x values must be non-negative.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -395,6 +400,7 @@
 /// All y values must be non-negative.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -450,6 +456,7 @@
 /// stay in data units; only the axis direction reverses.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -506,6 +513,7 @@
 /// bin to communicate the discretised reading of the axis.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -562,6 +570,7 @@
 /// Counterpart of \@scale-x-binned for the y axis.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -619,6 +628,7 @@
 /// stay in data units; only the axis direction reverses.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///

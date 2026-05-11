@@ -6,6 +6,7 @@
 /// Continuous linewidth scale mapping a numeric column to stroke thickness.
 ///
 /// \@category Scales
+/// \@subcategory Linewidth scales
 /// \@stability stable
 /// \@since 0.2.0
 ///
@@ -69,6 +70,7 @@
 /// evenly-spaced range that the discrete inference would assign.
 ///
 /// \@category Scales
+/// \@subcategory Linewidth scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -120,6 +122,7 @@
 /// snap to bin centres.
 ///
 /// \@category Scales
+/// \@subcategory Linewidth scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -170,6 +173,7 @@
 /// carries the visual outcome verbatim.
 ///
 /// \@category Scales
+/// \@subcategory Linewidth scales
 /// \@stability stable
 /// \@since 0.2.0
 ///

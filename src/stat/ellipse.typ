@@ -23,6 +23,7 @@
 /// equivalently `geom-ellipse(stat: "ellipse")`.
 ///
 /// \@category Stats
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.4.0
 ///

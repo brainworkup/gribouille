@@ -16,6 +16,7 @@
 /// takes its own fill, stroke, inset, and corner radius.
 ///
 /// \@category Geoms
+/// \@subcategory Text and annotations
 /// \@stability stable
 /// \@since 0.0.1
 ///

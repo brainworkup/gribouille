@@ -11,6 +11,7 @@
 /// clashing with axes and text on a white background.
 ///
 /// \@category Scales
+/// \@subcategory Palettes
 /// \@stability stable
 /// \@since 0.5.0
 ///
@@ -333,6 +334,7 @@
 /// Panics with a clear message if the name is unknown.
 ///
 /// \@category Scales
+/// \@subcategory Palettes
 /// \@stability stable
 /// \@since 0.1.0
 ///

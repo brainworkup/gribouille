@@ -11,6 +11,7 @@
 /// be mapped or set as fixed layer parameters.
 ///
 /// \@category Geoms
+/// \@subcategory Lines and paths
 /// \@stability stable
 /// \@since 0.0.1
 ///

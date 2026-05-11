@@ -11,6 +11,7 @@
 /// Colour, fill, shape, and alpha can be set or mapped through \@aes.
 ///
 /// \@category Geoms
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.0.1
 ///

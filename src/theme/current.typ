@@ -8,6 +8,7 @@
 /// Set the global default theme for all subsequent plots.
 ///
 /// \@category Themes
+/// \@subcategory Modify a theme
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -37,6 +38,7 @@
 /// Returns `none` if no global theme has been set.
 ///
 /// \@category Themes
+/// \@subcategory Modify a theme
 /// \@stability stable
 /// \@since 0.1.0
 ///

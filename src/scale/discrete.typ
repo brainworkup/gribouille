@@ -22,6 +22,7 @@
 /// Discrete x scale: axis title, level ordering, and tick labels.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -85,6 +86,7 @@
 /// Discrete y scale: axis title, level ordering, and tick labels.
 ///
 /// \@category Scales
+/// \@subcategory Position scales
 /// \@stability stable
 /// \@since 0.0.1
 ///

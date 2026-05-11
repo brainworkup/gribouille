@@ -9,6 +9,7 @@
 /// Classic theme: white panel, axis borders, no gridlines.
 ///
 /// \@category Themes
+/// \@subcategory Complete themes
 /// \@stability stable
 /// \@since 0.0.1
 ///

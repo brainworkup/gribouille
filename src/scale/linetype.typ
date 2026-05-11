@@ -11,6 +11,7 @@
 /// linetype set.
 ///
 /// \@category Scales
+/// \@subcategory Linetype scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -75,6 +76,7 @@
 /// `limits` fixes the level order.
 ///
 /// \@category Scales
+/// \@subcategory Linetype scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -146,6 +148,7 @@
 /// `"densely-dashed"`, `"loosely-dashed"`).
 ///
 /// \@category Scales
+/// \@subcategory Linetype scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -184,6 +187,7 @@
 /// resolver snaps each row to the bin its value falls into.
 ///
 /// \@category Scales
+/// \@subcategory Linetype scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -231,6 +235,7 @@
 /// default bin count. Provided for ggplot2 API parity.
 ///
 /// \@category Scales
+/// \@subcategory Linetype scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -261,6 +266,7 @@
 /// directly.
 ///
 /// \@category Scales
+/// \@subcategory Linetype scales
 /// \@stability stable
 /// \@since 0.4.0
 ///

@@ -735,6 +735,55 @@ describe("parser: parse_lib", function()
 end)
 
 -- -----------------------------------------------------------------------
+describe("parser: @subcategory", function()
+  it("captures @subcategory on the doc block", function()
+    local f = tmpfile("subcat", [[
+/// A foo.
+///
+/// @category Geoms
+/// @subcategory Reference lines
+#let foo() = none
+]])
+    local fn = parser.parse_file(f).functions[1]
+    assert_eq(fn.doc.category, "Geoms")
+    assert_eq(fn.doc.subcategory, "Reference lines")
+  end)
+
+  it("leaves subcategory nil when the tag is absent", function()
+    local f = tmpfile("nosubcat", [[
+/// A foo.
+///
+/// @category Geoms
+#let foo() = none
+]])
+    assert_eq(parser.parse_file(f).functions[1].doc.subcategory, nil)
+  end)
+
+  it("rejects a duplicate @subcategory", function()
+    local f = tmpfile("dupsubcat", [[
+/// A foo.
+///
+/// @category Geoms
+/// @subcategory A
+/// @subcategory B
+#let foo() = none
+]])
+    assert_throws(function() parser.parse_file(f) end, "duplicate @subcategory")
+  end)
+
+  it("rejects an empty @subcategory", function()
+    local f = tmpfile("emptysubcat", [[
+/// A foo.
+///
+/// @category Geoms
+/// @subcategory
+#let foo() = none
+]])
+    assert_throws(function() parser.parse_file(f) end, "empty @subcategory")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
 describe("resolve: cross-references", function()
   it("warns on unresolved @ref (non-strict)", function()
     local out = resolve.resolve_refs_in_text("See @missing for details.", "core/foo.qmd", {}, false, "x.typ", 1)
@@ -826,6 +875,138 @@ describe("render: summaries resolve cross-references", function()
     assert_throws(function()
       render.render_top_index({ "Geoms" }, fns, index, true)
     end, "unresolved")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
+describe("render: @subcategory grouping", function()
+  local render = require("render")
+
+  local function parsed_functions(body)
+    local f = tmpfile("subcat_render", body)
+    return parser.parse_file(f).functions
+  end
+
+  -- One ungrouped function, two subcategories ("Points", "Reference lines");
+  -- "Points" sorts before "Reference lines".
+  local MIXED_GEOMS = [[
+/// A blank.
+///
+/// @category Geoms
+#let geom-blank() = none
+
+/// An abline.
+///
+/// @category Geoms
+/// @subcategory Reference lines
+#let geom-abline() = none
+
+/// A point.
+///
+/// @category Geoms
+/// @subcategory Points
+#let geom-point() = none
+
+/// A hline.
+///
+/// @category Geoms
+/// @subcategory Reference lines
+#let geom-hline() = none
+]]
+
+  local FLAT_GEOMS = [[
+/// A foo.
+///
+/// @category Geoms
+#let foo() = none
+
+/// A bar.
+///
+/// @category Geoms
+#let bar() = none
+]]
+
+  it("emits H3 sub-sections in the top index, ungrouped first, groups alphabetical", function()
+    local fns = parsed_functions(MIXED_GEOMS)
+    local index = resolve.build_index(fns)
+    local body = render.render_top_index({ "Geoms" }, fns, index, false)
+    assert_contains(body, "## [Geoms](geoms/index.qmd)")
+    assert_contains(body, "- [`geom-blank`](geoms/geom-blank.qmd) - A blank.")
+    assert_contains(body, "### Points")
+    assert_contains(body, "### Reference lines")
+    local pos_blank = body:find("geom-blank", 1, true)
+    local pos_points = body:find("### Points", 1, true)
+    local pos_reflines = body:find("### Reference lines", 1, true)
+    assert_true(pos_blank < pos_points, "ungrouped bullets come before the first sub-section")
+    assert_true(pos_points < pos_reflines, "sub-sections are alphabetical")
+    -- alphabetical within a group: geom-abline before geom-hline
+    assert_true(body:find("geom-abline", 1, true) < body:find("geom-hline", 1, true))
+  end)
+
+  it("leaves a category with no @subcategory flat in the top index", function()
+    local fns = parsed_functions(FLAT_GEOMS)
+    local index = resolve.build_index(fns)
+    local body = render.render_top_index({ "Geoms" }, fns, index, false)
+    assert_true(not body:find("### ", 1, true), "no sub-headings without @subcategory")
+  end)
+
+  it("emits ## Functions then ## <subcategory> in the category index", function()
+    local fns = parsed_functions(MIXED_GEOMS)
+    local index = resolve.build_index(fns)
+    local body = render.render_category_index("Geoms", fns, {}, index, false)
+    assert_contains(body, "## Functions")
+    assert_contains(body, "- [`geom-blank`](geom-blank.qmd) - A blank.")
+    assert_contains(body, "## Points")
+    assert_contains(body, "## Reference lines")
+    assert_true(body:find("## Functions", 1, true) < body:find("## Points", 1, true))
+    assert_true(body:find("## Points", 1, true) < body:find("## Reference lines", 1, true))
+  end)
+
+  it("keeps the category index flat with no @subcategory", function()
+    local fns = parsed_functions(FLAT_GEOMS)
+    local index = resolve.build_index(fns)
+    local body = render.render_category_index("Geoms", fns, {}, index, false)
+    assert_contains(body, "## Functions")
+    local _, h2_count = body:gsub("\n## ", "")
+    assert_eq(h2_count, 1, "exactly one H2 heading without @subcategory")
+    -- alphabetical: bar before foo
+    assert_true(body:find("`bar`", 1, true) < body:find("`foo`", 1, true))
+  end)
+
+  it("nests sidebar sections per subcategory and bumps collapse-level", function()
+    local fns = parsed_functions(MIXED_GEOMS)
+    local body = render.render_sidebar({ "Geoms" }, fns)
+    assert_contains(body, "collapse-level: 3")
+    assert_contains(body, "            - section: Geoms")
+    assert_contains(body, "                - reference/geoms/geom-blank.qmd")
+    assert_contains(body, "                - section: Points")
+    assert_contains(body, "                    - reference/geoms/geom-point.qmd")
+    assert_contains(body, "                - section: Reference lines")
+    assert_true(body:find("geom-blank", 1, true) < body:find("section: Points", 1, true),
+      "ungrouped files listed before nested sub-sections")
+  end)
+
+  it("quotes a subcategory name that contains a colon in the sidebar", function()
+    local fns = parsed_functions([[
+/// A scale.
+///
+/// @category Scales
+/// @subcategory Colour and fill: binned
+#let scale-colour-steps() = none
+]])
+    local body = render.render_sidebar({ "Scales" }, fns)
+    assert_contains(body, '- section: "Colour and fill: binned"')
+  end)
+
+  it("writes subcategory into the function-page frontmatter", function()
+    local fns = parsed_functions(MIXED_GEOMS)
+    local index = resolve.build_index(fns)
+    local abline
+    for _, fn in ipairs(fns) do
+      if fn.name == "geom-abline" then abline = fn end
+    end
+    local body = render.render_function(abline, index, { strict = false })
+    assert_contains(body, "subcategory: Reference lines")
   end)
 end)
 

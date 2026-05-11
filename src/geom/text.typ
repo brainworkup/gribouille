@@ -14,6 +14,7 @@
 /// offset via `dx` and `dy`.
 ///
 /// \@category Geoms
+/// \@subcategory Text and annotations
 /// \@stability stable
 /// \@since 0.0.1
 ///

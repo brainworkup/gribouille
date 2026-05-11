@@ -14,6 +14,7 @@
 /// precedence runs `breaks` > `binwidth` > `bins` (default `bins: 10`).
 ///
 /// \@category Stats
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.4.0
 ///

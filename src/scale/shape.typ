@@ -12,6 +12,7 @@
 /// shape set.
 ///
 /// \@category Scales
+/// \@subcategory Shape scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -74,6 +75,7 @@
 /// `limits` fixes the level order.
 ///
 /// \@category Scales
+/// \@subcategory Shape scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -142,6 +144,7 @@
 /// `"star"`, `"triangle-down"`).
 ///
 /// \@category Scales
+/// \@subcategory Shape scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -182,6 +185,7 @@
 /// renders one glyph per bin at the midpoint.
 ///
 /// \@category Scales
+/// \@subcategory Shape scales
 /// \@stability stable
 /// \@since 0.4.0
 ///

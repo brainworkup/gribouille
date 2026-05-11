@@ -12,6 +12,7 @@
 /// value and `ymin`/`ymax` bound a pointwise confidence band.
 ///
 /// \@category Stats
+/// \@subcategory Smoothing and regression
 /// \@stability stable
 /// \@since 0.0.1
 ///

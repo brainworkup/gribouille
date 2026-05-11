@@ -6,6 +6,7 @@
 /// Continuous size scale mapping a numeric column to a size range.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -69,6 +70,7 @@
 /// `range` interval.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -135,6 +137,7 @@
 /// of interest is a count or magnitude.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -204,6 +207,7 @@
 /// its normalised midpoint position.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.3.0
 ///
@@ -271,6 +275,7 @@
 /// carries the visual outcome verbatim.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -310,6 +315,7 @@
 /// the evenly-spaced range that the discrete inference would assign.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.4.0
 ///
@@ -360,6 +366,7 @@
 /// already uses by default; \@scale-size-area is the area-proportional variant.
 ///
 /// \@category Scales
+/// \@subcategory Size scales
 /// \@stability stable
 /// \@since 0.4.0
 ///

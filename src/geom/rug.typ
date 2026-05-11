@@ -17,6 +17,7 @@
 /// mapped colour aesthetic when present.
 ///
 /// \@category Geoms
+/// \@subcategory Distributions
 /// \@stability stable
 /// \@since 0.0.1
 ///

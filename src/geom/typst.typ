@@ -9,6 +9,7 @@
 /// column reference in \@typst.
 ///
 /// \@category Geoms
+/// \@subcategory Text and annotations
 /// \@stability stable
 /// \@since 0.4.0
 ///

@@ -15,6 +15,7 @@
 /// per-τ key for grouping in line geoms), and `quantile` (the τ value).
 ///
 /// \@category Stats
+/// \@subcategory Smoothing and regression
 /// \@stability stable
 /// \@since 0.4.0
 ///

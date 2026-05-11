@@ -16,6 +16,7 @@
 /// `radius` is the segment length in data units.
 ///
 /// \@category Geoms
+/// \@subcategory Lines and paths
 /// \@stability stable
 /// \@since 0.4.0
 ///

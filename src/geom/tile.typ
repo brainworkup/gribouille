@@ -16,6 +16,7 @@
 /// via \@aes or fixed via the layer parameters.
 ///
 /// \@category Geoms
+/// \@subcategory Rectangles and bins
 /// \@stability stable
 /// \@since 0.0.1
 ///

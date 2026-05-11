@@ -10,6 +10,7 @@
 /// Black-and-white theme: white panel, black axes, light grey grid.
 ///
 /// \@category Themes
+/// \@subcategory Complete themes
 /// \@stability stable
 /// \@since 0.0.1
 ///

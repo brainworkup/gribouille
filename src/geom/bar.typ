@@ -13,6 +13,7 @@
 /// when y is already computed.
 ///
 /// \@category Geoms
+/// \@subcategory Bars and histograms
 /// \@stability stable
 /// \@since 0.0.1
 ///

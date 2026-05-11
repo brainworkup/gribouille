@@ -14,6 +14,7 @@
 /// the fill scale or a fixed `fill` parameter.
 ///
 /// \@category Geoms
+/// \@subcategory Rectangles and bins
 /// \@stability stable
 /// \@since 0.0.1
 ///

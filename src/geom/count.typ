@@ -7,6 +7,7 @@
 /// Count layer drawing one marker per unique `(x, y)`, sized by frequency.
 ///
 /// \@category Geoms
+/// \@subcategory Points
 /// \@stability stable
 /// \@since 0.0.1
 ///

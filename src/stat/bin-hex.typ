@@ -9,6 +9,7 @@
 /// `bins` and `binwidth` accept either a scalar or an `(x, y)` pair.
 ///
 /// \@category Stats
+/// \@subcategory Binning
 /// \@stability stable
 /// \@since 0.4.0
 ///

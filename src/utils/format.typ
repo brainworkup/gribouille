@@ -63,6 +63,7 @@
 /// values pass through `str()`.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -105,6 +106,7 @@
 /// Shorthand for `format-number(big-mark: ",")`.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -127,6 +129,7 @@
 /// appends `suffix`.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -163,6 +166,7 @@
 /// Defaults to a leading dollar sign and English thousands separator.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -195,6 +199,7 @@
 /// formatted as plain numbers via `format-number`.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -245,6 +250,7 @@
 /// space-separated word.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -266,6 +272,7 @@
 /// Upper-case a string break (ASCII letters only).
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -278,6 +285,7 @@
 /// Lower-case a string break (ASCII letters only).
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///
@@ -290,6 +298,7 @@
 /// Soft-wrap a long string by inserting a newline at word boundaries.
 ///
 /// \@category Helpers
+/// \@subcategory Formatters
 /// \@stability stable
 /// \@since 0.1.0
 ///

@@ -12,6 +12,7 @@
 /// `"max"`) or a callable `values => scalar`.
 ///
 /// \@category Stats
+/// \@subcategory Summaries
 /// \@stability stable
 /// \@since 0.4.0
 ///

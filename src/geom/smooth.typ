@@ -20,6 +20,7 @@
 /// `se` is `true`, the pointwise band is drawn underneath the line.
 ///
 /// \@category Geoms
+/// \@subcategory Areas and ribbons
 /// \@stability stable
 /// \@since 0.0.1
 ///

@@ -21,6 +21,7 @@
 /// when you want automatic counting; `geom-col` expects pre-aggregated y.
 ///
 /// \@category Geoms
+/// \@subcategory Bars and histograms
 /// \@stability stable
 /// \@since 0.0.1
 ///

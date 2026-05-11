@@ -9,6 +9,7 @@
 /// `breaks` > `binwidth` > `bins`).
 ///
 /// \@category Geoms
+/// \@subcategory Contours
 /// \@stability stable
 /// \@since 0.4.0
 ///

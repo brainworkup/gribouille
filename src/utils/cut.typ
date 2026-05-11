@@ -92,6 +92,7 @@
 /// are `"(lo,hi]"` strings using the bin boundaries.
 ///
 /// \@category Helpers
+/// \@subcategory Binning helpers
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -148,6 +149,7 @@
 /// leftmost bin closed on the left.
 ///
 /// \@category Helpers
+/// \@subcategory Binning helpers
 /// \@stability stable
 /// \@since 0.0.1
 ///
@@ -204,6 +206,7 @@
 /// (`(lo, hi]`), except the leftmost bin is closed on the left.
 ///
 /// \@category Helpers
+/// \@subcategory Binning helpers
 /// \@stability stable
 /// \@since 0.0.1
 ///

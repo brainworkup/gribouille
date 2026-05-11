@@ -19,6 +19,7 @@
 /// and the polygon is closed between the lower and upper boundaries.
 ///
 /// \@category Geoms
+/// \@subcategory Areas and ribbons
 /// \@stability stable
 /// \@since 0.0.1
 ///

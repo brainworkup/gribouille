@@ -11,6 +11,7 @@
 /// Supply `bins` for a target bin count or `binwidth` to fix the width.
 ///
 /// \@category Geoms
+/// \@subcategory Bars and histograms
 /// \@stability stable
 /// \@since 0.0.1
 ///
