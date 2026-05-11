@@ -12,9 +12,11 @@ project:
     - assets/images/logo-stacked-dark.svg
     - assets/images/favicon.svg
     - assets/images/favicon-dark.svg
+    - assets/images/social-card.png
 
 lang: en-GB
 date-format: "dddd[, the] Do [of] MMMM, YYYY"
+image: /assets/images/social-card.png
 
 website:
   title: "Gribouille"
