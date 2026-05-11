@@ -22,7 +22,7 @@ website:
   title: "Gribouille"
   description: "A layered grammar of graphics for Typst."
   favicon: assets/images/favicon.svg
-  site-url: https://m.canouil.dev/gribouille/
+  site-url: https://m.canouil.dev/gribouille
   repo-url: https://github.com/mcanouil/gribouille
   repo-actions: [ edit, issue ]
   repo-link-target: _blank
