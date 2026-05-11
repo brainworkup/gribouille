@@ -11,3 +11,7 @@ website:
       documentation](https://m.canouil.dev/gribouille)."
     type: warning
     position: above-navbar
+  navbar:
+    left:
+      - text: "Coverage"
+        href: feature-matrix.qmd

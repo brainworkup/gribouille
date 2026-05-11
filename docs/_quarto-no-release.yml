@@ -1,4 +1,10 @@
 # Used before the first stable release; rendered at root with VERSION=dev.
+project:
+  render:
+    - "*.qmd"
+    - "**/*.qmd"
+    - "!feature-matrix.qmd"
+
 website:
   announcement:
     icon: exclamation-circle

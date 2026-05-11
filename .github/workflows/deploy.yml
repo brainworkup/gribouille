@@ -80,7 +80,7 @@ jobs:
           LATEST_TAG: ${{ steps.latest-tag.outputs.tag }}
         run: |
           git checkout "${LATEST_TAG}"
-          VERSION="${LATEST_TAG}" quarto render docs
+          VERSION="${LATEST_TAG}" quarto render docs --profile release
 
       - name: Return to latest default branch
         if: ${{ steps.latest-tag.outputs.tag != '' }}

@@ -58,8 +58,6 @@ website:
         href: reference/index.qmd
       - text: "Examples"
         href: examples/index.qmd
-      - text: "Coverage"
-        href: feature-matrix.qmd
     right:
       - text: "{{< env VERSION >}}"
         menu:
