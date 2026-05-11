@@ -14,9 +14,9 @@ engine: markdown
 
 ## Installation
 
-Until _Gribouille_ is published on Typst Universe, import it directly from a local checkout or a Git tag.
+Import _Gribouille_ from Typst Universe, or from a local clone of the repository.
 
-### From Typst Universe _(once published)_
+### From Typst Universe
 
 ```typst
 #import "@preview/gribouille:{{< env VERSION >}}": *
@@ -504,4 +504,4 @@ Read the chain from data on the left along the top row, then continue along the 
 
 - Read the [Reference](../reference/index.qmd) to see every function the library exposes.
 - Browse the [Examples](../examples/index.qmd) gallery for idiomatic usage.
-- Keep an eye on the [Changelog](../changelog.qmd) for API changes during the development phase.
+- Check the [Changelog](../changelog.qmd) for recent changes.
