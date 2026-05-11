@@ -2136,6 +2136,25 @@
   )
 }
 
+// cm extent of a strip band sized to the tallest label, floored at `base`.
+// A wrapped labeller (`label-wrap-gen`) emits `\n`-joined lines, so the
+// rendered height grows with the line count; `pad` keeps the same breathing
+// room the old fixed constants gave a single line. For the rotated row-strip
+// the measured height is the band's *width*, which is exactly what the caller
+// wants. Must run outside the cetz canvas closure, which cannot `measure`.
+#let _strip-band(labels, style, base) = {
+  let pad = 0.16
+  let hi = 0.0
+  for label in labels {
+    let m = measure-text-cm(
+      resolve-prose(label, eval-strings: style.strip-text.typst),
+      style.strip-text.size,
+    ).height
+    if m > hi { hi = m }
+  }
+  calc.max(base, hi + pad)
+}
+
 // Reserved extent between the panel and the canvas edge for the secondary
 // axis ticks, labels, and title. `axis` selects orientation: `"y"` (right
 // edge, label width) or `"x"` (top edge, label depth). Matches the primary
@@ -2408,7 +2427,18 @@
     calc.max(1, int(calc.ceil(calc.sqrt(n))))
   }
   let nrow = calc.max(1, int(calc.ceil(n / ncol)))
-  let strip-h = 0.45
+  // Resolve the strip text per panel up front so the band can be measured
+  // before the cetz canvas closure (which cannot `measure`).
+  let _wrap-labeller = spec.facet.at("labeller", default: none)
+  let strip-texts = levels
+    .enumerate()
+    .map(((i, level)) => labellers.format(
+      _wrap-labeller,
+      spec.facet.var,
+      level,
+      count: _panel-row-count(panels.at(i).layers),
+    ))
+  let strip-h = _strip-band(strip-texts, style, 0.45)
   let gutter-x = 0.4
   let gutter-y = 0.4
   let grid-w = width-units - margin.left - margin.right
@@ -2436,7 +2466,6 @@
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
     hide(rect((0, 0), (width-units, height-units)), bounds: true)
-    let _wrap-labeller = spec.facet.at("labeller", default: none)
     for (i, level) in levels.enumerate() {
       let col = calc.rem(i, ncol)
       let row = int(i / ncol)
@@ -2445,13 +2474,7 @@
         margin.bottom + (nrow - 1 - row) * (panel-h + gutter-y + strip-h)
       )
       let panel-layers = panels.at(i).layers
-      let panel-count = _panel-row-count(panel-layers)
-      let strip-text = labellers.format(
-        _wrap-labeller,
-        spec.facet.var,
-        level,
-        count: panel-count,
-      )
+      let strip-text = strip-texts.at(i)
       _draw-strip(
         (x0, y0 + panel-h),
         (x0 + panel-w, y0 + panel-h + strip-h),
@@ -2574,8 +2597,45 @@
   let col-levels = grid-col-levels
   let n-rows = calc.max(1, row-levels.len())
   let n-cols = calc.max(1, col-levels.len())
-  let strip-h = 0.45
-  let strip-w = 0.55
+  // Resolve strip texts up front so the bands can be measured before the
+  // cetz canvas closure (which cannot `measure`).
+  let _grid-labeller = spec.facet.at("labeller", default: none)
+  let _col-count(c) = {
+    let n = 0
+    for r in range(n-rows) {
+      n += _panel-row-count(panels.at(r * n-cols + c).layers)
+    }
+    n
+  }
+  let _row-count(r) = {
+    let n = 0
+    for c in range(n-cols) {
+      n += _panel-row-count(panels.at(r * n-cols + c).layers)
+    }
+    n
+  }
+  let col-strip-texts = if col-var == none { () } else {
+    col-levels
+      .enumerate()
+      .map(((c, col-lv)) => labellers.format(
+        _grid-labeller,
+        col-var,
+        col-lv,
+        count: _col-count(c),
+      ))
+  }
+  let row-strip-texts = if row-var == none { () } else {
+    row-levels
+      .enumerate()
+      .map(((r, row-lv)) => labellers.format(
+        _grid-labeller,
+        row-var,
+        row-lv,
+        count: _row-count(r),
+      ))
+  }
+  let strip-h = _strip-band(col-strip-texts, style, 0.45)
+  let strip-w = _strip-band(row-strip-texts, style, 0.55)
   let gutter-x = 0.3
   let gutter-y = 0.3
   let top-strip = if col-var != none { strip-h } else { 0.0 }
@@ -2626,36 +2686,14 @@
       }
     }
 
-    let _grid-labeller = spec.facet.at("labeller", default: none)
-    let _col-count(c) = {
-      let n = 0
-      for r in range(n-rows) {
-        n += _panel-row-count(panels.at(r * n-cols + c).layers)
-      }
-      n
-    }
-    let _row-count(r) = {
-      let n = 0
-      for c in range(n-cols) {
-        n += _panel-row-count(panels.at(r * n-cols + c).layers)
-      }
-      n
-    }
-
     if col-var != none {
       let strip-y = margin.bottom + grid-h
       for (c, col-lv) in col-levels.enumerate() {
         let x0 = margin.left + c * (panel-w + gutter-x)
-        let strip-text = labellers.format(
-          _grid-labeller,
-          col-var,
-          col-lv,
-          count: _col-count(c),
-        )
         _draw-strip(
           (x0, strip-y),
           (x0 + panel-w, strip-y + top-strip),
-          strip-text,
+          col-strip-texts.at(c),
           style,
         )
       }
@@ -2665,16 +2703,10 @@
       let strip-x = margin.left + grid-w
       for (r, row-lv) in row-levels.enumerate() {
         let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
-        let strip-text = labellers.format(
-          _grid-labeller,
-          row-var,
-          row-lv,
-          count: _row-count(r),
-        )
         _draw-strip(
           (strip-x, y0),
           (strip-x + right-strip, y0 + panel-h),
-          strip-text,
+          row-strip-texts.at(r),
           style,
           angle: -90deg,
         )

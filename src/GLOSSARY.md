@@ -94,6 +94,7 @@ Run the survey command at the bottom before extending the table.
 | ------ | ------------------------ | ------------------------------------------------- |
 | `band` | band                     | rectangular shaded region (utils/band.typ).       |
 | `gap`  | gap between bins or bars | x-distance between adjacent bin centres.          |
+| `pad`  | padding                  | breathing room (cm) around laid-out content (e.g. strip band text). |
 | `sub`  | sub-record / sub-element | nested theme element (e.g., `theme-sub-axis`).    |
 | `qq`   | quantile-quantile        | `geom-qq`, `stat-qq`, `stat-qq-line`.             |
 | `se`   | standard error           | `mean-se`, `geom-errorbar` summary.               |
