@@ -33,7 +33,7 @@
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
-#import "utils/measure.typ": measure-labels-cm, measure-text-cm
+#import "utils/measure.typ": measure-labels-cm
 #import "data.typ": _normalise-data, group-by
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
@@ -2136,23 +2136,30 @@
   )
 }
 
+// Resolve the strip text for every facet level once. The labeller text is
+// needed both to size the strip band and (in facet-grid) to draw it, so it
+// is computed up front rather than inside the cetz canvas closure, which
+// cannot `measure` (the operation `_strip-band` relies on). `count-of` maps
+// a level index to the row count fed to a context labeller.
+#let _strip-texts(labeller, var, levels, count-of) = {
+  levels
+    .enumerate()
+    .map(((i, lv)) => labellers.format(labeller, var, lv, count: count-of(i)))
+}
+
 // cm extent of a strip band sized to the tallest label, floored at `base`.
-// A wrapped labeller (`label-wrap`) emits `\n`-joined lines, so the
-// rendered height grows with the line count; `pad` keeps the same breathing
-// room the old fixed constants gave a single line. For the rotated row-strip
-// the measured height is the band's *width*, which is exactly what the caller
-// wants. Must run outside the cetz canvas closure, which cannot `measure`.
+// A wrapped labeller (`label-wrap`) emits `\n`-joined lines, so the rendered
+// height grows with the line count; `pad` keeps the same breathing room the
+// old fixed constants gave a single line. For the rotated row-strip the
+// measured height is the band's *width*, which is exactly what the caller
+// wants.
 #let _strip-band(labels, style, base) = {
+  let prose = labels.map(l => resolve-prose(
+    l,
+    eval-strings: style.strip-text.typst,
+  ))
   let pad = 0.16
-  let hi = 0.0
-  for label in labels {
-    let m = measure-text-cm(
-      resolve-prose(label, eval-strings: style.strip-text.typst),
-      style.strip-text.size,
-    ).height
-    if m > hi { hi = m }
-  }
-  calc.max(base, hi + pad)
+  calc.max(base, measure-labels-cm(prose, style.strip-text.size).height + pad)
 }
 
 // Reserved extent between the panel and the canvas edge for the secondary
@@ -2427,17 +2434,12 @@
     calc.max(1, int(calc.ceil(calc.sqrt(n))))
   }
   let nrow = calc.max(1, int(calc.ceil(n / ncol)))
-  // Resolve the strip text per panel up front so the band can be measured
-  // before the cetz canvas closure (which cannot `measure`).
-  let _wrap-labeller = spec.facet.at("labeller", default: none)
-  let strip-texts = levels
-    .enumerate()
-    .map(((i, level)) => labellers.format(
-      _wrap-labeller,
-      spec.facet.var,
-      level,
-      count: _panel-row-count(panels.at(i).layers),
-    ))
+  let strip-texts = _strip-texts(
+    spec.facet.at("labeller", default: none),
+    spec.facet.var,
+    levels,
+    i => _panel-row-count(panels.at(i).layers),
+  )
   let strip-h = _strip-band(strip-texts, style, 0.45)
   let gutter-x = 0.4
   let gutter-y = 0.4
@@ -2597,8 +2599,6 @@
   let col-levels = grid-col-levels
   let n-rows = calc.max(1, row-levels.len())
   let n-cols = calc.max(1, col-levels.len())
-  // Resolve strip texts up front so the bands can be measured before the
-  // cetz canvas closure (which cannot `measure`).
   let _grid-labeller = spec.facet.at("labeller", default: none)
   let _col-count(c) = {
     let n = 0
@@ -2615,24 +2615,10 @@
     n
   }
   let col-strip-texts = if col-var == none { () } else {
-    col-levels
-      .enumerate()
-      .map(((c, col-lv)) => labellers.format(
-        _grid-labeller,
-        col-var,
-        col-lv,
-        count: _col-count(c),
-      ))
+    _strip-texts(_grid-labeller, col-var, col-levels, _col-count)
   }
   let row-strip-texts = if row-var == none { () } else {
-    row-levels
-      .enumerate()
-      .map(((r, row-lv)) => labellers.format(
-        _grid-labeller,
-        row-var,
-        row-lv,
-        count: _row-count(r),
-      ))
+    _strip-texts(_grid-labeller, row-var, row-levels, _row-count)
   }
   let strip-h = _strip-band(col-strip-texts, style, 0.45)
   let strip-w = _strip-band(row-strip-texts, style, 0.55)
@@ -2688,7 +2674,7 @@
 
     if col-var != none {
       let strip-y = margin.bottom + grid-h
-      for (c, col-lv) in col-levels.enumerate() {
+      for c in range(col-levels.len()) {
         let x0 = margin.left + c * (panel-w + gutter-x)
         _draw-strip(
           (x0, strip-y),
@@ -2701,7 +2687,7 @@
 
     if row-var != none {
       let strip-x = margin.left + grid-w
-      for (r, row-lv) in row-levels.enumerate() {
+      for r in range(row-levels.len()) {
         let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
         _draw-strip(
           (strip-x, y0),
