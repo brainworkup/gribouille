@@ -86,7 +86,7 @@
 /// `linewidth`, `stroke`, `shape`, `linetype`).
 ///
 /// \@category Core
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param path Dotted string or array of keys naming a theme entry.
@@ -119,11 +119,26 @@
 /// `stat-name`, and `stat-info` (see `_prepare-layer` for the exact shape).
 ///
 /// \@category Core
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param expr Column-name string or `(row, ctx) => any` closure.
 /// \@returns Late-binding marker consumed by \@aes.
+///
+/// \@examples Bind `y` to the `_count` column `geom-bar`'s `stat-count` publishes.
+/// ```
+/// #let d = (
+///   (grp: "a"), (grp: "b"), (grp: "a"),
+///   (grp: "c"), (grp: "a"), (grp: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "grp", y: after-stat("_count")),
+///   layers: (geom-bar(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@aes
 #let after-stat(expr) = (kind: "after-stat", expr: expr)
@@ -139,11 +154,35 @@
 /// `shape`, and `linetype`. The closure runs once per row.
 ///
 /// \@category Core
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param expr Function `(value, ctx) => any`.
 /// \@returns Late-binding marker consumed by \@aes.
+///
+/// \@examples Mirror the trained fill palette into the marker outline and darken it.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+///   (x: 4, y: 5, sp: "a"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(
+///     x: "x", y: "y", fill: "sp",
+///     colour: after-scale((_, ctx) => {
+///       let trained = ctx.trained.at("fill", default: none)
+///       let v = ((ctx.resolve-colour)(trained, ctx.palette))(ctx.row.sp)
+///       v.darken(40%)
+///     }),
+///   ),
+///   layers: (geom-point(size: 5pt, stroke: 0.8pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@aes
 #let after-scale(expr) = (kind: "after-scale", expr: expr)
@@ -157,13 +196,33 @@
 /// scale value just before draw. Any lane may be `none`.
 ///
 /// \@category Core
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param start Column name used for initial training, or `none`.
 /// \@param after-stat Post-stat expression, or `none`.
 /// \@param after-scale Post-scale closure, or `none`.
 /// \@returns Late-binding marker consumed by \@aes.
+///
+/// \@examples Train the outline colour on the same column as `fill`, then darken the resolved swatch per row.
+/// ```
+/// #let d = (
+///   (x: 1, y: 2, sp: "a"),
+///   (x: 2, y: 4, sp: "b"),
+///   (x: 3, y: 3, sp: "c"),
+///   (x: 4, y: 5, sp: "a"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(
+///     x: "x", y: "y", fill: "sp",
+///     colour: stage(start: "sp", after-scale: (c, _) => c.darken(40%)),
+///   ),
+///   layers: (geom-point(size: 5pt, stroke: 0.8pt),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@after-stat, \@after-scale, \@aes
 #let stage(start: none, after-stat: none, after-scale: none) = (
