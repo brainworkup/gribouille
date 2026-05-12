@@ -383,7 +383,7 @@
 ///
 /// \@category Themes
 /// \@subcategory Theme elements
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.5.0
 ///
 /// \@param fill Default fill colour for filled geoms (geom-col, geom-polygon, geom-point).

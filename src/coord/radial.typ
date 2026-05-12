@@ -7,7 +7,7 @@
 /// for pie / donut layouts.
 ///
 /// \@category Coord
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.5.0
 ///
 /// \@param theta Which axis is angular: `"x"` (default) or `"y"`. The radial

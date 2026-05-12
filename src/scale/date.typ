@@ -40,7 +40,7 @@
 ///
 /// \@category Scales
 /// \@subcategory Position scales
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
@@ -110,7 +110,7 @@
 ///
 /// \@category Scales
 /// \@subcategory Position scales
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
@@ -169,7 +169,7 @@
 ///
 /// \@category Scales
 /// \@subcategory Position scales
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
@@ -224,7 +224,7 @@
 ///
 /// \@category Scales
 /// \@subcategory Position scales
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
@@ -283,7 +283,7 @@
 ///
 /// \@category Scales
 /// \@subcategory Position scales
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
@@ -340,7 +340,7 @@
 ///
 /// \@category Scales
 /// \@subcategory Position scales
-/// \@stability experimental
+/// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
