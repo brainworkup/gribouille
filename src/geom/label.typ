@@ -9,6 +9,7 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": build-stroke
 #import "../utils/typst-markup.typ": eval-as-markup
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Boxed text label layer reading strings from the `label` aesthetic.
 ///
@@ -135,10 +136,11 @@
 
   let ink = ctx.theme.at("ink", default: black)
   let paper = ctx.theme.at("paper", default: white)
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    ink,
+    theme-colour,
     paper,
   )
   let label-typst = layer
@@ -157,9 +159,16 @@
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
     // Text must remain visible regardless of the exclusive-default rule, so
-    // resolve with `ink` as the unconditional fallback; the box outline
-    // follows `default-colour` and is suppressed when only `fill` is set.
-    let text-paint = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    // resolve with `theme-colour` as the unconditional fallback; the box
+    // outline follows `default-colour` and is suppressed when only `fill` is set.
+    let text-paint = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      row,
+      theme-colour,
+    )
     let box-fill = resolve-channel(
       "fill",
       layer,

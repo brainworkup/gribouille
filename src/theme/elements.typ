@@ -377,21 +377,21 @@
 ///
 /// Pass the result to \@theme under the `geom` key to set defaults that the
 /// supporting geoms will pick up unless their own parameters override them.
-/// Mirrors ggplot2 v4's `element_geom()`. Constructor surfaces only the
-/// fields wired into the renderer today; more arrive as follow-up slices
-/// extend coverage to additional geoms.
+/// Mirrors ggplot2 v4's `element_geom()`. The supporting geoms honour `fill`,
+/// `colour`, `linewidth`, and `accent` today; `ink` / `paper` are reserved
+/// for wider coverage.
 ///
 /// \@category Themes
 /// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.5.0
 ///
-/// \@param fill Default fill colour for filled geoms (geom-col, geom-polygon, geom-point).
-/// \@param colour Default stroke colour for line and outline geoms.
-/// \@param linewidth Default stroke thickness (Typst length).
+/// \@param fill Default fill colour for filled geoms (bars, areas, ribbons, polygons, tiles, points).
+/// \@param colour Default stroke or text colour for line, outline, and text geoms.
+/// \@param linewidth Default stroke thickness for line and outline geoms (Typst length).
 /// \@param ink Foreground colour role; falls back to `theme.ink` when unset.
 /// \@param paper Background colour role; falls back to `theme.paper` when unset.
-/// \@param accent Highlight colour role used by \@geom-smooth and other accent-driven layers; falls back to `theme.accent` when unset.
+/// \@param accent Highlight colour role used by \@geom-boxplot, \@geom-smooth, and other accent-driven layers; falls back to `theme.accent` when unset.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
