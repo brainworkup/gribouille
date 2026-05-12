@@ -38,6 +38,42 @@
 ///   late-binding kinds.
 #let is-late-binding(v) = late-binding-kind(v) != none
 
+// Humanise a stat output column name for use as an axis or legend title:
+// drop the synthetic leading underscores and capitalise the first letter
+// (`"_count"` -> `"Count"`, `"density"` -> `"Density"`). Returns `name`
+// unchanged when it is empty after trimming.
+#let _stat-label(name) = {
+  let trimmed = name.trim("_", at: start)
+  if trimmed == "" { return name }
+  upper(trimmed.first()) + trimmed.slice(1)
+}
+
+/// Display name for a late-binding marker, used by axis and legend title
+/// fallbacks. An `after-stat` (or `stage`'s post-stat lane) names a stat
+/// output column, surfaced via `_stat-label`; `stage` with no post-stat lane
+/// falls back to its `start` column. A closure lane, an `after-scale`, or a
+/// `from-theme` marker carries no name, so this returns `none` and the caller
+/// should leave the title empty (or take a `labs()` override).
+///
+/// \@internal
+/// \@param v Any value pulled from an aesthetic mapping.
+/// \@returns A title string, or `none` when `v` is not a late-binding marker
+///   or carries no nameable source.
+#let late-binding-name(v) = {
+  let kind = late-binding-kind(v)
+  if kind == "after-stat" {
+    let expr = v.at("expr", default: none)
+    return if type(expr) == str { _stat-label(expr) } else { none }
+  }
+  if kind == "stage" {
+    let after-stat-lane = v.at("after-stat", default: none)
+    if type(after-stat-lane) == str { return _stat-label(after-stat-lane) }
+    let start-lane = v.at("start", default: none)
+    return if type(start-lane) == str { start-lane } else { none }
+  }
+  none
+}
+
 /// Pull a value from the resolved theme at render time.
 ///
 /// `path` may be a dotted string (`"axis-line.colour"`) or an array of

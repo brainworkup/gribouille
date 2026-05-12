@@ -4,8 +4,8 @@
 #import "deps.typ": cetz
 #import "scale/train.typ": (
   _SYNTHETIC-FEEDERS, _find-user-scale, _resolve-forced-type, all-aesthetics,
-  map-axis, map-axis-data, map-continuous, map-position, mapping-ref-col,
-  positional-aesthetics, train, transform-fwd, transform-inv,
+  map-axis, map-axis-data, map-continuous, map-position, mapping-display-name,
+  mapping-ref-col, positional-aesthetics, train, transform-fwd, transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
@@ -1721,11 +1721,11 @@
   // trained.y already carry the swapped scale specs (and labs labels), so
   // only the mapping-name fallback needs an explicit swap here.
   let _mapping-x-name = if spec.mapping == none { none } else if flipped {
-    mapping-ref-col(spec.mapping.at("y", default: none))
-  } else { mapping-ref-col(spec.mapping.at("x", default: none)) }
+    mapping-display-name(spec.mapping.at("y", default: none))
+  } else { mapping-display-name(spec.mapping.at("x", default: none)) }
   let _mapping-y-name = if spec.mapping == none { none } else if flipped {
-    mapping-ref-col(spec.mapping.at("x", default: none))
-  } else { mapping-ref-col(spec.mapping.at("y", default: none)) }
+    mapping-display-name(spec.mapping.at("x", default: none))
+  } else { mapping-display-name(spec.mapping.at("y", default: none)) }
   let x-title = _axis-title(x-trained, _mapping-x-name)
   let y-title = _axis-title(y-trained, _mapping-y-name)
   let _x-ext = _resolve-extents(x-extents, _ax-text.xb.size)
@@ -2528,7 +2528,7 @@
     let x-trained = trained.at("x", default: none)
     let y-trained = trained.at("y", default: none)
     let _map-name(axis) = if spec.mapping == none { none } else {
-      mapping-ref-col(spec.mapping.at(axis, default: none))
+      mapping-display-name(spec.mapping.at(axis, default: none))
     }
     let x-title = _axis-title(x-trained, _map-name("x"))
     let y-title = _axis-title(y-trained, _map-name("y"))
@@ -2702,7 +2702,7 @@
     let x-trained = trained.at("x", default: none)
     let y-trained = trained.at("y", default: none)
     let _map-name(axis) = if spec.mapping == none { none } else {
-      mapping-ref-col(spec.mapping.at(axis, default: none))
+      mapping-display-name(spec.mapping.at(axis, default: none))
     }
     let x-title = _axis-title(x-trained, _map-name("x"))
     let y-title = _axis-title(y-trained, _map-name("y"))

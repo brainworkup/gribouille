@@ -3,12 +3,13 @@
 // skips the channels they cover.
 
 #import "../../src/utils/late-binding.typ": (
-  after-stat, is-late-binding, late-binding-kind,
+  after-stat, is-late-binding, late-binding-kind, late-binding-name,
 )
 #import "../../src/utils/aes-resolve.typ": aes-col, merge-mapping
+#import "../../src/data.typ": as-factor
 #import "../../src/aes.typ": aes
 #import "../../src/render.typ": _strip-mapping-refs
-#import "../../src/scale/train.typ": train
+#import "../../src/scale/train.typ": mapping-display-name, train
 
 // --- constructor + predicates ------------------------------------------
 
@@ -45,6 +46,17 @@
 
 #assert.eq(aes-col(after-stat("count")), none)
 #assert.eq(aes-col("col"), "col")
+
+// --- title resolution: marker -> humanised stat name -------------------
+
+#assert.eq(late-binding-name(after-stat("_count")), "Count")
+#assert.eq(late-binding-name(after-stat("density")), "Density")
+#assert.eq(late-binding-name(after-stat((row, ctx) => row.count)), none)
+#assert.eq(late-binding-name("col"), none)
+#assert.eq(mapping-display-name(after-stat("_count")), "Count")
+#assert.eq(mapping-display-name(as-factor("g")), "g")
+#assert.eq(mapping-display-name("g"), "g")
+#assert.eq(mapping-display-name(none), none)
 
 // --- train skips late-bound aesthetics without crashing ----------------
 

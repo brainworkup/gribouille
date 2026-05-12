@@ -5,7 +5,8 @@
 // onto `layer.params.<channel>`.
 
 #import "../../src/utils/late-binding.typ": (
-  from-theme, is-late-binding, late-binding-kind, resolve-from-theme,
+  from-theme, is-late-binding, late-binding-kind, late-binding-name,
+  resolve-from-theme,
 )
 #import "../../src/aes.typ": aes
 #import "../../src/render.typ": _apply-from-theme, _prepare-layer
@@ -22,6 +23,7 @@
 #assert.eq(late-binding-kind(m), "from-theme")
 #assert(not is-late-binding("ink"))
 #assert.eq(late-binding-kind("ink"), none)
+#assert.eq(late-binding-name(from-theme("ink")), none)
 
 // --- aes() round-trip ---------------------------------------------------
 

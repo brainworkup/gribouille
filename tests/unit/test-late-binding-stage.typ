@@ -4,7 +4,8 @@
 // after-scale lanes against the post-stat rows.
 
 #import "../../src/utils/late-binding.typ": (
-  apply-stages, is-late-binding, late-binding-kind, stage, stash-stages,
+  apply-stages, is-late-binding, late-binding-kind, late-binding-name, stage,
+  stash-stages,
 )
 
 // --- constructor + predicates ------------------------------------------
@@ -61,6 +62,13 @@
 #assert.eq(r3.mapping.y, "_as_y")
 #assert.eq(r3.rows.at(0)._as_y, 10)
 #assert.eq(r3.rows.at(1)._as_y, 20)
+
+// --- title resolution prefers the post-stat lane, then the start column
+
+#assert.eq(late-binding-name(stage(start: "g", after-stat: "_count")), "Count")
+#assert.eq(late-binding-name(stage(start: "g")), "g")
+#assert.eq(late-binding-name(stage(start: "g", after-stat: (r, _) => r.g)), "g")
+#assert.eq(late-binding-name(stage()), none)
 
 // --- empty stages dict is a no-op --------------------------------------
 

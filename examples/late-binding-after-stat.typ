@@ -1,7 +1,8 @@
 // `after-stat` binds an aesthetic to a column produced by the layer's
 // stat. `geom-bar` runs `stat-count`, publishing `_count` per category;
 // here we bind y to that column by name to make the contract explicit
-// rather than relying on the geom's implicit y default.
+// rather than relying on the geom's implicit y default. With no `labs(y:)`
+// override, the y-axis title is derived from the marker: `_count` -> `Count`.
 
 #import "../lib.typ": *
 
@@ -30,7 +31,6 @@
   labs: labs(
     title: "Explicit After-Stat Binding",
     x: "Group",
-    y: "Count",
   ),
   theme: theme-minimal(),
   width: 12cm,

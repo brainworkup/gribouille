@@ -14,7 +14,7 @@
 #import "theme/defaults.typ": resolve-colour
 #import "theme/theme.typ": _text-style
 #import "guide/draw-key.typ": default-key-for, draw-glyph
-#import "scale/train.typ": mapping-ref-col
+#import "scale/train.typ": mapping-display-name
 #import "utils/typst-markup.typ": resolve-prose
 #import "utils/margin.typ": length-to-cm
 #import "utils/aes-resolve.typ": merge-mapping, resolve-label
@@ -41,7 +41,7 @@
   ) {
     t.spec.name
   } else if spec.mapping != none {
-    mapping-ref-col(spec.mapping.at(aes-name, default: aes-name))
+    mapping-display-name(spec.mapping.at(aes-name, default: aes-name))
   } else {
     aes-name
   }
@@ -146,7 +146,7 @@
     let merged = merge-mapping(layer, plot-mapping)
     if merged == none { continue }
     let raw = merged.at(aes-name, default: none)
-    if raw != none { return mapping-ref-col(raw) }
+    if raw != none { return mapping-display-name(raw) }
   }
   none
 }

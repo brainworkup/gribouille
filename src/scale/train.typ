@@ -9,7 +9,7 @@
 #import "../data.typ": column
 #import "../utils/types.typ": infer-column-type, parse-number
 #import "../utils/typst-markup.typ": is-typst-markup
-#import "../utils/late-binding.typ": is-late-binding
+#import "../utils/late-binding.typ": is-late-binding, late-binding-name
 
 #let _resolve-mapping(layer, plot-mapping) = {
   if layer.at("inherit-aes", default: true) and plot-mapping != none {
@@ -45,6 +45,15 @@
     return mapping-ref-col(value.at("source", default: none))
   }
   value
+}
+
+// Title/label-facing variant of `mapping-ref-col`: a late-binding marker
+// (`after-stat`, `stage`, ...) carries no source column, so resolve it to a
+// human label (or `none`) instead of leaking its dict repr into an axis or
+// legend title.
+#let mapping-display-name(value) = {
+  if is-late-binding(value) { return late-binding-name(value) }
+  mapping-ref-col(value)
 }
 
 // Return the forced type from a `mapping-ref` (`as-factor` /
