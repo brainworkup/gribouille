@@ -101,6 +101,11 @@
 // Hoisted to module scope so per-render lookups don't re-allocate it.
 #let _EMPTY-GEOM-DEFAULTS = element-geom()
 
+// Neutral body fill for filled geoms when the user set no `fill` aesthetic
+// and `theme.geom.fill` is unset.
+// \@internal
+#let geom-neutral-fill = rgb("#4c78a8")
+
 /// Resolve `theme.geom` to a flat layer-defaults dict.
 ///
 /// Returns the shape produced by \@element-geom; `none` slots leave per-geom

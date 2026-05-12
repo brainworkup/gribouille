@@ -13,7 +13,7 @@
   radial-axis-ranges, radial-category-span, radial-wedge,
 )
 #import "../utils/stroke.typ": resolve-stroke-spec
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
 
 /// Bar layer with heights taken from the y aesthetic.
 ///
@@ -124,7 +124,6 @@
       and vmax-col != none
   )
 
-  let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
@@ -132,7 +131,7 @@
     layer,
     mapping,
     geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", neutral-fill),
+    geom-default(g-defaults, "fill", geom-neutral-fill),
   )
 
   let baseline = calc.max(0.0, value-trained.domain.at(0))
@@ -254,7 +253,6 @@
       and vmax-col != none
   )
 
-  let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
@@ -262,7 +260,7 @@
     layer,
     mapping,
     geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", neutral-fill),
+    geom-default(g-defaults, "fill", geom-neutral-fill),
   )
 
   let baseline-vc = map-axis(

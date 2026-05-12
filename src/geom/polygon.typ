@@ -7,7 +7,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
 
 /// Polygon layer: one closed filled polygon per group.
 ///
@@ -102,7 +102,6 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
@@ -110,7 +109,7 @@
     layer,
     mapping,
     geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", neutral-fill),
+    geom-default(g-defaults, "fill", geom-neutral-fill),
   )
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
