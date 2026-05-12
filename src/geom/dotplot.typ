@@ -12,6 +12,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 #import "../utils/types.typ": parse-number
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Dotplot layer: one dot per observation, stacked within bins.
 ///
@@ -94,11 +95,12 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  let g-defaults = geom-defaults(ctx.theme)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    ink,
-    ink,
+    geom-default(g-defaults, "colour", ink),
+    geom-default(g-defaults, "fill", ink),
   )
 
   // Bin width is uniform across the partition, so the canvas-radius is a

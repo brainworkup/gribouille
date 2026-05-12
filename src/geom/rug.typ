@@ -8,6 +8,7 @@
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Marginal rug ticks at each row's x and / or y position.
 ///
@@ -120,6 +121,7 @@
     (ctx.resolve-colour)(colour-trained, ctx.palette)
   } else { none }
   let ink = ctx.theme.at("ink", default: black)
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
 
   let (px-lo, px-hi) = ctx.px-range
   let (py-lo, py-hi) = ctx.py-range
@@ -135,7 +137,7 @@
       layer.params.colour
     } else if colour-col != none and resolve-colour != none {
       resolve-colour(row.at(colour-col, default: none))
-    } else { ink }
+    } else { theme-colour }
     let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
     let thickness = resolve-channel(

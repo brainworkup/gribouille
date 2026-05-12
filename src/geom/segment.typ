@@ -4,6 +4,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Segment layer: one line from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -98,6 +99,7 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
 
   for row in data {
     let x0 = parse-number(row.at(x-col, default: none))
@@ -111,7 +113,14 @@
     let (cx0, cy0) = p0
     let (cx1, cy1) = p1
 
-    let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    let final-colour = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      row,
+      theme-colour,
+    )
 
     let thickness = resolve-channel(
       "linewidth",

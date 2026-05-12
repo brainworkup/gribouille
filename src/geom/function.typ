@@ -8,6 +8,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/radial.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.
 ///
@@ -122,9 +123,12 @@
   }
   if pts.len() < 2 { return }
 
+  let ink = ctx.theme.at("ink", default: black)
   let colour = if (
     layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else { ctx.theme.at("ink", default: black) }
+  ) { layer.params.colour } else {
+    geom-default(geom-defaults(ctx.theme), "colour", ink)
+  }
   let mapping = (ctx.resolve-mapping)(layer)
   let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
   let final-colour = apply-alpha(colour, alpha)

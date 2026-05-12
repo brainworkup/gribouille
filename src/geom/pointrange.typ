@@ -4,6 +4,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
 ///
@@ -110,6 +111,7 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
 
   for row in data {
     let xv = row.at(x-col, default: none)
@@ -125,7 +127,14 @@
     let (cx-lo, cy-lo) = p-lo
     let (cx-hi, cy-hi) = p-hi
 
-    let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    let final-colour = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      row,
+      theme-colour,
+    )
     let final-fill = resolve-channel(
       "fill",
       layer,

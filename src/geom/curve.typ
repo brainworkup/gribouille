@@ -9,6 +9,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Curved segment layer: one quadratic bezier from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -148,6 +149,7 @@
   if x-trained == none or y-trained == none { return }
 
   let ink = ctx.theme.at("ink", default: black)
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
   let curvature = layer.params.curvature
   let cos-angle = calc.cos(layer.params.angle)
   let n = layer.params.n
@@ -167,7 +169,14 @@
     let pts = _curve-points(cx0, cy0, cx1, cy1, curvature, cos-angle, n)
     if pts.len() < 2 { continue }
 
-    let final-colour = resolve-channel("colour", layer, mapping, ctx, row, ink)
+    let final-colour = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      row,
+      theme-colour,
+    )
     let thickness = resolve-channel(
       "linewidth",
       layer,

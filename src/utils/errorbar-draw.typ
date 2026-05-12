@@ -16,6 +16,7 @@
 )
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 #let _draw-errorbar-axis(layer, ctx, axis, cap-extent) = {
   let mapping = (ctx.resolve-mapping)(layer)
@@ -41,6 +42,7 @@
     (ctx.resolve-colour)(colour-trained, ctx.palette)
   } else { none }
   let ink = ctx.theme.at("ink", default: black)
+  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
 
   let extent-is-length = type(cap-extent) == length
   let half = if extent-is-length {
@@ -73,7 +75,7 @@
       layer.params.colour
     } else if colour-col != none and resolve-colour != none {
       resolve-colour(row.at(colour-col, default: none))
-    } else { ink }
+    } else { theme-colour }
     let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
     let thickness = resolve-channel(
