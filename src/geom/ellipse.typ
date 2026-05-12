@@ -6,6 +6,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
+#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
 
 /// Ellipse layer: draws one closed ellipse per row from `(x0, y0, a, b, angle)`.
 ///
@@ -110,13 +111,14 @@
   let angle-fallback = layer.params.angle
   let n = layer.params.n
 
-  let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
+  let g-defaults = geom-defaults(ctx.theme)
+  let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    ink,
-    neutral-fill,
+    geom-default(g-defaults, "colour", ink),
+    geom-default(g-defaults, "fill", geom-neutral-fill),
   )
 
   for row in data {
@@ -158,6 +160,7 @@
       ctx,
       row,
       default-colour,
+      default-thickness: default-thickness,
     )
 
     cetz.draw.line(

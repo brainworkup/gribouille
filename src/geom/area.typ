@@ -12,6 +12,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
+#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
 
 /// Area layer: filled polygon from `y = 0` up to `y` along x, per group.
 ///
@@ -96,13 +97,14 @@
   if x-trained == none or y-trained == none { return }
   if y-trained.type != "continuous" { return }
 
-  let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
+  let g-defaults = geom-defaults(ctx.theme)
+  let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    ink,
-    neutral-fill,
+    geom-default(g-defaults, "colour", ink),
+    geom-default(g-defaults, "fill", geom-neutral-fill),
   )
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
@@ -139,6 +141,7 @@
       ctx,
       leader,
       default-colour,
+      default-thickness: default-thickness,
     )
 
     cetz.draw.line(

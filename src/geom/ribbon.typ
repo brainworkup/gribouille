@@ -12,6 +12,7 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
+#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
 
 /// Filled band between `ymin` and `ymax` along the x aesthetic.
 ///
@@ -120,13 +121,14 @@
   let pts = upper + lower
   if pts.any(p => p == none) { return }
 
-  let neutral-fill = rgb("#4c78a8")
   let ink = ctx.theme.at("ink", default: black)
+  let g-defaults = geom-defaults(ctx.theme)
+  let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    ink,
-    neutral-fill,
+    geom-default(g-defaults, "colour", ink),
+    geom-default(g-defaults, "fill", geom-neutral-fill),
   )
 
   let leader = data.first()
@@ -146,6 +148,7 @@
     ctx,
     leader,
     default-colour,
+    default-thickness: default-thickness,
   )
 
   cetz.draw.line(
