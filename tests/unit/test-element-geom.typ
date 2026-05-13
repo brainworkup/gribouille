@@ -54,7 +54,6 @@
 )
 #assert.eq(geom-fill-default(d0, role: "paper"), default-theme.paper)
 #assert.eq(geom-fill-default(d0, role: "ink"), default-theme.ink)
-#assert.eq(geom-fill-default(d0, role: "accent"), default-theme.accent)
 
 // Theme with no geom slot and no scalars: hard fallbacks black/white/#3366FF.
 #let de = geom-defaults(stripped)

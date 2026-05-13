@@ -153,20 +153,14 @@
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
 /// \@returns A colour.
-#let geom-ink(defaults) = {
-  let v = defaults.at("ink", default: none)
-  if v != none { v } else { black }
-}
+#let geom-ink(defaults) = geom-default(defaults, "ink", black)
 
 /// Resolve the geom `paper` role: `element-geom.paper` if set, else `white`.
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
 /// \@returns A colour.
-#let geom-paper(defaults) = {
-  let v = defaults.at("paper", default: none)
-  if v != none { v } else { white }
-}
+#let geom-paper(defaults) = geom-default(defaults, "paper", white)
 
 /// Resolve the geom `accent` role: `element-geom.accent` if set, else a
 /// defensive `rgb("#3366FF")`.
@@ -174,10 +168,7 @@
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
 /// \@returns A colour.
-#let geom-accent(defaults) = {
-  let v = defaults.at("accent", default: none)
-  if v != none { v } else { rgb("#3366FF") }
-}
+#let geom-accent(defaults) = geom-default(defaults, "accent", rgb("#3366FF"))
 
 /// Resolve a geom's default stroke/text colour.
 ///
@@ -192,9 +183,9 @@
 #let geom-colour-default(defaults, role: "ink") = {
   let v = defaults.at("colour", default: none)
   if v != none { return v }
-  if role == "ink" { geom-ink(defaults) } else if role == "accent" {
-    geom-accent(defaults)
-  } else { panic("geom-colour-default: unknown role " + role) }
+  if role == "ink" { return geom-ink(defaults) }
+  if role == "accent" { return geom-accent(defaults) }
+  panic("geom-colour-default: unknown role " + role)
 }
 
 /// Resolve a geom's default body fill.
@@ -205,23 +196,25 @@
 ///   area / rect / tile family;
 /// - `"paper"`: the paper role (\@geom-boxplot, \@geom-crossbar, \@geom-point,
 ///   \@geom-label);
-/// - `"ink"`: the ink role (\@geom-dotplot);
-/// - `"accent"`: the accent role (reserved).
+/// - `"ink"`: the ink role (\@geom-dotplot).
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
-/// \@param role Fill role key: `"tint"`, `"paper"`, `"ink"`, or `"accent"`.
+/// \@param role Fill role key: `"tint"`, `"paper"`, or `"ink"`.
 /// \@returns A colour.
 #let geom-fill-default(defaults, role: "tint") = {
   let v = defaults.at("fill", default: none)
   if v != none { return v }
   if role == "tint" {
-    col-mix(geom-ink(defaults), geom-paper(defaults), geom-fill-tint-amount)
-  } else if role == "paper" { geom-paper(defaults) } else if role == "ink" {
-    geom-ink(defaults)
-  } else if role == "accent" { geom-accent(defaults) } else {
-    panic("geom-fill-default: unknown role " + role)
+    return col-mix(
+      geom-ink(defaults),
+      geom-paper(defaults),
+      geom-fill-tint-amount,
+    )
   }
+  if role == "paper" { return geom-paper(defaults) }
+  if role == "ink" { return geom-ink(defaults) }
+  panic("geom-fill-default: unknown role " + role)
 }
 
 // Default per-side text margin: every side `auto` so each consumption site
