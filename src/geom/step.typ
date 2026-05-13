@@ -31,6 +31,7 @@
 ///
 /// \@examples Default `"hv"` step path moving right then up between points.
 /// ```
+/// //| alt: "Stair-step polyline of y against x = 0 to 6 moving horizontally then vertically between successive points."
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
 /// #plot(
 ///   data: d,
@@ -44,6 +45,7 @@
 /// \@examples `"vh"` direction reverses the corner placement, useful when
 /// the change is best read as happening at the previous timestamp.
 /// ```
+/// //| alt: "Stair-step polyline of y against x = 0 to 6 moving vertically then horizontally between successive points."
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
 /// #plot(
 ///   data: d,

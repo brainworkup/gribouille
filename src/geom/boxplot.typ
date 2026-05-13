@@ -50,6 +50,7 @@
 ///
 /// \@examples Five-number summary computed per category from raw observations.
 /// ```
+/// //| alt: "Boxplots of y values across three categories (a, b, c) on the x axis showing Tukey box, median, and whiskers."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {
@@ -68,6 +69,7 @@
 /// \@examples Add a second mapping (`fill`) and switch `position` to
 /// `"dodge"` to compare distributions side by side per group.
 /// ```
+/// //| alt: "Dodged boxplots of y across three groups (a, b, c) on the x axis with two fill categories (x, y) side by side."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for k in ("x", "y") {

@@ -28,6 +28,7 @@
 ///
 /// \@examples Horizontal error bars across an integer y axis.
 /// ```
+/// //| alt: "Horizontal errorbars at y = 1 to 5 spanning lo to hi on the x axis with vertical caps at each end."
 /// #let d = range(1, 6).map(i => (
 ///   y: i,
 ///   lo: i - 0.5,
@@ -45,6 +46,7 @@
 /// \@examples Combine with \@geom-point at the central estimate to show point
 /// estimates with horizontal uncertainty.
 /// ```
+/// //| alt: "Horizontal errorbars from lo to hi at y = 1 to 5 overlaid with point markers at the central x estimate."
 /// #let d = range(1, 6).map(i => (
 ///   x: i, y: i, lo: i - 0.5, hi: i + 0.5,
 /// ))

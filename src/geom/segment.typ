@@ -30,6 +30,7 @@
 ///
 /// \@examples Three crossing segments specified by their two endpoints.
 /// ```
+/// //| alt: "Three straight line segments crossing through (x, y) and (xend, yend) endpoints forming an X plus vertical segment."
 /// #let d = (
 ///   (x: 0, y: 0, xend: 4, yend: 3),
 ///   (x: 0, y: 3, xend: 4, yend: 0),
@@ -47,6 +48,7 @@
 /// \@examples Map `colour` and `linetype` to colour-coded categorical
 /// segments.
 /// ```
+/// //| alt: "Three line segments between (x, y) and (xend, yend) coloured and dashed by group (a, b) via colour and linetype aesthetics."
 /// #let d = (
 ///   (x: 0, y: 0, xend: 4, yend: 3, k: "a"),
 ///   (x: 0, y: 3, xend: 4, yend: 0, k: "b"),

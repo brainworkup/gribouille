@@ -32,6 +32,7 @@
 ///
 /// \@examples One line per group, derived implicitly from the `colour` mapping.
 /// ```
+/// //| alt: "Two polylines of y against x = 1 to 3 for groups a and b coloured by the colour aesthetic with implicit grouping."
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),
@@ -52,6 +53,7 @@
 /// \@examples Map `linetype` to the same column to give each group a distinct
 /// dash pattern in addition to colour.
 /// ```
+/// //| alt: "Two polylines of y against x = 1 to 3 for groups a and b with distinct colour and dash patterns per group."
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),

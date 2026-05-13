@@ -28,6 +28,7 @@
 ///
 /// \@examples Two vertical reference lines at `x = 3` and `x = 6`.
 /// ```
+/// //| alt: "Scatter of x against y = 0.5 x over x = 0 to 9 overlaid with two blue vertical reference lines at x = 3 and 6."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -43,6 +44,7 @@
 ///
 /// \@examples A single dashed reference line at the data midpoint.
 /// ```
+/// //| alt: "Scatter of x against y = 0.5 x over x = 0 to 9 overlaid with a single red vertical reference line at x = 4.5."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

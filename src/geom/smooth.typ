@@ -40,6 +40,7 @@
 ///
 /// \@examples Linear fit through points with the default 95% confidence band.
 /// ```
+/// //| alt: "Scatter of 20 noisy linear points with a linear-model fit line and a translucent 95% confidence ribbon around it."
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
 ///   y: i * 0.5 + calc.sin(i * 0.4) * 2,
@@ -58,6 +59,7 @@
 ///
 /// \@examples Disable the ribbon with `se: false` for a cleaner trend overlay.
 /// ```
+/// //| alt: "Scatter of 20 noisy linear points overlaid with a thicker linear-model fit line and no confidence ribbon."
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
 ///   y: i * 0.5 + calc.sin(i * 0.4) * 2,
@@ -77,6 +79,7 @@
 /// \@examples Per-species linear fits on the penguins data: mapping
 /// `colour` splits the smoother into one trend per group.
 /// ```
+/// //| alt: "Penguin scatter of flipper length against body mass with per-species linear fits and translucent confidence ribbons."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(

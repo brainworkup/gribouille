@@ -30,6 +30,7 @@
 ///
 /// \@examples Bare vertical ranges, no end caps.
 /// ```
+/// //| alt: "Five vertical line ranges at x = 1 to 5 spanning lo to hi on the y axis with no end caps."
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
 ///   lo: i - 0.5,
@@ -47,6 +48,7 @@
 /// \@examples Map `colour` to a categorical column to differentiate ranges
 /// per group.
 /// ```
+/// //| alt: "Five vertical line ranges at x = 1 to 5 spanning lo to hi on y coloured by even/odd category via the colour aesthetic."
 /// #let d = range(1, 6).map(i => (
 ///   x: i, lo: i - 0.5, hi: i + 0.5,
 ///   k: if calc.rem(i, 2) == 0 { "even" } else { "odd" },

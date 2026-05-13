@@ -34,6 +34,7 @@
 ///
 /// \@examples Sine curve sampled across the trained x-domain.
 /// ```
+/// //| alt: "Sine curve sampled across x from -pi to pi as a polyline with y from -1 to 1 over the trained domain."
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
 ///   data: frame,
@@ -50,6 +51,7 @@
 /// \@examples Pass `xlim` to override the domain when the training data does
 /// not match the function's natural range.
 /// ```
+/// //| alt: "Shifted sine curve oscillating between 0 and 1 sampled across x from 0 to 4 pi using an explicit xlim override."
 /// #let frame = ((x: 0, y: 0), (x: 1, y: 1))
 /// #plot(
 ///   data: frame,

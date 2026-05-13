@@ -31,6 +31,7 @@
 /// \@examples Each row's `label` column carries Typst markup that is evaluated
 /// in place; no `typst()` wrapper is needed at the call site.
 /// ```
+/// //| alt: "Three text labels at (x, y) = (1, 1), (2, 2), (3, 3) showing alpha symbol, bold word, and italic word evaluated from Typst markup."
 /// #let d = (
 ///   (x: 1, y: 1, t: "$alpha$"),
 ///   (x: 2, y: 2, t: "*bold*"),
@@ -47,6 +48,7 @@
 ///
 /// \@examples Use a constant content block as the label at every row.
 /// ```
+/// //| alt: "Three positions at (1, 1), (2, 2), (3, 3) each labelled with the same constant Greek alpha symbol drawn in place."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 2, y: 2),

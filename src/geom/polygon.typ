@@ -37,6 +37,7 @@
 /// \@examples Two filled triangles, each defined by three vertex rows in a
 /// shared column.
 /// ```
+/// //| alt: "Two translucent filled triangles defined by three (x, y) vertex rows each with groups a and b coloured by fill aesthetic."
 /// #let d = (
 ///   (x: 0, y: 0, k: "a"),
 ///   (x: 2, y: 0, k: "a"),
@@ -56,6 +57,7 @@
 ///
 /// \@examples A regular pentagon constructed from sampled angles.
 /// ```
+/// //| alt: "Regular blue pentagon centred at the origin with five vertices sampled around the unit circle and black outline."
 /// #let n = 5
 /// #let d = range(0, n).map(i => (
 ///   x: calc.cos(2 * calc.pi * i / n),

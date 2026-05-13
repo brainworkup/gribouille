@@ -40,6 +40,7 @@
 ///
 /// \@examples Single filled area between `y = 0` and a smooth curve.
 /// ```
+/// //| alt: "Filled area chart with x (0 to 11) on the horizontal axis and a sine wave shifted upward filled down to y = 0."
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.6) + 1.5))
 /// #plot(
 ///   data: d,
@@ -53,6 +54,7 @@
 /// \@examples Map `fill` to a discrete column to draw one polygon per group;
 /// `position: "stack"` accumulates them.
 /// ```
+/// //| alt: "Stacked area chart over x with two groups (a, b) coloured by fill aesthetic and stacked vertically."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 12) {

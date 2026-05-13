@@ -31,6 +31,7 @@
 ///
 /// \@examples Plain count of rows per category.
 /// ```
+/// //| alt: "Bar chart of row counts per category (a, b, c) on the x axis with count on the y axis."
 /// #let d = (
 ///   (grp: "a"),
 ///   (grp: "b"),
@@ -51,6 +52,7 @@
 /// \@examples Map `fill` to a second column and switch `position` to
 /// `"dodge"` to compare counts side by side.
 /// ```
+/// //| alt: "Dodged bar chart of counts per group (a, b, c) split into two fill categories (x, y) shown side by side."
 /// #let d = (
 ///   (grp: "a", k: "x"),
 ///   (grp: "b", k: "x"),
@@ -71,6 +73,7 @@
 /// \@examples Penguin counts per island, broken down by species with
 /// dodged bars.
 /// ```
+/// //| alt: "Dodged bar chart of penguin counts per island on the x axis with species coloured by fill aesthetic."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "island", fill: "species"),

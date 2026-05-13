@@ -28,6 +28,7 @@
 ///
 /// \@examples Reference line under \@geom-qq for a normal Q-Q plot.
 /// ```
+/// //| alt: "Normal Q-Q plot of v with sample quantiles plotted against theoretical quantiles and a reference line through the IQR."
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
@@ -41,6 +42,7 @@
 /// \@examples Distinguish the line by colour and dash to keep it visible
 /// over the points.
 /// ```
+/// //| alt: "Normal Q-Q plot of 20 noisy values with sample quantiles against theoretical and a dashed red reference line through the IQR."
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
 /// #plot(
 ///   data: d,

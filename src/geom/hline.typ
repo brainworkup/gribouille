@@ -28,6 +28,7 @@
 ///
 /// \@examples Single horizontal reference line at `y = 5`.
 /// ```
+/// //| alt: "Scatter of x against y = x + 2 overlaid with a red horizontal reference line at y = 5."
 /// #let d = range(0, 10).map(i => (x: i, y: i + 2))
 /// #plot(
 ///   data: d,
@@ -44,6 +45,7 @@
 /// \@examples Pass an array of intercepts to draw several reference lines at
 /// once.
 /// ```
+/// //| alt: "Scatter of x against y = x + 2 overlaid with three grey horizontal reference lines at y = 3, 6 and 9."
 /// #let d = range(0, 10).map(i => (x: i, y: i + 2))
 /// #plot(
 ///   data: d,

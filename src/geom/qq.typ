@@ -31,6 +31,7 @@
 ///
 /// \@examples Simple Q-Q against a normal reference, mapping `y` only.
 /// ```
+/// //| alt: "Q-Q plot of five values v showing sample quantiles on y against theoretical normal quantiles on x as points."
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
@@ -44,6 +45,7 @@
 /// \@examples Switch `distribution` to `"uniform"` to compare against a
 /// different reference.
 /// ```
+/// //| alt: "Q-Q plot of 20 integer values v against theoretical uniform quantiles showing a near-straight diagonal of points."
 /// #let d = range(1, 21).map(i => (v: i))
 /// #plot(
 ///   data: d,

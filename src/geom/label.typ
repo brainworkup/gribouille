@@ -43,6 +43,7 @@
 ///
 /// \@examples Default boxed labels nudged above their points.
 /// ```
+/// //| alt: "Three point markers at (x, y) with boxed text labels (a, b, c) nudged above each point on the panel."
 /// #let d = (
 ///   (x: 1, y: 2, name: "a"),
 ///   (x: 2, y: 4, name: "b"),
@@ -63,6 +64,7 @@
 /// \@examples Customise `fill`, `stroke`, and `radius` to match a coloured
 /// callout style.
 /// ```
+/// //| alt: "Three points with rounded cream callout labels (alpha, beta, gamma) and orange outlines positioned above markers."
 /// #let d = (
 ///   (x: 1, y: 2, name: "alpha"),
 ///   (x: 2, y: 4, name: "beta"),

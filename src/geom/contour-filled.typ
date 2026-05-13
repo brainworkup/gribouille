@@ -30,6 +30,7 @@
 ///
 /// \@examples Ten bands on a radial-wave field, shaded by level.
 /// ```
+/// //| alt: "Filled contour bands over x and y from -3 to 3 of a sin(x) * cos(y) field shaded by level via viridis fill."
 /// #let n = 50
 /// #let d = ()
 /// #for i in range(n) { for j in range(n) {

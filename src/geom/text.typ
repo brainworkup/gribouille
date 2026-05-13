@@ -35,6 +35,7 @@
 ///
 /// \@examples Labels nudged above their points via `dy`.
 /// ```
+/// //| alt: "Three point markers at (x, y) with plain text labels (a, b, c) nudged above each point via a vertical offset."
 /// #let d = (
 ///   (x: 1, y: 2, name: "a"),
 ///   (x: 2, y: 4, name: "b"),
@@ -55,6 +56,7 @@
 /// \@examples Map `colour` and use `anchor: "west"` to flow labels to the right
 /// of each point.
 /// ```
+/// //| alt: "Three point markers at (x, y) with text labels (a, b, c) flowing right of each point and coloured by group x or y."
 /// #let d = (
 ///   (x: 1, y: 2, name: "a", grp: "x"),
 ///   (x: 2, y: 4, name: "b", grp: "y"),

@@ -43,6 +43,7 @@
 ///
 /// \@examples Pre-aggregated heights drawn one bar per row.
 /// ```
+/// //| alt: "Bar chart of revenue by quarter (Q1 through Q4) on the x axis with heights taken directly from the y aesthetic."
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
 ///   (q: "Q2", revenue: 18),
@@ -61,6 +62,7 @@
 /// \@examples Adding a `fill` mapping with `position: "stack"` (default for
 /// stacked) accumulates contributions per category.
 /// ```
+/// //| alt: "Stacked bar chart of revenue per quarter with EU and US regions accumulated by fill aesthetic in each bar."
 /// #let d = (
 ///   (q: "Q1", revenue: 6, region: "EU"),
 ///   (q: "Q1", revenue: 4, region: "US"),

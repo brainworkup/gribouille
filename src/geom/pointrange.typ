@@ -33,6 +33,7 @@
 /// \@examples Centred point with vertical range, drawn together for forest-plot
 /// style summaries.
 /// ```
+/// //| alt: "Forest-plot style: five point markers at (x, y) with vertical ranges from lo to hi for x = 1 to 5."
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
 ///   y: i,
@@ -51,6 +52,7 @@
 /// \@examples Map `colour` to a categorical column to colour both the point
 /// and its range per group.
 /// ```
+/// //| alt: "Five point ranges along x = 1 to 5 with points and lines coloured by even/odd category via the colour aesthetic."
 /// #let d = range(1, 6).map(i => (
 ///   x: i, y: i, lo: i - 0.5, hi: i + 0.5,
 ///   k: if calc.rem(i, 2) == 0 { "even" } else { "odd" },

@@ -28,6 +28,7 @@
 ///
 /// \@examples 30-by-30 grid coloured by count via the magma palette.
 /// ```
+/// //| alt: "Two-dimensional bin grid of sine/cosine samples with rectangular cells shaded by count via the magma palette."
 /// #let d = range(0, 400).map(i => (
 ///   x: calc.sin(i * 0.13) * 4,
 ///   y: calc.cos(i * 0.21) * 4,

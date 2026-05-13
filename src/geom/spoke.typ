@@ -38,6 +38,7 @@
 /// \@examples Eight unit-length spokes radiating from the origin at evenly
 /// spaced angles.
 /// ```
+/// //| alt: "Eight unit-length line spokes radiating from the origin at evenly spaced angles of 45 degrees forming a star pattern."
 /// #let d = range(0, 8).map(i => (
 ///   x: 0, y: 0, angle: i * calc.pi / 4, r: 1,
 /// ))

@@ -28,6 +28,7 @@
 ///
 /// \@examples Twelve-bin frequency polygon over a noisy series.
 /// ```
+/// //| alt: "Frequency polygon with 12 bins along x connecting bin counts of 40 noisy observations as a polyline."
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
 /// ))
@@ -43,6 +44,7 @@
 /// \@examples Map `colour` to overlay frequency polygons per group on the
 /// same axes.
 /// ```
+/// //| alt: "Two overlaid frequency polygons of x with 12 bins coloured by group (a, b) via the colour aesthetic."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 40) {

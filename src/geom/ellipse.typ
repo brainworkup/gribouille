@@ -40,6 +40,7 @@
 ///
 /// \@examples Two ellipses with different radii and rotation.
 /// ```
+/// //| alt: "Two filled ellipses with different centres, semi-axes a and b, and rotation angles rendered as polygons."
 /// #let d = (
 ///   (x0: 0, y0: 0, a: 2, b: 1, angle: 0),
 ///   (x0: 1, y0: 1, a: 1, b: 0.5, angle: calc.pi / 4),

@@ -31,6 +31,7 @@
 ///
 /// \@examples Connect rows in input order (deliberately not sorted by x).
 /// ```
+/// //| alt: "Polyline connecting four (x, y) rows in their input order along a zig-zag path rather than sorted by x."
 /// #let d = (
 ///   (x: 1, y: 1), (x: 3, y: 4), (x: 2, y: 2), (x: 4, y: 5),
 /// )
@@ -46,6 +47,7 @@
 /// \@examples Trajectory of a moving point parameterised by `t`, drawn in
 /// time order with a coloured fade.
 /// ```
+/// //| alt: "Spiralling trajectory in (x, y) of a particle parameterised by t with the path coloured by t via colour aesthetic."
 /// #let d = range(0, 24).map(t => (
 ///   x: calc.cos(t * 0.4), y: calc.sin(t * 0.4) * (t / 24 + 0.5), t: t,
 /// ))

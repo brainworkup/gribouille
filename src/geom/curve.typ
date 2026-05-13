@@ -44,6 +44,7 @@
 ///
 /// \@examples Three curved connectors with the default symmetric bow.
 /// ```
+/// //| alt: "Three curved bezier connectors between (x, y) and (xend, yend) endpoints coloured by group via the colour aesthetic."
 /// #let d = (
 ///   (x: 0, y: 0, xend: 4, yend: 3, k: "a"),
 ///   (x: 0, y: 3, xend: 4, yend: 0, k: "b"),
@@ -60,6 +61,7 @@
 ///
 /// \@examples Negative `curvature` flips the arc to the other side.
 /// ```
+/// //| alt: "Single curved bezier from (0, 0) to (4, 3) bowed to the opposite side via negative curvature value of -0.5."
 /// #let d = ((x: 0, y: 0, xend: 4, yend: 3),)
 /// #plot(
 ///   data: d,

@@ -35,6 +35,7 @@
 ///
 /// \@examples Three categorical rectangles overlapping along x.
 /// ```
+/// //| alt: "Three overlapping rectangles defined by xmin, xmax, ymin and ymax across x = 0 to 4 coloured by category (a, b)."
 /// #let d = (
 ///   (xmin: 0, xmax: 1, ymin: 0, ymax: 2, k: "a"),
 ///   (xmin: 1, xmax: 3, ymin: 1, ymax: 4, k: "b"),
@@ -52,6 +53,7 @@
 /// \@examples A unit-strip swatch lays out a discrete palette horizontally,
 /// one rectangle per level.
 /// ```
+/// //| alt: "Horizontal swatch strip with five rectangles for levels a to e coloured by the Brewer Set1 palette."
 /// #let levels = ("a", "b", "c", "d", "e")
 /// #let d = levels.enumerate().map(((i, k)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,

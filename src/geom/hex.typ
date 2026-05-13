@@ -37,6 +37,7 @@
 ///
 /// \@examples 25-bin pointy-top hex grid coloured by count.
 /// ```
+/// //| alt: "Hexagonal bin grid of 600 sine/cosine samples with pointy-top cells shaded by count via the magma palette."
 /// #let n = 600
 /// #let d = range(0, n).map(i => (
 ///   x: calc.sin(i * 0.13) * 4,

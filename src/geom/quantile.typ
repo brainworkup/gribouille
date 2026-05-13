@@ -34,6 +34,7 @@
 ///
 /// \@examples Median plus quartile bands over a noisy linear trend.
 /// ```
+/// //| alt: "Scatter of noisy linear data with three quantile-regression lines fitted at tau = 0.25, 0.5 and 0.75 over the points."
 /// #let d = range(0, 50).map(i => (
 ///   x: i,
 ///   y: i * 0.5 + calc.sin(i * 0.4) * 4,

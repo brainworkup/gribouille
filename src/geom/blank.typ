@@ -21,6 +21,7 @@
 ///
 /// \@examples Two corner rows train the axes without drawing any marks.
 /// ```
+/// //| alt: "Empty plot panel with x axis from 0 to 10 and y axis from 0 to 5 trained by two corner rows but no marks drawn."
 /// #let frame = ((x: 0, y: 0), (x: 10, y: 5))
 /// #plot(
 ///   data: frame,
@@ -34,6 +35,7 @@
 /// \@examples Stack a blank under \@geom-function to reserve room for the
 /// curve's domain without overriding the function output.
 /// ```
+/// //| alt: "Parabola y = x^2 over x from -2 to 2 with a blank layer reserving the panel range from y = -1 to 4."
 /// #let frame = ((x: -2, y: -1), (x: 2, y: 4))
 /// #plot(
 ///   data: frame,

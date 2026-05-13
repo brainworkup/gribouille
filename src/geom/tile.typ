@@ -39,6 +39,7 @@
 ///
 /// \@examples Heatmap of `v` values across an integer grid.
 /// ```
+/// //| alt: "Heatmap of a 5 by 4 integer grid with tiles centred at each (x, y) shaded by the sum v = x + y via the fill aesthetic."
 /// #let d = ()
 /// #for x in range(0, 5) {
 ///   for y in range(0, 4) {
@@ -57,6 +58,7 @@
 /// \@examples Pair the heatmap with a viridis scale for a perceptually
 /// uniform palette.
 /// ```
+/// //| alt: "Heatmap of a 5 by 4 grid of tiles centred at (x, y) coloured by the product v = x * y via the magma palette."
 /// #let d = ()
 /// #for x in range(0, 5) {
 ///   for y in range(0, 4) {

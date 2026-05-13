@@ -32,6 +32,7 @@
 /// \@examples Twelve-bin partition, letting the layer pick bin width
 /// automatically.
 /// ```
+/// //| alt: "Histogram of 40 noisy observations partitioned into 12 bins along x with bar heights showing per-bin counts."
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
 /// ))
@@ -47,6 +48,7 @@
 /// \@examples Pin `binwidth` directly to align bin edges to integer
 /// boundaries.
 /// ```
+/// //| alt: "Histogram of 40 noisy observations with fixed binwidth 1 along x aligning bin edges to integer boundaries."
 /// #let d = range(0, 40).map(i => (
 ///   x: calc.sin(i * 0.3) * 5 + i * 0.2,
 /// ))
@@ -61,6 +63,7 @@
 ///
 /// \@examples Penguin body-mass distribution, stacked by species.
 /// ```
+/// //| alt: "Stacked histogram of penguin body mass (g) on the x axis with bins of width 250 g and species coloured by fill."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "body-mass", fill: "species"),

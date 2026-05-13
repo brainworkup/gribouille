@@ -45,6 +45,7 @@
 ///
 /// \@examples Twelve-bin dotplot of a synthetic distribution.
 /// ```
+/// //| alt: "Dotplot with 12 bins along x of 60 synthetic observations stacked as touching dots inside each bin."
 /// #let d = range(0, 60).map(i => (
 ///   x: calc.sin(i * 0.27) * 3 + i * 0.08,
 /// ))

@@ -29,6 +29,7 @@
 ///
 /// \@examples Spread overlapping points with the default jitter amount.
 /// ```
+/// //| alt: "Scatter of overlapping (x, y = 1) rows at x = 1, 2, 3 spread out by jittered position adjustment."
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for _ in range(0, 16) { d.push((x: x, y: 1)) }
@@ -44,6 +45,7 @@
 ///
 /// \@examples Map `fill` so each jittered cluster is visually distinct.
 /// ```
+/// //| alt: "Jittered scatter of three discrete x categories (a, b, c) at y = 1 with markers coloured by fill aesthetic."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for _ in range(0, 16) { d.push((x: grp, y: 1, grp: grp)) }

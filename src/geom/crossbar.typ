@@ -42,6 +42,7 @@
 ///
 /// \@examples Box from `lo` to `hi` with the median bar at `y`.
 /// ```
+/// //| alt: "Crossbars at x = 1 to 4 with hollow boxes spanning lo to hi and a thick median bar at y for each row."
 /// #let d = range(1, 5).map(i => (
 ///   x: i,
 ///   y: i,
@@ -59,6 +60,7 @@
 ///
 /// \@examples Map `fill` to a categorical column to colour the box per group.
 /// ```
+/// //| alt: "Crossbars across x = 1 to 4 with boxes coloured by even/odd category via the fill aesthetic."
 /// #let d = range(1, 5).map(i => (
 ///   x: i, y: i, lo: i - 0.6, hi: i + 0.6,
 ///   k: if calc.rem(i, 2) == 0 { "even" } else { "odd" },

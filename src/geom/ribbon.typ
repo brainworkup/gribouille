@@ -40,6 +40,7 @@
 ///
 /// \@examples Plain shaded band between `ymin` and `ymax`.
 /// ```
+/// //| alt: "Translucent ribbon spanning lo to hi along x = 0 to 9 forming a shaded band of width 2 around a linear trend."
 /// #let d = range(0, 10).map(i => (
 ///   x: i,
 ///   lo: i * 0.5 - 1,
@@ -57,6 +58,7 @@
 /// \@examples Pair the ribbon with \@geom-line over a `y` mid-line for a
 /// classic uncertainty-around-trend visualisation.
 /// ```
+/// //| alt: "Linear trend line y = 0.5 x over x = 0 to 9 with a translucent ribbon spanning lo to hi as an uncertainty envelope."
 /// #let d = range(0, 10).map(i => (
 ///   x: i, y: i * 0.5, lo: i * 0.5 - 0.6, hi: i * 0.5 + 0.6,
 /// ))

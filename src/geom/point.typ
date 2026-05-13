@@ -47,6 +47,7 @@
 ///
 /// \@examples Default scatter, mapping `fill` to a categorical column.
 /// ```
+/// //| alt: "Scatter of four (x, y) points across x = 1 to 4 with markers coloured by species (a, b) via the fill aesthetic."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -65,6 +66,7 @@
 /// \@examples Map `shape` and `size` alongside `fill` to encode three
 /// dimensions on the same scatter.
 /// ```
+/// //| alt: "Scatter of (x, y) with marker fill and shape mapped to species and marker size encoding weight w from 1 to 4."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a", w: 1),
 ///   (x: 2, y: 4, sp: "b", w: 2),
@@ -83,6 +85,7 @@
 /// \@examples The classic penguins scatter: flipper length vs body mass,
 /// coloured and shaped by species.
 /// ```
+/// //| alt: "Scatter of penguin flipper length (mm) against body mass (g) with markers coloured and shaped by species."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(

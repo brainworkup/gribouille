@@ -27,6 +27,7 @@
 ///
 /// \@examples Marker size grows with the number of duplicate `(x, y)` rows.
 /// ```
+/// //| alt: "Scatter of x against y where each marker size encodes the number of duplicate (x, y) rows at that location."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),
@@ -47,6 +48,7 @@
 /// \@examples Pair with \@scale-size-area to give markers an area-proportional
 /// scaling (instead of a radius-proportional one).
 /// ```
+/// //| alt: "Scatter of x against y with marker size proportional to area encoding count of duplicate (x, y) rows."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),

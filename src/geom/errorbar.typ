@@ -28,6 +28,7 @@
 ///
 /// \@examples Vertical error bars with default cap span.
 /// ```
+/// //| alt: "Vertical errorbars at x = 1 to 5 spanning lo to hi with horizontal caps at each end indicating uncertainty."
 /// #let d = range(1, 6).map(i => (
 ///   x: i,
 ///   lo: i - 0.5,
@@ -45,6 +46,7 @@
 /// \@examples Combine with \@geom-point at the central estimate to convey the
 /// uncertainty around it.
 /// ```
+/// //| alt: "Vertical errorbars at x = 1 to 5 from lo to hi overlaid with circular markers at the central y estimate."
 /// #let d = range(1, 6).map(i => (
 ///   x: i, y: i, lo: i - 0.5, hi: i + 0.5,
 /// ))

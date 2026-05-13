@@ -28,6 +28,7 @@
 ///
 /// \@examples Contour lines over a 30-by-30 grid sampling `sin(x) * cos(y)`.
 /// ```
+/// //| alt: "Contour lines over x and y from -3 to 3 tracing iso-levels of the field sin(x) * cos(y) with ten levels."
 /// #let n = 30
 /// #let d = ()
 /// #for i in range(n) { for j in range(n) {

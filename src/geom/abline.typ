@@ -34,6 +34,7 @@
 ///
 /// \@examples The `y = x` identity reference line over a noisy point cloud.
 /// ```
+/// //| alt: "Scatter of x (0 to 9) against y (i + i mod 2) overlaid with a red y = x identity reference line."
 /// #let d = range(0, 10).map(i => (x: i, y: i + calc.rem(i, 2)))
 /// #plot(
 ///   data: d,
@@ -50,6 +51,7 @@
 /// \@examples Adjust `slope` and `intercept` to anchor a custom regression
 /// reference.
 /// ```
+/// //| alt: "Scatter of x against noisy y values with a green reference line at slope 0.7 and intercept 1."
 /// #let d = range(0, 10).map(i => (x: i, y: 0.7 * i + 1 + calc.sin(i)))
 /// #plot(
 ///   data: d,

@@ -154,6 +154,7 @@
 ///
 /// \@examples Hull-marking three clusters with translucent fill.
 /// ```
+/// //| alt: "Three clusters of (x, y) points enclosed by translucent convex hull polygons coloured by group fill aesthetic."
 /// #let pts = ()
 /// #for (cx, cy, k) in ((1, 1, "a"), (4, 1, "b"), (2.5, 4, "c")) {
 ///   for i in range(0, 8) {

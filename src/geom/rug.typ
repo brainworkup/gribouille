@@ -35,6 +35,7 @@
 ///
 /// \@examples Bottom and left rug ticks marking each observation's position.
 /// ```
+/// //| alt: "Scatter of 12 (x, y) points along a sine curve with bottom and left rug ticks marking each observation's x and y."
 /// #let d = range(0, 12).map(i => (x: i, y: calc.sin(i * 0.5)))
 /// #plot(
 ///   data: d,
@@ -51,6 +52,7 @@
 /// \@examples Rug on every side, coloured by a categorical column to expose
 /// per-group density along both axes.
 /// ```
+/// //| alt: "Scatter of two groups (a, b) with rug ticks on top, bottom, left, and right edges coloured by group via colour aesthetic."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 12) {
