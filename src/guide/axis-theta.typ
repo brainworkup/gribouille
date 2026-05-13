@@ -24,6 +24,7 @@
 ///
 /// \@examples Rotate theta tick labels on a radar plot.
 /// ```
+/// //| alt: "Radial bar chart with theta-axis category labels tilted 30 degrees and minor ticks between major spokes."
 /// #let d = (
 ///   (axis: "speed", value: 4),
 ///   (axis: "comfort", value: 3),

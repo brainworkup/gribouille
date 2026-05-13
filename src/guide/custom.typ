@@ -24,6 +24,7 @@
 ///
 /// \@examples Add a free-form annotation block alongside the colour legend.
 /// ```
+/// //| alt: "Scatter chart with three colour-coded points and a free-form Notes panel beside the colour legend giving extra series context."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),

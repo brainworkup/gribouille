@@ -23,6 +23,7 @@
 ///
 /// \@examples Reverse the level order shown in the legend.
 /// ```
+/// //| alt: "Scatter chart of three coloured points with the fill legend listing levels c, b, a from top to bottom instead of the default a, b, c."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -41,6 +42,7 @@
 /// \@examples Override the legend title and lay swatches out across two
 /// columns to compress the legend horizontally.
 /// ```
+/// //| alt: "Scatter chart of four-level fill mapping with a custom Group legend title and the four swatches laid out in two columns."
 /// #let d = ()
 /// #for grp in ("a", "b", "c", "d") {
 ///   for i in range(0, 4) { d.push((x: i, y: i, g: grp)) }
@@ -58,6 +60,7 @@
 /// \@examples Penguin species legend rendered as a 3-column legend so it
 /// sits flat under a wide panel.
 /// ```
+/// //| alt: "Scatter chart of penguin flipper length versus body mass with a wide Species legend laid out in three columns under the panel."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),

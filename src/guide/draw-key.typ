@@ -20,6 +20,7 @@
 ///
 /// \@examples Force the point glyph in the legend (the default for points).
 /// ```
+/// //| alt: "Scatter chart of two fill-coded points with the legend explicitly using filled-circle marker glyphs for each level."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -36,6 +37,7 @@
 /// \@examples Use the point glyph on a layer that would otherwise default
 /// to a different shape, like a line layered over points.
 /// ```
+/// //| alt: "Line chart with two colour-coded series whose legend glyphs are filled markers instead of the default short stroke."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
 ///   (x: 1, y: 3, g: "b"), (x: 2, y: 1, g: "b"),
@@ -64,6 +66,7 @@
 ///
 /// \@examples Short stroke glyph (the default for line layers).
 /// ```
+/// //| alt: "Line chart with two colour-coded series and a legend that uses short horizontal stroke segments as the level glyphs."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "a"),
@@ -82,6 +85,7 @@
 /// \@examples Override a column layer's default rectangle glyph with a line
 /// stroke.
 /// ```
+/// //| alt: "Bar chart of two fill-coded columns with the legend swatch replaced by short horizontal stroke segments instead of filled rectangles."
 /// #let d = (
 ///   (g: "a", n: 3),
 ///   (g: "b", n: 5),
@@ -110,6 +114,7 @@
 ///
 /// \@examples Filled rectangle glyph (the default for column layers).
 /// ```
+/// //| alt: "Bar chart of two fill-coded columns whose legend uses small filled rectangle swatches matching the bar fills."
 /// #let d = (
 ///   (g: "a", n: 3),
 ///   (g: "b", n: 5),
@@ -126,6 +131,7 @@
 /// \@examples Use the rectangle glyph on a point layer when the legend
 /// reads more naturally as colour swatches.
 /// ```
+/// //| alt: "Scatter chart of three fill-coded points whose legend uses filled rectangle swatches to emphasise colour over marker shape."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -155,6 +161,7 @@
 ///
 /// \@examples Short polyline glyph that hints at a non-monotonic path.
 /// ```
+/// //| alt: "Path chart of two colour-coded trajectories with the legend showing a small zigzag polyline glyph in place of a straight stroke."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "a"),
@@ -173,6 +180,7 @@
 /// \@examples Use the path glyph for trajectory-style line layers to make
 /// the legend visually consistent with the data.
 /// ```
+/// //| alt: "Path chart tracing an expanding spiral trajectory with a legend glyph that mirrors the winding shape using a polyline swatch."
 /// #let d = range(0, 24).map(t => (
 ///   x: calc.cos(t * 0.4), y: calc.sin(t * 0.4) * (t / 24 + 0.5), g: "trajectory",
 /// ))
@@ -202,6 +210,7 @@
 /// \@examples Suppress just the layer's glyph in the legend, keeping the
 /// label slot.
 /// ```
+/// //| alt: "Scatter chart of two fill-coded points where the legend keeps the level labels but renders an empty space instead of swatch glyphs."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -219,6 +228,7 @@
 /// legend; here a `geom-line` carries the legend, a `geom-point` is
 /// silenced.
 /// ```
+/// //| alt: "Line and point overlay chart for two colour-coded series where only the line layer contributes glyphs to the legend."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
 ///   (x: 1, y: 3, g: "b"), (x: 2, y: 1, g: "b"),

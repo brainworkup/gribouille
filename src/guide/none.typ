@@ -16,6 +16,7 @@
 ///
 /// \@examples Drop the colour legend without removing the colour mapping.
 /// ```
+/// //| alt: "Scatter chart with two fill-coded points where the fill legend is hidden even though the colour mapping is still applied to the markers."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -33,6 +34,7 @@
 /// \@examples Suppress multiple legends at once when the encoding is
 /// self-explanatory from context.
 /// ```
+/// //| alt: "Scatter chart of three points encoded by fill and size where both the fill and size legends are suppressed, leaving only the panel."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a", w: 1),
 ///   (x: 2, y: 2, g: "b", w: 2),

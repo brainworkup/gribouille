@@ -24,6 +24,7 @@
 /// \@examples Stack a rotated-label pass above the default log minor ticks
 /// so a log10 x axis carries both readable labels and dense tick marks.
 /// ```
+/// //| alt: "Scatter chart on log10 axes with rotated decade labels stacked above minor log tick marks for richer x-axis readout."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 10, y: 100),

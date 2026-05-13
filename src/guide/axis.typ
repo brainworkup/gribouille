@@ -24,6 +24,7 @@
 ///
 /// \@examples Rotate long x tick labels so they don't overlap.
 /// ```
+/// //| alt: "Scatter chart with month-name x-axis tick labels rotated 30 degrees so the long words sit side by side without colliding."
 /// #let d = (
 ///   (x: "January", y: 1),
 ///   (x: "February", y: 2),
@@ -43,6 +44,7 @@
 /// \@examples Stagger labels across two rows when many short ticks would
 /// pile up.
 /// ```
+/// //| alt: "Bar chart with eight monthly abbreviations on the x axis staggered across two rows so adjacent labels do not touch."
 /// #let months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug")
 /// #let d = months.enumerate().map(((i, m)) => (x: m, y: i + 1))
 /// #plot(
@@ -57,6 +59,7 @@
 ///
 /// \@examples Rotate long y tick labels.
 /// ```
+/// //| alt: "Scatter chart with Belgian city names on the y axis rotated 30 degrees so the longer place names fit beside the panel."
 /// #let cities = ("Anvers", "Bruxelles", "Charleroi", "Liège")
 /// #let d = cities.enumerate().map(((i, c)) => (x: i + 1, y: c))
 /// #plot(
@@ -95,6 +98,7 @@
 ///
 /// \@examples Major ticks at decade boundaries plus minor ticks at 2, 3, ..., 9.
 /// ```
+/// //| alt: "Scatter chart on log10 x and y axes showing labelled decade ticks plus shorter unlabelled ticks at sub-decade positions."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 10, y: 100),
