@@ -18,6 +18,25 @@
 ///
 /// \@returns Statistic object with `name: "bin_hex"`.
 ///
+/// \@examples `stat-bin-hex` powers `geom-hex`; pass `bins` (or `binwidth`)
+/// through the wrapper to bin a noisy scatter onto a 20-bin hex grid
+/// coloured by count.
+/// ```
+/// //| alt: "Hexagonal bin grid of sine/cosine samples with 20 hex cells per axis shaded by count via geom-hex backed by stat-bin-hex and the viridis fill palette."
+/// #let d = range(0, 400).map(i => (
+///   x: calc.sin(i * 0.13) * 4,
+///   y: calc.cos(i * 0.21) * 4,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-hex(bins: 20),),
+///   scales: (scale-fill-viridis-c(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-hex, \@stat-bin-2d
 #let stat-bin-hex(bins: 30, binwidth: none) = (
   kind: "stat",

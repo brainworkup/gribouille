@@ -28,6 +28,23 @@
 ///
 /// \@returns Statistic object with `name: "bindot"`, consumed by \@geom-dotplot.
 ///
+/// \@examples `stat-bindot` powers `geom-dotplot`; forward `binwidth` (or
+/// `bins`) through the wrapper to stack each observation within a half-unit
+/// bucket.
+/// ```
+/// //| alt: "One-dimensional dot plot of forty samples along x stacked within half-unit bins via geom-dotplot backed by stat-bindot with binwidth 0.5."
+/// #let d = range(0, 40).map(i => (
+///   x: calc.sin(i * 0.4) * 3 + calc.cos(i * 0.7) * 2,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x"),
+///   layers: (geom-dotplot(binwidth: 0.5),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-dotplot, \@stat-bin
 #let stat-bindot(bins: 30, binwidth: none, stackratio: 1.0) = (
   kind: "stat",

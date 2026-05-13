@@ -24,6 +24,29 @@
 ///
 /// \@returns Statistic object with `name: "quantile"`, consumed by \@geom-quantile.
 ///
+/// \@examples Fit the 0.25, 0.5, 0.75 quantile lines through a noisy
+/// linear cloud via `geom-line(stat: stat-quantile(...))`; the stat's
+/// `group` column auto-splits the lines.
+/// ```
+/// //| alt: "Scatter of seventy noisy linear samples with three fitted lines marking the 0.25, 0.5, and 0.75 quantile regressions via stat-quantile driving geom-line."
+/// #let n = 70
+/// #let d = range(0, n).map(i => {
+///   let x = i / n * 10
+///   let noise = calc.sin(i * 0.7) + calc.cos(i * 1.9)
+///   (x: x, y: 1.2 * x + noise)
+/// })
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (
+///     geom-point(size: 1.5pt, alpha: 0.6),
+///     geom-line(stat: stat-quantile(quantiles: (0.25, 0.5, 0.75)), stroke: 1pt),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-quantile, \@geom-smooth
 #let stat-quantile(quantiles: (0.25, 0.5, 0.75), n-samples: 64) = (
   kind: "stat",

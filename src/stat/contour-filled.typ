@@ -23,6 +23,27 @@
 ///
 /// \@returns Statistic object with `name: "contour_filled"`.
 ///
+/// \@examples Drive `geom-polygon` with the constructor form to fill eight
+/// iso-bands of `sin(x) * cos(y)` and paint them via the viridis palette.
+/// ```
+/// //| alt: "Eight filled iso-bands of sin(x)*cos(y) over a 30-by-30 grid spanning x and y from -3 to 3 painted by level via stat-contour-filled and the viridis fill palette."
+/// #let n = 30
+/// #let d = ()
+/// #for i in range(n) { for j in range(n) {
+///   let x = -3 + 6 * i / (n - 1)
+///   let y = -3 + 6 * j / (n - 1)
+///   d.push((x: x, y: y, z: calc.sin(x) * calc.cos(y)))
+/// } }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", z: "z"),
+///   layers: (geom-polygon(stat: stat-contour-filled(bins: 8)),),
+///   scales: (scale-fill-viridis-c(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-contour-filled, \@stat-contour
 #let stat-contour-filled(bins: 10, binwidth: none, breaks: auto) = (
   kind: "stat",

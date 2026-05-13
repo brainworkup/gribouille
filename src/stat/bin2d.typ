@@ -19,6 +19,24 @@
 ///
 /// \@returns Statistic object with `name: "bin_2d"`.
 ///
+/// \@examples Drive `geom-rect` with the constructor form to bin a noisy
+/// scatter into a 20-by-20 grid coloured by count.
+/// ```
+/// //| alt: "Two-dimensional bin grid of sine/cosine samples with 20-by-20 rectangular cells shaded by count via stat-bin-2d and the viridis fill palette."
+/// #let d = range(0, 400).map(i => (
+///   x: calc.sin(i * 0.13) * 4,
+///   y: calc.cos(i * 0.21) * 4,
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-rect(stat: stat-bin-2d(bins: 20)),),
+///   scales: (scale-fill-viridis-c(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-bin-2d, \@stat-bin
 #let stat-bin-2d(bins: 30, binwidth: none) = (
   kind: "stat",

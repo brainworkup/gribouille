@@ -22,6 +22,29 @@
 ///
 /// \@returns Statistic object with `name: "summary_2d"`.
 ///
+/// \@examples Reduce a `z` aesthetic over a 25-by-25 grid: each cell paints
+/// by the mean of the values that fell inside it.
+/// ```
+/// //| alt: "Two-dimensional rectangular grid of 25-by-25 cells over a noisy spiral cloud where each cell's fill encodes the mean radius via stat-summary-2d and the viridis palette."
+/// #let n = 600
+/// #let d = range(0, n).map(i => {
+///   let t = i / n
+///   let theta = t * 6 * calc.pi
+///   let r = 1 + t * 3
+///   let x = r * calc.cos(theta) + calc.sin(t * 11.0) * 0.3
+///   let y = r * calc.sin(theta) + calc.cos(t * 13.0) * 0.3
+///   (x: x, y: y, z: r)
+/// })
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", z: "z"),
+///   layers: (geom-rect(stat: stat-summary-2d(fun: "mean", bins: 25)),),
+///   scales: (scale-fill-viridis-c(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@stat-bin-2d, \@stat-summary-bin
 #let stat-summary-2d(fun: "mean", bins: 30, binwidth: none) = (
   kind: "stat",

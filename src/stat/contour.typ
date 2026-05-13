@@ -24,6 +24,26 @@
 ///
 /// \@returns Statistic object with `name: "contour"`.
 ///
+/// \@examples Drive `geom-path` with the constructor form over a
+/// `sin(x) * cos(y)` grid to trace eight iso-lines.
+/// ```
+/// //| alt: "Eight iso-lines tracing levels of sin(x)*cos(y) over a 30-by-30 grid spanning x and y from -3 to 3 via stat-contour driving geom-path."
+/// #let n = 30
+/// #let d = ()
+/// #for i in range(n) { for j in range(n) {
+///   let x = -3 + 6 * i / (n - 1)
+///   let y = -3 + 6 * j / (n - 1)
+///   d.push((x: x, y: y, z: calc.sin(x) * calc.cos(y)))
+/// } }
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", z: "z"),
+///   layers: (geom-path(stat: stat-contour(bins: 8)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-contour, \@stat-bin-2d
 #let stat-contour(bins: 10, binwidth: none, breaks: auto) = (
   kind: "stat",
