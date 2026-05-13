@@ -116,6 +116,22 @@
 /// \@param suffix String appended to every formatted value.
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Thread `format-comma()` into `scale-y-continuous(labels: ...)`
+/// so y-axis breaks render with English thousands separators.
+/// ```
+/// //| alt: "Scatter chart of three points with y-axis tick labels rendered with comma thousands separators via format-comma."
+/// #plot(
+///   data: ((x: 1, y: 1234), (x: 2, y: 23456), (x: 3, y: 345678)),
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-y-continuous(labels: format-comma()),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-number, \@format-currency
 #let format-comma(digits: auto, prefix: "", suffix: "") = format-number(
   big-mark: ",",
   decimal-mark: ".",
@@ -141,6 +157,21 @@
 /// \@param digits Decimal digits to keep.
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Map proportions in `[0, 1]` to percent labels on the y-axis.
+/// ```
+/// //| alt: "Bar chart of three discrete groups a, b, c with y-axis tick labels rendered as percentages from proportions via format-percent."
+/// #plot(
+///   data: ((g: "a", y: 0.1), (g: "b", y: 0.45), (g: "c", y: 0.9)),
+///   mapping: aes(x: "g", y: "y"),
+///   layers: (geom-col(),),
+///   scales: (scale-y-continuous(labels: format-percent()),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-number, \@format-currency
 #let format-percent(
   scale: 100,
   suffix: "%",
@@ -177,6 +208,22 @@
 /// \@param digits Decimal digits to keep.
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Pin a leading pound sign and two decimal digits on the y-axis
+/// labels.
+/// ```
+/// //| alt: "Scatter chart of three points with y-axis tick labels rendered as pound-denominated currency values via format-currency."
+/// #plot(
+///   data: ((x: 1, y: 1234.5), (x: 2, y: 7890.1), (x: 3, y: 12345.6)),
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-y-continuous(labels: format-currency(symbol: "£")),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-number, \@format-comma
 #let format-currency(
   symbol: "$",
   big-mark: ",",
@@ -207,6 +254,22 @@
 /// \@param digits Significant decimal digits in the mantissa.
 ///
 /// \@returns A closure `value => content`.
+///
+/// \@examples Spread y across decades so the labels switch into Typst-math
+/// scientific notation.
+/// ```
+/// //| alt: "Scatter chart of four points spanning four decades on y with axis labels rendered in Typst-math scientific notation via format-scientific."
+/// #plot(
+///   data: ((x: 1, y: 1e-4), (x: 2, y: 1e-2), (x: 3, y: 1), (x: 4, y: 1e4)),
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 3pt),),
+///   scales: (scale-y-continuous(labels: format-scientific(digits: 2)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-number, \@typst
 #let format-scientific(digits: 2) = value => {
   if value == none { return none }
   let v = if type(value) == str { parse-number(value) } else { value }
@@ -256,6 +319,23 @@
 /// \@since 0.1.0
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Title-case discrete x-axis levels without renaming the
+/// underlying data.
+/// ```
+/// //| alt: "Bar chart of three groups with discrete x-axis tick labels title-cased to Alpha, Beta, Gamma while the underlying levels stay alpha, beta, gamma."
+/// #let d = ((g: "alpha", y: 4), (g: "beta", y: 7), (g: "gamma", y: 3))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "g", y: "y"),
+///   layers: (geom-col(),),
+///   scales: (scale-x-discrete(labels: format-title()),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-upper, \@format-lower, \@format-wrap
 #let format-title() = value => {
   if value == none { return none }
   let s = str(value)
@@ -278,6 +358,22 @@
 /// \@since 0.1.0
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Upper-case the discrete x-axis tick labels via the closure.
+/// ```
+/// //| alt: "Bar chart of three groups with discrete x-axis tick labels upper-cased to ALPHA, BETA, GAMMA via format-upper."
+/// #let d = ((g: "alpha", y: 4), (g: "beta", y: 7), (g: "gamma", y: 3))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "g", y: "y"),
+///   layers: (geom-col(),),
+///   scales: (scale-x-discrete(labels: format-upper()),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-lower, \@format-title
 #let format-upper() = value => {
   if value == none { return none }
   _to-upper(str(value))
@@ -291,6 +387,22 @@
 /// \@since 0.1.0
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Lower-case the discrete x-axis tick labels via the closure.
+/// ```
+/// //| alt: "Bar chart of three groups with discrete x-axis tick labels lower-cased to alpha, beta, gamma via format-lower."
+/// #let d = ((g: "ALPHA", y: 4), (g: "BETA", y: 7), (g: "GAMMA", y: 3))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "g", y: "y"),
+///   layers: (geom-col(),),
+///   scales: (scale-x-discrete(labels: format-lower()),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-upper, \@format-title
 #let format-lower() = value => {
   if value == none { return none }
   _to-lower(str(value))
@@ -306,6 +418,27 @@
 /// \@param width Maximum line width in characters.
 ///
 /// \@returns A closure `value => string`.
+///
+/// \@examples Soft-wrap long discrete tick labels onto multiple lines at a
+/// width of eight characters.
+/// ```
+/// //| alt: "Bar chart of three groups whose long discrete x-axis tick labels are soft-wrapped at width 8 onto two lines each via format-wrap."
+/// #let d = (
+///   (g: "alpha quadrant", y: 4),
+///   (g: "beta sector", y: 7),
+///   (g: "gamma frontier", y: 3),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "g", y: "y"),
+///   layers: (geom-col(),),
+///   scales: (scale-x-discrete(labels: format-wrap(width: 8)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@format-title, \@label-wrap
 #let format-wrap(width: 20) = value => {
   if value == none { return none }
   let s = str(value)
