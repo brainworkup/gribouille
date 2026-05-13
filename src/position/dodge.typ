@@ -31,6 +31,7 @@
 ///
 /// \@examples Bars dodged side by side per `fill` group within each x slot.
 /// ```
+/// //| alt: "Grouped bar chart with quarters Q1 and Q2 on the x-axis and y values on the y-axis; two coloured bars per quarter sit side by side, one per group."
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
 ///   (q: "Q1", grp: "b", y: 5),
@@ -48,6 +49,7 @@
 ///
 /// \@examples Increase `padding` to widen the gap between dodged bars.
 /// ```
+/// //| alt: "Grouped bar chart with quarters on the x-axis and y values on the y-axis; dodged bars per group show a wider gap between neighbouring slots."
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
 ///   (q: "Q1", grp: "b", y: 5),

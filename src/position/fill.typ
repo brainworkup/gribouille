@@ -19,6 +19,7 @@
 /// \@examples Stacked bars normalised so each quarter sums to one, useful
 /// for showing share of total.
 /// ```
+/// //| alt: "Stacked bar chart with three quarters on the x-axis and proportions from 0 to 1 on the y-axis; each bar splits into two coloured segments summing to the full height."
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
 ///   (q: "Q1", grp: "b", y: 7),
@@ -39,6 +40,7 @@
 /// \@examples Compare with \@position-stack to show the same data in
 /// absolute counts instead of proportions.
 /// ```
+/// //| alt: "Stacked bar chart with three quarters on the x-axis and absolute counts on the y-axis; each bar splits into two coloured segments showing component contributions."
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3), (q: "Q1", grp: "b", y: 7),
 ///   (q: "Q2", grp: "a", y: 4), (q: "Q2", grp: "b", y: 6),

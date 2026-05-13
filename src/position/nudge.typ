@@ -19,6 +19,7 @@
 /// \@examples Offset text labels above their points using a default
 /// `position-nudge()`.
 /// ```
+/// //| alt: "Scatter chart with x on the x-axis and y on the y-axis; three points each accompanied by a text label sitting just off the point so the labels do not overlap the marker."
 /// #let d = (
 ///   (x: 1, y: 2, lab: "alpha"),
 ///   (x: 2, y: 4, lab: "beta"),
@@ -39,6 +40,7 @@
 /// \@examples Pass explicit `x` and `y` offsets to flow labels diagonally
 /// off the points.
 /// ```
+/// //| alt: "Scatter chart with x on the x-axis and y on the y-axis; three points each paired with a text label shifted diagonally up and to the right by fixed offsets."
 /// #let d = (
 ///   (x: 1, y: 2, lab: "alpha"),
 ///   (x: 2, y: 4, lab: "beta"),

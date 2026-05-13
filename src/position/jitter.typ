@@ -28,6 +28,7 @@
 ///
 /// \@examples Spread overplotted points with the default jitter amount.
 /// ```
+/// //| alt: "Scatter chart with x on the x-axis and y on the y-axis; three clouds of points spread around x = 1, 2, 3 with random horizontal and vertical offsets revealing overplotting."
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for _ in range(0, 12) { d.push((x: x, y: 1)) }
@@ -44,6 +45,7 @@
 /// \@examples Tighten `width` and zero `height` to keep jitter purely
 /// horizontal; bump `seed` to draw a different reproducible cloud.
 /// ```
+/// //| alt: "Scatter chart with x on the x-axis and y on the y-axis; three narrow horizontal strips of points at y = 1 spread only along x with a tight jitter width."
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for _ in range(0, 12) { d.push((x: x, y: 1)) }

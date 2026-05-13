@@ -28,6 +28,7 @@
 /// \@examples Dodge by `colour` then jitter within each slot, useful for
 /// dense categorical scatters.
 /// ```
+/// //| alt: "Categorical scatter chart with x on the x-axis and y on the y-axis; at each x two coloured groups dodge into separate slots and points jitter within each slot."
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for grp in ("a", "b") {
@@ -48,6 +49,7 @@
 /// \@examples Tune `dodge-width` and `width` to keep jittered clusters
 /// inside their dodged slots.
 /// ```
+/// //| alt: "Categorical scatter chart with x on the x-axis and y on the y-axis; three coloured groups per x form tight jittered clusters that stay inside their dodged slots."
 /// #let d = ()
 /// #for x in (1, 2, 3) {
 ///   for grp in ("a", "b", "c") {

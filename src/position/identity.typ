@@ -17,6 +17,7 @@
 /// \@examples Explicit identity position on a scatter, equivalent to the
 /// default behaviour of most geoms.
 /// ```
+/// //| alt: "Scatter chart with x on the x-axis and y on the y-axis; three points drawn at their mapped coordinates with no positional adjustment."
 /// #let d = (
 ///   (x: 1, y: 2),
 ///   (x: 2, y: 4),
@@ -34,6 +35,7 @@
 /// \@examples Use identity on \@geom-col when you have pre-computed bar
 /// heights you want drawn unchanged, even if a `fill` mapping is present.
 /// ```
+/// //| alt: "Overlapping bar chart with quarters on the x-axis and y on the y-axis; two semi-transparent coloured bars per quarter sit at the same base instead of stacking."
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
 ///   (q: "Q1", grp: "b", y: 5),

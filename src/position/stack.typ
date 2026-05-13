@@ -24,6 +24,7 @@
 /// \@examples Two groups stacked per quarter to show component contribution
 /// to a total.
 /// ```
+/// //| alt: "Stacked bar chart with three quarters on the x-axis and cumulative y on the y-axis; each bar splits into two coloured segments showing each group's contribution to the quarter total."
 /// #let d = (
 ///   (q: "Q1", grp: "a", y: 3),
 ///   (q: "Q1", grp: "b", y: 5),
@@ -44,6 +45,7 @@
 /// \@examples Stacked area chart over time, useful when the running total
 /// itself is informative.
 /// ```
+/// //| alt: "Stacked area chart with x on the x-axis and cumulative y on the y-axis; three semi-transparent coloured bands rise from zero, each layer adding its contribution to a growing running total."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(0, 10) {
