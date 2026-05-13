@@ -108,4 +108,9 @@
 #assert.eq(geom-colour-default(da, role: "accent"), rgb("#abcdef"))
 #assert.eq(geom-colour-default(da), default-theme.ink)
 
+// role: none skips the role fallback (fill-only geoms): empty element-geom
+// returns none; element-geom(colour: X) still wins.
+#assert.eq(geom-colour-default(d0, role: none), none)
+#assert.eq(geom-colour-default(dc, role: none), rgb("#778899"))
+
 Element-geom tests passed.

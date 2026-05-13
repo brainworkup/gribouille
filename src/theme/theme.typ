@@ -174,15 +174,18 @@
 ///
 /// `element-geom.colour` always wins (the global colour override). Otherwise
 /// the geom's colour role applies: `"ink"` for almost every geom, `"accent"`
-/// for \@geom-smooth.
+/// for \@geom-smooth. Pass `role: none` for filled geoms that draw no outline
+/// by default (bar/area/ribbon/rect/tile/hex) so the absence of an outline
+/// survives until the user maps `colour` or pins `element-geom.colour`.
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
-/// \@param role Colour role key: `"ink"` or `"accent"`.
-/// \@returns A colour.
+/// \@param role Colour role key: `"ink"`, `"accent"`, or `none`.
+/// \@returns A colour or `none`.
 #let geom-colour-default(defaults, role: "ink") = {
   let v = defaults.at("colour", default: none)
   if v != none { return v }
+  if role == none { return none }
   if role == "ink" { return geom-ink(defaults) }
   if role == "accent" { return geom-accent(defaults) }
   panic("geom-colour-default: unknown role " + role)

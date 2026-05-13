@@ -131,7 +131,7 @@
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-colour-default(g-defaults),
+    geom-colour-default(g-defaults, role: none),
     geom-fill-default(g-defaults, role: "tint"),
   )
 
@@ -259,7 +259,7 @@
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-colour-default(g-defaults),
+    geom-colour-default(g-defaults, role: none),
     geom-fill-default(g-defaults, role: "tint"),
   )
 
