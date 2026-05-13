@@ -22,6 +22,7 @@
 /// \@examples Compute a per-row index column inside the layer pipeline and
 /// label it via \@geom-text.
 /// ```
+/// //| alt: "Scatter chart with x and y axes plotting three points, each annotated by a per-row index label 1, 2, 3 derived inside the layer via stat-manual."
 /// #let d = (
 ///   (x: 1, y: 2),
 ///   (x: 2, y: 4),

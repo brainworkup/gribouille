@@ -24,6 +24,7 @@
 ///
 /// \@examples Linear fit with the default 95% confidence band.
 /// ```
+/// //| alt: "Scatter chart with x and y axes overlaid by a linear smoother and shaded 95 percent confidence band tracking the upward trend in the points."
 /// #let d = range(0, 20).map(i => (
 ///   x: i,
 ///   y: i * 0.5 + calc.sin(i * 0.4) * 2,
@@ -44,6 +45,7 @@
 /// `stat: "smooth"` with defaults. Use the constructor on any geom and to
 /// customise `method`, `se`, or `level`. Both forms honour `colour` grouping.
 /// ```
+/// //| alt: "Scatter chart with x and y axes split into two colour groups a and b, each overlaid by its own linear smoother line drawn without a confidence band."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 20) {

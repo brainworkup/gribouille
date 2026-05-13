@@ -42,6 +42,7 @@
 /// \@examples Mean and standard-error summary per group, drawn as a line and
 /// ribbon stack.
 /// ```
+/// //| alt: "Line chart with group on the x-axis and y on the y-axis, plotting the per-group mean as a line with a standard-error ribbon around it for groups a, b, c."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {
@@ -64,6 +65,7 @@
 /// defaults (`fun: "mean-se"`). Use the constructor to choose a different
 /// reducer or pass `fun-args`.
 /// ```
+/// //| alt: "Pointrange chart with group on the x-axis and y on the y-axis, showing the per-group median as a point flanked by a 50 percent hilow interval for groups a, b, c."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {

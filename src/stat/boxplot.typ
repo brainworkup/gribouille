@@ -26,6 +26,7 @@
 ///
 /// \@examples Default 1.5 × IQR whisker rule on grouped raw observations.
 /// ```
+/// //| alt: "Boxplot per group on the x-axis with values on the y-axis, showing median, quartiles, and 1.5 times IQR whiskers for groups a, b, c."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {
@@ -46,6 +47,7 @@
 /// length, e.g. `stat: stat-boxplot(coef: 1.0)` tightens the fence so more
 /// values surface as outliers.
 /// ```
+/// //| alt: "Boxplot per group on the x-axis with values on the y-axis, using a tighter 1.0 times IQR whisker rule that exposes additional outliers for groups a, b, c."
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
 ///   for i in range(20) {

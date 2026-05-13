@@ -41,6 +41,7 @@
 ///
 /// \@examples Reference line under \@geom-qq for a normal Q-Q plot.
 /// ```
+/// //| alt: "Q-Q chart with theoretical normal quantiles on the x-axis and sample quantiles on the y-axis, points sitting on a reference line drawn under the QQ layer."
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
@@ -54,6 +55,7 @@
 /// \@examples Constructor form: `stat: stat-qq-line()` is equivalent to
 /// `stat: "qq-line"` with defaults.
 /// ```
+/// //| alt: "Q-Q chart with theoretical quantiles on the x-axis and sample quantiles on the y-axis, with a red reference line through the first and third quartiles."
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
 /// #plot(
 ///   data: d,

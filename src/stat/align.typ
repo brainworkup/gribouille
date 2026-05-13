@@ -80,6 +80,7 @@
 ///
 /// \@examples Two groups with mismatched x sampled onto a stacked area.
 /// ```
+/// //| alt: "Stacked area chart with x and y axes, two groups a and b aligned onto a shared x-grid so their areas stack without gaps."
 /// #let d = (
 ///   (x: 0, y: 1, k: "a"), (x: 2, y: 3, k: "a"), (x: 4, y: 2, k: "a"),
 ///   (x: 1, y: 2, k: "b"), (x: 3, y: 1, k: "b"), (x: 5, y: 4, k: "b"),

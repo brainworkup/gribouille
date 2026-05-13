@@ -18,6 +18,7 @@
 /// \@examples Drop the duplicate `(1, 1)` row; the rendered scatter shows
 /// each pair only once.
 /// ```
+/// //| alt: "Scatter chart with x and y axes plotting two distinct points (1, 1) and (2, 2) after stat-unique drops the duplicate (1, 1) row from the input data."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),
@@ -35,6 +36,7 @@
 /// \@examples Constructor form: `stat: stat-unique()` is equivalent to
 /// `stat: "unique"` with defaults.
 /// ```
+/// //| alt: "Scatter chart with x and y axes showing two distinct points (1, 1) and (2, 2), produced via the stat-unique constructor which removes duplicate rows."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),

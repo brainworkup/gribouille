@@ -33,6 +33,7 @@
 ///
 /// \@examples Mean and standard-error bands per bin, drawn as a polyline.
 /// ```
+/// //| alt: "Line chart with x on the horizontal axis and y on the vertical axis, connecting the per-bin mean across eight equal-width bins with mean and standard-error summaries."
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
 /// #plot(
 ///   data: d,
@@ -49,6 +50,7 @@
 /// with defaults (`fun: "mean-se"`, `bins: 30`). Use the constructor to
 /// customise the reduction or partition.
 /// ```
+/// //| alt: "Pointrange chart with x on the horizontal axis and y on the vertical axis, showing the per-bin median and a hilow interval across eight equal-width x bins."
 /// #let d = range(0, 80).map(i => (x: i / 10, y: calc.sin(i / 10) + i / 80))
 /// #plot(
 ///   data: d,

@@ -23,6 +23,7 @@
 ///
 /// \@examples Histogram driven by an eight-bin partition.
 /// ```
+/// //| alt: "Histogram with x on the horizontal axis and count on the vertical axis, partitioned into eight equal-width bins covering a uniform range."
 /// #let d = range(0, 40).map(i => (x: i * 0.25))
 /// #plot(
 ///   data: d,
@@ -37,6 +38,7 @@
 /// `stat: "bin"` with defaults (`bins: 30`). Use the constructor to customise
 /// the partition on any geom, not just \@geom-histogram.
 /// ```
+/// //| alt: "Bar chart with x on the horizontal axis and bin count on the vertical axis, using stat-bin with eight bins to drive geom-col."
 /// #let d = range(0, 40).map(i => (x: i * 0.25))
 /// #plot(
 ///   data: d,

@@ -34,6 +34,7 @@
 /// \@examples Three Gaussian-like clusters, each enclosed by a 95%
 /// confidence ellipse.
 /// ```
+/// //| alt: "Scatter chart with x and y axes showing three coloured point clusters a, b, c, each enclosed by a translucent 95 percent confidence ellipse summarising its spread."
 /// #let pts = ()
 /// #for (cx, cy, k) in ((0, 0, "a"), (4, 1, "b"), (2, 4, "c")) {
 ///   for i in range(0, 30) {

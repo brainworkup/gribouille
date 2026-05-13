@@ -28,6 +28,7 @@
 /// \@examples Step-style line via `"mid"`: midpoint corners between
 /// consecutive observations.
 /// ```
+/// //| alt: "Step line chart with x and y axes, connecting points through midpoint corners so the path turns halfway between consecutive observations."
 /// #let d = range(0, 7).map(i => (x: i, y: calc.rem(i * 3, 5)))
 /// #plot(
 ///   data: d,

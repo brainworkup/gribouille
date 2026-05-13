@@ -21,6 +21,7 @@
 ///
 /// \@examples Marker size grows with the count of duplicate `(x, y)` rows.
 /// ```
+/// //| alt: "Scatter chart with x and y axes where marker size encodes the count of duplicate observations at each coordinate, larger at (1, 1) than at (2, 2)."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 1, y: 1),
@@ -38,6 +39,7 @@
 /// \@examples Constructor form: `stat: stat-sum()` is equivalent to
 /// `stat: "sum"` with defaults.
 /// ```
+/// //| alt: "Scatter chart with x and y axes where stat-sum scales marker area with the duplicate count at each (x, y), largest at (1, 1), smaller at (3, 3), smallest at (2, 2)."
 /// #let d = (
 ///   (x: 1, y: 1), (x: 1, y: 1), (x: 1, y: 1),
 ///   (x: 2, y: 2),

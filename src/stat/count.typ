@@ -19,6 +19,7 @@
 ///
 /// \@examples Count rows per category, drawn as bars via \@geom-bar.
 /// ```
+/// //| alt: "Bar chart with categories a, b, c on the x-axis and row count on the y-axis, with bar height equal to the number of observations per category."
 /// #let d = (
 ///   (grp: "a"),
 ///   (grp: "b"),
@@ -38,6 +39,7 @@
 /// \@examples Constructor form: `stat: stat-count()` is equivalent to
 /// `stat: "count"` with defaults. Both forms honour `fill` grouping identically.
 /// ```
+/// //| alt: "Stacked bar chart with categories a, b, c on the x-axis and count on the y-axis, with bars subdivided by fill group k showing per-category subgroup counts."
 /// #let d = (
 ///   (grp: "a", k: "x"),
 ///   (grp: "b", k: "x"),

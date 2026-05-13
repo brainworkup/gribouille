@@ -24,6 +24,7 @@
 ///
 /// \@examples ECDF curve over a tiny sample, drawn as a polyline.
 /// ```
+/// //| alt: "ECDF chart with sample value x on the horizontal axis and cumulative probability on the vertical axis, rising in steps from zero to one across a small sample."
 /// #let d = (3, 1, 2, 1).map(v => (x: v))
 /// #plot(
 ///   data: d,
@@ -38,6 +39,7 @@
 /// `stat: "ecdf"` with defaults. Mapping `colour` to a group column produces
 /// one ECDF per group; both syntax forms honour aesthetic grouping identically.
 /// ```
+/// //| alt: "ECDF chart with x on the horizontal axis and cumulative probability on the vertical axis, one coloured curve per group showing the shifted distribution of group b versus a."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 15) {

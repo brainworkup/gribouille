@@ -28,6 +28,7 @@
 ///
 /// \@examples Sine sampled across `xlim` and rendered as a line.
 /// ```
+/// //| alt: "Line chart with x on the horizontal axis from minus pi to pi and y on the vertical axis, tracing the sine function sampled across the xlim range."
 /// #let frame = ((x: -calc.pi, y: -1), (x: calc.pi, y: 1))
 /// #plot(
 ///   data: frame,
@@ -48,6 +49,7 @@
 /// defaults (`fun: x => x`, `n: 101`, `xlim: (0, 1)`). In practice the
 /// constructor form is always required because `fun` must be supplied.
 /// ```
+/// //| alt: "Line chart with x on the horizontal axis from zero to two pi and y on the vertical axis, plotting the cosine function as a dense line overlaid with 13 sampled points."
 /// #let frame = ((x: 0, y: 0), (x: 6.28, y: 1))
 /// #plot(
 ///   data: frame,

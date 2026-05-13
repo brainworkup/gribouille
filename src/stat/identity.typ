@@ -17,6 +17,7 @@
 /// \@examples Explicit `stat: "identity"` on a scatter, equivalent to the
 /// default behaviour.
 /// ```
+/// //| alt: "Scatter chart with x and y axes plotting three raw points without aggregation, showing that stat identity passes data through unchanged."
 /// #let d = (
 ///   (x: 1, y: 2),
 ///   (x: 2, y: 4),
@@ -34,6 +35,7 @@
 /// \@examples Pre-aggregated heights drawn directly with \@geom-col, using
 /// `stat-identity` to skip any binning.
 /// ```
+/// //| alt: "Column chart with quarters Q1 to Q4 on the x-axis and revenue on the y-axis, drawing pre-aggregated heights directly without further statistical reduction."
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
 ///   (q: "Q2", revenue: 18),

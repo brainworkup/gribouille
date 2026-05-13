@@ -28,6 +28,7 @@
 ///
 /// \@examples Q-Q points against a normal reference, mapping `y` only.
 /// ```
+/// //| alt: "Q-Q chart with theoretical normal quantiles on the x-axis and sample quantiles on the y-axis, showing points generated from a y-only mapping."
 /// #let d = (1, 2, 3, 4, 5).map(v => (v: v))
 /// #plot(
 ///   data: d,
@@ -41,6 +42,7 @@
 /// \@examples Constructor form: `stat: stat-qq()` is equivalent to
 /// `stat: "qq"` with defaults.
 /// ```
+/// //| alt: "Q-Q chart with theoretical quantiles on the x-axis and sample quantiles on the y-axis, points produced by stat-qq with a normal reference line overlaid."
 /// #let d = range(1, 21).map(i => (v: i + calc.sin(i)))
 /// #plot(
 ///   data: d,
