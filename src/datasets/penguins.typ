@@ -29,6 +29,7 @@
 ///
 /// \@examples Preview the first five entries (out of 344).
 /// ```
+/// //| alt: "Table of the first five rows of the penguins dataset with columns species, island, bill measurements, flipper length, body mass, and sex."
 /// #let cols = penguins.pairs()
 /// #let cell(v) = if v == none { text(fill: gray, [_none_]) } else { [#v] }
 /// #table(
@@ -43,6 +44,7 @@
 ///
 /// \@examples Flipper length vs body mass, coloured, filled, and shaped by species.
 /// ```
+/// //| alt: "Scatter chart of body mass against flipper length for 344 penguins, coloured, filled, and shaped by species (Adelie, Chinstrap, Gentoo), with a linear smoother and 95 percent confidence band per species; mass rises with flipper length and Gentoo separates clearly."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(

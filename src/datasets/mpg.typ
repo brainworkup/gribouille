@@ -27,6 +27,7 @@
 ///
 /// \@examples Preview the first ten entries (out of 30).
 /// ```
+/// //| alt: "Table of the first ten rows of the mpg dataset with seven columns: manufacturer, model, displ, cyl, class, cty, hwy."
 /// #let cols = mpg.pairs()
 /// #let cell(v) = if v == none { text(fill: gray, [_none_]) } else { [#v] }
 /// #table(
@@ -41,6 +42,7 @@
 ///
 /// \@examples Highway mpg vs engine displacement, filled by vehicle class.
 /// ```
+/// //| alt: "Scatter chart of highway miles per gallon against engine displacement (litres) for 30 vehicles, with points filled by vehicle class; mpg falls as displacement rises."
 /// #plot(
 ///   data: mpg,
 ///   mapping: aes(x: "displ", y: "hwy", fill: "class"),
@@ -53,6 +55,7 @@
 /// \@examples Facet by `class` and add a linear smoother per panel to
 /// compare per-class trends.
 /// ```
+/// //| alt: "Faceted scatter chart of highway mpg against engine displacement split into one panel per vehicle class, each panel overlaid with a linear regression line."
 /// #plot(
 ///   data: mpg,
 ///   mapping: aes(x: "displ", y: "hwy"),

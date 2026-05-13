@@ -29,6 +29,7 @@
 ///
 /// \@examples Preview all 24 entries.
 /// ```
+/// //| alt: "Table of 24 monthly rows (2008-01 to 2009-12) with six columns: date, pce, pop, psavert, uempmed, unemploy."
 /// #let cols = economics.pairs()
 /// #let cell(v) = if v == none { text(fill: gray, [_none_]) } else { [#v] }
 /// #table(
@@ -43,6 +44,7 @@
 ///
 /// \@examples Plot the unemployment series over time using `date` as a continuous date axis.
 /// ```
+/// //| alt: "Line chart of unemployed count (thousands) from January 2008 to December 2009 with a steep rise through the 2008-2009 recession peaking near 15,000 in late 2009."
 /// #plot(
 ///   data: economics,
 ///   mapping: aes(x: "date", y: "unemploy"),
@@ -56,6 +58,7 @@
 /// \@examples Stack two layers with their own y mappings to compare two
 /// series on the same panel.
 /// ```
+/// //| alt: "Two-line chart over 2008-2009 with personal savings rate in green rising to about 7 percent and median unemployment duration in orange rising to about 20 weeks."
 /// #plot(
 ///   data: economics,
 ///   mapping: aes(x: "date"),
