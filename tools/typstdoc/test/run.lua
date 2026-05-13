@@ -879,6 +879,100 @@ describe("render: summaries resolve cross-references", function()
 end)
 
 -- -----------------------------------------------------------------------
+describe("render: @examples alt forwarding", function()
+  local render = require("render")
+
+  local function parsed_functions(body)
+    local f = tmpfile("alt_forward", body)
+    return parser.parse_file(f).functions
+  end
+
+  local function with_warn_capture(fn)
+    local original = util.log_warn
+    local captured = {}
+    util.log_warn = function(msg) captured[#captured + 1] = msg end
+    local ok, err = pcall(fn, captured)
+    util.log_warn = original
+    if not ok then error(err, 0) end
+  end
+
+  it("emits //| alt: when docstring fence carries it", function()
+    local fns = parsed_functions([[
+/// Sample.
+///
+/// @category Core
+/// @examples Render with alt.
+/// ```
+/// //| alt: "Scatter of x against y."
+/// #plot(data: d, mapping: aes(x: "x", y: "y"))
+/// ```
+#let foo() = none
+]])
+    with_warn_capture(function(captured)
+      local body = render.render_function(fns[1], {}, { strict = false })
+      assert_contains(body, '//| output-filename: "foo-1.svg"')
+      assert_contains(body, '//| alt: "Scatter of x against y."')
+      assert_eq(#captured, 0, "alt present should not warn")
+    end)
+  end)
+
+  it("warns when rendered fence lacks //| alt:", function()
+    local fns = parsed_functions([[
+/// Sample.
+///
+/// @category Core
+/// @examples No alt here.
+/// ```
+/// #plot(data: d, mapping: aes(x: "x", y: "y"))
+/// ```
+#let foo() = none
+]])
+    with_warn_capture(function(captured)
+      local body = render.render_function(fns[1], {}, { strict = false })
+      assert_true(not body:find('//| alt:', 1, true), "no alt directive expected")
+      assert_eq(#captured, 1, "exactly one warning expected")
+      assert_contains(captured[1], "@examples fence 1 for `foo` missing")
+    end)
+  end)
+
+  it("passes alt value through verbatim (no re-quoting)", function()
+    local fns = parsed_functions([[
+/// Sample.
+///
+/// @category Core
+/// @examples
+/// ```
+/// //| alt: "Quoted with \"inner\" quotes."
+/// #plot()
+/// ```
+#let foo() = none
+]])
+    with_warn_capture(function(captured)
+      local body = render.render_function(fns[1], {}, { strict = false })
+      assert_contains(body, [[//| alt: "Quoted with \"inner\" quotes."]])
+      assert_eq(#captured, 0)
+    end)
+  end)
+
+  it("does not warn for @examples-static fences", function()
+    local fns = parsed_functions([[
+/// Sample.
+///
+/// @category Core
+/// @examples-static
+/// ```
+/// foo()
+/// ```
+#let foo() = none
+]])
+    with_warn_capture(function(captured)
+      render.render_function(fns[1], {}, { strict = false })
+      assert_eq(#captured, 0, "static examples must not trigger alt warnings")
+    end)
+  end)
+end)
+
+-- -----------------------------------------------------------------------
 describe("render: @subcategory grouping", function()
   local render = require("render")
 

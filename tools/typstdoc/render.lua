@@ -195,9 +195,20 @@ local function emit_examples(fn, from_qmd, index, strict)
         emit_fence("```typst", seg.source)
         if ex.render then
           render_idx = render_idx + 1
-          local header = string.format('```{typst}\n//| output-filename: "%s-%d.svg"',
-            fn.name, render_idx)
-          emit_fence(header, seg.source)
+          local attrs = seg.attributes or {}
+          local alt = attrs.alt
+          local header_lines = {
+            "```{typst}",
+            string.format('//| output-filename: "%s-%d.svg"', fn.name, render_idx),
+          }
+          if alt == nil or alt == "" then
+            util.log_warn(string.format(
+              "%s:%d: @examples fence %d for `%s` missing `//| alt: \"...\"`",
+              fn.file, fn.line, render_idx, fn.name))
+          else
+            table.insert(header_lines, "//| alt: " .. alt)
+          end
+          emit_fence(table.concat(header_lines, "\n"), seg.source)
         end
       end
     end
