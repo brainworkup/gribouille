@@ -53,6 +53,7 @@
 ///
 /// \@examples Bind three columns: `x`, `y`, and a categorical `colour`.
 /// ```
+/// //| alt: "Scatter chart of sepal width against sepal length for three iris species, with marker colour encoding the species categorical."
 /// #let iris = (
 ///   (x: 5.1, y: 3.5, sp: "setosa"),
 ///   (x: 7.0, y: 3.2, sp: "versicolor"),
@@ -70,6 +71,7 @@
 /// \@examples Bind ribbon endpoints (`ymin`, `ymax`) alongside a centre
 /// line, sharing the same `x` between the two layers.
 /// ```
+/// //| alt: "Line chart of y against x with a translucent ribbon spanning ymin to ymax around the line."
 /// #let d = range(0, 10).map(i => (
 ///   x: i, y: i * 0.5, lo: i * 0.5 - 0.6, hi: i * 0.5 + 0.6,
 /// ))
@@ -87,6 +89,7 @@
 ///
 /// \@examples Bind y to the count column the stat publishes via \@after-stat.
 /// ```
+/// //| alt: "Bar chart of per-group counts with bar fill encoding the group, y bound to the stat's _count column via after-stat."
 /// #let d = ((grp: "a"), (grp: "b"), (grp: "a"), (grp: "c"))
 /// #plot(
 ///   data: d,
@@ -100,6 +103,7 @@
 /// \@examples Darken the marker outline from the trained fill palette
 /// via \@after-scale.
 /// ```
+/// //| alt: "Scatter chart with filled markers whose outlines are darkened versions of the fill palette via after-scale."
 /// #let d = ((x: 1, sp: "a"), (x: 2, sp: "b"), (x: 3, sp: "a"))
 /// #plot(
 ///   data: d,

@@ -20,6 +20,7 @@
 ///
 /// \@examples Lay the colour legend out across two columns.
 /// ```
+/// //| alt: "Scatter chart with three points coloured by group whose colour legend is laid out across two columns via guide-legend(ncol: 2)."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -38,6 +39,7 @@
 /// \@examples Combine `guide-axis` and `guide-none` to rotate x ticks and
 /// hide the redundant fill legend in one call.
 /// ```
+/// //| alt: "Bar chart of y per month with x tick labels rotated thirty degrees via guide-axis and the fill legend suppressed via guide-none."
 /// #let d = (
 ///   (x: "January", y: 1, g: "a"),
 ///   (x: "February", y: 2, g: "a"),

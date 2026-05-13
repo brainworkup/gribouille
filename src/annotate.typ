@@ -97,6 +97,7 @@
 ///
 /// \@examples Inline text plus a vertical reference line at the same x.
 /// ```
+/// //| alt: "Scatter chart with a red vertical reference line at x = 5 and a 'peak' text annotation positioned beside it."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -114,6 +115,7 @@
 /// \@examples Highlight a region with a translucent rectangle and a boxed
 /// label callout.
 /// ```
+/// //| alt: "Scatter chart with a pale yellow translucent rectangle highlighting the region x in 3-6, y in 1-3.5 and a boxed 'window' label inside."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

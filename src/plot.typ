@@ -30,6 +30,7 @@
 ///
 /// \@examples Single-layer scatter coloured by category, with a title.
 /// ```
+/// //| alt: "Scatter chart of fuel economy against weight for five cars, coloured by cylinder count, titled 'Fuel Economy vs. Weight'."
 /// #let mtcars = (
 ///   (mpg: 21.0, wt: 2.620, cyl: "6"),
 ///   (mpg: 22.8, wt: 2.320, cyl: "4"),
@@ -50,6 +51,7 @@
 /// \@examples Stack two layers (`geom-point` + `geom-smooth`) and apply a
 /// theme, scales, and facets in one call.
 /// ```
+/// //| alt: "Two-panel faceted scatter of y against x with linear smooth fits per group, coloured by group, drawn on the minimal theme and titled 'Per-Group Trend'."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 12) {

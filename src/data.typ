@@ -117,6 +117,7 @@
 /// \@examples Two-arg form rewrites a column with parsed numbers; useful
 /// when the data arrived as strings.
 /// ```
+/// //| alt: "Scatter chart of y against x after the string x column has been parsed to numbers, plotted on a continuous x axis."
 /// #let raw = (
 ///   (x: "1", y: 2.0),
 ///   (x: "2", y: 4.0),
@@ -135,6 +136,7 @@
 /// \@examples One-arg form tags the column inside \@aes so the scale picks
 /// continuous semantics without rewriting the dataset.
 /// ```
+/// //| alt: "Scatter chart of y against x where the x channel is tagged as continuous inline via as-numeric, leaving the dataset unchanged."
 /// #let raw = (
 ///   (x: 1, y: 2.0),
 ///   (x: 2, y: 4.0),
@@ -187,6 +189,7 @@
 /// useful when a numeric column should be treated as categorical without
 /// rewriting the dataset.
 /// ```
+/// //| alt: "Bar chart of sepal length per species where the numeric species column is tagged as discrete inline via as-factor for both x and fill."
 /// #let iris = (
 ///   (sl: 5.1, sp: 1),
 ///   (sl: 7.0, sp: 2),
@@ -204,6 +207,7 @@
 /// \@examples Two-arg form rewrites the column to strings, useful as a
 /// one-shot pre-processing step.
 /// ```
+/// //| alt: "Bar chart of y per species after the numeric species column has been rewritten to strings, giving a discrete categorical x axis."
 /// #let raw = (
 ///   (sp: 1, y: 5.1),
 ///   (sp: 2, y: 7.0),

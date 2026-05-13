@@ -33,6 +33,7 @@
 ///
 /// \@examples Title block plus axis titles passed via `labs`.
 /// ```
+/// //| alt: "Scatter chart with a 'Demo' title, 'A tiny dataset' subtitle, 'Source: made up' caption, and 'Index' / 'Value' axis titles set via labs."
 /// #let d = (
 ///   (x: 1, y: 2),
 ///   (x: 2, y: 4),
@@ -57,6 +58,7 @@
 /// \@examples Setting an aesthetic name (`colour`) overrides the legend
 /// title; alt text is stored on the spec for accessibility tooling.
 /// ```
+/// //| alt: "Scatter chart titled 'Coloured Groups' with three points coloured by species and the colour legend retitled 'Species' via labs."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -79,6 +81,7 @@
 /// \@examples Full label block on the penguins scatter: title, subtitle,
 /// caption, axis titles, and a legend title for the `fill` aesthetic.
 /// ```
+/// //| alt: "Scatter of penguin body mass against flipper length coloured by species, with full title, subtitle, caption, axis titles, and a 'Species' fill legend title via labs."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),

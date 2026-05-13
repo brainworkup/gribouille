@@ -26,6 +26,7 @@
 /// \@examples Force a y baseline at zero so positive observations sit above
 /// the axis floor.
 /// ```
+/// //| alt: "Scatter chart of y against x whose y axis is extended to include zero via expand-limits, so all positive points sit above the baseline."
 /// #let d = range(1, 6).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
@@ -40,6 +41,7 @@
 /// \@examples Pass arrays to extend both axes towards multiple targets at
 /// once, useful for highlighting a reference value.
 /// ```
+/// //| alt: "Scatter chart of y against x with both axes extended to span zero to ten via expand-limits, leaving extra empty space around the data."
 /// #let d = range(1, 6).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
