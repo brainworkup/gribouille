@@ -17,7 +17,7 @@ include-in-header:
 
 ::: {.hero-content}
 
-## {{< brand logo medium >}}
+## ![Gribouille](assets/images/logo.svg){.light-content .img-fluid} ![Gribouille](assets/images/logo-dark.svg){.dark-content .img-fluid}
 
 ### A layered grammar of graphics for [Typst]{.ink}.
 
