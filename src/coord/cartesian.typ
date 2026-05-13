@@ -22,6 +22,7 @@
 ///
 /// \@examples Clip the drawn panel without dropping rows from training.
 /// ```
+/// //| alt: "Scatter chart of a linear y = x/2 series with x from 0 to 19; the panel is clipped to x between 2 and 15 and y between 0 and 8 so only the central segment is drawn."
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -36,6 +37,7 @@
 /// \@examples Disabling `expand` removes the default margin so axis lines
 /// hug the data range.
 /// ```
+/// //| alt: "Line with points along the y = x diagonal from 0 to 10; axis lines hug the data range with no expansion margin."
 /// #let d = range(0, 11).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
@@ -50,6 +52,7 @@
 /// \@examples Set `clip: "off"` so an annotation placed at the data edge can
 /// extend past the panel rectangle.
 /// ```
+/// //| alt: "Scatter chart of y = x/2 from x = 0 to 9 with a text annotation 'Long label' at (9, 4.5) that extends past the right panel edge because clipping is disabled."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

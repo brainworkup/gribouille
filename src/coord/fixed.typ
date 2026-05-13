@@ -20,6 +20,7 @@
 /// \@examples One x unit equals one y unit, useful for spatial data where
 /// the axes share units.
 /// ```
+/// //| alt: "Scatter chart of x = 0 to 19 against y = x/2 with a 1:1 aspect ratio so the panel shrinks to keep one x unit equal to one y unit."
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -34,6 +35,7 @@
 /// \@examples `ratio: 0.5` makes y units half the size of x units, useful
 /// for stretching tall data into a wide panel.
 /// ```
+/// //| alt: "Line with points along y = x/2 from x = 0 to 19 drawn with y units half the size of x units, stretching the trend horizontally."
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

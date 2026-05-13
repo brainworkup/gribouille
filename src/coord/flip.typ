@@ -22,6 +22,7 @@
 /// \@examples Flip a vertical bar chart into a horizontal one without
 /// rewriting the mapping.
 /// ```
+/// //| alt: "Horizontal bar chart of quarterly revenue with Q1 to Q4 on the y-axis and revenue from 10 to 25 on the x-axis; Q3 is longest at 25, Q1 shortest at 10."
 /// #let d = (
 ///   (q: "Q1", revenue: 10),
 ///   (q: "Q2", revenue: 18),
@@ -41,6 +42,7 @@
 /// \@examples Reference lines follow the flip: a `yintercept` becomes a
 /// vertical reference once the axes swap.
 /// ```
+/// //| alt: "Flipped scatter chart of a linear y = x/2 series with a red reference line drawn vertically because coord-flip swaps the original yintercept = 2.5 into the x direction."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

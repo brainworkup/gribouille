@@ -26,6 +26,7 @@
 ///
 /// \@examples Pie chart from a stacked column.
 /// ```
+/// //| alt: "Pie chart split into three wedges sized 30, 20, and 50 (kinds A, B, C) drawn from a single stacked column projected onto polar coordinates."
 /// #let d = (
 ///   (slice: "all", value: 30, kind: "A"),
 ///   (slice: "all", value: 20, kind: "B"),

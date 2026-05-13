@@ -20,6 +20,7 @@
 ///
 /// \@examples Log10 the x and y axes without setting `transform:` on each scale.
 /// ```
+/// //| alt: "Scatter chart with both axes log10-transformed at the coordinate level; three points (1, 1), (10, 100), (100, 10000) fall on a straight line in log space."
 /// #let d = (
 ///   (x: 1, y: 1),
 ///   (x: 10, y: 100),
