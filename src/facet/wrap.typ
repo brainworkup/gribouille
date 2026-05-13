@@ -32,6 +32,7 @@
 /// \@examples One panel per level of `sp`, three columns, with each panel
 /// training y independently.
 /// ```
+/// //| alt: "Three scatter panels in one row, one per sp level (a, b, c), with shared x axis and per-panel free y axes so each panel's y range matches its own data."
 /// #let d = ()
 /// #for sp in ("a", "b", "c") {
 ///   for i in range(0, 6) {
@@ -51,6 +52,7 @@
 /// \@examples Default `scales: "fixed"` shares both axes across panels;
 /// useful when you want comparable scales side by side.
 /// ```
+/// //| alt: "Four scatter panels in a 2-by-2 grid, one per sp level (a-d), all sharing the same x and y axes for direct visual comparison."
 /// #let d = ()
 /// #for sp in ("a", "b", "c", "d") {
 ///   for i in range(0, 6) {
@@ -70,6 +72,7 @@
 /// \@examples One panel per penguin island, sharing axes so the species
 /// clusters can be compared visually across panels.
 /// ```
+/// //| alt: "Three scatter panels of body mass against flipper length, one per penguin island, with points filled by species so species clusters can be compared across islands."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(

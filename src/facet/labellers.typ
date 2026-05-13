@@ -15,6 +15,7 @@
 ///
 /// \@examples Strip text shows the level value as-is (`"a"`, `"b"`).
 /// ```
+/// //| alt: "Two scatter panels side by side faceted by sp; strip labels show the level value as-is (\"a\", \"b\")."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 4) {
@@ -51,6 +52,7 @@
 ///
 /// \@examples Strip shows the variable name and level (`"sp: a"`, `"sp: b"`).
 /// ```
+/// //| alt: "Two scatter panels faceted by sp with strip labels formatted as 'sp: a' and 'sp: b'."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 4) {
@@ -69,6 +71,7 @@
 ///
 /// \@examples Override `sep` to use a different separator.
 /// ```
+/// //| alt: "Two scatter panels faceted by sp with strip labels using ' = ' as separator, e.g. 'sp = a' and 'sp = b'."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 4) {
@@ -106,6 +109,7 @@
 ///
 /// \@examples Strip text appends the per-panel row count.
 /// ```
+/// //| alt: "Two scatter panels faceted by sp with strip labels showing the level plus the row count, e.g. 'a (n = 4)'."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 4) {
@@ -145,6 +149,7 @@
 ///
 /// \@examples Wrap long category names onto multiple strip lines.
 /// ```
+/// //| alt: "Two scatter panels faceted by sp with long category names wrapped to two strip lines at width 10."
 /// #let d = (
 ///   (sp: "a long category name", x: 1, y: 1),
 ///   (sp: "a long category name", x: 2, y: 2),
@@ -163,6 +168,7 @@
 ///
 /// \@examples Combine `inner` with \@label-both to wrap a `var: value` label.
 /// ```
+/// //| alt: "Two scatter panels faceted by sp with strip labels formatted as 'sp: <name>' then wrapped to width 14 across multiple lines."
 /// #let d = (
 ///   (sp: "alpha-with-long-suffix", x: 1, y: 1),
 ///   (sp: "alpha-with-long-suffix", x: 2, y: 2),
@@ -204,6 +210,7 @@
 /// \@examples Mix labellers per facet variable: rows show `var: level`,
 /// columns show level only.
 /// ```
+/// //| alt: "2-by-2 grid of small scatter panels with sex on rows formatted as 'sex: F' / 'sex: M' and sp on columns as plain 'a' / 'b'."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for sex in ("F", "M") {
@@ -228,6 +235,7 @@
 /// \@examples Set `default` to a fallback labeller for variables not listed
 /// in `rules`.
 /// ```
+/// //| alt: "2-by-2 grid of scatter panels with sex rows labelled 'sex: F' / 'sex: M' (rule) and sp columns labelled with row counts via the label-context default."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for sex in ("F", "M") {

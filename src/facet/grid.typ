@@ -24,6 +24,7 @@
 ///
 /// \@examples Two discrete variables driving the row and column structure.
 /// ```
+/// //| alt: "2-by-2 grid of scatter panels with sex (F, M) on the rows and species (a, b) on the columns; each panel shows the same y = x + 1 line."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for sex in ("F", "M") {
@@ -45,6 +46,7 @@
 /// \@examples Pass only `rows:` (or only `cols:`) for a one-dimensional
 /// grid layout.
 /// ```
+/// //| alt: "Two scatter panels stacked vertically, one row per sex (F, M), both showing the same y = 1.5x line over x = 0 to 5."
 /// #let d = ()
 /// #for sex in ("F", "M") {
 ///   for i in range(0, 6) {
