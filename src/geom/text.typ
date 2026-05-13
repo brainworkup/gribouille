@@ -7,7 +7,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/radial.typ": project-point
 #import "../utils/typst-markup.typ": eval-as-markup
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-colour-default, geom-defaults
 
 /// Text label layer reading strings from the `label` aesthetic.
 ///
@@ -116,8 +116,7 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let ink = ctx.theme.at("ink", default: black)
-  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
+  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
   let label-typst = layer
     .at("typst-marks", default: (:))
     .at("label", default: false)

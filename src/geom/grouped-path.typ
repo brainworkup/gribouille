@@ -7,7 +7,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/radial.typ": project-point
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-colour-default, geom-defaults
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -51,11 +51,10 @@
   let x-trained = ctx.trained.at("x", default: none)
   if x-trained == none { return }
 
-  let ink = ctx.theme.at("ink", default: black)
   // theme.geom.colour fills in for unmapped lines so a brand colour propagates;
   // linewidth stays user-pinned (`layer.params.stroke`) so an explicit
   // `geom-line(stroke: 1.2pt)` always beats theme defaults.
-  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
+  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data

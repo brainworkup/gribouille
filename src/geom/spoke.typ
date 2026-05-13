@@ -8,7 +8,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-colour-default, geom-defaults
 
 /// Spoke layer: one segment from `(x, y)` along `(angle, radius)` per row.
 ///
@@ -116,8 +116,7 @@
   let cos-fb = calc.cos(angle-fallback)
   let sin-fb = calc.sin(angle-fallback)
 
-  let ink = ctx.theme.at("ink", default: black)
-  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
+  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
 
   for row in data {
     let x0 = parse-number(row.at(x-col, default: none))

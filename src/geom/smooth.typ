@@ -5,7 +5,7 @@
 ///! pointwise confidence band drawn when `se: true`.
 
 #import "../deps.typ": cetz
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-colour-default, geom-defaults
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../stat/smooth.typ": stat-smooth
 #import "../utils/types.typ": parse-number
@@ -162,7 +162,7 @@
   let default-colour = if colour-pinned {
     layer.params.colour
   } else {
-    geom-default(geom-defaults(ctx.theme), "accent", rgb("#3366FF"))
+    geom-colour-default(geom-defaults(ctx.theme), role: "accent")
   }
 
   // Partition by group key (scale-aware: only discrete aesthetics group).

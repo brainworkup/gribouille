@@ -10,7 +10,7 @@
 #import "../scale/train.typ": map-axis-data, transform-inv
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/radial.typ": radial-point
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": geom-colour-default, geom-defaults
 
 /// Straight reference line described by slope and intercept.
 ///
@@ -119,9 +119,8 @@
   let (x-lo, x-hi) = _data-domain(user-x-trained)
   let slope = float(layer.params.slope)
   let intercept = float(layer.params.intercept)
-  let ink = ctx.theme.at("ink", default: black)
   let colour = if layer.params.colour == auto {
-    geom-default(geom-defaults(ctx.theme), "colour", ink)
+    geom-colour-default(geom-defaults(ctx.theme))
   } else { layer.params.colour }
   let mapping = (ctx.resolve-mapping)(layer)
   let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
