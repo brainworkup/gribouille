@@ -22,6 +22,7 @@
 ///
 /// \@examples Classic axis borders with no gridlines.
 /// ```
+/// //| alt: "Scatter plot of y against x with visible black axis borders, a white panel and no gridlines."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -36,6 +37,7 @@
 /// \@examples Switch `paper` to a tinted background while keeping the
 /// classic axis style.
 /// ```
+/// //| alt: "Scatter plot of y against x on a warm cream panel with the classic black axis borders and no gridlines."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -49,6 +51,7 @@
 ///
 /// \@examples Bump the axis title size on top of the classic preset.
 /// ```
+/// //| alt: "Scatter plot of y against x on the classic theme with axis titles rendered in a larger 14pt font."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

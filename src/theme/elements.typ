@@ -27,6 +27,7 @@
 ///
 /// \@examples Bigger axis-title font passed via \@theme.
 /// ```
+/// //| alt: "Scatter plot of y against x with axis titles enlarged to 14pt via element-text passed to theme."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -41,6 +42,7 @@
 /// \@examples Combine multiple text fields and a rotation angle on axis
 /// tick labels.
 /// ```
+/// //| alt: "Bar chart of y across quarterly categories with axis tick labels rendered in blue 9pt text rotated 30 degrees."
 /// #let d = (
 ///   (q: "Q1", y: 3), (q: "Q2", y: 5), (q: "Q3", y: 4), (q: "Q4", y: 6),
 /// )
@@ -61,6 +63,7 @@
 /// \@examples Widen the gap between the axis tick labels and the axis title
 /// using a relative margin that tracks the title font size.
 /// ```
+/// //| alt: "Scatter plot of y against x with extra 1.6em padding above and to the right of the axis titles so they sit further from the ticks."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -123,6 +126,7 @@
 /// \@examples Enable Typst markup for every plot title in a session by
 /// setting `plot-title: element-typst()` on the theme.
 /// ```
+/// //| alt: "Scatter plot of y against x titled \"Mean x-bar over Time\" with the title rendered as 14pt bold Typst markup including a math glyph."
 /// #let d = ((x: 1, y: 1), (x: 2, y: 4), (x: 3, y: 9))
 /// #plot(
 ///   data: d,
@@ -137,6 +141,7 @@
 ///
 /// \@examples Mix typst and non-typst surfaces in the same theme:
 /// ```
+/// //| alt: "Scatter plot of y against x with a Typst-evaluated plot title rendering math glyphs while the axis titles stay as plain text."
 /// #let d = ((x: 1, y: 1), (x: 2, y: 4), (x: 3, y: 9))
 /// #plot(
 ///   data: d,
@@ -186,6 +191,7 @@
 ///
 /// \@examples Recolour the panel grid via \@theme.
 /// ```
+/// //| alt: "Scatter plot of y against x with the panel gridlines recoloured pale stone via element-line on the panel-grid surface."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -200,6 +206,7 @@
 /// \@examples Strengthen the axis line by setting both `colour` and
 /// `thickness`.
 /// ```
+/// //| alt: "Scatter plot of y against x with axis lines drawn 1pt thick in red via element-line on the axis-line surface."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -237,6 +244,7 @@
 ///
 /// \@examples Tinted panel background via \@theme.
 /// ```
+/// //| alt: "Scatter plot of y against x with the panel background tinted warm cream via element-rect on the panel-background surface."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -250,6 +258,7 @@
 ///
 /// \@examples Add a stroke to frame the panel as well as fill it.
 /// ```
+/// //| alt: "Scatter plot of y against x with a cream-filled panel ringed by a 1pt amber stroke via element-rect fill and stroke."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -285,6 +294,7 @@
 ///
 /// \@examples Hide the panel grid entirely.
 /// ```
+/// //| alt: "Scatter plot of y against x with the panel grid hidden via element-blank, leaving only axis lines and tick labels."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -299,6 +309,7 @@
 /// \@examples Combine `element-blank` with other overrides to remove
 /// multiple non-data marks at once.
 /// ```
+/// //| alt: "Scatter plot of y against x with both panel grid and axis lines hidden via element-blank, removing the chart frame at once."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -340,6 +351,7 @@
 /// \@examples Wide left margin to give a long axis title room to breathe;
 /// other sides keep the renderer's default.
 /// ```
+/// //| alt: "Scatter plot of y against x with a widened 2cm left plot margin and a slightly taller top margin via the margin record."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -353,6 +365,7 @@
 ///
 /// \@examples Pin every side to zero for an edge-to-edge canvas.
 /// ```
+/// //| alt: "Scatter plot of y against x with all four plot margins pinned to zero so the chart fills the canvas edge to edge."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -402,6 +415,7 @@
 /// \@examples Pin a brand fill and bumped stroke thickness across the
 /// supporting geoms.
 /// ```
+/// //| alt: "Bar chart of y against x with bars filled deep red and outlined 1pt thick via the element-geom layer defaults."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -421,6 +435,7 @@
 /// `paper` recolours boxplot/point/label fills and the light stop; `accent`
 /// recolours \@geom-smooth.
 /// ```
+/// //| alt: "Bar chart of y against x with a re-tinted navy and cream colour role pairing and a warm orange smooth trend line via geom-smooth."
 /// #let d = range(0, 20).map(i => (x: i, y: i * 0.4 + calc.sin(i * 0.5)))
 /// #plot(
 ///   data: d,

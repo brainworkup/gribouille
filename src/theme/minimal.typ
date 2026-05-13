@@ -25,6 +25,7 @@
 ///
 /// \@examples Minimal style: faint gridlines, no axis lines or tick marks.
 /// ```
+/// //| alt: "Scatter plot of y against x with faint grey gridlines and no axis lines or tick marks for a minimal style."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -39,6 +40,7 @@
 /// \@examples Pair the minimal theme with a coloured `accent` for slide
 /// decks where you still want a brand colour.
 /// ```
+/// //| alt: "Scatter plot of y against x on the minimal theme with a steel-blue accent recolouring data ink for branded slides."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -53,6 +55,7 @@
 /// \@examples Paint the canvas behind the otherwise-blank panel by passing
 /// an explicit `paper` colour.
 /// ```
+/// //| alt: "Scatter plot of y against x on the minimal theme with a warm cream canvas painted behind the otherwise-blank panel."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -67,6 +70,7 @@
 /// \@examples Spot-override individual elements without rebuilding the
 /// theme from scratch.
 /// ```
+/// //| alt: "Scatter plot of y against x on the minimal theme with axis titles rendered in a larger 14pt font via a spot override."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

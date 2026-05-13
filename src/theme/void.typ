@@ -23,6 +23,7 @@
 ///
 /// \@examples Strip away axes, grid, and panel background entirely.
 /// ```
+/// //| alt: "Scatter plot of y against x with axes, gridlines, panel background and tick labels all stripped away."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -37,6 +38,7 @@
 /// \@examples Useful behind a custom annotated figure where axes would be
 /// visual noise; pass an explicit `paper` for a solid background.
 /// ```
+/// //| alt: "Circular path of sine against cosine coloured by time on the void theme over a warm cream canvas without axes or grid."
 /// #let d = range(0, 12).map(i => (
 ///   x: calc.cos(i * 0.5), y: calc.sin(i * 0.5), t: i,
 /// ))
@@ -53,6 +55,7 @@
 /// \@examples Restore a faint panel background while keeping the void
 /// preset's stripped-down axes.
 /// ```
+/// //| alt: "Scatter plot of y against x on the void theme with a faint cream panel background restored beneath the stripped axes."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

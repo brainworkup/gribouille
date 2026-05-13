@@ -23,6 +23,7 @@
 ///
 /// \@examples Default black-on-white theme with a thin panel border.
 /// ```
+/// //| alt: "Scatter plot of y against x on a white panel framed by a thin black border with light grey grid lines."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -37,6 +38,7 @@
 /// \@examples Override `accent` to recolour data ink and key glyphs while
 /// keeping the high-contrast panel.
 /// ```
+/// //| alt: "Scatter plot of y against x on the bw theme with a red accent recolouring data ink against the high-contrast white panel."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -50,6 +52,7 @@
 ///
 /// \@examples Recolour the panel background on top of the bw preset.
 /// ```
+/// //| alt: "Scatter plot of y against x on the bw theme with an orange panel background replacing the default white fill."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

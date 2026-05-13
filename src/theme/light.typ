@@ -23,6 +23,7 @@
 ///
 /// \@examples Soft grey axes on a tinted panel.
 /// ```
+/// //| alt: "Scatter plot of y against x on a soft grey panel with white gridlines and muted grey axis lines for a low-contrast look."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -37,6 +38,7 @@
 /// \@examples Override `accent` to give the data ink a custom highlight
 /// colour without losing the soft panel.
 /// ```
+/// //| alt: "Scatter plot of y against x on the light theme with a teal-green accent recolouring data ink against the soft grey panel."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -50,6 +52,7 @@
 ///
 /// \@examples Tinted panel background on top of the soft preset.
 /// ```
+/// //| alt: "Scatter plot of y against x on the light theme with the panel background tinted warm cream over the soft preset."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

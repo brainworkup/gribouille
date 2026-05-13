@@ -26,6 +26,7 @@
 ///
 /// \@examples Loud red axes and strips so theme regions are easy to spot.
 /// ```
+/// //| alt: "Scatter plot of y against x on a white panel with loud red axis lines and tick labels for visual debugging."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -40,6 +41,7 @@
 /// \@examples Tweak a single field of the test preset to focus a debug
 /// session on one surface.
 /// ```
+/// //| alt: "Scatter plot of y against x on the test theme with the strip background recoloured warm amber to highlight one surface."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -53,6 +55,7 @@
 ///
 /// \@examples Particularly handy with facets to verify strip styling.
 /// ```
+/// //| alt: "Faceted scatter plot of y against x split into panels a and b, showing the test theme's red strip labels on pink strip backgrounds."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 6) {

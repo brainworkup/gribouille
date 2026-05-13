@@ -33,6 +33,7 @@
 /// \@examples Red ink on every axis title and tick label, mirrored on the
 /// axis line and tick marks.
 /// ```
+/// //| alt: "Scatter plot of y against x with red axis titles, tick labels, axis lines and tick marks applied via the axis shortcut group."
 /// #let red-text = element-text(colour: rgb("#cc0000"))
 /// #let red-line = element-line(colour: rgb("#cc0000"))
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -196,6 +197,7 @@
 ///
 /// \@examples Bold legend titles via the shortcut group.
 /// ```
+/// //| alt: "Scatter plot of y against x coloured by group k with a bold-weight legend title applied via the legend shortcut group."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5, k: if calc.even(i) { "a" } else { "b" }))
 /// #plot(
 ///   data: d,

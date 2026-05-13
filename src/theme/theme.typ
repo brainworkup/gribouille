@@ -373,6 +373,7 @@
 ///
 /// \@examples Custom panel and grid colours via structured element records.
 /// ```
+/// //| alt: "Scatter plot of y against x on a custom theme with navy text, a warm cream panel and pale stone gridlines via element records."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -391,6 +392,7 @@
 /// \@examples Hide elements entirely with \@element-blank, useful for very
 /// minimalist figures.
 /// ```
+/// //| alt: "Scatter plot of y against x with the panel grid and axis lines hidden via element-blank for a stripped-back minimalist figure."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -408,6 +410,7 @@
 /// \@examples Tweak the scalar fields: bigger ticks, no tick labels, and a
 /// wider left margin so a long axis title fits.
 /// ```
+/// //| alt: "Scatter plot of cumulative response against x with longer 0.25cm ticks, hidden tick labels and a widened left margin for the long y-axis title."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

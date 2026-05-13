@@ -27,6 +27,7 @@
 ///
 /// \@examples Library default: light grey panel with white gridlines.
 /// ```
+/// //| alt: "Scatter plot of y against x on the library default light grey panel with white gridlines and thin black axes."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -41,6 +42,7 @@
 /// \@examples Override `ink` and `paper` for a tinted theme without
 /// switching theme function.
 /// ```
+/// //| alt: "Scatter plot of y against x with dark navy ink on a warm cream background, recolouring the grey theme without changing function."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -54,6 +56,7 @@
 ///
 /// \@examples Tweak a single field on top of the preset using a flat key.
 /// ```
+/// //| alt: "Scatter plot of y against x on the grey preset with the panel background replaced by a warm cream fill via the flat key."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

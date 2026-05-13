@@ -23,6 +23,7 @@
 ///
 /// \@examples Dark grey panel with light gridlines for high-contrast slides.
 /// ```
+/// //| alt: "Scatter plot of y against x on a dark grey panel with light gridlines and muted axis text suited to slides."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -37,6 +38,7 @@
 /// \@examples Pair the dark theme with a non-default `accent` for branded
 /// slides.
 /// ```
+/// //| alt: "Scatter plot of y against x on the dark grey panel with a gold accent recolouring data ink for branded slides."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -51,6 +53,7 @@
 /// \@examples Drop the panel grid for a starker look while keeping the
 /// dark preset.
 /// ```
+/// //| alt: "Scatter plot of y against x on the dark grey panel with gridlines removed for a starker, uncluttered look."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

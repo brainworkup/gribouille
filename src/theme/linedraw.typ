@@ -23,6 +23,7 @@
 ///
 /// \@examples Strong black border around a white panel with faint grid.
 /// ```
+/// //| alt: "Scatter plot of y against x on a white panel ringed by a heavy black axis frame with very faint grid lines."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -37,6 +38,7 @@
 /// \@examples Switch `ink` to a softer hue for a less stark publication
 /// look while keeping the heavy axis frame.
 /// ```
+/// //| alt: "Scatter plot of y against x on the linedraw theme with dark navy ink softening the heavy axis frame for publication."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -50,6 +52,7 @@
 ///
 /// \@examples Rotate axis tick labels on top of the linedraw preset.
 /// ```
+/// //| alt: "Scatter plot of y against x on the linedraw theme with axis tick labels rotated 30 degrees beneath the heavy frame."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
