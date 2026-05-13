@@ -20,6 +20,7 @@
 /// \@examples Sweeping `amount` from 0 to 1 produces a custom two-stop ramp,
 /// rendered as a swatch via \@geom-rect.
 /// ```
+/// //| alt: "Swatch row of nine rectangles sweeping from blue to red, illustrating an sRGB two-stop ramp built with col-mix."
 /// #let stops = range(0, 9).map(i => col-mix(
 ///   rgb("#1f77b4"), rgb("#d62728"), i / 8,
 /// ))

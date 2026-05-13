@@ -77,6 +77,7 @@
 ///
 /// \@examples Format y-axis breaks with English thousands separators.
 /// ```
+/// //| alt: "Scatter chart of two points with y-axis tick labels formatted as English thousand-separated numbers via format-number."
 /// #plot(
 ///   data: ((x: 1, y: 1234.5), (x: 2, y: 23456.7)),
 ///   mapping: aes(x: "x", y: "y"),

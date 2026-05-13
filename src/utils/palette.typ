@@ -18,6 +18,7 @@
 /// \@examples Pass the palette to a manual scale to opt into Okabe-Ito on a
 /// per-aesthetic basis (the same colours are also the library default).
 /// ```
+/// //| alt: "Scatter chart of three points coloured by category using the Okabe-Ito CVD-safe qualitative palette."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -344,6 +345,7 @@
 /// \@examples Look up the Set1 palette and feed it into a manual fill scale
 /// rendered as swatches via \@geom-rect.
 /// ```
+/// //| alt: "Swatch row of rectangles showing the ColorBrewer Set1 qualitative palette returned by brewer-palette."
 /// #let pal = brewer-palette("Set1")
 /// #let d = pal.enumerate().map(((i, _)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),
@@ -362,6 +364,7 @@
 /// \@examples The diverging Spectral palette laid out as swatches; the same
 /// pattern works for any qualitative, sequential, or diverging name.
 /// ```
+/// //| alt: "Swatch row of rectangles showing the ColorBrewer Spectral diverging palette ramped from red through yellow to blue."
 /// #let pal = brewer-palette("Spectral")
 /// #let d = pal.enumerate().map(((i, _)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),

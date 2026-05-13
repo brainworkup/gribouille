@@ -94,6 +94,7 @@
 ///
 /// \@examples Pin a layer's stroke colour to the active theme's `ink`.
 /// ```
+/// //| alt: "Scatter chart of three points whose marker colour is pinned to the active theme's ink via from-theme."
 /// #let d = (
 ///   (x: 1, y: 2),
 ///   (x: 2, y: 4),
@@ -127,6 +128,7 @@
 ///
 /// \@examples Bind `y` to the `_count` column `geom-bar`'s `stat-count` publishes.
 /// ```
+/// //| alt: "Bar chart of three categories with bar heights bound to the post-stat _count column via after-stat."
 /// #let d = (
 ///   (grp: "a"), (grp: "b"), (grp: "a"),
 ///   (grp: "c"), (grp: "a"), (grp: "b"),
@@ -162,6 +164,7 @@
 ///
 /// \@examples Mirror the trained fill palette into the marker outline and darken it.
 /// ```
+/// //| alt: "Scatter chart of four points whose marker outline mirrors the fill palette darkened by 40 percent via after-scale."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -206,6 +209,7 @@
 ///
 /// \@examples Train the outline colour on the same column as `fill`, then darken the resolved swatch per row.
 /// ```
+/// //| alt: "Scatter chart of four points whose outline trains on the fill column and darkens the resolved swatch via stage."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),

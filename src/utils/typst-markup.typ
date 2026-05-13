@@ -41,6 +41,7 @@
 ///
 /// \@examples Wrap a static title so math renders.
 /// ```
+/// //| alt: "Scatter chart of three points whose title renders Typst math via the typst wrapper, showing the formula above the plot."
 /// #plot(
 ///   data: (
 ///     (x: 1, y: 1),
@@ -57,6 +58,7 @@
 ///
 /// \@examples Mark a `label` aesthetic so values render as markup.
 /// ```
+/// //| alt: "Scatter chart of three points labelled with Greek-letter math glyphs evaluated as Typst markup via the typst tag."
 /// #plot(
 ///   data: (
 ///     (x: 1, y: 1, lab: "$alpha$"),
