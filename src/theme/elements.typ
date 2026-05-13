@@ -377,21 +377,25 @@
 ///
 /// Pass the result to \@theme under the `geom` key to set defaults that the
 /// supporting geoms will pick up unless their own parameters override them.
-/// Mirrors ggplot2 v4's `element_geom()`. The supporting geoms honour `fill`,
-/// `colour`, `linewidth`, and `accent` today; `ink` / `paper` are reserved
-/// for wider coverage.
+/// Mirrors ggplot2 v4's `element_geom()`.
+/// `fill` and `colour` are *global overrides* that win for every supporting
+/// geom; `ink`, `paper`, `accent` are *role* colours that geoms fall back to
+/// when the global override is unset, with each geom declaring which role
+/// drives its default (`ink` for line/text geoms, `accent` for \@geom-smooth,
+/// `paper` for \@geom-boxplot/\@geom-crossbar/\@geom-point/\@geom-label, a
+/// `col-mix(ink, paper, …)` tint for the bar/area/rect/tile family).
 ///
 /// \@category Themes
 /// \@subcategory Theme elements
 /// \@stability stable
 /// \@since 0.5.0
 ///
-/// \@param fill Default fill colour for filled geoms (bars, areas, ribbons, polygons, tiles, points).
-/// \@param colour Default stroke or text colour for line, outline, and text geoms.
+/// \@param fill Global override for every filled geom's default fill colour.
+/// \@param colour Global override for every geom's default stroke or text colour, including \@geom-smooth.
 /// \@param linewidth Default stroke thickness for line and outline geoms (Typst length).
-/// \@param ink Foreground colour role; falls back to `theme.ink` when unset.
-/// \@param paper Background colour role; falls back to `theme.paper` when unset.
-/// \@param accent Highlight colour role used by \@geom-boxplot, \@geom-smooth, and other accent-driven layers; falls back to `theme.accent` when unset.
+/// \@param ink Geom `ink` role: default stroke/text colour for almost every geom and the dark stop of the bar/area body-fill tint. Falls back to `theme.ink`.
+/// \@param paper Geom `paper` role: default fill for \@geom-boxplot, \@geom-crossbar, \@geom-point, \@geom-label, and the light stop of the bar/area body-fill tint. Falls back to `theme.paper`.
+/// \@param accent Geom `accent` role: default colour for \@geom-smooth (when `colour` is unset). Falls back to `theme.accent`.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -406,6 +410,26 @@
 ///   theme: theme(geom: element-geom(
 ///     fill: rgb("#cc3333"),
 ///     linewidth: 1pt,
+///   )),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples Shift the role colours so every unset default re-tints together:
+/// `ink` recolours stroke and text geoms and the dark stop of the bar fill;
+/// `paper` recolours boxplot/point/label fills and the light stop; `accent`
+/// recolours \@geom-smooth.
+/// ```
+/// #let d = range(0, 20).map(i => (x: i, y: i * 0.4 + calc.sin(i * 0.5)))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-col(), geom-smooth(se: false)),
+///   theme: theme(geom: element-geom(
+///     ink: rgb("#2c3e50"),
+///     paper: rgb("#fff7e6"),
+///     accent: rgb("#cc6600"),
 ///   )),
 ///   width: 10cm,
 ///   height: 6cm,
