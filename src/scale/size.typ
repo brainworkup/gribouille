@@ -20,6 +20,7 @@
 ///
 /// \@examples Linear size mapping with the default 1pt-to-6pt range.
 /// ```
+/// //| alt: "Scatter chart of ten diagonal points where marker radius scales linearly with w from a small to a moderate dot."
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -34,6 +35,7 @@
 /// \@examples Widen the `range` for stronger visual contrast on small
 /// numeric differences.
 /// ```
+/// //| alt: "Scatter chart of ten diagonal points where the widened 2pt to 14pt range exaggerates marker-radius contrast across w."
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -84,6 +86,7 @@
 ///
 /// \@examples Four-bin discretisation across the default size range.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where w is cut into four bins so markers snap to four distinct radii rather than vary smoothly."
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -98,6 +101,7 @@
 /// \@examples More bins (`n-breaks: 8`) on a wider `range` give finer steps
 /// while keeping the visual binning.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where w is cut into eight bins across a wider 1pt to 12pt radius range for finer stepped marker sizes."
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -152,6 +156,7 @@
 /// \@examples Area-proportional sizing on a quadratic series; markers grow
 /// with the square root of `w` so visual area tracks the value.
 /// ```
+/// //| alt: "Scatter chart of seven diagonal points where marker radii grow with the square root of a quadratic w so visual area tracks the value linearly."
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i * i))
 /// #plot(
 ///   data: d,
@@ -166,6 +171,7 @@
 /// \@examples Use `scale-size-area` with \@geom-count so the count of
 /// duplicate `(x, y)` rows reads as proportional area.
 /// ```
+/// //| alt: "Scatter chart of three counted points where geom-count tallies duplicates and area-proportional sizing makes marker area read as the row count."
 /// #let d = (
 ///   (x: 1, y: 1), (x: 1, y: 1),
 ///   (x: 2, y: 2),
@@ -222,6 +228,7 @@
 /// \@examples Four-bin area-proportional discretisation on a quadratic
 /// series.
 /// ```
+/// //| alt: "Scatter chart of seven diagonal points where a quadratic w is cut into four bins and each bin sets marker area through the square-root mapping."
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i * i))
 /// #plot(
 ///   data: d,
@@ -236,6 +243,7 @@
 /// \@examples Combine more bins with a wider `range` for a finer banded
 /// area scale on dense data.
 /// ```
+/// //| alt: "Scatter chart of fifteen diagonal points where a quadratic w is cut into eight area-proportional bins across a wider 1pt to 16pt radius range."
 /// #let d = range(1, 16).map(i => (x: i, y: i, w: i * i))
 /// #plot(
 ///   data: d,
@@ -286,6 +294,7 @@
 /// \@examples Per-row Typst lengths carried straight through to the marker
 /// radii; no legend is drawn.
 /// ```
+/// //| alt: "Scatter chart of three points where the s column passes through as the marker radius, rendering a small, medium, and large dot with no legend."
 /// #let d = (
 ///   (x: 1, y: 1, s: 2pt),
 ///   (x: 2, y: 2, s: 5pt),
@@ -328,6 +337,7 @@
 ///
 /// \@examples Three groups assigned small/medium/large markers.
 /// ```
+/// //| alt: "Scatter chart of three groups where manual values pin group a to a small marker, b to medium, and c to large in a fixed discrete cycle."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
 ///   (x: 1, y: 2, g: "b"), (x: 2, y: 3, g: "b"),
@@ -380,6 +390,7 @@
 ///
 /// \@examples Marker radius grows linearly with `w`.
 /// ```
+/// //| alt: "Scatter chart of seven diagonal points where marker radius scales linearly with w via the radius alias of the continuous size scale."
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i))
 /// #plot(
 ///   data: d,

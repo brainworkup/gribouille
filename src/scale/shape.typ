@@ -26,6 +26,7 @@
 /// \@examples Default shape palette mapping three categories to distinct
 /// markers.
 /// ```
+/// //| alt: "Scatter chart of three points along x against y where the sp column drives the marker glyph through the default discrete shape palette."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -44,6 +45,7 @@
 /// \@examples Pair `shape` and `fill` mappings with the same column to
 /// reinforce the categorical encoding.
 /// ```
+/// //| alt: "Scatter chart of three points where sp drives both marker glyph and fill colour, reinforcing the categorical encoding through redundant channels."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -88,6 +90,7 @@
 ///
 /// \@examples Custom three-shape cycle assigned in input order.
 /// ```
+/// //| alt: "Scatter chart of three points where the manual values pin sp to a circle, triangle, and diamond glyph in the order levels first appear."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -108,6 +111,7 @@
 /// \@examples `limits` pins the level order so the shape mapping stays
 /// stable across datasets.
 /// ```
+/// //| alt: "Scatter chart of three points where limits forces a, b, c order so the circle, triangle, diamond mapping stays stable regardless of input order."
 /// #let d = (
 ///   (x: 1, y: 3, sp: "c"),
 ///   (x: 2, y: 4, sp: "a"),
@@ -154,6 +158,7 @@
 ///
 /// \@examples Per-row shape keyword carried straight through to the marker.
 /// ```
+/// //| alt: "Scatter chart of three points where the sh column passes through as the marker glyph, rendering a circle, triangle, and diamond with no legend."
 /// #let d = (
 ///   (x: 1, y: 2, sh: "circle"),
 ///   (x: 2, y: 4, sh: "triangle"),
@@ -199,6 +204,7 @@
 ///
 /// \@examples Bin a continuous score column into four shape buckets.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where the continuous w column is cut into four bins, each mapped to a distinct marker glyph."
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,

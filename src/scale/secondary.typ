@@ -23,6 +23,7 @@
 ///
 /// \@examples Mirror the x axis on top with a different title.
 /// ```
+/// //| alt: "Scatter chart of eleven squared values where the bottom x axis is duplicated on top edge with a different title via dup-axis."
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
@@ -38,6 +39,7 @@
 ///
 /// \@examples Mirror the y axis on the right with custom break positions.
 /// ```
+/// //| alt: "Scatter chart of eleven squared values where the left y axis is mirrored on the right edge with custom breaks at 0, 25, 50, 75, 100."
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
@@ -84,6 +86,7 @@
 /// \@examples Celsius primary axis with a Fahrenheit secondary derived
 /// through a callable.
 /// ```
+/// //| alt: "Scatter chart with a primary Celsius x axis and a secondary Fahrenheit axis on top derived through a sec-axis transform callable."
 /// #let d = range(0, 11).map(i => (c: i * 5, mpg: i))
 /// #plot(
 ///   data: d,
@@ -103,6 +106,7 @@
 /// \@examples A y secondary axis converting metres to feet, useful for
 /// dual-unit displays.
 /// ```
+/// //| alt: "Line chart with a primary metres y axis and a secondary feet axis on the right derived through a sec-axis transform callable."
 /// #let d = range(0, 11).map(i => (x: i, m: i * 3))
 /// #plot(
 ///   data: d,

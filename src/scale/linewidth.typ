@@ -21,6 +21,7 @@
 /// \@examples Linewidth grows with `w`, with one segment per row driven by
 /// the `group` mapping.
 /// ```
+/// //| alt: "Line chart of ten diagonal segments where each segment's stroke thickness scales continuously with w from a thin to a thick stroke."
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
 /// #plot(
 ///   data: d,
@@ -35,6 +36,7 @@
 /// \@examples Pair `colour` and `linewidth` with the same column to encode
 /// magnitude through both channels.
 /// ```
+/// //| alt: "Line chart of ten diagonal segments where w encodes both stroke thickness and colour so magnitude grows redundantly through both channels."
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
 /// #plot(
 ///   data: d,
@@ -83,6 +85,7 @@
 ///
 /// \@examples Three groups assigned thin/medium/thick strokes.
 /// ```
+/// //| alt: "Line chart of three groups along x against y where manual values pin group a to a thin stroke, b to medium, and c to a thick stroke."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
 ///   (x: 1, y: 2, g: "b"), (x: 2, y: 3, g: "b"),
@@ -136,6 +139,7 @@
 ///
 /// \@examples Linewidth grows with `w`, with the legend grouped into four bins.
 /// ```
+/// //| alt: "Line chart of ten diagonal segments whose strokes thicken with w while the legend collapses into four stepped thickness bins."
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
 /// #plot(
 ///   data: d,
@@ -184,6 +188,7 @@
 /// \@examples Per-row Typst lengths carried straight through to the line
 /// strokes; no legend is drawn.
 /// ```
+/// //| alt: "Line chart of two segments along x against y where the lw column passes through as the stroke thickness, one thin and one thick, with no legend."
 /// #let d = (
 ///   (x: 1, y: 2, g: "a", lw: 0.4pt),
 ///   (x: 2, y: 3, g: "a", lw: 0.4pt),

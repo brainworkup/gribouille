@@ -54,6 +54,7 @@
 ///
 /// \@examples Numeric days since 2000-01-01 formatted as year-month ticks.
 /// ```
+/// //| alt: "Line-and-point chart of twelve rising values on an x axis showing year-month ticks decoded from numeric days since 2000-01-01."
 /// #let d = range(0, 12).map(i => (x: 8766 + 30 * i, y: i))
 /// #plot(
 ///   data: d,
@@ -68,6 +69,7 @@
 /// \@examples ISO-8601 strings work just as well; pick a longer
 /// `date-format` to spell the month out.
 /// ```
+/// //| alt: "Line-and-point chart of four rising squared values on an x axis showing short month names parsed from ISO-8601 date strings."
 /// #let d = (
 ///   (x: "2024-01-15", y: 1),
 ///   (x: "2024-04-15", y: 4),
@@ -125,6 +127,7 @@
 /// \@examples Date axis on the y, useful for horizontal bar charts of
 /// time-stamped events.
 /// ```
+/// //| alt: "Scatter chart of three labelled events along a y axis showing month-day ticks decoded from ISO-8601 date strings."
 /// #let d = (
 ///   (label: "Alpha", y: "2024-01-15"),
 ///   (label: "Beta",  y: "2024-03-01"),
@@ -183,6 +186,7 @@
 ///
 /// \@examples ISO-8601 datetime strings rendered with hour-and-minute ticks.
 /// ```
+/// //| alt: "Line-and-point chart of six squared values on an x axis showing hour-minute ticks parsed from ISO-8601 datetime strings."
 /// #let d = range(0, 6).map(i => (
 ///   x: "2024-04-01T0" + str(8 + i) + ":00",
 ///   y: i * i,
@@ -239,6 +243,7 @@
 /// \@examples Datetime axis on the y, useful for laying out events along a
 /// vertical timeline.
 /// ```
+/// //| alt: "Scatter chart of six points climbing a y axis whose ticks show hour-minute decoded from ISO-8601 datetime strings."
 /// #let d = range(0, 6).map(i => (
 ///   x: i,
 ///   y: "2024-04-01T0" + str(8 + i) + ":00",
@@ -297,6 +302,7 @@
 ///
 /// \@examples Time-of-day axis using ISO-8601 `HH:MM` strings.
 /// ```
+/// //| alt: "Line-and-point chart of five values peaking near 16:00 on a time-of-day x axis decoded from HH:MM strings."
 /// #let d = (
 ///   (x: "08:00", y: 1),
 ///   (x: "10:00", y: 4),
@@ -354,6 +360,7 @@
 ///
 /// \@examples Time-of-day axis on the y for vertical event displays.
 /// ```
+/// //| alt: "Scatter chart of four weekday events along a y axis showing hour-minute ticks decoded from HH:MM strings."
 /// #let d = (
 ///   (x: "Mon", y: "08:30"),
 ///   (x: "Tue", y: "09:15"),

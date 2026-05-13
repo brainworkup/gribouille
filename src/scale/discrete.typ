@@ -36,6 +36,7 @@
 /// \@examples Force the level order with `limits` so the bars sit in
 /// alphabetical order regardless of input.
 /// ```
+/// //| alt: "Bar chart with three categorical bars a, b, c on a discrete x axis ordered alphabetically by limits with heights 5, 3, 2."
 /// #let d = (
 ///   (grp: "b", y: 3),
 ///   (grp: "a", y: 5),
@@ -54,6 +55,7 @@
 /// \@examples Provide custom `labels` to display human-friendly tick text
 /// without renaming the underlying data.
 /// ```
+/// //| alt: "Bar chart with three bars on a discrete x axis whose tick labels read Alpha, Beta, Gamma while the underlying levels remain a, b, c."
 /// #let d = (
 ///   (grp: "a", y: 3),
 ///   (grp: "b", y: 5),
@@ -100,6 +102,7 @@
 /// \@examples Force level order so bars stay in `(a, b, c)` regardless of
 /// input order.
 /// ```
+/// //| alt: "Scatter chart with three points on a discrete y axis whose categories a, b, c sit in forced order from bottom to top via limits."
 /// #let d = (
 ///   (grp: "b", x: 3),
 ///   (grp: "a", x: 5),
@@ -118,6 +121,7 @@
 /// \@examples Subset the levels (omit `"b"`) to drop a category from the
 /// axis without filtering the underlying data.
 /// ```
+/// //| alt: "Scatter chart with two points on a discrete y axis showing only categories a and c after limits drops level b without filtering the data."
 /// #let d = (
 ///   (grp: "a", x: 5),
 ///   (grp: "b", x: 3),

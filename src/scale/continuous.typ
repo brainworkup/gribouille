@@ -86,6 +86,7 @@
 ///
 /// \@examples Override the axis title and pin the domain.
 /// ```
+/// //| alt: "Scatter chart of ten squared values where scale-x-continuous renames the x axis to Index and pins its domain to 0 through 12."
 /// #let d = range(1, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
@@ -100,6 +101,7 @@
 /// \@examples Switch `transform` to `"sqrt"` and supply explicit `breaks` for a
 /// custom non-linear axis.
 /// ```
+/// //| alt: "Scatter chart of eleven points on a square-root x axis with manual breaks at 0, 25, 50, 75, 100 that straighten the quadratic relationship."
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
 /// #plot(
 ///   data: d,
@@ -118,6 +120,7 @@
 /// \@examples Apply `format-comma()` to format penguin body-mass tick labels
 /// with thousands separators on the x axis.
 /// ```
+/// //| alt: "Scatter chart of penguin body mass against flipper length coloured by species, with x-axis ticks formatted using comma thousands separators."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "body-mass", y: "flipper-len", fill: "species"),
@@ -170,6 +173,7 @@
 /// \@examples Log-10 transform compresses an exponential growth curve into
 /// a near-linear axis.
 /// ```
+/// //| alt: "Scatter chart of ten exponential values where a log10 y axis compresses the steep curve into a near-linear sequence of evenly spaced points."
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
 ///   data: d,
@@ -184,6 +188,7 @@
 /// \@examples Reverse the y axis to put the largest values at the bottom,
 /// useful for ranks where lower numbers are better.
 /// ```
+/// //| alt: "Scatter chart of ten rank values on a reversed y axis where larger ranks sit at the bottom, ideal for leaderboard-style displays."
 /// #let d = range(1, 11).map(i => (x: i, y: 11 - i))
 /// #plot(
 ///   data: d,
@@ -234,6 +239,7 @@
 ///
 /// \@examples Log-10 axis with auto breaks across several decades of x.
 /// ```
+/// //| alt: "Scatter chart of ten points climbing a log10 x axis whose auto breaks place tidy decade ticks across several orders of magnitude."
 /// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
 /// #plot(
 ///   data: d,
@@ -248,6 +254,7 @@
 /// \@examples Pin tick positions explicitly for tidier labelling on a known
 /// log range.
 /// ```
+/// //| alt: "Scatter chart of ten points on a log10 x axis with breaks pinned at 1, 10, 100, 1000, 10000 for tidy decade labelling."
 /// #let d = range(1, 11).map(i => (x: calc.pow(10, i / 2), y: i))
 /// #plot(
 ///   data: d,
@@ -293,6 +300,7 @@
 ///
 /// \@examples Log-10 y axis turns an exponential into a near-linear shape.
 /// ```
+/// //| alt: "Scatter chart of ten exponential values where a log10 y axis straightens the curve into evenly spaced points climbing the panel."
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
 ///   data: d,
@@ -307,6 +315,7 @@
 /// \@examples Combine `limits` and `breaks` to clip and label a specific
 /// log range.
 /// ```
+/// //| alt: "Scatter chart of exponential values on a log10 y axis clipped to 2 through 1024 with breaks pinned at 2, 8, 32, 128, 512 for tidy labelling."
 /// #let d = range(1, 11).map(i => (x: i, y: calc.pow(2, i)))
 /// #plot(
 ///   data: d,
@@ -354,6 +363,7 @@
 /// \@examples Square-root x axis spreads small values and compresses large
 /// ones.
 /// ```
+/// //| alt: "Scatter chart of eleven squared values on a square-root x axis that spreads small values and compresses large ones into evenly spaced ticks."
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
 /// #plot(
 ///   data: d,
@@ -368,6 +378,7 @@
 /// \@examples Pin breaks at perfect squares so the labels match the
 /// underlying data structure.
 /// ```
+/// //| alt: "Scatter chart of eleven points on a square-root x axis with breaks pinned at perfect squares 0, 4, 16, 36, 64, 100 for evenly placed labels."
 /// #let d = range(0, 11).map(i => (x: i * i, y: i))
 /// #plot(
 ///   data: d,
@@ -413,6 +424,7 @@
 ///
 /// \@examples Square-root y axis straightens a quadratic relationship.
 /// ```
+/// //| alt: "Scatter chart of eleven points where a square-root y axis straightens the quadratic curve into a diagonal of evenly spaced values."
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
@@ -427,6 +439,7 @@
 /// \@examples Combine with `limits` to highlight a specific range without
 /// changing the underlying data.
 /// ```
+/// //| alt: "Scatter chart of squared values on a square-root y axis clipped to 0 through 64 so the panel zooms into the lower half of the data."
 /// #let d = range(0, 11).map(i => (x: i, y: i * i))
 /// #plot(
 ///   data: d,
@@ -469,6 +482,7 @@
 ///
 /// \@examples Reverse the x axis so values decrease left-to-right.
 /// ```
+/// //| alt: "Scatter chart of ten points along a reversed x axis where values decrease from left to right while tick labels remain in data units."
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
@@ -483,6 +497,7 @@
 /// \@examples Pair with `limits` to clip a reversed timeline to a specific
 /// window.
 /// ```
+/// //| alt: "Line chart of a sinusoidal series on a reversed x axis clipped to years 2024 through 2010 so the timeline reads from right to left."
 /// #let d = range(2000, 2025).map(y => (x: y, y: calc.sin(y / 4)))
 /// #plot(
 ///   data: d,
@@ -526,6 +541,7 @@
 ///
 /// \@examples Five equal-width bins along the x axis.
 /// ```
+/// //| alt: "Scatter chart of a sinusoidal series along an x axis cut into five equal-width bins whose midpoints place the tick labels."
 /// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
 /// #plot(
 ///   data: d,
@@ -540,6 +556,7 @@
 /// \@examples Bump `n-breaks` for a finer grid; pair with `limits` to focus
 /// on a sub-range.
 /// ```
+/// //| alt: "Scatter chart of a sinusoidal series along an x axis cut into ten finer bins and clipped to limits 2 through 8 to zoom into a sub-range."
 /// #let d = range(0, 30).map(i => (x: i / 3.0, y: calc.sin(i / 4.0)))
 /// #plot(
 ///   data: d,
@@ -583,6 +600,7 @@
 ///
 /// \@examples Five equal-width bins along the y axis.
 /// ```
+/// //| alt: "Scatter chart of thirty diagonal points along a y axis cut into five equal-width bins whose midpoints place the tick labels."
 /// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
 /// #plot(
 ///   data: d,
@@ -597,6 +615,7 @@
 /// \@examples A finer ten-bin partition with `limits` clipping the lower
 /// tail.
 /// ```
+/// //| alt: "Scatter chart of thirty diagonal points along a y axis cut into ten finer bins and clipped to limits 2 through 9 to drop the lower tail."
 /// #let d = range(0, 30).map(i => (x: i, y: i / 3.0))
 /// #plot(
 ///   data: d,
@@ -641,6 +660,7 @@
 ///
 /// \@examples Reverse the y axis so larger values sit at the bottom.
 /// ```
+/// //| alt: "Scatter chart of ten diagonal points on a reversed y axis where larger values sit at the bottom while tick labels remain in data units."
 /// #let d = range(1, 11).map(i => (x: i, y: i))
 /// #plot(
 ///   data: d,
@@ -654,6 +674,7 @@
 ///
 /// \@examples Useful for ranking displays where rank 1 should sit at the top.
 /// ```
+/// //| alt: "Scatter chart of four ranked teams on a reversed y axis so rank 1 sits at the top, with breaks pinned at 1 through 4."
 /// #let d = (
 ///   (team: "A", rank: 1),
 ///   (team: "B", rank: 2),

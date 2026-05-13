@@ -373,6 +373,7 @@
 /// \@examples Default ramp interpolating between the library's low and high
 /// blue stops.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along a continuous blue ramp from dark navy at low values to light sky-blue at high values."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -387,6 +388,7 @@
 /// \@examples Pin `limits` to clip the trained domain and render extremes at
 /// the palette endpoints.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along the continuous blue ramp, with limits 1 through 4 clamping out-of-range values to palette endpoints."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -418,6 +420,7 @@
 /// \@examples Default palette mapping three categories to the library's eight
 /// reserved discrete colours.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to three distinct categorical colours from the library's reserved discrete palette."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -436,6 +439,7 @@
 /// \@examples Override `palette` with an explicit colour array to hand-pick
 /// the mapping order.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to a hand-picked teal, orange, and blue trio supplied directly through palette."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -456,6 +460,7 @@
 /// \@examples Bind a colour-blind-friendly palette to penguin species and
 /// reorder the legend via `limits`.
 /// ```
+/// //| alt: "Scatter chart of penguin flipper length against body mass coloured by species using a blue-orange-green colour-blind-friendly palette with limits fixing legend order."
 /// #plot(
 ///   data: penguins,
 ///   mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
@@ -490,6 +495,7 @@
 ///
 /// \@examples Default ramp filling bars by their numeric value.
 /// ```
+/// //| alt: "Bar chart of three bars a, b, c filled along the default continuous blue ramp from dark navy at low y to light sky-blue at high y."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -508,6 +514,7 @@
 /// \@examples The default ramp shown as a continuous swatch via \@geom-rect
 /// over a sampled gradient.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the default continuous fill ramp from dark navy on the left to light sky-blue on the right."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -542,6 +549,7 @@
 /// \@examples Default palette filling three bars from the library's reserved
 /// discrete colours.
 /// ```
+/// //| alt: "Bar chart of three bars a, b, c each filled with one of the library's reserved discrete categorical colours."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -560,6 +568,7 @@
 /// \@examples The palette laid out as a swatch strip via \@geom-rect, one
 /// rectangle per level.
 /// ```
+/// //| alt: "Legend swatch strip of eight rectangles displaying each reserved discrete fill colour in level order from a to h."
 /// #let levels = ("a", "b", "c", "d", "e", "f", "g", "h")
 /// #let d = levels.enumerate().map(((i, k)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
@@ -597,6 +606,7 @@
 ///
 /// \@examples Hand-picked colour array applied to three categorical levels.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to a hand-picked teal, orange, and blue trio supplied via the manual values cycle."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -617,6 +627,7 @@
 /// \@examples `limits` fixes the level order independently of how rows appear
 /// in the data, useful for stable legends across datasets.
 /// ```
+/// //| alt: "Scatter chart of three points where limits forces a, b, c order so the teal, orange, blue manual cycle stays stable regardless of input order."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "c"),
 ///   (x: 2, y: 4, sp: "a"),
@@ -657,6 +668,7 @@
 ///
 /// \@examples Hand-picked colour array applied to three categorical levels.
 /// ```
+/// //| alt: "Bar chart of three bars a, b, c filled with a hand-picked sea-green, salmon, and lavender trio supplied via the manual values cycle."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -676,6 +688,7 @@
 ///
 /// \@examples The same array shown as a swatch strip via \@geom-rect.
 /// ```
+/// //| alt: "Legend swatch strip of three rectangles displaying the hand-picked sea-green, salmon, and lavender fill colours in order."
 /// #let pal = (rgb("#66c2a5"), rgb("#fc8d62"), rgb("#8da0cb"))
 /// #let d = pal.enumerate().map(((i, _)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: str(i),
@@ -713,6 +726,7 @@
 ///
 /// \@examples Plasma option of the viridis family applied to four categories.
 /// ```
+/// //| alt: "Scatter chart of four points where sp maps to distinct categorical colours sampled from the plasma viridis palette ranging from purple to yellow."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -732,6 +746,7 @@
 /// \@examples Switching `option` to `"cividis"` selects the colour-blind safe
 /// alternative.
 /// ```
+/// //| alt: "Scatter chart of four points where sp maps to colours sampled from the colour-blind safe cividis palette running from dark blue to bright yellow."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -771,6 +786,7 @@
 ///
 /// \@examples Magma option applied to a continuous numeric column.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along a continuous magma ramp from black at low values through purple-red to pale yellow at high."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -784,6 +800,7 @@
 ///
 /// \@examples Default `"viridis"` ramp with `limits` clipping the lower tail.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured along the viridis ramp from purple to yellow, with limits 2 through 6 clamping the lower tail to the dark end."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -818,6 +835,7 @@
 ///
 /// \@examples Four equal-width bins coloured from the default viridis ramp.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into four stepped bands coloured from the viridis ramp running purple to yellow."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -832,6 +850,7 @@
 /// \@examples Bumping `n-breaks` and switching to the inferno option produces
 /// a finer-grained banded scale.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into eight finer stepped bands coloured from the inferno ramp running black through red to bright yellow."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -865,6 +884,7 @@
 ///
 /// \@examples Cividis option filling four categorical bars.
 /// ```
+/// //| alt: "Bar chart of four bars a, b, c, d filled with distinct colours sampled from the colour-blind safe cividis palette ranging dark blue to yellow."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -883,6 +903,7 @@
 ///
 /// \@examples Each viridis option laid out as a swatch strip via \@geom-rect.
 /// ```
+/// //| alt: "Legend swatch strip of five rectangles filled with distinct colours sampled from the magma viridis palette spanning black through red to pale cream."
 /// #let opts = ("viridis", "magma", "plasma", "inferno", "cividis")
 /// #let d = opts.enumerate().map(((i, k)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
@@ -921,6 +942,7 @@
 ///
 /// \@examples Default viridis ramp filling bars by their numeric value.
 /// ```
+/// //| alt: "Bar chart of twelve increasing bars filled along the continuous viridis ramp from dark purple at low y to bright yellow at high y."
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
 ///   data: d,
@@ -934,6 +956,7 @@
 ///
 /// \@examples The viridis ramp shown as a continuous swatch via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the continuous viridis fill ramp from dark purple on the left to bright yellow on the right."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -970,6 +993,7 @@
 /// \@examples Hex strings carried straight through to point strokes; no
 /// legend is drawn.
 /// ```
+/// //| alt: "Scatter chart of three points where the c column passes through hex strings verbatim, drawing teal, orange, and blue strokes with no legend."
 /// #let d = (
 ///   (x: 1, y: 2, c: "#1b9e77"),
 ///   (x: 2, y: 4, c: "#d95f02"),
@@ -1004,6 +1028,7 @@
 /// \@examples Per-row hex strings used as fills, with \@geom-rect drawing a
 /// custom swatch from arbitrary colours.
 /// ```
+/// //| alt: "Legend swatch strip of three rectangles where the c column passes through hex strings verbatim, filling teal, orange, and lavender bands with no legend."
 /// #let d = (
 ///   (xmin: 0, xmax: 1, ymin: 0, ymax: 1, c: "#1b9e77"),
 ///   (xmin: 1, xmax: 2, ymin: 0, ymax: 1, c: "#d95f02"),
@@ -1042,6 +1067,7 @@
 ///
 /// \@examples Default viridis ramp quantised into four bins for a banded fill.
 /// ```
+/// //| alt: "Bar chart of twelve increasing bars where y is cut into four stepped bands coloured along the viridis ramp from purple to yellow."
 /// #let d = range(0, 12).map(i => (grp: str(i), y: i + 1))
 /// #plot(
 ///   data: d,
@@ -1055,6 +1081,7 @@
 ///
 /// \@examples The same ramp shown as a banded swatch via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of twelve rectangles where z is cut into six stepped bands coloured from the plasma viridis palette ranging purple through pink to yellow."
 /// #let d = range(0, 12).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -1093,6 +1120,7 @@
 /// \@examples Set1 palette mapping three categorical levels to bold qualitative
 /// hues.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to bold qualitative red, blue, and green hues sampled from the ColorBrewer Set1 palette."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1111,6 +1139,7 @@
 /// \@examples Switching to the diverging Spectral palette suits ordered
 /// categories with a meaningful midpoint.
 /// ```
+/// //| alt: "Scatter chart of three points where ordered categories low, mid, high map to colours from the diverging Spectral palette running red through yellow to blue."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "low"),
 ///   (x: 2, y: 3, sp: "mid"),
@@ -1150,6 +1179,7 @@
 ///
 /// \@examples Set1 palette filling categorical bars.
 /// ```
+/// //| alt: "Bar chart of three bars a, b, c filled with bold qualitative red, blue, green hues sampled from the ColorBrewer Set1 palette."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -1167,6 +1197,7 @@
 ///
 /// \@examples The Spectral palette laid out as a swatch strip via \@geom-rect.
 /// ```
+/// //| alt: "Legend swatch strip of seven rectangles displaying the diverging Spectral ColorBrewer palette from red through yellow at midpoint to blue."
 /// #let levels = ("a", "b", "c", "d", "e", "f", "g")
 /// #let d = levels.enumerate().map(((i, k)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
@@ -1206,6 +1237,7 @@
 ///
 /// \@examples Three categorical levels mapped to the first three Okabe-Ito hues.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to the first three colours of the colour-vision-deficiency-safe Okabe-Ito palette."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1242,6 +1274,7 @@
 ///
 /// \@examples Categorical bars filled with the Okabe-Ito palette.
 /// ```
+/// //| alt: "Bar chart of three bars a, b, c filled with the first three colour-vision-deficiency-safe Okabe-Ito fills."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -1281,6 +1314,7 @@
 ///
 /// \@examples Default low-to-high blue ramp.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along the default two-stop gradient ramp from dark navy at low to light sky-blue at high."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -1294,6 +1328,7 @@
 ///
 /// \@examples Custom two-stop ramp passing explicit `low` and `high` colours.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along a custom two-stop ramp from pale peach at low values to deep crimson at high values."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -1335,6 +1370,7 @@
 /// \@examples Default diverging ramp pivoting at zero, useful for signed
 /// numeric values.
 /// ```
+/// //| alt: "Scatter chart of eleven points coloured by z along a diverging ramp that pivots through white at zero, blue for negative and red for positive."
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
 /// #plot(
 ///   data: d,
@@ -1348,6 +1384,7 @@
 ///
 /// \@examples Shift `midpoint` to centre the ramp around a non-zero baseline.
 /// ```
+/// //| alt: "Scatter chart of eleven points coloured by z along a green-yellow-red diverging ramp pivoting through pale yellow at midpoint 5."
 /// #let d = range(0, 11).map(i => (x: i, y: i, z: i))
 /// #plot(
 ///   data: d,
@@ -1388,6 +1425,7 @@
 ///
 /// \@examples Three-stop ramp interpolating green-yellow-red across the domain.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along a custom three-stop n-stop ramp passing green through pale yellow to red."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -1404,6 +1442,7 @@
 /// \@examples Feeding a brewer palette into `scale-colour-gradientn` lifts a
 /// discrete palette into a continuous ramp.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along an n-stop ramp built from the ColorBrewer RdYlBu palette running red through yellow to blue."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -1440,6 +1479,7 @@
 ///
 /// \@examples Custom two-stop ramp shown as a continuous swatch via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying a continuous two-stop fill gradient from pale peach on the left to deep crimson on the right."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -1483,6 +1523,7 @@
 /// \@examples Diverging ramp pivoting at zero, shown as a swatch via
 /// \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of fifteen rectangles displaying a diverging fill gradient that pivots through white at zero, blue for negative and red for positive."
 /// #let d = range(-7, 8).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -1519,6 +1560,7 @@
 ///
 /// \@examples Three-stop ramp shown as a continuous swatch via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying an n-stop fill gradient passing green through pale yellow to red across the bar."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -1558,6 +1600,7 @@
 ///
 /// \@examples Default grey ramp from dark to light spread across three levels.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to three evenly-spaced grey luma values stepping from dark grey to light grey."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1576,6 +1619,7 @@
 /// \@examples Narrowing `start` and `end` constrains the ramp to a darker
 /// range for tighter contrast.
 /// ```
+/// //| alt: "Scatter chart of three points where sp maps to a narrowed grey ramp from luma 0.1 to 0.5, keeping the palette in the darker half of the scale."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1613,6 +1657,7 @@
 ///
 /// \@examples Default grey ramp shown as a swatch strip via \@geom-rect.
 /// ```
+/// //| alt: "Legend swatch strip of six rectangles stepping evenly from dark grey on the left to light grey on the right along the default grey fill ramp."
 /// #let levels = ("a", "b", "c", "d", "e", "f")
 /// #let d = levels.enumerate().map(((i, k)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
@@ -1659,6 +1704,7 @@
 ///
 /// \@examples Default hue wheel mapping four levels to evenly-spaced colours.
 /// ```
+/// //| alt: "Scatter chart of four points where sp maps to evenly-spaced hues stepped around the OKLCh colour wheel at full chroma and medium luminance."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1678,6 +1724,7 @@
 /// \@examples Lower `c` (chroma) and `l` (luminance) yield a muted, pastel-like
 /// palette.
 /// ```
+/// //| alt: "Scatter chart of four points where sp maps to evenly-spaced muted pastel hues from the OKLCh wheel at chroma 50 and luminance 80."
 /// #let d = (
 ///   (x: 1, y: 2, sp: "a"),
 ///   (x: 2, y: 4, sp: "b"),
@@ -1717,6 +1764,7 @@
 ///
 /// \@examples Default hue wheel shown as a swatch strip via \@geom-rect.
 /// ```
+/// //| alt: "Legend swatch strip of eight rectangles stepping evenly around the OKLCh hue wheel at full chroma and medium luminance from red through green and blue back toward red."
 /// #let levels = ("a", "b", "c", "d", "e", "f", "g", "h")
 /// #let d = levels.enumerate().map(((i, k)) => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, k: k,
@@ -1757,6 +1805,7 @@
 ///
 /// \@examples Spectral palette interpolated as a continuous ramp.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along the ColorBrewer Spectral palette lifted into a smooth continuous ramp from red through yellow to blue."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -1771,6 +1820,7 @@
 /// \@examples Set `direction: -1` to reverse the palette so high values map
 /// to the canonical low end.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along a reversed Blues distiller ramp so high values appear pale and low values dark blue."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -1803,6 +1853,7 @@
 /// \@examples Linear opacity mapping with a wide `range` to fade points from
 /// near-transparent to fully opaque.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where w drives opacity along a continuous ramp from near-transparent at low values to fully opaque at high."
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -1817,6 +1868,7 @@
 /// \@examples A narrower `range` keeps every point visible while still
 /// encoding magnitude.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where w drives opacity along a narrower 0.4 to 0.9 range so every point stays visible while still encoding magnitude."
 /// #let d = range(0, 12).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -1865,6 +1917,7 @@
 ///
 /// \@examples Three groups assigned dim/medium/full opacity.
 /// ```
+/// //| alt: "Scatter chart of three blue groups where manual values pin group a to dim opacity, b to medium, and c to full opaque with a fixed discrete cycle."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"), (x: 2, y: 2, g: "a"),
 ///   (x: 1, y: 2, g: "b"), (x: 2, y: 3, g: "b"),
@@ -1917,6 +1970,7 @@
 ///
 /// \@examples Opacity binned into four legend swatches.
 /// ```
+/// //| alt: "Scatter chart of ten blue diagonal points where w drives opacity along a continuous mapping but the legend collapses into four stepped opacity swatches."
 /// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1))
 /// #plot(
 ///   data: d,
@@ -1964,6 +2018,7 @@
 ///
 /// \@examples Per-row opacity carried straight through to the point fills.
 /// ```
+/// //| alt: "Scatter chart of four blue points where the w column passes through verbatim as the fill opacity from near-transparent to fully opaque with no legend."
 /// #let d = (
 ///   (x: 1, y: 2, w: 0.2),
 ///   (x: 2, y: 3, w: 0.5),
@@ -2009,6 +2064,7 @@
 /// \@examples Spectral palette interpolated across a continuous swatch via
 /// \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the ColorBrewer Spectral palette lifted into a smooth continuous fill ramp from red through yellow to blue."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -2048,6 +2104,7 @@
 ///
 /// \@examples Five-bin discretisation of the default low-to-high blue ramp.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into five stepped bands along the default two-stop blue ramp from dark navy to light sky-blue."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
 /// #plot(
 ///   data: d,
@@ -2061,6 +2118,7 @@
 ///
 /// \@examples Custom `low`/`high` colours discretised into eight bins.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into eight stepped bands along a custom two-stop ramp from pale peach to deep crimson."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 1.0))
 /// #plot(
 ///   data: d,
@@ -2102,6 +2160,7 @@
 ///
 /// \@examples Six-bin diverging discretisation pivoting at zero.
 /// ```
+/// //| alt: "Scatter chart of eleven points where z is cut into six stepped bands along a diverging ramp that pivots through white at zero, green for negative and red for positive."
 /// #let d = range(-5, 6).map(i => (x: i, y: i, z: i))
 /// #plot(
 ///   data: d,
@@ -2116,6 +2175,7 @@
 /// \@examples Shift `midpoint` and adjust the three stops to highlight a
 /// non-zero pivot.
 /// ```
+/// //| alt: "Scatter chart of eleven points where z is cut into eight stepped bands along a green-yellow-red diverging ramp pivoting through pale yellow at midpoint 5."
 /// #let d = range(0, 11).map(i => (x: i, y: i, z: i))
 /// #plot(
 ///   data: d,
@@ -2156,6 +2216,7 @@
 ///
 /// \@examples Three-stop ramp discretised into six bins.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into six stepped bands along a custom three-stop n-stop ramp passing green through pale yellow to red."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -2172,6 +2233,7 @@
 /// \@examples Reuse a brewer palette as the stop list to fold a discrete
 /// palette into a banded continuous scale.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into five stepped bands along the ColorBrewer YlOrRd palette fed as the n-stop list."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -2211,6 +2273,7 @@
 ///
 /// \@examples Spectral palette quantised into five bins.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into five stepped bands along the ColorBrewer Spectral palette running red through yellow to blue."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -2225,6 +2288,7 @@
 /// \@examples Sequential blues palette reversed via `direction: -1` for an
 /// inverted banding.
 /// ```
+/// //| alt: "Scatter chart of twelve diagonal points where z is cut into seven stepped bands along a reversed Blues fermenter palette so high values appear pale and low dark blue."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -2263,6 +2327,7 @@
 ///
 /// \@examples Five-bin discretised fill ramp shown as a swatch via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the default two-stop fill ramp cut into five stepped blue bands from dark navy on the left to light sky-blue on the right."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -2302,6 +2367,7 @@
 ///
 /// \@examples Six-bin diverging swatch pivoting at zero.
 /// ```
+/// //| alt: "Colour-bar swatch of fifteen rectangles displaying a diverging fill ramp cut into six stepped bands pivoting through white at zero, green-toned for negative and red for positive."
 /// #let d = range(-7, 8).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -2339,6 +2405,7 @@
 /// \@examples Three-stop ramp discretised into six bins, shown as a swatch
 /// via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying a custom three-stop n-stop fill ramp cut into six stepped bands passing green through pale yellow to red."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))
@@ -2379,6 +2446,7 @@
 /// \@examples Spectral palette quantised into five bins, shown as a swatch
 /// via \@geom-rect.
 /// ```
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the ColorBrewer Spectral palette cut into five stepped fill bands from red through yellow to blue."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))

@@ -25,6 +25,7 @@
 /// \@examples Default linetype palette mapping two groups to distinct dash
 /// patterns.
 /// ```
+/// //| alt: "Line chart of two groups along x against y where each group renders with a distinct dash pattern drawn from the default linetype palette."
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),
@@ -45,6 +46,7 @@
 ///
 /// \@examples Override `palette` with a custom keyword cycle.
 /// ```
+/// //| alt: "Line chart of two groups along x against y rendered with the custom dotted and dash-dotted keywords supplied via palette."
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
 ///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
@@ -89,6 +91,7 @@
 ///
 /// \@examples Two-keyword cycle assigned in input order.
 /// ```
+/// //| alt: "Line chart of two groups along x against y where group a renders solid and group b renders dashed from the manual values cycle."
 /// #let d = (
 ///   (x: 1, y: 2, grp: "a"),
 ///   (x: 2, y: 4, grp: "a"),
@@ -108,6 +111,7 @@
 /// \@examples `limits` fixes the level order so the same dash maps to the
 /// same group regardless of input order.
 /// ```
+/// //| alt: "Line chart of two groups along x against y where limits pins group a to solid and group b to dashed regardless of input order."
 /// #let d = (
 ///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
 ///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
@@ -158,6 +162,7 @@
 ///
 /// \@examples Per-row dash keyword carried straight through to the line.
 /// ```
+/// //| alt: "Line chart of two segments along x against y where the dt column passes through verbatim, drawing one solid line and one dashed line."
 /// #let d = (
 ///   (x: 1, y: 2, dt: "solid"),  (x: 2, y: 3, dt: "solid"),
 ///   (x: 1, y: 1, dt: "dashed"), (x: 2, y: 2, dt: "dashed"),
@@ -201,6 +206,7 @@
 ///
 /// \@examples Bin a continuous quality column into three linetype buckets.
 /// ```
+/// //| alt: "Line chart of twelve points along the diagonal where the continuous q column is cut into three stepped dash-pattern bands."
 /// #let d = range(1, 13).map(i => (x: i, y: i, q: i))
 /// #plot(
 ///   data: d,

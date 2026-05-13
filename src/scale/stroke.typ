@@ -20,6 +20,7 @@
 ///
 /// \@examples Marker outline grows with `w`.
 /// ```
+/// //| alt: "Scatter chart of seven blue dots along the diagonal where each marker's outline thickness scales with w from a thin to a heavy stroke."
 /// #let d = range(1, 8).map(i => (x: i, y: i, w: i))
 /// #plot(
 ///   data: d,
