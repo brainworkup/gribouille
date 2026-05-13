@@ -412,12 +412,18 @@ local function parse_doc_block(doc_lines, file, start_line)
               if code_trim:match("^```%s*$") then
                 break
               end
+              local consumed = false
               if code_trim:match("^//|") then
                 local attr_line = code_trim:gsub("^//|%s*", "")
                 local ak, av = attr_line:match("^([%w%-]+)%s*:%s*(.*)$")
-                if ak then attrs[ak] = util.trim(av) end
+                if ak then
+                  attrs[ak] = util.trim(av)
+                  consumed = true
+                end
               end
-              table.insert(src, code_ln)
+              if not consumed then
+                table.insert(src, code_ln)
+              end
               k = k + 1
             end
             if k > n then
