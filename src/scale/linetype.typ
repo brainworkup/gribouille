@@ -252,6 +252,21 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
+/// \@examples Map a numeric column onto a dash interpolation across four
+/// default bins.
+/// ```
+/// //| alt: "Line chart of twelve points along the diagonal where the continuous q column is mapped onto four stepped dash patterns via the default binned palette."
+/// #let d = range(1, 13).map(i => (x: i, y: i, q: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", linetype: "q", group: "q"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-linetype-continuous(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@scale-linetype-binned, \@scale-linetype, \@geom-line
 #let scale-linetype-continuous(
   name: none,
@@ -282,6 +297,24 @@
 /// \@param labels Array of legend labels, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Discrete dash patterns picked up via the ggplot2-parity
+/// alias.
+/// ```
+/// //| alt: "Line chart of two groups along x against y where group a renders solid and group b renders dashed via the discrete alias of scale-linetype."
+/// #let d = (
+///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
+///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", linetype: "grp"),
+///   layers: (geom-line(stroke: 1pt),),
+///   scales: (scale-linetype-discrete(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@scale-linetype, \@geom-line
 #let scale-linetype-discrete(

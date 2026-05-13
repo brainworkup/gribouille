@@ -64,6 +64,33 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
+/// \@examples Three explicit thickness lengths pinned to three named levels
+/// via `values` and `limits`.
+/// ```
+/// //| alt: "Scatter chart with six blue markers across three groups (thin, medium, thick) whose outline thicknesses come from a manual length array pinned by limits."
+/// #let d = (
+///   (x: 1, y: 1, g: "thin"),
+///   (x: 2, y: 2, g: "thin"),
+///   (x: 1, y: 2, g: "medium"),
+///   (x: 2, y: 3, g: "medium"),
+///   (x: 1, y: 3, g: "thick"),
+///   (x: 2, y: 4, g: "thick"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", stroke: "g"),
+///   layers: (geom-point(size: 6pt, fill: rgb("#1f77b4")),),
+///   scales: (
+///     scale-stroke-manual(
+///       values: (0.2pt, 0.8pt, 2pt),
+///       limits: ("thin", "medium", "thick"),
+///     ),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@scale-stroke-continuous, \@scale-linewidth-manual
 #let scale-stroke-manual(
   values: (),
@@ -98,6 +125,21 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
+/// \@examples Bucket a continuous `w` column into three thickness bands
+/// while still feeding a numeric range to the scale.
+/// ```
+/// //| alt: "Scatter chart of twelve blue markers along the diagonal where outline thickness steps through three bins drawn from the binned stroke palette."
+/// #let d = range(1, 13).map(i => (x: i, y: i, w: i))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", stroke: "w"),
+///   layers: (geom-point(size: 5pt, fill: rgb("#1f77b4")),),
+///   scales: (scale-stroke-binned(n-breaks: 3, range: (0.2pt, 1.6pt)),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@scale-stroke-continuous, \@scale-linewidth-binned
 #let scale-stroke-binned(
   n-breaks: 4,
@@ -131,6 +173,25 @@
 /// \@param name Legend title. Identity scales draw no legend.
 ///
 /// \@returns Scale object consumed by \@plot.
+///
+/// \@examples Pass per-row Typst lengths from a `t` column straight through
+/// to the marker outline.
+/// ```
+/// //| alt: "Scatter chart of three blue markers along the diagonal whose outline thicknesses come from the t column verbatim via the stroke identity scale."
+/// #let d = (
+///   (x: 1, y: 1, t: 0.2pt),
+///   (x: 2, y: 2, t: 0.8pt),
+///   (x: 3, y: 3, t: 2pt),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", stroke: "t"),
+///   layers: (geom-point(size: 6pt, fill: rgb("#1f77b4")),),
+///   scales: (scale-stroke-identity(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@scale-stroke-continuous
 #let scale-stroke-identity(name: none) = (
