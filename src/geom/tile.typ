@@ -9,7 +9,9 @@
 #import "../utils/radial.typ": radial-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../utils/band.typ": axis-band
-#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
+#import "../theme/theme.typ": (
+  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+)
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
 ///
@@ -115,14 +117,13 @@
 
   let width-col = mapping.at("width", default: none)
   let height-col = mapping.at("height", default: none)
-  let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", geom-neutral-fill),
+    geom-colour-default(g-defaults),
+    geom-fill-default(g-defaults, role: "tint"),
   )
 
   // `axis-band` is axis-agnostic despite its name: it builds a centred (lo, hi)

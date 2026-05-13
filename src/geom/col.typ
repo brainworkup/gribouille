@@ -13,7 +13,9 @@
   radial-axis-ranges, radial-category-span, radial-wedge,
 )
 #import "../utils/stroke.typ": resolve-stroke-spec
-#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
+#import "../theme/theme.typ": (
+  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+)
 
 /// Bar layer with heights taken from the y aesthetic.
 ///
@@ -124,14 +126,13 @@
       and vmax-col != none
   )
 
-  let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", geom-neutral-fill),
+    geom-colour-default(g-defaults),
+    geom-fill-default(g-defaults, role: "tint"),
   )
 
   let baseline = calc.max(0.0, value-trained.domain.at(0))
@@ -253,14 +254,13 @@
       and vmax-col != none
   )
 
-  let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", geom-neutral-fill),
+    geom-colour-default(g-defaults),
+    geom-fill-default(g-defaults, role: "tint"),
   )
 
   let baseline-vc = map-axis(

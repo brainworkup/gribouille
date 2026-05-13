@@ -9,6 +9,7 @@
 ///! specific child keys (e.g. `axis-text`) take priority at render time.
 
 #import "elements.typ": element-geom
+#import "../utils/colour.typ": col-mix
 
 #let _surface-parent = {
   let out = (
@@ -101,10 +102,10 @@
 // Hoisted to module scope so per-render lookups don't re-allocate it.
 #let _EMPTY-GEOM-DEFAULTS = element-geom()
 
-// Neutral body fill for filled geoms when the user set no `fill` aesthetic
-// and `theme.geom.fill` is unset.
+// Tint amount for the bar/area/rect/tile-family body fill: a muted grey mix
+// of the resolved `ink` and `paper` roles (`0.35` = ggplot2's `grey35`).
 // \@internal
-#let geom-neutral-fill = rgb("#4c78a8")
+#let geom-fill-tint-amount = 0.35
 
 /// Resolve `theme.geom` to a flat layer-defaults dict.
 ///
@@ -113,7 +114,7 @@
 /// keeps rendering robust when a partial user theme drops the `geom` key.
 /// `ink` / `paper` / `accent` slots inherit the theme-level scalars when
 /// `element-geom` left them unset, mirroring ggplot2 v4's role-oriented
-/// defaults.
+/// defaults; \@geom-colour-default and \@geom-fill-default consume them.
 /// Geoms resolve once at layer setup and consult the fields they support.
 ///
 /// \@internal
@@ -142,6 +143,85 @@
 #let geom-default(defaults, field, fallback) = {
   let v = defaults.at(field, default: none)
   if v != none { v } else { fallback }
+}
+
+/// Resolve the geom `ink` role: `element-geom.ink` if set, else `black`.
+///
+/// `defaults.ink` already inherits `theme.ink` (see \@geom-defaults), so a
+/// `none` here means the theme carried no `ink` either.
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@returns A colour.
+#let geom-ink(defaults) = {
+  let v = defaults.at("ink", default: none)
+  if v != none { v } else { black }
+}
+
+/// Resolve the geom `paper` role: `element-geom.paper` if set, else `white`.
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@returns A colour.
+#let geom-paper(defaults) = {
+  let v = defaults.at("paper", default: none)
+  if v != none { v } else { white }
+}
+
+/// Resolve the geom `accent` role: `element-geom.accent` if set, else a
+/// defensive `rgb("#3366FF")`.
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@returns A colour.
+#let geom-accent(defaults) = {
+  let v = defaults.at("accent", default: none)
+  if v != none { v } else { rgb("#3366FF") }
+}
+
+/// Resolve a geom's default stroke/text colour.
+///
+/// `element-geom.colour` always wins (the global colour override). Otherwise
+/// the geom's colour role applies: `"ink"` for almost every geom, `"accent"`
+/// for \@geom-smooth.
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@param role Colour role key: `"ink"` or `"accent"`.
+/// \@returns A colour.
+#let geom-colour-default(defaults, role: "ink") = {
+  let v = defaults.at("colour", default: none)
+  if v != none { return v }
+  if role == "ink" { geom-ink(defaults) } else if role == "accent" {
+    geom-accent(defaults)
+  } else { panic("geom-colour-default: unknown role " + role) }
+}
+
+/// Resolve a geom's default body fill.
+///
+/// `element-geom.fill` always wins (the global fill override). Otherwise the
+/// geom's fill role applies:
+/// - `"tint"`: `col-mix(ink, paper, geom-fill-tint-amount)` for the bar /
+///   area / rect / tile family;
+/// - `"paper"`: the paper role (\@geom-boxplot, \@geom-crossbar, \@geom-point,
+///   \@geom-label);
+/// - `"ink"`: the ink role (\@geom-dotplot);
+/// - `"accent"`: the accent role (reserved).
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@param role Fill role key: `"tint"`, `"paper"`, `"ink"`, or `"accent"`.
+/// \@returns A colour.
+#let geom-fill-default(defaults, role: "tint") = {
+  let v = defaults.at("fill", default: none)
+  if v != none { return v }
+  if role == "tint" {
+    col-mix(geom-ink(defaults), geom-paper(defaults), geom-fill-tint-amount)
+  } else if role == "paper" { geom-paper(defaults) } else if role == "ink" {
+    geom-ink(defaults)
+  } else if role == "accent" { geom-accent(defaults) } else {
+    panic("geom-fill-default: unknown role " + role)
+  }
 }
 
 // Default per-side text margin: every side `auto` so each consumption site

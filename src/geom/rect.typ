@@ -7,7 +7,9 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": radial-wedge
 #import "../utils/stroke.typ": resolve-stroke-spec
-#import "../theme/theme.typ": geom-default, geom-defaults, geom-neutral-fill
+#import "../theme/theme.typ": (
+  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+)
 
 /// Rectangle layer drawing one filled box per row from the four corners.
 ///
@@ -102,14 +104,13 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "fill", geom-neutral-fill),
+    geom-colour-default(g-defaults),
+    geom-fill-default(g-defaults, role: "tint"),
   )
 
   let radial = ctx.at("radial", default: none)
