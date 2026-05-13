@@ -9,7 +9,9 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": build-stroke
 #import "../utils/typst-markup.typ": eval-as-markup
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": (
+  geom-colour-default, geom-defaults, geom-fill-default,
+)
 
 /// Boxed text label layer reading strings from the `label` aesthetic.
 ///
@@ -134,14 +136,13 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let ink = ctx.theme.at("ink", default: black)
-  let paper = ctx.theme.at("paper", default: white)
-  let theme-colour = geom-default(geom-defaults(ctx.theme), "colour", ink)
+  let g-defaults = geom-defaults(ctx.theme)
+  let theme-colour = geom-colour-default(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
     theme-colour,
-    paper,
+    geom-fill-default(g-defaults, role: "paper"),
   )
   let label-typst = layer
     .at("typst-marks", default: (:))

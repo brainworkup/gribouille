@@ -16,7 +16,9 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": build-stroke
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": (
+  geom-colour-default, geom-defaults, geom-fill-default,
+)
 
 /// Boxplot layer: draws a Tukey box, whiskers, and outlier points per group.
 ///
@@ -141,13 +143,12 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let ink = ctx.theme.at("ink", default: black)
   let g-defaults = geom-defaults(ctx.theme)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-default(g-defaults, "colour", ink),
-    geom-default(g-defaults, "accent", rgb("#3366FF")),
+    geom-colour-default(g-defaults),
+    geom-fill-default(g-defaults, role: "paper"),
   )
   let outlier-colour-param = layer.params.outlier-colour
   let stroke-thickness = layer.params.stroke
