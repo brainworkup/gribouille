@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Support
+  - name: Feature request or idea
+    url: https://github.com/mcanouil/gribouille/discussions/new?category=ideas
+    about: Propose a new feature or enhancement in Discussions, not as an issue.
+  - name: Question or help
+    url: https://github.com/mcanouil/gribouille/discussions/new?category=q-a
+    about: Ask a usage question or request help here.
+  - name: Browse existing discussions
     url: https://github.com/mcanouil/gribouille/discussions
-    about: Please ask and answer questions here.
+    about: Search existing threads before opening a new one.
