@@ -1,10 +1,9 @@
-// Unit tests for the extra theme presets: bw, linedraw, light, dark, debug.
+// Unit tests for the extra theme presets: bw, linedraw, light, dark.
 
 #import "../../src/theme/bw.typ": theme-bw
 #import "../../src/theme/linedraw.typ": theme-linedraw
 #import "../../src/theme/light.typ": theme-light
 #import "../../src/theme/dark.typ": theme-dark
-#import "../../src/theme/debug.typ": theme-debug
 #import "../../src/theme/grey.typ": theme-grey
 #import "../../src/theme/minimal.typ": theme-minimal
 #import "../../src/theme/classic.typ": theme-classic
@@ -39,7 +38,6 @@
 #_check-theme(theme-linedraw(), "linedraw")
 #_check-theme(theme-light(), "light")
 #_check-theme(theme-dark(), "dark")
-#_check-theme(theme-debug(), "debug")
 
 // Each theme must define the structural surfaces the renderer reads via
 // resolve-element.
@@ -56,7 +54,6 @@
   theme-linedraw(),
   theme-light(),
   theme-dark(),
-  theme-debug(),
 ) {
   for k in _structural {
     assert(k in t, message: "theme " + t.name + " missing " + k)
@@ -73,10 +70,6 @@
 #let ld = theme-linedraw()
 #assert.eq(ld.panel-background.fill, white)
 #assert.eq(ld.axis-line.colour, black)
-
-// theme-debug: red axes for easy visual identification.
-#let tst = theme-debug()
-#assert.eq(tst.axis-line.colour, rgb("#cc0000"))
 
 // Custom ink/paper propagate.
 #let custom = theme-bw(ink: rgb("#222222"), paper: rgb("#fafafa"))

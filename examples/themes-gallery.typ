@@ -35,5 +35,4 @@
   panel("theme-linedraw", theme-linedraw()),
   panel("theme-light", theme-light()),
   panel("theme-dark", theme-dark()),
-  panel("theme-debug", theme-debug()),
 )
