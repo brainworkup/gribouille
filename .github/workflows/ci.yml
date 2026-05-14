@@ -115,18 +115,41 @@ jobs:
         shell: bash
         run: cargo install --git https://github.com/typst/package-check --locked
 
-      - name: Read package version
-        id: version
+      - name: Read versions from manifest
+        id: versions
         shell: bash
         run: |
           set -euo pipefail
           version=$(awk -F'"' '/^version[[:space:]]*=/ { print $2; exit }' typst.toml)
           [[ -n "$version" ]] || { echo "::error::version not found in typst.toml"; exit 1; }
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+          compiler=$(awk -F'"' '/^compiler[[:space:]]*=/ { print $2; exit }' typst.toml)
+          [[ -n "$compiler" ]] || { echo "::error::compiler not found in typst.toml"; exit 1; }
+          {
+            echo "version=${version}"
+            echo "compiler=${compiler}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: ${{ steps.versions.outputs.compiler }}
+
+      - name: Seed package cache
+        shell: bash
+        # typst-package-check refuses to download `@preview/*` itself; warm
+        # the local cache by compiling a tiny file that imports each pinned
+        # dependency listed in src/deps.typ.
+        run: |
+          set -euo pipefail
+          {
+            grep -E '^#import[[:space:]]+"@preview/' src/deps.typ
+            printf '\nseed\n'
+          } > /tmp/seed.typ
+          typst compile /tmp/seed.typ /tmp/seed.pdf
 
       - name: Stage published payload
         env:
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ steps.versions.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
