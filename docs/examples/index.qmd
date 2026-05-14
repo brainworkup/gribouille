@@ -2,7 +2,8 @@
 title: "Examples"
 subtitle: "Rendered plots with the source code available for each."
 toc: true
-toc-depth: 2
+toc-depth: 3
+body-classes: examples-page
 engine: markdown
 listing:
   - id: gallery

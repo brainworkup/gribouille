@@ -29,7 +29,7 @@ for (const item of items) {
 <article class="gallery-item">
 <div class="light-content"><img class="lightbox" data-gallery="examples-light" src="../assets/typst-render/examples/<%= item.slug %>-light.svg" alt="<%= item.alt %>" loading="lazy"></div>
 <div class="dark-content"><img class="lightbox" data-gallery="examples-dark" src="../assets/typst-render/examples/<%= item.slug %>-dark.svg" alt="<%= item.alt %>" loading="lazy"></div>
-<h3><%= item.title %></h3>
+<h3 id="<%= item.slug %>"><%= item.title %></h3>
 ```
 
 ::: {.gallery-description}

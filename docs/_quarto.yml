@@ -108,6 +108,7 @@ format:
     include-after-body:
       - file: assets/scripts/current-year.html
       - file: assets/scripts/external-links.html
+      - file: assets/scripts/gallery-toc.html
       - file: assets/scripts/ordinal-dates.html
       - file: assets/scripts/tooltips.html
 

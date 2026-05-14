@@ -1,0 +1,104 @@
+<script id="gallery-toc" type="text/javascript">
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!document.body.classList.contains("examples-page")) return;
+
+    const sections = Array.from(document.querySelectorAll("section.gallery-section"));
+    if (sections.length === 0) return;
+
+    const sidebar = document.getElementById("quarto-margin-sidebar");
+    if (!sidebar) return;
+    sidebar.classList.remove("zindex-bottom");
+
+    const tocTitle = document.createElement("h2");
+    tocTitle.id = "toc-title";
+    tocTitle.textContent = "On this page";
+
+    const rootList = document.createElement("ul");
+    const anchors = new Map();
+    const allHeaders = [];
+    const headerToSubList = new Map();
+    const subLists = [];
+
+    sections.forEach((section) => {
+      const sectionH2 = section.querySelector(":scope > h2[id]");
+      if (!sectionH2) return;
+
+      const sectionLi = document.createElement("li");
+      const sectionA = document.createElement("a");
+      sectionA.href = `#${sectionH2.id}`;
+      sectionA.id = `toc-${sectionH2.id}`;
+      sectionA.className = "nav-link";
+      sectionA.setAttribute("data-scroll-target", `#${sectionH2.id}`);
+      sectionA.textContent = sectionH2.textContent.trim();
+      sectionLi.appendChild(sectionA);
+      anchors.set(sectionH2.id, sectionA);
+      allHeaders.push(sectionH2);
+
+      const items = section.querySelectorAll(".gallery-item > h3[id]");
+      let subList = null;
+      if (items.length > 0) {
+        subList = document.createElement("ul");
+        subList.style.display = "none";
+        items.forEach((h3) => {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `#${h3.id}`;
+          a.id = `toc-${h3.id}`;
+          a.className = "nav-link";
+          a.setAttribute("data-scroll-target", `#${h3.id}`);
+          a.textContent = h3.textContent.trim();
+          li.appendChild(a);
+          subList.appendChild(li);
+          anchors.set(h3.id, a);
+          allHeaders.push(h3);
+          headerToSubList.set(h3.id, subList);
+        });
+        sectionLi.appendChild(subList);
+        subLists.push(subList);
+        headerToSubList.set(sectionH2.id, subList);
+      }
+
+      rootList.appendChild(sectionLi);
+    });
+
+    const nav = document.createElement("nav");
+    nav.id = "TOC";
+    nav.setAttribute("role", "doc-toc");
+    nav.className = "toc-active";
+    nav.appendChild(tocTitle);
+    nav.appendChild(rootList);
+
+    const tocActions = sidebar.querySelector(".toc-actions");
+    if (tocActions) {
+      nav.appendChild(tocActions);
+    }
+    sidebar.insertBefore(nav, sidebar.firstChild);
+
+    let activeId = null;
+    const setActive = (id) => {
+      if (activeId === id) return;
+      anchors.get(activeId)?.classList.remove("active");
+      anchors.get(id)?.classList.add("active");
+      const target = headerToSubList.get(id);
+      subLists.forEach((ul) => {
+        ul.style.display = ul === target ? "" : "none";
+      });
+      activeId = id;
+    };
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible.length > 0) setActive(visible[0].target.id);
+        },
+        { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
+      );
+      allHeaders.forEach((h) => observer.observe(h));
+    }
+
+    if (allHeaders.length > 0) setActive(allHeaders[0].id);
+  });
+</script>
