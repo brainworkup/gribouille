@@ -458,7 +458,7 @@ jobs:
           FORK_OWNER="${FORK%%/*}"
           BODY_FILE="$(mktemp)"
           {
-            printf 'Adds `gribouille`, a layered grammar of graphics for Typst, at version `%s`.\n\n' "${VERSION}"
+            printf 'Adds `gribouille` - Create elegant graphics with the Grammar of Graphics for Typst, at version `%s`.\n\n' "${VERSION}"
             printf -- '- Upstream repository: https://github.com/mcanouil/gribouille\n'
             printf -- '- Release: https://github.com/mcanouil/gribouille/releases/tag/v%s\n' "${VERSION}"
             printf -- '- Homepage: https://m.canouil.dev/gribouille\n'

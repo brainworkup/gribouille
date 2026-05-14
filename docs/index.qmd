@@ -1,6 +1,6 @@
 ---
 title: "Gribouille"
-subtitle: "A layered grammar of graphics for Typst."
+subtitle: "Create elegant graphics with the Grammar of Graphics for Typst."
 toc: false
 sidebar: false
 engine: markdown

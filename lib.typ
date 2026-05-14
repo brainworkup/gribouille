@@ -1,4 +1,4 @@
-// gribouille -- a layered grammar of graphics for Typst.
+// Gribouille -- Create elegant graphics with the Grammar of Graphics for Typst
 // Public API for @preview/gribouille.
 
 // Core.

@@ -20,7 +20,7 @@ image: /assets/images/social-card.png
 
 website:
   title: "Gribouille"
-  description: "A layered grammar of graphics for Typst."
+  description: "Create elegant graphics with the Grammar of Graphics for Typst."
   favicon: assets/images/favicon.svg
   site-url: https://m.canouil.dev/gribouille
   repo-url: https://github.com/mcanouil/gribouille
