@@ -27,11 +27,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Set up Lua
-        uses: leafo/gh-actions-lua@v11
-        with:
-          luaVersion: "5.4"
-
       - name: Set up Git user
         id: setup-git
         uses: ./.github/actions/setup-git-user
@@ -109,7 +104,7 @@ jobs:
             echo "No updates. Already on \`typst ${CURRENT_TYPST}\` and \`cetz ${CURRENT_CETZ}\`."
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Apply bumps and regenerate variables
+      - name: Apply bumps
         if: ${{ steps.diff.outputs.any == 'true' }}
         env:
           LATEST_TYPST: ${{ steps.latest.outputs.typst }}
@@ -119,19 +114,7 @@ jobs:
           set -euo pipefail
           sed -E -i 's/^(compiler[[:space:]]*=[[:space:]]*")[^"]+/\1'"${LATEST_TYPST}"'/' typst.toml
           sed -E -i 's|(@preview/cetz:)[0-9][0-9A-Za-z.+-]*|\1'"${LATEST_CETZ}"'|' src/deps.typ
-          lua -e "
-            package.path = 'tools/typstdoc/?.lua;' .. package.path
-            local deps = require('deps')
-            local info = deps.collect({
-              toml = 'typst.toml',
-              deps_file = 'src/deps.typ',
-              src = 'src',
-            })
-            local f = assert(io.open('docs/_variables.yml', 'w'))
-            f:write(deps.render(info))
-            f:close()
-          "
-          git --no-pager diff -- typst.toml src/deps.typ docs/_variables.yml
+          git --no-pager diff -- typst.toml src/deps.typ
 
       - name: Create branch, commit, push
         if: ${{ steps.diff.outputs.any == 'true' }}
@@ -155,7 +138,7 @@ jobs:
           fi
           git checkout -b "${BRANCH}"
 
-          git add typst.toml src/deps.typ docs/_variables.yml
+          git add typst.toml src/deps.typ
 
           if [[ "$TYPST_CHANGED" == "true" && "$CETZ_CHANGED" == "true" ]]; then
             SUBJECT="ci: bump typst to ${LATEST_TYPST}, cetz to ${LATEST_CETZ}"
