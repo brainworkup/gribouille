@@ -35,6 +35,7 @@ jobs:
 
     env:
       GH_TOKEN: ${{ github.token }}
+      QUARTO_TYPST: typst
 
     steps:
       - name: Checkout repository
