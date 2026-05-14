@@ -1,4 +1,10 @@
-# Gribouille <picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/images/logo-stacked-dark.svg"><source media="(prefers-color-scheme: light)" srcset="docs/assets/images/logo-stacked.svg"><img align="right" width="120" alt="Gribouille logo." src="docs/assets/images/logo-stacked.svg"></picture>
+# Gribouille
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg">
+  <img align="right" width="120" alt="Gribouille logo." src="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg">
+</picture>
 
 A layered grammar of graphics for Typst.
 
@@ -7,8 +13,7 @@ The library implements Wilkinson's grammar of graphics in a declarative API for 
 
 Documentation: <https://m.canouil.dev/gribouille>.
 
-> [!WARNING]
-> _Gribouille_ is in active development.
+> **Warning:** _Gribouille_ is in active development.
 
 ## Quick look
 
