@@ -1,10 +1,4 @@
-# Gribouille
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg">
-  <img align="right" width="120" alt="Gribouille logo." src="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg">
-</picture>
+# Gribouille <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg"><img align="right" width="120" alt="Gribouille logo." src="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg"></picture>
 
 Create elegant graphics with the **Grammar of Graphics** for Typst.
 
