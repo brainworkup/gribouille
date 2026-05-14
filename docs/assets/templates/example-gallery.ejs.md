@@ -19,19 +19,31 @@ for (const item of items) {
 %>
 <% for (const { key, heading } of sectionOrder) { %>
 <% if (grouped[key]) { %>
+```{=html}
 <section class="gallery-section">
 <h2 id="<%= key %>"><%= heading %></h2>
 <div class="gallery">
+```
 <% for (const item of grouped[key]) { %>
+```{=html}
 <article class="gallery-item">
 <div class="light-content"><img class="lightbox" data-gallery="examples-light" src="../assets/typst-render/examples/<%= item.slug %>-light.svg" alt="<%= item.alt %>" loading="lazy"></div>
 <div class="dark-content"><img class="lightbox" data-gallery="examples-dark" src="../assets/typst-render/examples/<%= item.slug %>-dark.svg" alt="<%= item.alt %>" loading="lazy"></div>
 <h3><%= item.title %></h3>
-<p><%= item.description %></p>
+```
+
+::: {.gallery-description}
+<%= item.description %>
+:::
+
+```{=html}
 <button type="button" class="btn btn-sm gallery-source-btn" data-bs-toggle="modal" data-bs-target="#modal-<%= item.slug %>" aria-label="View source for <%= item.title %>">View source</button>
 </article>
+```
 <% } %>
+```{=html}
 </div>
 </section>
+```
 <% } %>
 <% } %>
