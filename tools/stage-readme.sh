@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Typst Universe does not honour <picture>/<source>; strip the element so
 # typst-package-check and the published package do not carry dead HTML.
+# Also strip GitHub-flavoured alert blocks (e.g. "> [!WARNING]") that render
+# as plain blockquotes outside GitHub.
 set -euo pipefail
 
 SRC="${1:?source README path required}"
@@ -19,5 +21,7 @@ if [[ "${src_real}" == "${dest_real}" ]]; then
   exit 1
 fi
 
-perl -0777 -pe 's{[ \t]*<picture\b[^>]*>.*?</picture>}{}gs' "${SRC}" \
-  > "${DEST}"
+perl -0777 -pe '
+  s{[ \t]*<picture\b[^>]*>.*?</picture>}{}gs;
+  s{^> \[![A-Z]+\][ \t]*\n(?:> [^\n]*\n)*\n?}{}gm;
+' "${SRC}" > "${DEST}"
