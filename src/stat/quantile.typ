@@ -19,7 +19,7 @@
 /// \@stability stable
 /// \@since 0.4.0
 ///
-/// \@param quantiles Array of τ values in `(0, 1)` to fit, e.g. `(0.25, 0.5, 0.75)`.
+/// \@param quantiles Array of τ values in `(0, 1)` to fit, e.g., `(0.25, 0.5, 0.75)`.
 /// \@param n-samples Number of evenly-spaced x positions sampled per fitted line.
 ///
 /// \@returns Statistic object with `name: "quantile"`, consumed by \@geom-quantile.

@@ -14,10 +14,10 @@
 /// \@since 0.0.1
 ///
 /// \@param size Text size (a Typst length), or `none` to inherit.
-/// \@param weight Font weight (e.g. `"regular"`, `"bold"`), or `none` to inherit.
+/// \@param weight Font weight (e.g., `"regular"`, `"bold"`), or `none` to inherit.
 /// \@param colour Text colour, or `none` to inherit.
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
-/// \@param family Font family (e.g. `"sans"`, `"serif"`), or `none` to inherit.
+/// \@param family Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
 ///   with the surface font size. Sides left at `auto` fall through to the
@@ -112,7 +112,7 @@
 /// \@since 0.1.0
 ///
 /// \@param size Text size (a Typst length), or `none` to inherit.
-/// \@param weight Font weight (e.g. `"regular"`, `"bold"`), or `none`.
+/// \@param weight Font weight (e.g., `"regular"`, `"bold"`), or `none`.
 /// \@param colour Text colour, or `none` to inherit.
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 /// \@param family Font family, or `none` to inherit.
@@ -329,7 +329,7 @@
 
 /// Plot-margin specification: padding on each side of the plot canvas.
 ///
-/// Each side accepts a Typst length (e.g. `1cm`, `8pt`) or `auto` to fall
+/// Each side accepts a Typst length (e.g., `1cm`, `8pt`) or `auto` to fall
 /// through to the renderer's dynamic default (which leaves room for the
 /// axis title, tick labels, and any legend). Defaults to `auto` on every
 /// side so calling `margin()` with no arguments resets to the dynamic

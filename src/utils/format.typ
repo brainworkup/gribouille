@@ -67,8 +67,8 @@
 /// \@stability stable
 /// \@since 0.1.0
 ///
-/// \@param big-mark Thousands separator (e.g. `","` for English).
-/// \@param decimal-mark Decimal separator (e.g. `"."` for English).
+/// \@param big-mark Thousands separator (e.g., `","` for English).
+/// \@param decimal-mark Decimal separator (e.g., `"."` for English).
 /// \@param digits Decimal digits to keep, or `auto` to drop trailing zeros.
 /// \@param prefix String prepended to every formatted value.
 /// \@param suffix String appended to every formatted value.

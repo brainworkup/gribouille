@@ -7,7 +7,7 @@
 // path needs the same answer keyed by *level* rather than by row, so this
 // module exposes a thin level-driven kernel that the swatch composer can call.
 //
-// Returns `none` when the aesthetic cannot be resolved (e.g. continuous
+// Returns `none` when the aesthetic cannot be resolved (e.g., continuous
 // linetype is meaningless): the caller treats `none` as "drop this aesthetic
 // from the composed glyph".
 

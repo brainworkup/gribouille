@@ -28,7 +28,7 @@
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param method Smoother method. `"lm"` is the only supported value in v1.
 /// \@param se Whether to draw the confidence ribbon around the fit.
-/// \@param level Confidence level for the ribbon (e.g. `0.95`).
+/// \@param level Confidence level for the ribbon (e.g., `0.95`).
 /// \@param stroke Line thickness (a Typst length).
 /// \@param colour Fixed line colour. `auto` picks a neutral default.
 /// \@param fill Fixed ribbon fill. `auto` reuses the line colour.

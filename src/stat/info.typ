@@ -4,8 +4,8 @@
 ///! stat's `apply()` publishes. The `outputs` list is consulted by
 ///! `after-stat(<string>)` to validate column references at layer-prepare
 ///! time; an empty `outputs` list suppresses validation (used for stats
-///! whose row shape passes through input data unchanged, e.g. `identity`
-///! and `unique`, or whose outputs cannot be enumerated statically, e.g.
+///! whose row shape passes through input data unchanged, e.g., `identity`
+///! and `unique`, or whose outputs cannot be enumerated statically, e.g.,
 ///! `manual`).
 
 #let _STAT-INFO = (
@@ -65,7 +65,7 @@
 /// unknown stats as "no contract" without branching.
 ///
 /// \@internal
-/// \@param name Stat name string (e.g. `"bin"`, `"count"`).
+/// \@param name Stat name string (e.g., `"bin"`, `"count"`).
 /// \@returns Dict with `outputs` (array of column names).
 #let stat-info(name) = _STAT-INFO.at(name, default: (outputs: ()))
 

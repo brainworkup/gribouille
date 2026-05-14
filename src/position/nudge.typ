@@ -1,6 +1,6 @@
 ///! Deterministic offset by a fixed `(x, y)`.
 ///!
-///! Useful for separating two layers that would otherwise overlap, e.g.
+///! Useful for separating two layers that would otherwise overlap, e.g.,
 ///! shifting text labels off their points.
 
 #import "../utils/types.typ": parse-number

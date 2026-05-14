@@ -18,7 +18,7 @@
   if t == length { return (0, piece / 1cm) }
   if t == relative { return (piece.ratio / 100%, piece.length / 1cm) }
   panic(
-    "expand: expected a ratio (e.g. 5%), length (e.g. 5pt), or relative; got "
+    "expand: expected a ratio (e.g., 5%), length (e.g., 5pt), or relative; got "
       + repr(piece),
   )
 }
@@ -39,7 +39,7 @@
 
 // Coerce a user-provided `expand:` value into the canonical 4-tuple
 // `(mult-lo, add-cm-lo, mult-hi, add-cm-hi)`. `mult-*` is a unitless ratio
-// (e.g. 0.05 for 5%); `add-cm-*` is a canvas-cm length (e.g. `5pt / 1cm`).
+// (e.g., 0.05 for 5%); `add-cm-*` is a canvas-cm length (e.g., `5pt / 1cm`).
 #let normalise-expansion(value, scale-type) = {
   if value == auto { return _default-for(scale-type) }
   if value == false or value == none { return (0, 0, 0, 0) }

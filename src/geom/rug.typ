@@ -25,7 +25,7 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param sides String of edge codes among `b`, `t`, `l`, `r` indicating which axes receive ticks.
-/// \@param length Tick length as a Typst length (e.g. `0.15cm`).
+/// \@param length Tick length as a Typst length (e.g., `0.15cm`).
 /// \@param stroke Tick thickness (a Typst length).
 /// \@param colour Fixed tick colour. `auto` resolves via the colour scale or theme `ink`.
 /// \@param alpha Tick opacity in `[0, 1]`.

@@ -1,5 +1,5 @@
 // `as-factor` annotations on grouping aesthetics must survive a non-identity
-// stat (e.g. `stat-bin` under `geom-freqpoly`) so the colour scale trains
+// stat (e.g., `stat-bin` under `geom-freqpoly`) so the colour scale trains
 // discrete and `partition-by-group` emits one group per level rather than
 // pooling everything into `_all`.
 

@@ -12,7 +12,7 @@
 
 /// Spoke layer: one segment from `(x, y)` along `(angle, radius)` per row.
 ///
-/// `angle` is a Typst angle (e.g. `45deg`) when supplied as a layer
+/// `angle` is a Typst angle (e.g., `45deg`) when supplied as a layer
 /// parameter; mapped values are read as numbers in radians from the data.
 /// `radius` is the segment length in data units.
 ///
@@ -23,7 +23,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`. `angle` and `radius` may be mapped or left to the layer-level fallbacks.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// \@param angle Layer-level direction (a Typst angle, e.g. `45deg`) used when `aes(angle: ...)` is not mapped.
+/// \@param angle Layer-level direction (a Typst angle, e.g., `45deg`) used when `aes(angle: ...)` is not mapped.
 /// \@param radius Layer-level length in data units used when `aes(radius: ...)` is not mapped.
 /// \@param stroke Line thickness (a Typst length).
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale.

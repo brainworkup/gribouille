@@ -977,7 +977,7 @@
 /// Colour scale that uses each row's value as the stroke colour directly.
 ///
 /// The mapped column must hold values acceptable to Typst's `rgb()`
-/// (e.g. `"#ff0000"`) or already be `color` values. No legend is drawn
+/// (e.g., `"#ff0000"`) or already be `color` values. No legend is drawn
 /// because the column carries the visual outcome verbatim.
 ///
 /// \@category Scales

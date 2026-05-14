@@ -140,7 +140,7 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`. Use `colour`, `fill`, or `group` to split rows into separate marks.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param method Shape to draw: `"rect"` (bounding box), `"circle"` (smallest enclosing circle), `"ellipse"` (axis-aligned ellipse over the bounding box), or `"hull"` (convex hull). Named `method` to avoid clash with the `shape` aesthetic on \@geom-point.
-/// \@param expand Canvas-space padding around each shape, as a Typst length (e.g. `5pt`, `0.5cm`). `0pt` draws the shape flush with the cluster.
+/// \@param expand Canvas-space padding around each shape, as a Typst length (e.g., `5pt`, `0.5cm`). `0pt` draws the shape flush with the cluster.
 /// \@param n Polygon resolution for `"circle"` and `"ellipse"`.
 /// \@param colour Fixed outline colour. `auto` resolves via the colour scale.
 /// \@param fill Fixed fill colour. `auto` resolves via the fill scale.
@@ -203,7 +203,7 @@
   }
   if type(expand) != length {
     panic(
-      "geom-mark: expand must be a Typst length (e.g. 5pt, 0.5cm); got "
+      "geom-mark: expand must be a Typst length (e.g., 5pt, 0.5cm); got "
         + repr(expand)
         + ".",
     )

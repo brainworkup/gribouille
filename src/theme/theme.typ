@@ -6,7 +6,7 @@
 ///! \@element-rect, and \@element-blank.
 ///!
 ///! Base element keys (`text`, `line`, `rect`) set inherited parent fields:
-///! specific child keys (e.g. `axis-text`) take priority at render time.
+///! specific child keys (e.g., `axis-text`) take priority at render time.
 
 #import "elements.typ": element-geom
 #import "../utils/colour.typ": col-mix
@@ -58,11 +58,11 @@
 ///
 /// The cascade follows `_surface-parent` to the root, then merges each populated record back down so the most specific surface wins.
 /// Returns a dict shaped like the underlying element constructor, with `kind` set to the most specific element kind in the cascade.
-/// Fields not set anywhere remain `none`; the renderer is responsible for hardcoded fallbacks (e.g. colour → `theme.ink`).
+/// Fields not set anywhere remain `none`; the renderer is responsible for hardcoded fallbacks (e.g., colour → `theme.ink`).
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@param surface Surface key, e.g. `"axis-text-x-bottom"`, `"panel-grid"`.
+/// \@param surface Surface key, e.g., `"axis-text-x-bottom"`, `"panel-grid"`.
 /// \@returns Element record with cascaded fields.
 #let resolve-element(theme, surface) = {
   let chain = ()
@@ -85,8 +85,8 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@param base Scalar key root, e.g. `"tick-length"`.
-/// \@param side Side suffix, e.g. `"x-bottom"`, `"y-right"`.
+/// \@param base Scalar key root, e.g., `"tick-length"`.
+/// \@param side Side suffix, e.g., `"x-bottom"`, `"y-right"`.
 /// \@param axis Axis suffix, `"x"` or `"y"`.
 /// \@returns The most specific value set, falling back to base, then `0pt`.
 #let _scalar-cascade(theme, base, side, axis) = {
@@ -137,7 +137,7 @@
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
-/// \@param field Field name to read (e.g. `"fill"`, `"colour"`, `"linewidth"`).
+/// \@param field Field name to read (e.g., `"fill"`, `"colour"`, `"linewidth"`).
 /// \@param fallback Value returned when the slot is unset.
 /// \@returns The slot value or the fallback.
 #let geom-default(defaults, field, fallback) = {
@@ -254,7 +254,7 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@param surface Text surface key, e.g. `"axis-text"`.
+/// \@param surface Text surface key, e.g., `"axis-text"`.
 /// \@returns Dict with `size`, `fill`, `weight`, `typst`, `margin`.
 #let _text-style(theme, surface) = {
   let el = resolve-element(theme, surface)
@@ -273,7 +273,7 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@param surface Line surface key, e.g. `"panel-grid"`.
+/// \@param surface Line surface key, e.g., `"panel-grid"`.
 /// \@param fallback-colour Colour used when neither surface nor parent set one.
 /// \@returns Stroke dict `(paint, thickness)`, or `none` to skip drawing.
 #let _line-stroke(theme, surface, fallback-colour: none) = {
@@ -297,7 +297,7 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@param surface Rect surface key, e.g. `"panel-background"`.
+/// \@param surface Rect surface key, e.g., `"panel-background"`.
 /// \@param fallback Fill used when neither surface nor parent sets one.
 /// \@returns Colour, or `none` to skip drawing.
 #let _rect-fill(theme, surface, fallback: none) = {

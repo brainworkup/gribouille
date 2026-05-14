@@ -18,7 +18,7 @@
 /// \@param size Text size (a Typst length).
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
 /// \@param alpha Text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
-/// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
+/// \@param anchor CeTZ anchor (e.g., `"center"`, `"west"`) controlling placement.
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length.
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length.
 /// \@param label Constant label drawn at every row's `(x, y)`. Accepts a Typst content block (`[#math.alpha]`, `[*bold*]`) or a markup string (`"$alpha$"`) eval'd as Typst at render time. When `none`, the label is read from the `label` aesthetic mapping.

@@ -5,7 +5,7 @@
 
 /// Bind guide specifications to aesthetics.
 ///
-/// Accepts named arguments where each key is an aesthetic (e.g. `colour`,
+/// Accepts named arguments where each key is an aesthetic (e.g., `colour`,
 /// `fill`) and each value is a guide spec from \@guide-legend or \@guide-none.
 /// The resulting dictionary threads into the plot spec and is honoured by
 /// the legend renderer.

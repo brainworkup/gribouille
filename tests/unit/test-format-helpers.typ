@@ -14,7 +14,7 @@
 #assert.eq(n(-1234), "-1,234")
 #assert.eq(n(none), none)
 
-// Custom marks (e.g. French).
+// Custom marks (e.g., French).
 #let n-fr = format-number(big-mark: " ", decimal-mark: ",")
 #assert.eq(n-fr(1234.5), "1 234,5")
 

@@ -19,7 +19,7 @@
 #import "utils/typst-markup.typ": is-typst-markup, typst
 
 // Default kwarg names treated as aesthetic mappings (everything else is
-// forwarded to the geom constructor as a layer parameter, e.g. `stroke`,
+// forwarded to the geom constructor as a layer parameter, e.g., `stroke`,
 // `fontsize`).
 #let _default-aes-keys = (
   "x",
@@ -89,7 +89,7 @@
 ///   `xmax`, `ymin`, `ymax`, `colour`, `fill`, `size`, `alpha`, `shape`,
 ///   `linetype`, `label`, `group`, `slope`, `intercept`. For `geom = "text"`
 ///   and `geom = "label"`, `size` is treated as a layer parameter (the text
-///   size, a Typst length) rather than an aesthetic. Anything else (e.g.
+///   size, a Typst length) rather than an aesthetic. Anything else (e.g.,
 ///   `stroke`, `fontsize`, `xintercept`, `yintercept`) is forwarded to the
 ///   geom constructor as a layer parameter.
 ///

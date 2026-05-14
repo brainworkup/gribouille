@@ -14,7 +14,7 @@
 /// \@param mapping The resolved aesthetic mapping.
 /// \@param ctx The plot context exposing `trained`.
 /// \@param sample-row The row used to read the linetype value.
-/// \@returns A dash keyword (e.g. `"solid"`, `"dashed"`).
+/// \@returns A dash keyword (e.g., `"solid"`, `"dashed"`).
 #let resolve-linetype(layer, mapping, ctx, sample-row) = {
   let linetype-param = layer.params.at("linetype", default: auto)
   if linetype-param != auto and linetype-param != none { return linetype-param }

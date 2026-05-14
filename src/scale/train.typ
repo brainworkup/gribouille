@@ -368,7 +368,7 @@
     if target != none and target.type != "continuous" { continue }
     // Discard the (0, 1) fallback from `_continuous-domain-from-cache` when
     // the axis itself has no aesthetic mapping; otherwise that fallback would
-    // contaminate a domain defined entirely by the feeders (e.g.
+    // contaminate a domain defined entirely by the feeders (e.g.,
     // `geom-rect()` with only xmin/xmax mapped).
     let target-mapped = cache.at(axis).cols.len() > 0
     let lo = if target != none and target-mapped {

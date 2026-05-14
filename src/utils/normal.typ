@@ -1,7 +1,7 @@
 ///! Standard-normal helpers and theoretical quantile dispatch.
 ///!
-///! Used by stat helpers (e.g. `mean-cl-normal`) and exposed publicly so
-///! future geoms (e.g. a Q-Q plot) can reuse the same approximation.
+///! Used by stat helpers (e.g., `mean-cl-normal`) and exposed publicly so
+///! future geoms (e.g., a Q-Q plot) can reuse the same approximation.
 ///! Also hosts `theoretical-quantile`, the small dispatch used by the
 ///! Q-Q stats to pick a reference distribution.
 

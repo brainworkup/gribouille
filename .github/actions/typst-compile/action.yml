@@ -3,10 +3,10 @@ description: Compile every Typst file in a directory and report pass/fail counts
 
 inputs:
   label:
-    description: "Human label shown in the summary (e.g. 'unit', 'example')."
+    description: "Human label shown in the summary (e.g., 'unit', 'example')."
     required: true
   glob:
-    description: "Glob pattern for files to compile (e.g. 'tests/unit/*.typ')."
+    description: "Glob pattern for files to compile (e.g., 'tests/unit/*.typ')."
     required: true
   root:
     description: "Typst project root passed with --root."

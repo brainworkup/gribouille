@@ -6,7 +6,7 @@
 ///
 /// `fun` is invoked with `data` (an array of row dictionaries). The result
 /// replaces the layer's data; mapping is unchanged. Use it for ad-hoc
-/// transforms with no dedicated stat counterpart (e.g. centroids, hulls,
+/// transforms with no dedicated stat counterpart (e.g., centroids, hulls,
 /// running totals).
 ///
 /// \@category Stats

@@ -87,7 +87,7 @@
 //   `grid`    : `(lo, n-bins, width)` partition (panel-shared via `params.grid`).
 //   `counts`  : array of `n-bins` weighted counts (`w` summed per bin).
 //   `buckets` : array of `n-bins` records `(ys, ws)` carrying y-values and
-//               weights for stats that summarise per bin (e.g. `summary-bin`).
+//               weights for stats that summarise per bin (e.g., `summary-bin`).
 //               Empty when `y-col` is `none`.
 //   `total`   : sum of `counts`. Useful for density normalisation.
 //

@@ -37,7 +37,7 @@
 /// \@param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
 /// \@param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
 /// \@param alpha Marker opacity in `[0, 1]`.
-/// \@param shape Marker shape keyword (e.g. `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
+/// \@param shape Marker shape keyword (e.g., `"circle"`, `"square"`, `"triangle"`). `auto` honours the shape scale.
 /// \@param key Legend glyph override built with a `draw-key-*` helper. `auto` picks the default for the geom.
 /// \@param stat Statistical transform name. Usually left at `"identity"`.
 /// \@param position Position adjustment name. Usually left at `"identity"`.

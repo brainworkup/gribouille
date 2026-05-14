@@ -40,7 +40,7 @@
 
 /// Labeller showing both the variable name and the level.
 ///
-/// Produces a label of the form `"<var>: <level>"`, e.g. `"cyl: 6"`.
+/// Produces a label of the form `"<var>: <level>"`, e.g., `"cyl: 6"`.
 ///
 /// \@category Facets
 /// \@stability stable
@@ -71,7 +71,7 @@
 ///
 /// \@examples Override `sep` to use a different separator.
 /// ```
-/// //| alt: "Two scatter panels faceted by sp with strip labels using ' = ' as separator, e.g. 'sp = a' and 'sp = b'."
+/// //| alt: "Two scatter panels faceted by sp with strip labels using ' = ' as separator, e.g., 'sp = a' and 'sp = b'."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 4) {
@@ -109,7 +109,7 @@
 ///
 /// \@examples Strip text appends the per-panel row count.
 /// ```
-/// //| alt: "Two scatter panels faceted by sp with strip labels showing the level plus the row count, e.g. 'a (n = 4)'."
+/// //| alt: "Two scatter panels faceted by sp with strip labels showing the level plus the row count, e.g., 'a (n = 4)'."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 4) {

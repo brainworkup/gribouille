@@ -1,7 +1,7 @@
 ///! Void theme preset.
 ///!
 ///! No axes, grid, or panel background. Useful when the plot stands on its
-///! own without an axis frame (e.g. maps, annotated figures).
+///! own without an axis frame (e.g., maps, annotated figures).
 
 #import "defaults.typ": _tr-ink
 #import "elements.typ": element-blank, element-rect, element-text

@@ -14,7 +14,7 @@
 /// - `model` (string).
 /// - `displ` (engine displacement, litres).
 /// - `cyl` (number of cylinders).
-/// - `class` (vehicle class, e.g. `"compact"`, `"midsize"`, `"suv"`).
+/// - `class` (vehicle class, e.g., `"compact"`, `"midsize"`, `"suv"`).
 /// - `cty` (city miles per gallon).
 /// - `hwy` (highway miles per gallon).
 ///

@@ -20,7 +20,7 @@
 #assert.eq(lt2.params.anchor, "west")
 #assert.eq(lt2.params.dy, 0.3)
 
-// Aesthetic kwargs that the geom also accepts as a fixed param (e.g. colour
+// Aesthetic kwargs that the geom also accepts as a fixed param (e.g., colour
 // on geom-text) still go into the mapping/data, not the params dict.
 #let lt3 = annotate("text", x: 1, y: 1, label: "lab", colour: red)
 #assert.eq(lt3.data, ((x: 1, y: 1, label: "lab", colour: red),))

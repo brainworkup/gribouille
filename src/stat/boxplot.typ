@@ -44,7 +44,7 @@
 ///
 /// \@examples `stat: "boxplot"` is equivalent to `stat: stat-boxplot()` with
 /// the default `coef: 1.5`. Use the constructor to customise the whisker
-/// length, e.g. `stat: stat-boxplot(coef: 1.0)` tightens the fence so more
+/// length, e.g., `stat: stat-boxplot(coef: 1.0)` tightens the fence so more
 /// values surface as outliers.
 /// ```
 /// //| alt: "Boxplot per group on the x-axis with values on the y-axis, using a tighter 1.0 times IQR whisker rule that exposes additional outliers for groups a, b, c."

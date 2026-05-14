@@ -339,7 +339,7 @@
 /// \@stability stable
 /// \@since 0.1.0
 ///
-/// \@param name Palette name, e.g. `"Set1"`, `"Spectral"`, `"Blues"`.
+/// \@param name Palette name, e.g., `"Set1"`, `"Spectral"`, `"Blues"`.
 /// \@returns Array of `color` values.
 ///
 /// \@examples Look up the Set1 palette and feed it into a manual fill scale

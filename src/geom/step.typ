@@ -22,7 +22,7 @@
 /// \@param stroke Line thickness (a Typst length).
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
 /// \@param alpha Line opacity in `[0, 1]`.
-/// \@param linetype Dash keyword (e.g. `"solid"`, `"dashed"`). `auto` honours the linetype scale.
+/// \@param linetype Dash keyword (e.g., `"solid"`, `"dashed"`). `auto` honours the linetype scale.
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.

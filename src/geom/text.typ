@@ -24,9 +24,9 @@
 /// \@param size Text size (a Typst length).
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
 /// \@param alpha Text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
-/// \@param anchor CeTZ anchor (e.g. `"center"`, `"west"`) controlling placement.
-/// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
-/// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g. `4pt`, `2mm`).
+/// \@param anchor CeTZ anchor (e.g., `"center"`, `"west"`) controlling placement.
+/// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g., `4pt`, `2mm`).
+/// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g., `4pt`, `2mm`).
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.

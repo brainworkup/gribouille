@@ -13,7 +13,7 @@
 /// \@internal
 /// \@param layer The layer dictionary providing `params`.
 /// \@param mapping The resolved aesthetic mapping handed to a geom's `draw`.
-/// \@param name Aesthetic name to query (e.g. `"colour"`, `"fill"`).
+/// \@param name Aesthetic name to query (e.g., `"colour"`, `"fill"`).
 /// \@returns A boolean indicating whether the user supplied this aesthetic.
 #let aes-set(layer, mapping, name) = {
   let pin = layer.params.at(name, default: auto)

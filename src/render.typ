@@ -485,7 +485,7 @@
       params: position-params,
     )
     pos-data = r.data
-    // Merge position's additions (e.g. ymin/ymax) into the annotated mapping
+    // Merge position's additions (e.g., ymin/ymax) into the annotated mapping
     // while preserving existing annotations on x/y/...
     let merged = stat-mapping
     for (k, v) in r.mapping.pairs() {
@@ -626,7 +626,7 @@
 // Bounding box of every ellipse layer's data, accounting for rotation.
 // Axis-aligned bbox of an ellipse with semi-axes (a, b) and major-axis
 // rotation theta — using `max(|a|, |b|)` instead would inflate the box by
-// an order of magnitude when units differ between axes (e.g. flipper-length
+// an order of magnitude when units differ between axes (e.g., flipper-length
 // in mm vs body-mass in g).
 #let _scan-ellipse(layer, mapping, layer-data, acc) = {
   if mapping == none { return acc }
@@ -803,7 +803,7 @@
 } else { none }
 
 // Pre-compute primary and secondary x/y axis breaks for a trained scale set.
-// Callers that share `trained` across panels (e.g. grid facets without free
+// Callers that share `trained` across panels (e.g., grid facets without free
 // scales) build this once and pass it down so per-panel renders skip the
 // redundant `_axis-breaks` calls.
 #let _shared-axis-breaks(trained) = {
@@ -885,7 +885,7 @@
 }
 
 // Convert the axis-text font size in pt to cm. Used as a fallback ink-height
-// when no actual labels are measured (e.g. an axis with no breaks).
+// when no actual labels are measured (e.g., an axis with no breaks).
 #let _ax-text-cm(size-pt) = size-pt / 1pt * 0.0353
 
 // Resolve every side of an axis-* family into a record keyed by short side
@@ -923,7 +923,7 @@
 )
 
 // Either the supplied extents record or `_empty-extents(size)` when caller
-// did not measure any labels (e.g. legacy code paths or absent secondary axis).
+// did not measure any labels (e.g., legacy code paths or absent secondary axis).
 #let _resolve-extents(extents, size) = if extents != none {
   extents
 } else { _empty-extents(size) }
@@ -1522,7 +1522,7 @@
       _axis-breaks(theta-trained)
     } else { theta-trained.domain }
 
-    // Full-sweep domain endpoints can land on the same canvas angle (e.g. 0
+    // Full-sweep domain endpoints can land on the same canvas angle (e.g., 0
     // and 24 on a 24-hour clock both sit at 12 o'clock); group them so we
     // draw one spoke and one merged "end/start" label per shared angle.
     let theta-groups = group-theta-breaks(
@@ -1581,7 +1581,7 @@
       let pad = 0.2
       for group in theta-groups {
         // `labels` callbacks may return `none` to drop a wrap-side break from
-        // the merged label (e.g. hide "6" so a 0..6 radar shows "0", not "6/0").
+        // the merged label (e.g., hide "6" so a 0..6 radar shows "0", not "6/0").
         let labels = group
           .map(rec => {
             let raw = if theta-trained.type == "continuous" {

@@ -69,7 +69,7 @@
 ///
 /// `transform` is a function mapping a primary-axis value to its
 /// secondary-axis value. Use `"identity"` to mirror the primary axis exactly,
-/// or pass any callable, e.g. `x => x * 9 / 5 + 32` for Celsius to Fahrenheit.
+/// or pass any callable, e.g., `x => x * 9 / 5 + 32` for Celsius to Fahrenheit.
 ///
 /// \@category Scales
 /// \@subcategory Secondary axes

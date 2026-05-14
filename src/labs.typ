@@ -16,7 +16,7 @@
 /// \@param title Plot title drawn above the panel.
 /// \@param subtitle Smaller line drawn below the title.
 /// \@param caption Caption line drawn below the panel.
-/// \@param tag Optional tag (e.g. a figure number) drawn above the title.
+/// \@param tag Optional tag (e.g., a figure number) drawn above the title.
 /// \@param alt Alt text kept on the spec for accessibility tooling.
 /// \@param x Title for the x axis.
 /// \@param y Title for the y axis.
