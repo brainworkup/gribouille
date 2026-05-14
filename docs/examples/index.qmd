@@ -6,7 +6,7 @@ toc-depth: 2
 engine: markdown
 listing:
   - id: gallery
-    template: ../assets/templates/example-gallery.ejs
+    template: ../assets/templates/example-gallery.ejs.md
     contents: gallery.yml
     categories: false
     sort-ui: false
