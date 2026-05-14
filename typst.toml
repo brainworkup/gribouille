@@ -10,4 +10,11 @@ repository = "https://github.com/mcanouil/gribouille"
 homepage = "https://m.canouil.dev/gribouille"
 keywords = ["plot", "chart", "grammar-of-graphics", "visualization"]
 categories = ["visualization"]
-exclude = ["tests", "examples"]
+exclude = [
+  ".github",
+  ".gitignore",
+  "docs",
+  "examples",
+  "tests",
+  "tools",
+]
