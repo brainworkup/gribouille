@@ -19,7 +19,7 @@ include-in-header:
 
 ## ![Gribouille](assets/images/logo.svg){.light-content .img-fluid} ![Gribouille](assets/images/logo-dark.svg){.dark-content .img-fluid}
 
-### A layered grammar of graphics for [Typst]{.ink}.
+### Create elegant graphics with the Grammar of Graphics for [Typst]{.ink}.
 
 Compose charts by layering data, aesthetic mappings, geoms, scales, and themes.
 The same grammar as [`ggplot2`](https://ggplot2.tidyverse.org) and [`plotnine`](https://plotnine.org), drawn natively in Typst.
