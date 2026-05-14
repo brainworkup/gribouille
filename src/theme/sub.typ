@@ -71,6 +71,27 @@
 ///
 /// \@returns Theme dictionary with the named x-axis overrides applied.
 ///
+/// \@examples Tint both x-axis edges in red while leaving the y axis alone.
+/// ```
+/// //| alt: "Scatter plot of y against x with both x-axis titles, tick labels, axis line and ticks tinted red via the x-axis shortcut while the y axis stays default."
+/// #let red-text = element-text(colour: rgb("#cc0000"))
+/// #let red-line = element-line(colour: rgb("#cc0000"))
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-axis-x(
+///     title: red-text,
+///     text: red-text,
+///     line: red-line,
+///     ticks: red-line,
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-sub-axis, \@theme-sub-axis-y, \@theme-sub-axis-bottom, \@theme-sub-axis-top
 #let theme-sub-axis-x(title: none, text: none, line: none, ticks: none) = (
   _axis-sub("-x", title, text, line, ticks)
@@ -90,6 +111,27 @@
 ///
 /// \@returns Theme dictionary with the named y-axis overrides applied.
 ///
+/// \@examples Tint both y-axis edges in red while leaving the x axis alone.
+/// ```
+/// //| alt: "Scatter plot of y against x with both y-axis titles, tick labels, axis line and ticks tinted red via the y-axis shortcut while the x axis stays default."
+/// #let red-text = element-text(colour: rgb("#cc0000"))
+/// #let red-line = element-line(colour: rgb("#cc0000"))
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-axis-y(
+///     title: red-text,
+///     text: red-text,
+///     line: red-line,
+///     ticks: red-line,
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-sub-axis, \@theme-sub-axis-x, \@theme-sub-axis-left, \@theme-sub-axis-right
 #let theme-sub-axis-y(title: none, text: none, line: none, ticks: none) = (
   _axis-sub("-y", title, text, line, ticks)
@@ -108,6 +150,27 @@
 /// \@param ticks Element override for the bottom x axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the bottom x axis.
+///
+/// \@examples Tint only the bottom x axis in red; the rest stays default.
+/// ```
+/// //| alt: "Scatter plot of y against x with red bottom x-axis title, tick labels, axis line and ticks while every other axis stays default."
+/// #let red-text = element-text(colour: rgb("#cc0000"))
+/// #let red-line = element-line(colour: rgb("#cc0000"))
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-axis-bottom(
+///     title: red-text,
+///     text: red-text,
+///     line: red-line,
+///     ticks: red-line,
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@theme-sub-axis-x, \@theme-sub-axis-top
 #let theme-sub-axis-bottom(
@@ -131,6 +194,27 @@
 ///
 /// \@returns Theme dictionary scoped to the top x axis.
 ///
+/// \@examples Tint only the top x axis in red; the rest stays default.
+/// ```
+/// //| alt: "Scatter plot of y against x with red top x-axis title, tick labels, axis line and ticks while every other axis stays default."
+/// #let red-text = element-text(colour: rgb("#cc0000"))
+/// #let red-line = element-line(colour: rgb("#cc0000"))
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-axis-top(
+///     title: red-text,
+///     text: red-text,
+///     line: red-line,
+///     ticks: red-line,
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-sub-axis-x, \@theme-sub-axis-bottom
 #let theme-sub-axis-top(
   title: none,
@@ -153,6 +237,27 @@
 ///
 /// \@returns Theme dictionary scoped to the left y axis.
 ///
+/// \@examples Tint only the left y axis in red; the rest stays default.
+/// ```
+/// //| alt: "Scatter plot of y against x with red left y-axis title, tick labels, axis line and ticks while every other axis stays default."
+/// #let red-text = element-text(colour: rgb("#cc0000"))
+/// #let red-line = element-line(colour: rgb("#cc0000"))
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-axis-left(
+///     title: red-text,
+///     text: red-text,
+///     line: red-line,
+///     ticks: red-line,
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-sub-axis-y, \@theme-sub-axis-right
 #let theme-sub-axis-left(
   title: none,
@@ -174,6 +279,27 @@
 /// \@param ticks Element override for the right y axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the right y axis.
+///
+/// \@examples Tint only the right y axis in red; the rest stays default.
+/// ```
+/// //| alt: "Scatter plot of y against x with red right y-axis title, tick labels, axis line and ticks while every other axis stays default."
+/// #let red-text = element-text(colour: rgb("#cc0000"))
+/// #let red-line = element-line(colour: rgb("#cc0000"))
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-axis-right(
+///     title: red-text,
+///     text: red-text,
+///     line: red-line,
+///     ticks: red-line,
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@theme-sub-axis-y, \@theme-sub-axis-left
 #let theme-sub-axis-right(
@@ -227,6 +353,23 @@
 ///
 /// \@returns Theme dictionary with the named panel overrides applied.
 ///
+/// \@examples Cream panel with a muted brown grid via the panel shortcut.
+/// ```
+/// //| alt: "Scatter plot of y against x on a cream-coloured panel background with a muted brown grid applied via the panel shortcut group."
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme-sub-panel(
+///     background: element-rect(fill: rgb("#fff7e6")),
+///     grid: element-line(colour: rgb("#d9cfbf")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme
 #let theme-sub-panel(grid: none, background: none) = theme(
   panel-grid: grid,
@@ -246,6 +389,24 @@
 /// \@param margin \@margin record for `plot-margin`.
 ///
 /// \@returns Theme dictionary with the named plot overrides applied.
+///
+/// \@examples Bold plot title and smaller subtitle via the plot shortcut.
+/// ```
+/// //| alt: "Scatter plot of y against x with a bold-weight plot title and a smaller subtitle applied via the plot shortcut group."
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   labs: labs(title: "Series A", subtitle: "y as a linear function of x"),
+///   theme: theme-sub-plot(
+///     title: element-text(weight: "bold"),
+///     subtitle: element-text(size: 9pt),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@theme
 #let theme-sub-plot(
@@ -271,6 +432,29 @@
 /// \@param background \@element-rect or \@element-blank for `strip-background`.
 ///
 /// \@returns Theme dictionary with the named strip overrides applied.
+///
+/// \@examples Bold strip text on a cream background; faceting makes the
+/// strip visible.
+/// ```
+/// //| alt: "Two faceted scatter panels of y against x split by group g where the strip text renders bold on a cream-coloured background via the strip shortcut."
+/// #let d = range(0, 10).map(i => (
+///   x: i,
+///   y: i * 0.5,
+///   g: if calc.even(i) { "a" } else { "b" },
+/// ))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   facet: facet-wrap("g"),
+///   theme: theme-sub-strip(
+///     text: element-text(weight: "bold"),
+///     background: element-rect(fill: rgb("#fff7e6")),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
 ///
 /// \@see \@theme
 #let theme-sub-strip(text: none, background: none) = theme(
