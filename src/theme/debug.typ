@@ -1,4 +1,4 @@
-///! Test theme preset.
+///! Debug theme preset.
 ///!
 ///! Loud red borders and obvious styling so panel, axis, and grid regions are
 ///! easy to identify visually.
@@ -7,10 +7,9 @@
 #import "elements.typ": element-blank, element-line, element-rect, element-text
 #import "theme.typ": _preset
 
-/// Test theme: white panel, red axes, no grid, for visual debugging.
+/// Debug theme: white panel, red axes, no grid, for visual debugging.
 ///
-/// Designed to make theme regions stand out so test renderings are easy to
-/// inspect.
+/// Designed to make theme regions stand out so renderings are easy to inspect.
 ///
 /// \@category Themes
 /// \@subcategory Complete themes
@@ -32,22 +31,22 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   theme: theme-test(),
+///   theme: theme-debug(),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
 /// ```
 ///
-/// \@examples Tweak a single field of the test preset to focus a debug
+/// \@examples Tweak a single field of the debug preset to focus a debug
 /// session on one surface.
 /// ```
-/// //| alt: "Scatter plot of y against x on the test theme with the strip background recoloured warm amber to highlight one surface."
+/// //| alt: "Scatter plot of y against x on the debug theme with the strip background recoloured warm amber to highlight one surface."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   theme: theme-test(strip-background: element-rect(fill: rgb("#ffe8b3"))),
+///   theme: theme-debug(strip-background: element-rect(fill: rgb("#ffe8b3"))),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -55,7 +54,7 @@
 ///
 /// \@examples Particularly handy with facets to verify strip styling.
 /// ```
-/// //| alt: "Faceted scatter plot of y against x split into panels a and b, showing the test theme's red strip labels on pink strip backgrounds."
+/// //| alt: "Faceted scatter plot of y against x split into panels a and b, showing the debug theme's red strip labels on pink strip backgrounds."
 /// #let d = ()
 /// #for sp in ("a", "b") {
 ///   for i in range(0, 6) {
@@ -67,20 +66,20 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-wrap("sp"),
-///   theme: theme-test(),
+///   theme: theme-debug(),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
 /// ```
 ///
 /// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-bw, \@theme-void, \@theme
-#let theme-test(
+#let theme-debug(
   ink: _tr-ink,
   paper: _tr-paper,
   accent: rgb("#3366FF"),
   ..fields,
 ) = _preset(
-  "test",
+  "debug",
   ink,
   paper,
   accent,

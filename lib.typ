@@ -214,7 +214,7 @@
 #import "src/theme/linedraw.typ": theme-linedraw
 #import "src/theme/light.typ": theme-light
 #import "src/theme/dark.typ": theme-dark
-#import "src/theme/test.typ": theme-test
+#import "src/theme/debug.typ": theme-debug
 #import "src/theme/theme.typ": theme
 #import "src/theme/elements.typ": (
   element-blank, element-geom, element-line, element-rect, element-text,

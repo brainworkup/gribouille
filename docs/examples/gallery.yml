@@ -492,8 +492,8 @@
 - slug: themes-gallery
   section: themes
   title: "Theme presets"
-  description: 'Side-by-side gallery of <a href="../reference/themes/theme-bw.qmd"><code>theme-bw</code></a>, <a href="../reference/themes/theme-linedraw.qmd"><code>theme-linedraw</code></a>, <a href="../reference/themes/theme-light.qmd"><code>theme-light</code></a>, <a href="../reference/themes/theme-dark.qmd"><code>theme-dark</code></a>, <a href="../reference/themes/theme-test.qmd"><code>theme-test</code></a>, and <a href="../reference/themes/theme-minimal.qmd"><code>theme-minimal</code></a>.'
-  alt: "Two by three grid of the same two-group scatter rendered with theme-minimal, theme-bw, theme-linedraw, theme-light, theme-dark, and theme-test."
+  description: 'Side-by-side gallery of <a href="../reference/themes/theme-bw.qmd"><code>theme-bw</code></a>, <a href="../reference/themes/theme-linedraw.qmd"><code>theme-linedraw</code></a>, <a href="../reference/themes/theme-light.qmd"><code>theme-light</code></a>, <a href="../reference/themes/theme-dark.qmd"><code>theme-dark</code></a>, <a href="../reference/themes/theme-debug.qmd"><code>theme-debug</code></a>, and <a href="../reference/themes/theme-minimal.qmd"><code>theme-minimal</code></a>.'
+  alt: "Two by three grid of the same two-group scatter rendered with theme-minimal, theme-bw, theme-linedraw, theme-light, theme-dark, and theme-debug."
 
 - slug: margin
   section: themes
