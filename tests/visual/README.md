@@ -14,7 +14,7 @@ For example: `geom-jitter.typ`, `position-dodge-variable-width.typ`, `scale-colo
 
 1. Add the `.typ` file under `tests/visual/`.
 2. Compile locally with `tools/check.sh` (or `typst compile <path>`).
-3. Open the resulting PDF and visually verify against the matching ggplot2 / plotnine reference plot.
+3. Open the resulting PDF and visually verify against the matching plotnine reference plot.
 4. Note in the slice's worker report what was checked and against which reference.
 
 PDFs are not committed; they are build artefacts and ignored.

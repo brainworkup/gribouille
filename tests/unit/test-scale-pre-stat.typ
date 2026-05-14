@@ -1,6 +1,6 @@
 // Pre-stat scale transforms. `scale-x-log10` rewrites layer rows in place
 // before stats run, so the trained domain and downstream mapping operate in
-// stat space. Mirrors ggplot2 v4 / plotnine semantics.
+// stat space. Mirrors plotnine semantics.
 
 #import "../../src/aes.typ": aes
 #import "../../src/render.typ": _preprocess-data

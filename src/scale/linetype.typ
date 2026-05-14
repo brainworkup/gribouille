@@ -238,7 +238,7 @@
 )
 
 /// Continuous linetype scale: alias of \@scale-linetype-binned with the
-/// default bin count. Provided for ggplot2 API parity.
+/// default bin count. Provided as an explicit-name alias.
 ///
 /// \@category Scales
 /// \@subcategory Linetype scales
@@ -283,8 +283,8 @@
 
 /// Discrete linetype scale: alias of \@scale-linetype.
 ///
-/// Provided for ggplot2 API parity. Identical to calling `scale-linetype()`
-/// directly.
+/// Identical to calling `scale-linetype()` directly; provided as an
+/// explicit-name alias.
 ///
 /// \@category Scales
 /// \@subcategory Linetype scales
@@ -298,8 +298,7 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
-/// \@examples Discrete dash patterns picked up via the ggplot2-parity
-/// alias.
+/// \@examples Discrete dash patterns picked up via the discrete alias.
 /// ```
 /// //| alt: "Line chart of two groups along x against y where group a renders solid and group b renders dashed via the discrete alias of scale-linetype."
 /// #let d = (

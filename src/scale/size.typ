@@ -371,9 +371,9 @@
 
 /// Linear-radius continuous size scale.
 ///
-/// Alias of \@scale-size-continuous with the more explicit name. ggplot2's
-/// `scale_radius()` provides the linear value-to-radius mapping that gribouille
-/// already uses by default; \@scale-size-area is the area-proportional variant.
+/// Alias of \@scale-size-continuous with the more explicit name. Provides
+/// the linear value-to-radius mapping that gribouille already uses by
+/// default; \@scale-size-area is the area-proportional variant.
 ///
 /// \@category Scales
 /// \@subcategory Size scales

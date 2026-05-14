@@ -390,7 +390,7 @@
 ///
 /// Pass the result to \@theme under the `geom` key to set defaults that the
 /// supporting geoms will pick up unless their own parameters override them.
-/// Mirrors ggplot2 v4's `element_geom()`.
+/// Mirrors plotnine's `element_geom()`.
 /// `fill` and `colour` are *global overrides* that win for every supporting
 /// geom; `ink`, `paper`, `accent` are *role* colours that geoms fall back to
 /// when the global override is unset, with each geom declaring which role

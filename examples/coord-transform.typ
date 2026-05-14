@@ -1,6 +1,6 @@
 // coord-transform: warp the displayed coordinates without setting transform
 // on each scale. Equivalent to scale-x-continuous(transform: ...) in the
-// current implementation; provided for ggplot2 v4 API parity.
+// current implementation; provided as a coord-level entry point.
 
 #import "../lib.typ": *
 

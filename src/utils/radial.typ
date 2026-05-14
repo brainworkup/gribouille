@@ -12,8 +12,8 @@
   if coord.at("theta", default: "x") == "x" { "y" } else { "x" }
 } else { none }
 
-// `start = 0` plus `direction = 1` reproduce ggplot2's convention: the first
-// slice opens at 12 o'clock and the sweep advances clockwise. Encoding the
+// `start = 0` plus `direction = 1` reproduce the conventional layout: the
+// first slice opens at 12 o'clock and the sweep advances clockwise. Encoding the
 // sweep as a `(theta-lo, theta-hi)` pair lets `map-position` produce angles
 // directly through the existing scale-mapping routines.
 #let radial-ctx(coord, x-trained, y-trained, px-range, py-range) = {

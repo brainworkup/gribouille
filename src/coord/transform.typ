@@ -1,4 +1,4 @@
-///! Coordinate-level transformation. Mirrors ggplot2 v4's `coord_transform()`.
+///! Coordinate-level transformation via `coord_transform()`.
 
 /// Transform the displayed coordinates after statistics have run.
 ///

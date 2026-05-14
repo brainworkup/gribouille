@@ -1,6 +1,6 @@
 ///! Late-binding aesthetic markers.
 ///!
-///! Constructors for ggplot2 v4 / plotnine late-binding primitives. These
+///! Constructors for plotnine late-binding primitives. These
 ///! markers defer aesthetic resolution past the point where a column was
 ///! first bound, so callers can pull values from the trained stat output,
 ///! the resolved scale output, or the active theme.

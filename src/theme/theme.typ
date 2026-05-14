@@ -103,7 +103,7 @@
 #let _EMPTY-GEOM-DEFAULTS = element-geom()
 
 // Tint amount for the bar/area/rect/tile-family body fill: a muted grey mix
-// of the resolved `ink` and `paper` roles (`0.35` = ggplot2's `grey35`).
+// of the resolved `ink` and `paper` roles (`0.35` matches `grey35`).
 // \@internal
 #let geom-fill-tint-amount = 0.35
 
@@ -113,7 +113,7 @@
 /// fallbacks intact. The fall-through to an empty record is deliberate —
 /// keeps rendering robust when a partial user theme drops the `geom` key.
 /// `ink` / `paper` / `accent` slots inherit the theme-level scalars when
-/// `element-geom` left them unset, mirroring ggplot2 v4's role-oriented
+/// `element-geom` left them unset, mirroring plotnine's role-oriented
 /// defaults; \@geom-colour-default and \@geom-fill-default consume them.
 /// Geoms resolve once at layer setup and consult the fields they support.
 ///

@@ -8,10 +8,10 @@ Run the survey command at the bottom before extending the table.
 
 | Term      | Expansion                              | Notes                                                                    |
 | --------- | -------------------------------------- | ------------------------------------------------------------------------ |
-| `geom`    | geometric layer                        | mirrors ggplot2 `geom_*`; layer dict tagged `kind: "layer"`.             |
-| `aes`     | aesthetic mapping                      | mirrors ggplot2 `aes()`; `(channel: column-name-or-marker, ...)`.        |
-| `stat`    | statistical transform                  | mirrors ggplot2 `stat_*`; dispatched via `src/stat/apply.typ`.           |
-| `pos`     | position adjustment                    | mirrors ggplot2 `position_*` (stack, dodge, fill, jitter, …).            |
+| `geom`    | geometric layer                        | `geom_*` namespace; layer dict tagged `kind: "layer"`.                   |
+| `aes`     | aesthetic mapping                      | `aes()` constructor; `(channel: column-name-or-marker, ...)`.            |
+| `stat`    | statistical transform                  | `stat_*` namespace; dispatched via `src/stat/apply.typ`.                 |
+| `pos`     | position adjustment                    | `position_*` namespace (stack, dodge, fill, jitter, …).                  |
 | `spec`    | plot specification dict                | the user-built dict consumed by `render-plot`.                           |
 | `ctx`     | per-draw context                       | dict passed to every geom's `draw(layer, ctx)`.                          |
 | `mapping` | column-name dict                       | flattened `aes` (`(x: "col", y: "col", colour: "col", ...)`).            |
@@ -87,7 +87,7 @@ Run the survey command at the bottom before extending the table.
 | `ink`    | foreground colour | theme primary text/line colour (defaults to `black`).  |
 | `paper`  | background colour | theme canvas / panel background (defaults to `white`). |
 | `accent` | highlight colour  | theme accent (used by some geom defaults).             |
-| `tint`   | bar/area body fill | geom fill role: `col-mix(ink, paper, geom-fill-tint-amount)` (default `0.35`, ggplot2's `grey35`). |
+| `tint`   | bar/area body fill | geom fill role: `col-mix(ink, paper, geom-fill-tint-amount)` (default `0.35`, equivalent to `grey35`). |
 
 ## Geometry helpers / misc
 

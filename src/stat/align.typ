@@ -1,6 +1,6 @@
 ///! Align groups onto a shared x-grid for stacked area / ribbon use.
 ///!
-///! Mirrors ggplot2 v4's `stat_align`. Each group's y is linearly
+///! Mirrors plotnine's `stat_align`. Each group's y is linearly
 ///! interpolated onto the union of every group's x values plus the
 ///! zero-crossings detected within each group, so stacked layers share
 ///! clean vertices at every break.

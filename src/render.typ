@@ -1541,8 +1541,8 @@
       }
     }
 
-    // Outer axis arc plus optional minor ticks. Spoke-only legacy plots
-    // skip this whole block; ggplot2 calls this guide_axis_theta.
+    // Outer axis arc plus optional minor ticks (the `guide-axis-theta`
+    // guide). Spoke-only legacy plots skip this whole block.
     if theta-guide != none and _ax-line.xb != none {
       let (theta-lo, theta-hi) = (theta-range.at(0), theta-range.at(1))
       let span = calc.abs(theta-hi - theta-lo)
@@ -1918,8 +1918,8 @@
       and coord.at("expand", default: true) == false
   )
   // Under `coord-radial`, the radial axis maps view-min to canvas radius 0,
-  // so any lo-side padding leaves a hole at the centre. Match ggplot2 by
-  // collapsing the radial lo-side to zero when `expand` is auto.
+  // so any lo-side padding leaves a hole at the centre. Collapse the radial
+  // lo-side to zero when `expand` is auto.
   let radial-axis = radial-axis-of(coord)
   for axis in ("x", "y") {
     let entry = trained.at(axis, default: none)
@@ -1996,9 +1996,9 @@
   let scan = _post-train-scan(layers)
 
   // Bars and areas anchor against y=0. The touching side is tagged so
-  // `_apply-expand` collapses its auto-expansion to zero, matching ggplot2's
-  // `expansion(mult = c(0, 0.05))`. `position: "fill"` anchors both sides;
-  // mixed-sign data keeps symmetric expansion.
+  // `_apply-expand` collapses its auto-expansion to zero, matching the
+  // `expansion(mult = c(0, 0.05))` convention. `position: "fill"` anchors
+  // both sides; mixed-sign data keeps symmetric expansion.
   if scan.needs-y-zero {
     let yt = trained.at("y", default: none)
     if yt != none and yt.type == "continuous" {
