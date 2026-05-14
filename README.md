@@ -6,8 +6,7 @@
   <img align="right" width="120" alt="Gribouille logo." src="https://raw.githubusercontent.com/mcanouil/gribouille/refs/heads/main/docs/assets/images/logo-stacked.svg">
 </picture>
 
-A layered **Grammar of Graphics** for Typst.
-Create elegant graphics with the Grammar of Graphics.
+Create elegant graphics with the **Grammar of Graphics** for Typst.
 
 _Gribouille_ is French for "scribble".
 The library implements Wilkinson's **Grammar of Graphics** in a declarative API for Typst documents, inspired by [`ggplot2`](https://ggplot2.tidyverse.org) (R) and [`plotnine`](https://plotnine.org) (Python).
