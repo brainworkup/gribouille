@@ -93,3 +93,49 @@ jobs:
             echo "- Unit tests: ${UNIT_PASSED:-0}/${UNIT_TOTAL:-0}"
             echo "- Examples: ${EXAMPLES_PASSED:-0}/${EXAMPLES_TOTAL:-0}"
           } >> "${GITHUB_STEP_SUMMARY}"
+
+  package-check:
+    name: Run typst-package-check
+    runs-on: ubuntu-latest
+    # Repository URL check fails with 404 while `mcanouil/gribouille` stays
+    # private; keep the job informational rather than blocking until then.
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install typst-package-check
+        shell: bash
+        run: cargo install --git https://github.com/typst/package-check --locked
+
+      - name: Read package version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(awk -F'"' '/^version[[:space:]]*=/ { print $2; exit }' typst.toml)
+          [[ -n "$version" ]] || { echo "::error::version not found in typst.toml"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Stage published payload
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          STAGE="/tmp/stage/gribouille/${VERSION}"
+          mkdir -p "${STAGE}"
+          cp typst.toml lib.typ LICENSE README.md "${STAGE}/"
+          cp -r src "${STAGE}/"
+          echo "STAGE=${STAGE}" >> "${GITHUB_ENV}"
+
+      - name: Run typst-package-check
+        shell: bash
+        run: typst-package-check check "${STAGE}"
