@@ -8,6 +8,6 @@ license = "MIT"
 description = "Create elegant graphics with the Grammar of Graphics."
 repository = "https://github.com/mcanouil/gribouille"
 homepage = "https://m.canouil.dev/gribouille"
-keywords = ["plot", "chart", "visualisation", "grammar-of-graphics", "visualization"]
+keywords = ["plot", "chart", "grammar-of-graphics", "visualization"]
 categories = ["visualization"]
 exclude = ["tests", "examples"]
