@@ -1,7 +1,7 @@
 # Examples gallery data, consumed by the listing in `index.qmd` and by
 # `assets/lua/examples-data.lua` (which injects the modal source blocks).
 # One entry per `.typ` file in `examples/` (project root).
-# `description` is Pandoc markdown; Quarto parses string fields before EJS interpolation.
+# `description` is Pandoc markdown.
 
 - slug: minimal
   section: basics
