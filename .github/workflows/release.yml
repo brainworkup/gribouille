@@ -457,12 +457,30 @@ jobs:
         working-directory: typst-packages
         run: |
           FORK_OWNER="${FORK%%/*}"
+
+          if git ls-tree upstream/main:packages/preview/gribouille >/dev/null 2>&1; then
+            NEW_BOX="[ ]"; UPDATE_BOX="[x]"; IS_UPDATE=1
+          else
+            NEW_BOX="[x]"; UPDATE_BOX="[ ]"; IS_UPDATE=0
+          fi
+
           BODY_FILE="$(mktemp)"
           {
-            printf 'Adds `gribouille` - Create elegant graphics with the Grammar of Graphics for Typst, at version `%s`.\n\n' "${VERSION}"
+            printf 'I am submitting\n- %s a new package\n- %s an update for a package\n\n' "${NEW_BOX}" "${UPDATE_BOX}"
+            printf 'Description: gribouille — create elegant graphics with the Grammar of Graphics for Typst, inspired by ggplot2 and plotnine. Declarative API: aesthetic mappings, geoms, stats, scales, coordinates, facets, themes.\n\n'
             printf -- '- Upstream repository: https://github.com/mcanouil/gribouille\n'
             printf -- '- Release: https://github.com/mcanouil/gribouille/releases/tag/v%s\n' "${VERSION}"
             printf -- '- Homepage: https://m.canouil.dev/gribouille\n'
+
+            if [ "${IS_UPDATE}" -eq 0 ]; then
+              printf '\nI have read and followed the submission guidelines and, in particular, I\n'
+              printf -- '- [x] selected a name that isn'\''t the most obvious or canonical name for what the package does\n'
+              printf -- '- [x] added a `typst.toml` file with all required keys\n'
+              printf -- '- [x] added a `README.md` with documentation for my package\n'
+              printf -- '- [x] have chosen a license and added a `LICENSE` file or linked one in my `README.md`\n'
+              printf -- '- [x] tested my package locally on my system and it worked\n'
+              printf -- '- [x] excluded PDFs or README images, if any, but not the LICENSE\n'
+            fi
           } > "${BODY_FILE}"
 
           PR_URL=$(gh pr create \
