@@ -502,6 +502,16 @@
   panic("legend._guide-height: unknown guide kind \"" + g.kind + "\"")
 }
 
+// Recompute `width` and `height` after `placement.direction` has been mutated.
+// Used by `compose()` whenever it coerces a hoisted guide's side because
+// horizontal vs vertical layouts have different footprints.
+#let recompute-extent(g) = {
+  let out = g
+  out.width = _guide-width(out)
+  out.height = _guide-height(out)
+  out
+}
+
 #let guides-for(spec, trained) = {
   let overrides = spec.at("guides", default: (:))
 
@@ -1137,21 +1147,30 @@
   }
 }
 
-// Render a free-standing legend canvas containing `guides`. Used by
-// `compose()` to draw the shared, hoisted legend outside any plot panel.
-// The canvas is sized to (`width-cm`, `height-cm`); `panel-rect` is collapsed
-// at the origin and all extents are zero so `_draw-side` lays guides out
-// against the canvas's own bounds.
-#let standalone(guides, trained, theme, width-cm, height-cm) = {
+// Render a free-standing legend canvas containing `guides`, all on `side`.
+// Used by `compose()` to draw the shared, hoisted legend outside any plot
+// panel. `panel-rect` and `margin` are tuned per side so `_draw-side`'s cursor
+// math lands inside the canvas bounds:
+//   right/left → cursor starts at the canvas top, advances downward.
+//   top        → labels grow downward from `max-h`; baseline at 0.
+//   bottom     → margin.bottom: 0.4 cancels `_draw-side`'s bottom offset.
+#let standalone(guides, trained, theme, side, width-cm, height-cm) = {
   let ctx = (trained: trained, palette: default-discrete, theme: theme)
+  let panel-h = if side == "right" or side == "left" { height-cm } else { 0.0 }
+  let margin = (
+    left: 0.0,
+    right: 0.0,
+    top: 0.0,
+    bottom: if side == "bottom" { 0.4 } else { 0.0 },
+  )
   cetz.canvas(length: 1cm, {
     import cetz.draw: hide, rect
     hide(rect((0, 0), (width-cm, height-cm)), bounds: true)
     draw(
       guides,
       ctx,
-      panel-rect: (x: 0.0, y: 0.0, w: 0.0, h: height-cm),
-      margin: (left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
+      panel-rect: (x: 0.0, y: 0.0, w: 0.0, h: panel-h),
+      margin: margin,
       theme: theme,
     )
   })

@@ -13,13 +13,13 @@
 #let panel(mapping) = plot(
   data: mtcars,
   mapping: mapping,
-  layers: (geom-point(size: 3pt),),
+  layers: (geom-point(),),
   width: 6cm,
   height: 4cm,
   defer: true,
 )
 
-= Per-plot legends (`collect: none`)
+= `collect: none` keeps each plot's legend in place
 
 #compose(
   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
@@ -29,7 +29,7 @@
   collect: none,
 )
 
-= Auto-collect every mergeable aesthetic (default)
+= `collect: auto` (default) hoists every aesthetic identical across panels
 
 #compose(
   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
@@ -38,7 +38,7 @@
   columns: 2,
 )
 
-= Restrict hoisting to a subset of aesthetics
+= `collect: ("colour",)` hoists colour only; per-plot `size` ladders stay
 
 #compose(
   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp")),
@@ -46,5 +46,52 @@
   layout: "grid",
   columns: 2,
   collect: ("colour",),
-  guides-placement: "right",
+)
+
+= Mismatched legends never hoist (`colour` keys differ across panels)
+
+#compose(
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: "hp")),
+  layout: "grid",
+  columns: 2,
+)
+
+= `guides-placement: "left"`
+
+#compose(
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+  layout: "grid",
+  columns: 2,
+  guides-placement: "left",
+)
+
+= `guides-placement: "top"` (legend laid out horizontally above the panels)
+
+#compose(
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+  layout: "grid",
+  columns: 2,
+  guides-placement: "top",
+)
+
+= `guides-placement: "bottom"`
+
+#compose(
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+  layout: "grid",
+  columns: 2,
+  guides-placement: "bottom",
+)
+
+= Vertical stack with shared legend on the right (`layout: "stack"`)
+
+#compose(
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+  layout: "stack",
+  dir: ttb,
 )

@@ -2,19 +2,6 @@
 #import "legend.typ" as legend-mod
 #import "theme/defaults.typ": merge-theme
 
-// Compose multiple plots into a single grid or stack and hoist legends that
-// describe the same scale across all panels into one shared block.
-//
-// Each positional argument must be the dictionary returned by `plot(..., defer:
-// true)`; rendered plots are not accepted because compose needs the spec to
-// re-render with hoisted aesthetics suppressed.
-//
-// Per-aesthetic collection:
-//   collect: auto                  hoist every aesthetic mergeable across panels
-//   collect: none                  no hoisting (each plot keeps its legends)
-//   collect: ("colour", "fill")    restrict hoisting to the listed aesthetics
-//
-// The shared legend appears on `guides-placement` ("right" by default).
 #let _is-plot-spec(x) = (
   type(x) == dictionary
     and "layers" in x
@@ -48,7 +35,7 @@
   first != none
 }
 
-#let _coerce-placement(g, side) = (
+#let _coerce-placement(g, side) = legend-mod.recompute-extent((
   ..g,
   placement: (
     ..g.placement,
@@ -57,7 +44,7 @@
       "horizontal"
     } else { "vertical" },
   ),
-)
+))
 
 #let _legend-canvas-size(guides, side) = {
   let extents = legend-mod.estimate-extents(guides)
@@ -72,6 +59,90 @@
   }
 }
 
+/// Arrange multiple plots into a grid or stack with a shared, hoisted legend.
+///
+/// `compose` is the multi-plot orchestrator: it takes deferred plots, probes
+/// each panel's would-be guides, decides which legends are identical across
+/// every panel, lifts them into a single shared block on the requested side,
+/// and re-renders the panels with the hoisted aesthetics suppressed so each
+/// reclaims the margin its legend would have occupied. Inspired by
+/// `patchwork::plot_layout(guides = "collect")`.
+///
+/// Every positional argument must be a deferred plot (`plot(..., defer: true)`);
+/// passing rendered content panics, because compose needs the spec to re-render.
+///
+/// \@category Core
+/// \@stability stable
+/// \@since 0.0.1
+///
+/// \@param ..panels-positional Two or more deferred plots produced by\@plot with
+///   `defer: true`. Order is preserved by the layout (left-to-right, top-to-bottom
+///   for grids; per `dir` for stacks).
+/// \@param layout `"grid"` (default) lays panels into a Typst `grid` with `columns`
+///   columns; `"stack"` lays them into a Typst `stack` flowing in `dir`.
+/// \@param columns Number of columns in `"grid"` layout. Ignored for `"stack"`.
+/// \@param dir Stack direction (`ttb`, `btt`, `ltr`, `rtl`) used by `"stack"`
+///   layout. Ignored for `"grid"`.
+/// \@param gutter Spacing between panels and between the panel block and the
+///   shared legend.
+/// \@param collect Which aesthetics to hoist into the shared legend.
+///   - `auto` (default) hoists every aesthetic whose guide is identical across
+///     all panels (kind, title, levels/domain, breaks, labels, aesthetic mix).
+///     Aesthetics that disagree on any of those fields stay per-plot, so a
+///     mismatched panel never silently borrows another panel's legend.
+///   - `none` disables hoisting entirely; each plot keeps its own legends.
+///   - An array of aesthetic names (e.g., `("colour", "fill")`) restricts
+///     hoisting to the listed aesthetics. Listed aesthetics that aren't
+///     mergeable across panels still stay per-plot; non-listed aesthetics
+///     are never hoisted regardless of agreement.
+///   The merge predicate ignores per-panel placement and grid shape (`nrow` /
+///   `ncol`); compose forces a single shared side and grid layout for the
+///   hoisted block. Custom guides (`guide-custom`) never hoist.
+/// \@param guides-placement Side where the shared legend appears, relative to
+///   the panel block. One of `"right"` (default), `"left"`, `"top"`, or
+///   `"bottom"`. The hoisted guides' direction is set automatically:
+///   `"vertical"` for left/right, `"horizontal"` for top/bottom.
+///
+/// \@returns Typst content block: the panel layout with the shared legend
+///   stacked on `guides-placement`, or the bare panel layout when no aesthetic
+///   ends up hoisted.
+///
+/// \@examples Auto-collect: identical `colour` legend hoisted to the right.
+/// ```
+/// #let panel(map) = plot(
+///   data: mtcars, mapping: map,
+///   layers: (geom-point(size: 3pt),),
+///   width: 6cm, height: 4cm, defer: true,
+/// )
+/// #compose(
+///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+///   layout: "grid", columns: 2,
+/// )
+/// ```
+///
+/// \@examples Restrict hoisting: shared `colour` only, per-plot `size` ladders
+/// stay in each panel.
+/// ```
+/// #compose(
+///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp")),
+///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"), size: "wt")),
+///   layout: "grid", columns: 2,
+///   collect: ("colour",),
+/// )
+/// ```
+///
+/// \@examples Place the shared legend below the panels.
+/// ```
+/// #compose(
+///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+///   layout: "grid", columns: 2,
+///   guides-placement: "bottom",
+/// )
+/// ```
+///
+/// \@see\@plot,\@aes,\@guides
 #let compose(
   ..panels-positional,
   layout: "grid",
@@ -170,6 +241,7 @@
       hoisted-guides,
       trained,
       theme,
+      guides-placement,
       size.width,
       size.height,
     )
