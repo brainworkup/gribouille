@@ -110,6 +110,7 @@
 ///
 /// \@examples Auto-collect: identical `colour` legend hoisted to the right.
 /// ```
+/// //| alt: "Two side-by-side mtcars scatter panels sharing a single colour legend by cylinder count hoisted to the right of the panel grid."
 /// #let panel(map) = plot(
 ///   data: mtcars, mapping: map,
 ///   layers: (geom-point(size: 3pt),),
@@ -125,6 +126,7 @@
 /// \@examples Restrict hoisting: shared `colour` only, per-plot `size` ladders
 /// stay in each panel.
 /// ```
+/// //| alt: "Two mtcars scatter panels sharing a single colour-by-cylinder legend on the right while each panel keeps its own size legend bound to a different column."
 /// #compose(
 ///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp")),
 ///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"), size: "wt")),
@@ -135,6 +137,7 @@
 ///
 /// \@examples Place the shared legend below the panels.
 /// ```
+/// //| alt: "Two side-by-side mtcars scatter panels sharing a single colour-by-cylinder legend placed horizontally below the panel grid."
 /// #compose(
 ///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
 ///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
