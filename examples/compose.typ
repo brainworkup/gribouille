@@ -1,5 +1,5 @@
-#set page(width: auto, height: auto, margin: 1cm)
 #import "../lib.typ": *
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let mtcars = (
   (mpg: 21.0, wt: 2.620, hp: 110, cyl: "6"),
@@ -10,25 +10,20 @@
   (mpg: 21.4, wt: 3.215, hp: 110, cyl: "6"),
 )
 
+#let panel(mapping) = plot(
+  data: mtcars,
+  mapping: mapping,
+  layers: (geom-point(size: 3pt),),
+  width: 6cm,
+  height: 4cm,
+  defer: true,
+)
+
 = Per-plot legends (`collect: none`)
 
 #compose(
-  plot(
-    data: mtcars,
-    mapping: aes(x: "wt", y: "mpg", colour: as-factor("cyl")),
-    layers: (geom-point(size: 3pt),),
-    width: 6cm,
-    height: 4cm,
-    defer: true,
-  ),
-  plot(
-    data: mtcars,
-    mapping: aes(x: "hp", y: "mpg", colour: as-factor("cyl")),
-    layers: (geom-point(size: 3pt),),
-    width: 6cm,
-    height: 4cm,
-    defer: true,
-  ),
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
   layout: "grid",
   columns: 2,
   collect: none,
@@ -37,22 +32,8 @@
 = Auto-collect every mergeable aesthetic (default)
 
 #compose(
-  plot(
-    data: mtcars,
-    mapping: aes(x: "wt", y: "mpg", colour: as-factor("cyl")),
-    layers: (geom-point(size: 3pt),),
-    width: 6cm,
-    height: 4cm,
-    defer: true,
-  ),
-  plot(
-    data: mtcars,
-    mapping: aes(x: "hp", y: "mpg", colour: as-factor("cyl")),
-    layers: (geom-point(size: 3pt),),
-    width: 6cm,
-    height: 4cm,
-    defer: true,
-  ),
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
   layout: "grid",
   columns: 2,
 )
@@ -60,22 +41,8 @@
 = Restrict hoisting to a subset of aesthetics
 
 #compose(
-  plot(
-    data: mtcars,
-    mapping: aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp"),
-    layers: (geom-point(),),
-    width: 6cm,
-    height: 4cm,
-    defer: true,
-  ),
-  plot(
-    data: mtcars,
-    mapping: aes(x: "hp", y: "mpg", colour: as-factor("cyl"), size: "wt"),
-    layers: (geom-point(),),
-    width: 6cm,
-    height: 4cm,
-    defer: true,
-  ),
+  panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp")),
+  panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"), size: "wt")),
   layout: "grid",
   columns: 2,
   collect: ("colour",),
