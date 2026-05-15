@@ -20,7 +20,7 @@
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param coef Whisker length as a multiple of the inter-quartile range.
+/// \@param coefficient Whisker length as a multiple of the inter-quartile range.
 ///
 /// \@returns Statistic object with `name: "boxplot"`, consumed by geom layers.
 ///
@@ -43,9 +43,9 @@
 /// ```
 ///
 /// \@examples `stat: "boxplot"` is equivalent to `stat: stat-boxplot()` with
-/// the default `coef: 1.5`. Use the constructor to customise the whisker
-/// length, e.g., `stat: stat-boxplot(coef: 1.0)` tightens the fence so more
-/// values surface as outliers.
+/// the default `coefficient: 1.5`. Use the constructor to customise the
+/// whisker length, e.g., `stat: stat-boxplot(coefficient: 1.0)` tightens
+/// the fence so more values surface as outliers.
 /// ```
 /// //| alt: "Boxplot per group on the x-axis with values on the y-axis, using a tighter 1.0 times IQR whisker rule that exposes additional outliers for groups a, b, c."
 /// #let d = ()
@@ -57,17 +57,17 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "grp", y: "y"),
-///   layers: (geom-boxplot(stat: stat-boxplot(coef: 1.0)),),
+///   layers: (geom-boxplot(stat: stat-boxplot(coefficient: 1.0)),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
 /// ```
 ///
 /// \@see \@geom-boxplot, \@stat-identity
-#let stat-boxplot(coef: 1.5) = (
+#let stat-boxplot(coefficient: 1.5) = (
   kind: "stat",
   name: "boxplot",
-  params: (coef: coef),
+  params: (coefficient: coefficient),
 )
 
 // Linear-interpolation quantile (R type 7, numpy default) on a sorted array.
@@ -83,7 +83,7 @@
   sorted.at(lo) * (1 - frac) + sorted.at(hi) * frac
 }
 
-#let _summarise(rows, x-col, y-col, coef) = {
+#let _summarise(rows, x-col, y-col, coefficient) = {
   let ys = rows
     .map(r => parse-number(r.at(y-col, default: none)))
     .filter(v => v != none)
@@ -93,8 +93,8 @@
   let middle = _quantile(sorted, 0.5)
   let upper = _quantile(sorted, 0.75)
   let iqr = upper - lower
-  let fence-lo = lower - coef * iqr
-  let fence-hi = upper + coef * iqr
+  let fence-lo = lower - coefficient * iqr
+  let fence-hi = upper + coefficient * iqr
   let inside = sorted.filter(v => v >= fence-lo and v <= fence-hi)
   let whisker-lo = if inside.len() == 0 { lower } else { inside.first() }
   let whisker-hi = if inside.len() == 0 { upper } else { inside.last() }
@@ -141,7 +141,7 @@
   }
   if data.len() == 0 { return (data: (), mapping: base-mapping) }
 
-  let coef = params.at("coef", default: 1.5)
+  let coefficient = params.at("coefficient", default: 1.5)
 
   // Bucket rows by their raw x value; emit one summary row per bucket in
   // first-appearance order so the downstream discrete x scale keeps the
@@ -159,7 +159,7 @@
 
   let out = ()
   for key in order {
-    let summary = _summarise(buckets.at(key), x-col, y-col, coef)
+    let summary = _summarise(buckets.at(key), x-col, y-col, coefficient)
     if summary == none { continue }
     out.push(summary)
   }
