@@ -272,10 +272,13 @@
       size.width,
       size.height,
     )
-    // Mirror render-plot's panel-to-legend offset: `gutter` is reserved for
-    // inter-panel spacing, while the panel-block sits at `legend-gap` from
-    // the shared legend (same as a single-plot side-legend).
-    let legend-spacing = legend-mod.legend-gap(theme) * 1cm
+    // The panel-block and the shared legend are separate Typst blocks, each
+    // a cetz canvas. cetz auto-pads canvases around text drawables (font
+    // descent + leading); that intrinsic padding already produces a visual
+    // gap matching `render-plot`'s in-canvas `legend-gap` (~1.6em). Adding
+    // explicit Typst spacing on top would compound and look wider than a
+    // single-plot side-legend.
+    let legend-spacing = 0cm
 
     if guides-placement == "right" {
       grid(
