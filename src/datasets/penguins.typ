@@ -73,6 +73,8 @@
 ///     subtitle: "Flipper length vs body mass by species",
 ///     caption: "Palmer Archipelago (Antarctica) penguin dataset",
 ///     colour: "Species",
+///     fill: "Species",
+///     shape: "Species",
 ///     x: "Flipper Length (mm)",
 ///     y: "Body Mass (g)",
 ///   ),
