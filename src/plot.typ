@@ -25,8 +25,9 @@
 /// \@param width Total plot width, including axes and legends.
 /// \@param height Total plot height, including axes and legends.
 /// \@param alt Alt text describing the figure. When set, the rendered plot is wrapped in a `figure` (kind `"gribouille-plot"`, no number, no caption) carrying this string as its PDF alternative text, so a screen reader on a tagged PDF announces the description instead of the raw axis and legend labels. When `none`, the plot renders without the figure wrapper. Quarto authors embedding plots through `typst-render` should set the block-level `alt` cell option for HTML output; this parameter only affects direct Typst compilation.
+/// \@param defer When `true`, return the spec dict instead of rendering, so\@compose can probe guides and re-render with hoisted aesthetics suppressed. The dict carries the same keys the renderer would consume; do not feed it to anything other than\@compose.
 ///
-/// \@returns Typst content block containing the rendered figure.
+/// \@returns Typst content block containing the rendered figure, or the spec dict when `defer: true`.
 ///
 /// \@examples Single-layer scatter coloured by category, with a title.
 /// ```
@@ -87,7 +88,27 @@
   width: 10cm,
   height: 7cm,
   alt: none,
+  defer: false,
 ) = {
+  // Deferred plots skip the context block because `context` returns
+  // content; compose() resolves the active theme from its own context
+  // before handing the spec to the renderer.
+  if defer {
+    return (
+      data: _normalise-data(data),
+      mapping: mapping,
+      layers: layers,
+      scales: scales,
+      coord: coord,
+      facet: facet,
+      theme: theme,
+      labs: labs,
+      guides: guides,
+      width: width,
+      height: height,
+      alt: alt,
+    )
+  }
   context {
     let effective-theme = if theme != none {
       theme
