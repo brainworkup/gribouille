@@ -383,6 +383,27 @@
   )
 }
 
+// Geometry shared between the height estimator (theme-free, used by margin
+// accounting) and the per-kind draw helpers (called with the resolved
+// title-h). Vertical and horizontal pairs swap the bar/line dimensions so a
+// name change in one path forces a change in the other.
+#let _SWATCH-LINE-H = 0.4
+#let _LADDER-LINE-H = 0.45
+#let _LADDER-H-COL-H = 0.32
+#let _LADDER-H-LABEL-H = 0.4
+#let _COLOURBAR-V-W = 0.35
+#let _COLOURBAR-V-H = 3.0
+#let _COLOURBAR-H-W = 3.0
+#let _COLOURBAR-H-H = 0.35
+#let _COLOURBAR-H-LABEL-H = 0.45
+#let _GUIDE-PAD-V = 0.2
+#let _COLOURBAR-PAD-V = 0.3
+
+// Approximate title-h used only by `_guide-height` for margin sizing. The
+// default `legend-title` surface has `margin.bottom: 1.6em`; at 9pt body that
+// resolves to ~0.51cm. Renderer uses the exact value via `_legend-title-h`.
+#let _ESTIMATED-TITLE-H = 0.5
+
 // Per-guide width estimate. Stored on each guide so `estimate-width` is O(1).
 #let _guide-width(g) = {
   if g.kind == "swatch" {
@@ -400,6 +421,10 @@
     for b in g.breaks {
       label-chars = calc.max(label-chars, format-break(b).len())
     }
+    if g.placement.direction == "horizontal" {
+      let col-w = calc.max(_LADDER-LEAD, _label-width(label-chars))
+      return calc.max(_label-width(_title-chars(g)), col-w * g.breaks.len())
+    }
     return calc.max(
       _label-width(_title-chars(g)),
       _LADDER-LEAD + _label-width(label-chars),
@@ -416,10 +441,43 @@
     for b in breaks {
       max-chars = calc.max(max-chars, format-break(b).len())
     }
+    if g.placement.direction == "horizontal" {
+      return calc.max(
+        _label-width(_title-chars(g)),
+        _COLOURBAR-H-W + _label-width(max-chars),
+      )
+    }
     return 0.65 + max-chars * _char-width
   }
   if g.kind == "custom" { return g.cm-width }
   panic("legend._guide-width: unknown guide kind \"" + g.kind + "\"")
+}
+
+#let _guide-height(g) = {
+  let title-h = if g.title == none { 0.0 } else { _ESTIMATED-TITLE-H }
+  if g.kind == "swatch" {
+    let shape = _grid-shape(
+      g.levels.len(),
+      g.nrow,
+      g.ncol,
+      g.placement.direction,
+    )
+    return title-h + _SWATCH-LINE-H * shape.rows + _GUIDE-PAD-V
+  }
+  if g.kind == "size-ladder" {
+    if g.placement.direction == "horizontal" {
+      return title-h + _LADDER-H-COL-H + _LADDER-H-LABEL-H
+    }
+    return title-h + _LADDER-LINE-H * g.breaks.len() + _GUIDE-PAD-V
+  }
+  if g.kind == "colourbar" {
+    if g.placement.direction == "horizontal" {
+      return title-h + _COLOURBAR-H-H + _COLOURBAR-H-LABEL-H
+    }
+    return title-h + _COLOURBAR-V-H + _COLOURBAR-PAD-V
+  }
+  if g.kind == "custom" { return title-h + g.cm-height + _GUIDE-PAD-V }
+  panic("legend._guide-height: unknown guide kind \"" + g.kind + "\"")
 }
 
 #let guides-for(spec, trained) = {
@@ -595,24 +653,29 @@
 }
 
 #let _swatch-height(guide, title-h) = {
-  let line-h = 0.4
   let shape = _grid-shape(
     guide.levels.len(),
     guide.nrow,
     guide.ncol,
     guide.placement.direction,
   )
-  title-h + line-h * shape.rows + 0.2
+  title-h + _SWATCH-LINE-H * shape.rows + _GUIDE-PAD-V
 }
 
 #let _size-ladder-height(guide, title-h) = {
-  let line-h = 0.45
-  title-h + line-h * guide.breaks.len() + 0.2
+  if guide.placement.direction == "horizontal" {
+    title-h + _LADDER-H-COL-H + _LADDER-H-LABEL-H
+  } else {
+    title-h + _LADDER-LINE-H * guide.breaks.len() + _GUIDE-PAD-V
+  }
 }
 
-#let _colourbar-height(title-h) = {
-  let bar-h = 3.0
-  title-h + bar-h + 0.3
+#let _colourbar-height(guide, title-h) = {
+  if guide.placement.direction == "horizontal" {
+    title-h + _COLOURBAR-H-H + _COLOURBAR-H-LABEL-H
+  } else {
+    title-h + _COLOURBAR-V-H + _COLOURBAR-PAD-V
+  }
 }
 
 #let _custom-height(guide, title-h) = {
@@ -634,7 +697,7 @@
 }
 
 #let _draw-swatch(guide, ctx, ox, cursor, theme, title-h) = {
-  let line-h = 0.4
+  let line-h = _SWATCH-LINE-H
   let glyph-size = 0.12
   let ink = resolve-colour(theme, "ink")
   let _legend-text = _text-style(theme, "legend-text")
@@ -685,43 +748,74 @@
 }
 
 #let _draw-size-ladder(guide, ctx, ox, cursor, theme, title-h) = {
-  let line-h = 0.45
+  let line-h = _LADDER-LINE-H
   let glyph-size = 0.16
   let ink = resolve-colour(theme, "ink")
   let _legend-text = _text-style(theme, "legend-text")
   let text-colour = _legend-text.fill
   let text-size = _legend-text.size
+  let labels = guide.at("labels", default: auto)
+  let typst-mark = guide.at("typst-mark", default: false)
+  let key-kind = guide.at("key", default: "point")
 
   _draw-title(ox, cursor, theme, guide.title)
   let top = cursor - title-h
-  let key-kind = guide.at("key", default: "point")
-  for (i, value) in guide.breaks.enumerate() {
-    let cy = top - i * line-h
-    let bundle = _bundle-for(value, guide.aesthetics, ctx, ink)
-    draw-glyph(
-      key-kind,
-      ox + glyph-size,
-      cy - glyph-size,
-      glyph-size,
-      bundle,
-      ink: ink,
-    )
-    let labels = guide.at("labels", default: auto)
-    let break-text = resolve-prose(
-      resolve-label(
-        labels,
-        value,
-        i,
-        format-break(value),
-        typst-mark: guide.at("typst-mark", default: false),
-      ),
-      eval-strings: _legend-text.typst,
-    )
-    cetz.draw.content(
-      (ox + glyph-size * 2 + 0.15, cy - glyph-size),
-      text(size: text-size, fill: text-colour)[#break-text],
-      anchor: "west",
-    )
+
+  if guide.placement.direction == "horizontal" {
+    let label-chars = 0
+    for b in guide.breaks {
+      label-chars = calc.max(label-chars, format-break(b).len())
+    }
+    let col-w = calc.max(_LADDER-LEAD, _label-width(label-chars))
+    let cy = top - glyph-size
+    for (i, value) in guide.breaks.enumerate() {
+      let cx = ox + glyph-size + i * col-w
+      let bundle = _bundle-for(value, guide.aesthetics, ctx, ink)
+      draw-glyph(key-kind, cx, cy - glyph-size, glyph-size, bundle, ink: ink)
+      let break-text = resolve-prose(
+        resolve-label(
+          labels,
+          value,
+          i,
+          format-break(value),
+          typst-mark: typst-mark,
+        ),
+        eval-strings: _legend-text.typst,
+      )
+      cetz.draw.content(
+        (cx, cy - glyph-size * 2 - 0.1),
+        text(size: text-size, fill: text-colour)[#break-text],
+        anchor: "north",
+      )
+    }
+  } else {
+    for (i, value) in guide.breaks.enumerate() {
+      let cy = top - i * line-h
+      let bundle = _bundle-for(value, guide.aesthetics, ctx, ink)
+      draw-glyph(
+        key-kind,
+        ox + glyph-size,
+        cy - glyph-size,
+        glyph-size,
+        bundle,
+        ink: ink,
+      )
+      let break-text = resolve-prose(
+        resolve-label(
+          labels,
+          value,
+          i,
+          format-break(value),
+          typst-mark: typst-mark,
+        ),
+        eval-strings: _legend-text.typst,
+      )
+      cetz.draw.content(
+        (ox + glyph-size * 2 + 0.15, cy - glyph-size),
+        text(size: text-size, fill: text-colour)[#break-text],
+        anchor: "west",
+      )
+    }
   }
 }
 
@@ -732,9 +826,11 @@
 }
 
 #let _draw-colourbar(guide, ctx, ox, cursor, theme, title-h) = {
-  let bar-w = 0.35
-  let bar-h = 3.0
+  let horizontal = guide.placement.direction == "horizontal"
+  let bar-w = if horizontal { _COLOURBAR-H-W } else { _COLOURBAR-V-W }
+  let bar-h = if horizontal { _COLOURBAR-H-H } else { _COLOURBAR-V-H }
   let tick-gap = 0.08
+  let tick-len = 0.1
   let bar-aes = if guide.aesthetics.contains("colour") {
     "colour"
   } else { "fill" }
@@ -748,26 +844,38 @@
   _draw-title(ox, cursor, theme, guide.title)
   let bar-top = cursor - title-h
   let bar-bottom = bar-top - bar-h
+  let bar-left = ox
+  let bar-right = ox + bar-w
   let steps = if guide.at("binned", default: false) {
     guide.at("n-breaks", default: 5)
   } else { 40 }
-  let step-h = bar-h / steps
   for i in range(steps) {
     let t = (i + 0.5) / steps
     let value = lo + t * (hi - lo)
     let colour = _resolve-bar-colour(trained, value, ctx.palette, ink)
-    let y-lo = bar-bottom + i * step-h
-    let y-hi = y-lo + step-h
-    cetz.draw.rect(
-      (ox, y-lo),
-      (ox + bar-w, y-hi),
-      fill: colour,
-      stroke: none,
-    )
+    if horizontal {
+      let step-w = bar-w / steps
+      let x-lo = bar-left + i * step-w
+      cetz.draw.rect(
+        (x-lo, bar-bottom),
+        (x-lo + step-w, bar-top),
+        fill: colour,
+        stroke: none,
+      )
+    } else {
+      let step-h = bar-h / steps
+      let y-lo = bar-bottom + i * step-h
+      cetz.draw.rect(
+        (bar-left, y-lo),
+        (bar-right, y-lo + step-h),
+        fill: colour,
+        stroke: none,
+      )
+    }
   }
   cetz.draw.rect(
-    (ox, bar-bottom),
-    (ox + bar-w, bar-top),
+    (bar-left, bar-bottom),
+    (bar-right, bar-top),
     fill: none,
     stroke: (paint: ink, thickness: 0.2pt),
   )
@@ -778,12 +886,6 @@
     if hi == lo { continue }
     let t = (b - lo) / (hi - lo)
     if t < 0 or t > 1 { continue }
-    let cy = bar-bottom + t * bar-h
-    cetz.draw.line(
-      (ox + bar-w, cy),
-      (ox + bar-w + 0.1, cy),
-      stroke: (paint: ink, thickness: 0.3pt),
-    )
     let tick-text = resolve-prose(
       resolve-label(
         labels,
@@ -794,11 +896,31 @@
       ),
       eval-strings: _legend-text.typst,
     )
-    cetz.draw.content(
-      (ox + bar-w + tick-gap + 0.1, cy),
-      text(size: text-size, fill: text-colour)[#tick-text],
-      anchor: "west",
-    )
+    if horizontal {
+      let cx = bar-left + t * bar-w
+      cetz.draw.line(
+        (cx, bar-bottom),
+        (cx, bar-bottom - tick-len),
+        stroke: (paint: ink, thickness: 0.3pt),
+      )
+      cetz.draw.content(
+        (cx, bar-bottom - tick-len - tick-gap),
+        text(size: text-size, fill: text-colour)[#tick-text],
+        anchor: "north",
+      )
+    } else {
+      let cy = bar-bottom + t * bar-h
+      cetz.draw.line(
+        (bar-right, cy),
+        (bar-right + tick-len, cy),
+        stroke: (paint: ink, thickness: 0.3pt),
+      )
+      cetz.draw.content(
+        (bar-right + tick-len + tick-gap, cy),
+        text(size: text-size, fill: text-colour)[#tick-text],
+        anchor: "west",
+      )
+    }
   }
 }
 
@@ -831,7 +953,7 @@
       cursor -= _size-ladder-height(g, title-h)
     } else if g.kind == "colourbar" {
       _draw-colourbar(g, ctx, ox, cursor, theme, title-h)
-      cursor -= _colourbar-height(title-h)
+      cursor -= _colourbar-height(g, title-h)
     } else if g.kind == "custom" {
       _draw-custom(g, ox, cursor, theme, title-h)
       cursor -= _custom-height(g, title-h)
