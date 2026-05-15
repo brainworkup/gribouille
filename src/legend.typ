@@ -248,6 +248,11 @@
   if override != none and override.at("suppress", default: false) {
     return none
   }
+  let placement = if override != none {
+    override.at("placement", default: _default-placement)
+  } else { _default-placement }
+  if placement.side == "none" { return none }
+
   let contributors = _mapped-contributors(spec, aes-name)
   if contributors.len() == 0 { return none }
 
@@ -264,9 +269,6 @@
   let reverse = if override != none {
     override.at("reverse", default: false)
   } else { false }
-  let placement = if override != none {
-    override.at("placement", default: _default-placement)
-  } else { _default-placement }
 
   let cand = (
     aes: aes-name,
@@ -488,9 +490,7 @@
   let candidates = ()
   for aes-name in _aesthetic-order {
     let cand = _candidate(spec, trained, overrides, aes-name)
-    if cand == none { continue }
-    if cand.placement.side == "none" { continue }
-    candidates.push(cand)
+    if cand != none { candidates.push(cand) }
   }
 
   let groups = ()
@@ -1036,7 +1036,9 @@
 #let _resolve-offset(value, panel-dim) = {
   if type(value) == ratio { panel-dim * (value / 100%) } else if (
     type(value) == length
-  ) { value / 1cm } else { 0.0 }
+  ) { value / 1cm } else {
+    panic("legend offset must be a length or ratio; got " + repr(value))
+  }
 }
 
 #let _draw-inside(g, ctx, panel-rect, theme) = {
@@ -1096,9 +1098,7 @@
   if guides.len() == 0 { return }
   let buckets = (top: (), right: (), bottom: (), left: (), inside: ())
   for g in guides {
-    let side = g.placement.side
-    if side == "none" { continue }
-    buckets.at(side).push(g)
+    buckets.at(g.placement.side).push(g)
   }
   for side in ("top", "right", "bottom", "left") {
     _draw-side(
