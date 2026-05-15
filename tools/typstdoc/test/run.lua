@@ -785,6 +785,10 @@ end)
 
 -- -----------------------------------------------------------------------
 describe("resolve: cross-references", function()
+  local bar_index = {
+    bar = { name = "bar", category = "Geoms", category_slug = "geoms", qmd_path = "geoms/bar.qmd" }
+  }
+
   it("warns on unresolved @ref (non-strict)", function()
     local out = resolve.resolve_refs_in_text("See @missing for details.", "core/foo.qmd", {}, false, "x.typ", 1)
     assert_contains(out, "@missing")
@@ -797,10 +801,7 @@ describe("resolve: cross-references", function()
   end)
 
   it("resolves @ref to relative link", function()
-    local index = {
-      bar = { name = "bar", category = "Geoms", category_slug = "geoms", qmd_path = "geoms/bar.qmd" }
-    }
-    local out = resolve.resolve_refs_in_text("See @bar.", "core/foo.qmd", index, false)
+    local out = resolve.resolve_refs_in_text("See @bar.", "core/foo.qmd", bar_index, false)
     assert_contains(out, "[`bar`](../geoms/bar.qmd)")
   end)
 
@@ -811,10 +812,7 @@ describe("resolve: cross-references", function()
   end)
 
   it("includes trailing () in the resolved link's code span", function()
-    local index = {
-      bar = { name = "bar", category = "Geoms", category_slug = "geoms", qmd_path = "geoms/bar.qmd" }
-    }
-    local out = resolve.resolve_refs_in_text("Call @bar() now.", "core/foo.qmd", index, false)
+    local out = resolve.resolve_refs_in_text("Call @bar() now.", "core/foo.qmd", bar_index, false)
     assert_contains(out, "[`bar()`](../geoms/bar.qmd)")
     assert_true(not out:find("`bar`()", 1, true), "() must not leak outside the code span")
   end)
@@ -831,12 +829,9 @@ describe("resolve: cross-references", function()
   end)
 
   it("leaves a lone trailing ( or ) untouched around @ref", function()
-    local index = {
-      bar = { name = "bar", category = "Geoms", category_slug = "geoms", qmd_path = "geoms/bar.qmd" }
-    }
-    local out_open = resolve.resolve_refs_in_text("(@bar(x)", "core/foo.qmd", index, false)
+    local out_open = resolve.resolve_refs_in_text("(@bar(x)", "core/foo.qmd", bar_index, false)
     assert_contains(out_open, "@bar(x")
-    local out_close = resolve.resolve_refs_in_text("@bar) tail", "core/foo.qmd", index, false)
+    local out_close = resolve.resolve_refs_in_text("@bar) tail", "core/foo.qmd", bar_index, false)
     assert_contains(out_close, "@bar) tail")
   end)
 end)
