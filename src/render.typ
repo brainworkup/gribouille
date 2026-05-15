@@ -2888,7 +2888,7 @@
   _wrap(block(stack(dir: ttb, spacing: 0pt, ..items)))
 }
 
-#let render-plot(spec) = {
+#let render-plot-deferred(spec, suppress-aesthetics: ()) = {
   let theme = merge-theme(spec.theme)
   let labs = spec.at("labs", default: none)
 
@@ -2975,7 +2975,15 @@
   let width-units = spec.width / 1cm
   let height-units = spec.height / 1cm
 
-  let guides = legend-mod.guides-for(spec, trained)
+  let guides-all = legend-mod.guides-for(spec, trained)
+  let guides = if suppress-aesthetics.len() == 0 {
+    guides-all
+  } else {
+    guides-all.filter(g => {
+      let aes = g.at("aesthetics", default: ())
+      not aes.any(a => suppress-aesthetics.contains(a))
+    })
+  }
   let extents = legend-mod.estimate-extents(guides)
   let any-legend = (
     extents.top > 0
@@ -3146,5 +3154,11 @@
     )
   }
 
-  _render-decorate(canvas, labs, theme)
+  (
+    content: _render-decorate(canvas, labs, theme),
+    guides: guides-all,
+    trained: trained,
+  )
 }
+
+#let render-plot(spec) = render-plot-deferred(spec).content
