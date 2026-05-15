@@ -174,6 +174,34 @@ local function emit_returns(fn, from_qmd, index, strict)
   return table.concat(out, "\n")
 end
 
+local function lookup_stat_outputs(fn, stat_info)
+  if not stat_info then return nil end
+  if not fn.doc or fn.doc.category ~= "Stats" then return nil end
+  local bare = fn.name:match("^stat%-(.+)$")
+  if not bare then return nil end
+  local entry = stat_info[bare]
+  if not entry then
+    entry = stat_info[(bare:gsub("%-", "_"))]
+  end
+  return entry
+end
+
+local function emit_outputs(fn, stat_info)
+  local entry = lookup_stat_outputs(fn, stat_info)
+  if not entry then return "" end
+  local out = { "## Outputs", "" }
+  if #entry.outputs == 0 then
+    table.insert(out, "This stat passes input rows through unchanged.")
+    table.insert(out, "")
+    return table.concat(out, "\n")
+  end
+  for _, col in ipairs(entry.outputs) do
+    table.insert(out, string.format("- `%s`.", col))
+  end
+  table.insert(out, "")
+  return table.concat(out, "\n")
+end
+
 local function emit_examples(fn, from_qmd, index, strict)
   if #fn.doc.examples == 0 then return "" end
   local out = { "## Examples", "" }
@@ -252,6 +280,7 @@ function M.render_function(fn, index, opts)
     emit_arities(fn, from_qmd, index, strict),
     emit_params(fn, from_qmd, index, strict),
     emit_returns(fn, from_qmd, index, strict),
+    emit_outputs(fn, opts.stat_info),
     emit_examples(fn, from_qmd, index, strict),
     emit_see_also(fn, from_qmd, index, strict),
   }

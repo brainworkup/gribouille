@@ -15,6 +15,7 @@ local render = require("render")
 local resolve = require("resolve")
 local deps = require("deps")
 local changelog = require("changelog")
+local stat_info = require("stat_info")
 
 local USAGE = [[
 Usage: tools/typstdoc/main.lua [options]
@@ -150,6 +151,7 @@ end
 
 local function write_reference(opts, all_functions, modules, lib_info)
   local index = resolve.build_index(all_functions, lib_info)
+  local stats = stat_info.load(opts.root)
 
   util.remove_generated_files(opts.out, "*.qmd")
   util.make_dir(opts.out)
@@ -157,7 +159,7 @@ local function write_reference(opts, all_functions, modules, lib_info)
   local written = 0
   for _, fn in ipairs(all_functions) do
     if fn.doc and fn.doc.category then
-      local body, rel_path = render.render_function(fn, index, { strict = opts.strict })
+      local body, rel_path = render.render_function(fn, index, { strict = opts.strict, stat_info = stats })
       util.write_file(opts.out .. "/" .. rel_path, body)
       written = written + 1
     end
