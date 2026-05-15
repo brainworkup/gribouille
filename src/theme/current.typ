@@ -12,7 +12,7 @@
 /// \@stability stable
 /// \@since 0.1.0
 ///
-/// \@param t Theme dictionary from \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, or \@theme.
+/// \@param theme Theme dictionary from \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, or \@theme.
 ///
 /// \@returns None.
 ///
@@ -31,7 +31,7 @@
 /// ```
 ///
 /// \@see \@theme-get, \@theme
-#let theme-set(t) = _theme-state.update(t)
+#let theme-set(theme) = _theme-state.update(theme)
 
 /// Get the current global default theme.
 ///
