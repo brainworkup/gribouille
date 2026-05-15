@@ -210,22 +210,25 @@
       }
     }
 
-    // Whichever side hosts the shared legend collapses its panel-side margin
-    // to a tick-mark stub so the panel butts up against the hoisted legend
-    // canvas. Other sides stay `auto` and keep their native axis-label space.
-    // Whichever side hosts the shared legend collapses its panel-side margin
-    // to a tick-mark stub so the panel butts up against the hoisted legend
-    // canvas. The other side keeps its native margin so axis labels and
-    // titles still fit. For bottom/left, the panel hosts its own axis title
-    // (x-axis title for bottom, y-axis title for left), so we leave the
-    // native margin alone.
+    // Whichever side hosts the shared legend gets two interventions so the
+    // panel butts up against the legend instead of carrying a half-centimetre
+    // of unused axis-title slack.
+    //   top  / right  → override `plot-margin` to 0 because the panel has no
+    //                   axis title on that side; data area extends to canvas
+    //                   edge.
+    //   left / bottom → leave the override unset (panel still hosts the y- or
+    //                   x-axis title there) and instead pass `tight-sides`
+    //                   to render-plot-deferred, which drops the conservative
+    //                   1.5/1.1 cm floor on that side so the margin shrinks
+    //                   to just what the axis title actually needs.
     let trim = if guides-placement == "top" {
       margin(top: 0cm)
     } else if guides-placement == "right" {
       margin(right: 0cm)
     } else { none }
-    // bottom + left placement keep native margins because the panel still
-    // hosts its x-axis title / y-axis title on those sides.
+    let tight-sides = if (
+      guides-placement == "left" or guides-placement == "bottom"
+    ) { (guides-placement,) } else { () }
     let trim-spec(spec) = if trim == none { spec } else {
       let new-theme = if spec.at("theme", default: none) == none {
         (plot-margin: trim)
@@ -243,6 +246,7 @@
         render-plot-deferred(
           trim-spec(spec),
           suppress-aesthetics: hoisted,
+          tight-sides: tight-sides,
         ).content
       })
     }

@@ -2888,7 +2888,7 @@
   _wrap(block(stack(dir: ttb, spacing: 0pt, ..items)))
 }
 
-#let render-plot-deferred(spec, suppress-aesthetics: ()) = {
+#let render-plot-deferred(spec, suppress-aesthetics: (), tight-sides: ()) = {
   let theme = merge-theme(spec.theme)
   let labs = spec.at("labs", default: none)
 
@@ -3073,9 +3073,15 @@
   let _side-gap = side => (
     extents.at(side) + (if extents.at(side) > 0 { legend-gap } else { 0.0 })
   )
+  // `tight-sides` lets `compose()` skip the conservative floors (1.5 cm /
+  // 1.1 cm) on the side it hoists the shared legend to, so the panel butts
+  // against the legend instead of carrying ~0.5 cm of unused axis-title slack.
+  let _floor(side, floor, computed) = if tight-sides.contains(side) {
+    computed
+  } else { calc.max(floor, computed) }
   let auto-margin = (
-    left: calc.max(1.5, left-extent + _side-gap("left")),
-    bottom: calc.max(1.1, bottom-extent + _side-gap("bottom")),
+    left: _floor("left", 1.5, left-extent + _side-gap("left")),
+    bottom: _floor("bottom", 1.1, bottom-extent + _side-gap("bottom")),
     top: 0.3 + sec-x-extent + _side-gap("top"),
     right: calc.min(0.3 + sec-y-extent + _side-gap("right"), max-right-margin),
   )
