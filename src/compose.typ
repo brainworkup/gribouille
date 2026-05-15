@@ -295,9 +295,9 @@
         legend-canvas, panel-block,
       )
     } else if guides-placement == "bottom" {
-      stack(dir: ttb, panel-block, legend-canvas)
+      stack(dir: ttb, panel-block, align(center, legend-canvas))
     } else {
-      stack(dir: ttb, legend-canvas, panel-block)
+      stack(dir: ttb, align(center, legend-canvas), panel-block)
     }
   }
 }
