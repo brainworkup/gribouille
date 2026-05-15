@@ -82,8 +82,8 @@
 /// \@param layout `"grid"` (default) lays panels into a Typst `grid` with `columns`
 ///   columns; `"stack"` lays them into a Typst `stack` flowing in `dir`.
 /// \@param columns Number of columns in `"grid"` layout. Ignored for `"stack"`.
-/// \@param dir Stack direction (`ttb`, `btt`, `ltr`, `rtl`) used by `"stack"`
-///   layout. Ignored for `"grid"`.
+/// \@param direction Stack direction (`ttb`, `btt`, `ltr`, `rtl`) used by
+///   `"stack"` layout. Ignored for `"grid"`.
 /// \@param gutter Spacing between panels and between the panel block and the
 ///   shared legend.
 /// \@param collect Which aesthetics to hoist into the shared legend.
@@ -148,7 +148,7 @@
   ..panels-positional,
   layout: "grid",
   columns: 2,
-  dir: ttb,
+  direction: ttb,
   gutter: 0.5cm,
   collect: auto,
   guides-placement: "right",
@@ -254,7 +254,7 @@
     let panel-block = if layout == "grid" {
       grid(columns: columns, gutter: gutter, ..final-panels)
     } else if layout == "stack" {
-      stack(dir: dir, spacing: gutter, ..final-panels)
+      stack(dir: direction, spacing: gutter, ..final-panels)
     } else {
       panic(
         "compose: layout must be \"grid\" or \"stack\"; got " + repr(layout),

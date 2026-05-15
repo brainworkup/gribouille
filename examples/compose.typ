@@ -93,5 +93,5 @@
   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
   layout: "stack",
-  dir: ttb,
+  direction: ttb,
 )
