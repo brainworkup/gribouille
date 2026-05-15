@@ -22,6 +22,10 @@ Run the survey command at the bottom before extending the table.
 | `eval`    | evaluate (closure / late-binding lane) | `eval-after-stat`, `eval-stage`, …                                       |
 | `args`    | arguments                              | Typst `..args` rest binding.                                             |
 | `fun`     | function / closure                     | user-supplied closure passed via `fun:` (`stat-manual`, `stat-summary`). |
+| `defer`   | deferred render                        | `plot(defer: true)` returns the spec dict instead of content, for `compose`. |
+| `compose` | multi-plot composition                 | arranges deferred plots and hoists shared legends; see `src/compose.typ`. |
+| `hoist`   | per-aesthetic legend lift              | promote a per-panel guide into the shared legend when every panel agrees on the scale. |
+| `probe`   | first-pass deferred render             | initial `render-plot-deferred` call that reads guides before suppression. |
 
 ## Scale / training
 
