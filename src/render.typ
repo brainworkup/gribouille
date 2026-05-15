@@ -2975,15 +2975,13 @@
   let width-units = spec.width / 1cm
   let height-units = spec.height / 1cm
 
-  let guides-all = legend-mod.guides-for(spec, trained)
-  let guides = if suppress-aesthetics.len() == 0 {
-    guides-all
-  } else {
-    guides-all.filter(g => {
+  // Custom guides lack `aesthetics`; default keeps them unsuppressed.
+  let guides = legend-mod
+    .guides-for(spec, trained)
+    .filter(g => {
       let aes = g.at("aesthetics", default: ())
       not aes.any(a => suppress-aesthetics.contains(a))
     })
-  }
   let extents = legend-mod.estimate-extents(guides)
   let any-legend = (
     extents.top > 0
@@ -3156,7 +3154,7 @@
 
   (
     content: _render-decorate(canvas, labs, theme),
-    guides: guides-all,
+    guides: guides,
     trained: trained,
   )
 }
