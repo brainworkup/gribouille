@@ -2475,6 +2475,9 @@
     s
   }
 
+  let all-x = ("all_x", "all").contains(spec.facet.axes)
+  let all-y = ("all_y", "all").contains(spec.facet.axes)
+
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
     hide(rect((0, 0), (width-units, height-units)), bounds: true)
@@ -2520,12 +2523,15 @@
         spec,
         (x0, inner-y0),
         (inner-w, inner-h),
-        show-x-labels: free-x or row == nrow - 1,
-        show-y-labels: free-y or col == 0,
+        // `i + ncol >= n`: no panel sits below this one, so it owns the
+        // bottom x axis even if its row isn't the geometric last row
+        // (trailing empty slots in a partial wrap).
+        show-x-labels: free-x or all-x or i + ncol >= n,
+        show-y-labels: free-y or all-y or col == 0,
         show-x-title: false,
         show-y-title: false,
-        show-x-sec: free-x or row == 0,
-        show-y-sec: free-y or col == ncol - 1,
+        show-x-sec: free-x or all-x or row == 0,
+        show-y-sec: free-y or all-y or col == ncol - 1,
         flipped: _is-flipped(coord),
         axis-breaks: shared-breaks,
         x-extents: _pe.x,

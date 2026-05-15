@@ -26,6 +26,13 @@
 ///   the corresponding axis, pinning every panel to the same range.
 /// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
+/// \@param axes Which panels draw their own positional axes. One of
+///   `"margins"` (default; outer edge plus any panel whose neighbour slot
+///   is empty), `"all_x"` (every panel draws bottom and top x axes),
+///   `"all_y"` (every panel draws left and right y axes), or `"all"`
+///   (every panel draws both). Independent of `scales`: with the default
+///   `"margins"`, a panel above an empty trailing slot still gets a
+///   bottom x axis.
 ///
 /// \@returns Facet dictionary consumed by \@plot.
 ///
@@ -95,10 +102,16 @@
   nrow: none,
   scales: "fixed",
   labeller: label-value(),
+  axes: "margins",
 ) = {
   if not ("fixed", "free", "free_x", "free_y").contains(scales) {
     panic(
       "facet-wrap: scales must be \"fixed\", \"free\", \"free_x\", or \"free_y\"",
+    )
+  }
+  if not ("margins", "all_x", "all_y", "all").contains(axes) {
+    panic(
+      "facet-wrap: axes must be \"margins\", \"all_x\", \"all_y\", or \"all\"",
     )
   }
   (
@@ -109,6 +122,7 @@
     nrow: nrow,
     scales: scales,
     labeller: labeller,
+    axes: axes,
   )
 }
 
