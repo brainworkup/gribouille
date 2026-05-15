@@ -700,6 +700,14 @@
   )
 }
 
+// Gap (cm) the renderer inserts between the plot panel and a side-placed
+// legend. Mirrors `render-plot`'s `legend-gap` computation so `compose()` can
+// reuse the same value between its panel block and the hoisted shared legend.
+#let legend-gap(theme) = {
+  let s = _text-style(theme, "legend-title")
+  resolve-margin-side-cm(s.margin.left, 1.6em, size-pt: s.size / 1pt)
+}
+
 #let _swatch-height(guide, title-h) = {
   let shape = _grid-shape(
     guide.levels.len(),

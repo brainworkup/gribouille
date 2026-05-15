@@ -272,25 +272,27 @@
       size.width,
       size.height,
     )
+    // Mirror render-plot's panel-to-legend offset: `gutter` is reserved for
+    // inter-panel spacing, while the panel-block sits at `legend-gap` from
+    // the shared legend (same as a single-plot side-legend).
+    let legend-spacing = legend-mod.legend-gap(theme) * 1cm
 
-    // grid() cells lay out without paragraph spacing, so the only gap between
-    // panel-block and legend-canvas is `gutter`.
     if guides-placement == "right" {
       grid(
         columns: (auto, auto),
-        gutter: gutter,
+        gutter: legend-spacing,
         panel-block, legend-canvas,
       )
     } else if guides-placement == "left" {
       grid(
         columns: (auto, auto),
-        gutter: gutter,
+        gutter: legend-spacing,
         legend-canvas, panel-block,
       )
     } else if guides-placement == "bottom" {
-      stack(dir: ttb, spacing: gutter, panel-block, legend-canvas)
+      stack(dir: ttb, spacing: legend-spacing, panel-block, legend-canvas)
     } else {
-      stack(dir: ttb, spacing: gutter, legend-canvas, panel-block)
+      stack(dir: ttb, spacing: legend-spacing, legend-canvas, panel-block)
     }
   }
 }
