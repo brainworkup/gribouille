@@ -69,7 +69,7 @@
   }
 }
 
-#let _grid-shape(n, nrow, ncol) = {
+#let _grid-shape(n, nrow, ncol, direction) = {
   if ncol != none {
     let cols = calc.max(1, ncol)
     let rows = calc.max(1, calc.ceil(n / cols))
@@ -78,6 +78,8 @@
     let rows = calc.max(1, nrow)
     let cols = calc.max(1, calc.ceil(n / rows))
     (rows: rows, cols: cols)
+  } else if direction == "horizontal" {
+    (rows: 1, cols: n)
   } else {
     (rows: n, cols: 1)
   }
@@ -326,15 +328,31 @@
 // blow out the legend column.
 #let _label-width(chars) = calc.min(2.0, 0.05 + chars * _char-width)
 
-// Per-column widths, gap, cumulative left-offsets, and total grid width for a
-// column-major swatch layout. Each column sizes to its own widest label so a
-// single oversized level doesn't pad every other column unnecessarily.
-#let _swatch-layout(levels, shape) = {
+// Index of the level at (row, col). Column-major (`byrow: false`) numbers
+// items down each column; row-major (`byrow: true`) numbers items across
+// each row.
+#let _swatch-index(row, col, shape, byrow) = {
+  if byrow { row * shape.cols + col } else { col * shape.rows + row }
+}
+
+// Inverse of `_swatch-index`: recover (row, col) from a linear index.
+#let _swatch-rc(i, shape, byrow) = {
+  if byrow {
+    (row: calc.quo(i, shape.cols), col: calc.rem(i, shape.cols))
+  } else {
+    (row: calc.rem(i, shape.rows), col: calc.quo(i, shape.rows))
+  }
+}
+
+// Per-column widths, gap, cumulative left-offsets, and total grid width.
+// Each column sizes to its own widest label so a single oversized level
+// doesn't pad every other column unnecessarily.
+#let _swatch-layout(levels, shape, byrow) = {
   let widths = range(shape.cols).map(col => {
     let chars = 0
     for row in range(shape.rows) {
-      let i = col * shape.rows + row
-      if i >= levels.len() { break }
+      let i = _swatch-index(row, col, shape, byrow)
+      if i >= levels.len() { continue }
       chars = calc.max(chars, levels.at(i).len())
     }
     _SWATCH-LEAD + _label-width(chars)
@@ -368,8 +386,13 @@
 // Per-guide width estimate. Stored on each guide so `estimate-width` is O(1).
 #let _guide-width(g) = {
   if g.kind == "swatch" {
-    let shape = _grid-shape(g.levels.len(), g.nrow, g.ncol)
-    let layout = _swatch-layout(g.levels, shape)
+    let shape = _grid-shape(
+      g.levels.len(),
+      g.nrow,
+      g.ncol,
+      g.placement.direction,
+    )
+    let layout = _swatch-layout(g.levels, shape, g.placement.byrow)
     return calc.max(_label-width(_title-chars(g)), layout.total)
   }
   if g.kind == "size-ladder" {
@@ -573,7 +596,12 @@
 
 #let _swatch-height(guide, title-h) = {
   let line-h = 0.4
-  let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
+  let shape = _grid-shape(
+    guide.levels.len(),
+    guide.nrow,
+    guide.ncol,
+    guide.placement.direction,
+  )
   title-h + line-h * shape.rows + 0.2
 }
 
@@ -615,15 +643,20 @@
 
   _draw-title(ox, cursor, theme, guide.title)
   let top = cursor - title-h
-  let shape = _grid-shape(guide.levels.len(), guide.nrow, guide.ncol)
-  let layout = _swatch-layout(guide.levels, shape)
+  let byrow = guide.placement.byrow
+  let shape = _grid-shape(
+    guide.levels.len(),
+    guide.nrow,
+    guide.ncol,
+    guide.placement.direction,
+  )
+  let layout = _swatch-layout(guide.levels, shape, byrow)
   let key-kind = guide.at("key", default: "rect")
   let labels = guide.at("labels", default: auto)
   for (i, level) in guide.levels.enumerate() {
-    let col = calc.quo(i, shape.rows)
-    let row = calc.rem(i, shape.rows)
-    let cx = ox + layout.offsets.at(col)
-    let cy = top - row * line-h
+    let rc = _swatch-rc(i, shape, byrow)
+    let cx = ox + layout.offsets.at(rc.col)
+    let cy = top - rc.row * line-h
     let bundle = _bundle-for(level, guide.aesthetics, ctx, ink)
     draw-glyph(
       key-kind,
