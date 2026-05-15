@@ -3,7 +3,7 @@
 #import "../stat/contour.typ": stat-contour
 
 /// Contour-line layer: marching-squares iso-lines over a regular `(x, y, z)`
-/// grid. Pair with a continuous colour scale on `level` to shade by height.
+/// grid. Pair with a continuous colour scale on `_level` to shade by height.
 ///
 /// `bins`, `binwidth`, and `breaks` control level placement (precedence
 /// `breaks` > `binwidth` > `bins`).

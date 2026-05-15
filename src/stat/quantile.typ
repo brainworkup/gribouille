@@ -12,7 +12,7 @@
 /// Quantile regression statistic: fit one line per τ and sample it.
 ///
 /// Returns one row per `(τ, sample)` with columns `x`, `y`, `group` (a
-/// per-τ key for grouping in line geoms), and `quantile` (the τ value).
+/// per-τ key for grouping in line geoms), and `_quantile` (the τ value).
 ///
 /// \@category Stats
 /// \@subcategory Smoothing and regression

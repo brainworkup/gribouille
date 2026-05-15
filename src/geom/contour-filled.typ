@@ -3,7 +3,7 @@
 #import "../stat/contour-filled.typ": stat-contour-filled
 
 /// Filled iso-band layer: marching-squares cell clipping over a regular
-/// `(x, y, z)` grid. Pair with a continuous fill scale on `level` to shade
+/// `(x, y, z)` grid. Pair with a continuous fill scale on `_level` to shade
 /// each band by its lower bound.
 ///
 /// Default `stroke: none` so adjacent cell polygons tile seamlessly. Set
@@ -21,7 +21,7 @@
 /// \@param binwidth Fixed step between successive levels. Overrides `bins`.
 /// \@param breaks Explicit array of level boundaries. Overrides the rest.
 /// \@param colour Cell outline colour. Honoured only when `stroke` is set.
-/// \@param fill Cell fill colour. `auto` lets the fill scale paint by `level`.
+/// \@param fill Cell fill colour. `auto` lets the fill scale paint by `_level`.
 /// \@param stroke Outline thickness or stroke dictionary. Defaults to `none`.
 /// \@param alpha Cell opacity in `[0, 1]`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.

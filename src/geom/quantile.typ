@@ -11,7 +11,7 @@
 /// Default `quantiles` are `(0.25, 0.5, 0.75)`. The lines are drawn
 /// through \@geom-line on top of the stat's grouped output. Set `colour`
 /// per layer to colour all lines uniformly; for per-quantile colour, map
-/// an aesthetic to the `quantile` column emitted by the stat.
+/// an aesthetic to the `_quantile` column emitted by the stat.
 ///
 /// \@category Geoms
 /// \@subcategory Distributions

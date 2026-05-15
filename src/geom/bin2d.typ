@@ -4,7 +4,7 @@
 
 /// Two-dimensional bin layer: counts (x, y) into a rectangular grid and
 /// draws one rectangle per non-empty cell. The fill aesthetic defaults to
-/// `count`, so a continuous fill scale (\@scale-fill-viridis-c, etc.) shades
+/// `_count`, so a continuous fill scale (\@scale-fill-viridis-c, etc.) shades
 /// the cells by frequency.
 ///
 /// `bins` and `binwidth` accept either a scalar or an `(x, y)` pair.
@@ -19,7 +19,7 @@
 /// \@param bins Scalar or `(x, y)` pair — target bin counts.
 /// \@param binwidth Scalar or `(x, y)` pair — fixed bin widths. Overrides `bins` per axis.
 /// \@param colour Cell outline colour.
-/// \@param fill Cell fill colour. `auto` lets the fill scale paint by `count`.
+/// \@param fill Cell fill colour. `auto` lets the fill scale paint by `_count`.
 /// \@param stroke Outline thickness or stroke dictionary.
 /// \@param alpha Cell opacity in `[0, 1]`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.

@@ -7,10 +7,10 @@
 #import "../utils/summaries.typ": read-weight
 #import "../utils/aes-resolve.typ": stat-output-mapping
 
-/// Sum statistic: one output row per unique `(x, y)` pair with `n` and `prop`.
+/// Sum statistic: one output row per unique `(x, y)` pair with `_n` and `_prop`.
 ///
 /// Output rows preserve first-seen pair order. The stat re-maps `size` to the
-/// `"n"` column so geoms picking up the aesthetic see counts directly.
+/// `"_n"` column so geoms picking up the aesthetic see counts directly.
 ///
 /// \@category Stats
 /// \@subcategory Summaries

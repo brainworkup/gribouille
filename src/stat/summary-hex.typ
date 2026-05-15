@@ -9,7 +9,7 @@
 ///
 /// Partitions (x, y) into a pointy-top hex grid (same rule as \@stat-bin-hex),
 /// then reduces the `z` values inside each cell to a single scalar emitted
-/// as the `value` column.
+/// as the `_value` column.
 ///
 /// \@category Stats
 /// \@subcategory Summaries

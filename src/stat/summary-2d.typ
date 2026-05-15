@@ -6,7 +6,7 @@
 ///
 /// Partitions (x, y) into a rectangular grid (same rule as \@stat-bin-2d),
 /// then for every non-empty cell reduces the `z` values inside to a single
-/// scalar emitted as the `value` column.
+/// scalar emitted as the `_value` column.
 ///
 /// `fun` accepts a string keyword (`"mean"`, `"median"`, `"sum"`, `"min"`,
 /// `"max"`) or a callable `values => scalar`.
