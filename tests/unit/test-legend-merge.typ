@@ -165,13 +165,13 @@
 #assert.eq(g8.at(0).aesthetics, ("linetype",))
 #assert.eq(g8.at(0).key, "line")
 
-#let _placement(side, direction) = (
+#let _placement(side, direction, order: none) = (
   side: side,
   align: none,
   dx: 0pt,
   dy: 0pt,
   direction: direction,
-  order: none,
+  order: order,
   byrow: false,
 )
 #let _top-placement = _placement("top", "horizontal")
@@ -265,5 +265,42 @@
 )
 #assert.eq(g11.len(), 1)
 #assert.eq(g11.at(0).aesthetics, ("fill",))
+
+// 12. Explicit `order` swaps the default aesthetic order: size's order: 1
+// beats colour's order: 5, so size emits first even though colour would
+// naturally lead.
+#let g12 = guides-for(
+  (
+    mapping: (colour: "g", size: "w"),
+    layers: (layer-point(),),
+    guides: (
+      colour: (
+        kind: "guide",
+        suppress: false,
+        title: none,
+        nrow: none,
+        ncol: none,
+        reverse: false,
+        placement: _placement("right", "vertical", order: 5),
+      ),
+      size: (
+        kind: "guide",
+        suppress: false,
+        title: none,
+        nrow: none,
+        ncol: none,
+        reverse: false,
+        placement: _placement("right", "vertical", order: 1),
+      ),
+    ),
+  ),
+  (
+    colour: (type: "discrete", domain: ("a", "b")),
+    size: (type: "continuous", domain: (1.0, 5.0), spec: (range: (2pt, 8pt))),
+  ),
+)
+#assert.eq(g12.len(), 2)
+#assert.eq(g12.at(0).aesthetics, ("size",))
+#assert.eq(g12.at(1).aesthetics, ("colour",))
 
 Legend-merge tests passed.

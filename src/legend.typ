@@ -522,7 +522,12 @@
     custom.insert("width", _guide-width(custom))
     guides.push(custom)
   }
-  guides
+
+  // Stable sort: ties (no `order`, or equal `order`) preserve insertion order,
+  // so the default flow matches `_aesthetic-order` with custom guides last.
+  guides.sorted(key: g => (
+    if g.placement.order == none { calc.inf } else { g.placement.order }
+  ))
 }
 
 // Compose an aesthetic bundle for one level/value across every member of the
