@@ -809,6 +809,36 @@ describe("resolve: cross-references", function()
     assert_eq(resolve.relative_link("geoms/foo.qmd", "geoms/bar.qmd"), "bar.qmd")
     assert_eq(resolve.relative_link("index.qmd", "geoms/bar.qmd"), "geoms/bar.qmd")
   end)
+
+  it("includes trailing () in the resolved link's code span", function()
+    local index = {
+      bar = { name = "bar", category = "Geoms", category_slug = "geoms", qmd_path = "geoms/bar.qmd" }
+    }
+    local out = resolve.resolve_refs_in_text("Call @bar() now.", "core/foo.qmd", index, false)
+    assert_contains(out, "[`bar()`](../geoms/bar.qmd)")
+    assert_true(not out:find("`bar`()", 1, true), "() must not leak outside the code span")
+  end)
+
+  it("preserves trailing () on unresolved @ref (non-strict)", function()
+    local out = resolve.resolve_refs_in_text("See @missing() please.", "core/foo.qmd", {}, false, "x.typ", 1)
+    assert_contains(out, "@missing()")
+  end)
+
+  it("errors on unresolved @ref() under strict and mentions the parens", function()
+    assert_throws(function()
+      resolve.resolve_refs_in_text("See @missing().", "core/foo.qmd", {}, true, "x.typ", 1)
+    end, "@missing%(%)")
+  end)
+
+  it("leaves a lone trailing ( or ) untouched around @ref", function()
+    local index = {
+      bar = { name = "bar", category = "Geoms", category_slug = "geoms", qmd_path = "geoms/bar.qmd" }
+    }
+    local out_open = resolve.resolve_refs_in_text("(@bar(x)", "core/foo.qmd", index, false)
+    assert_contains(out_open, "@bar(x")
+    local out_close = resolve.resolve_refs_in_text("@bar) tail", "core/foo.qmd", index, false)
+    assert_contains(out_close, "@bar) tail")
+  end)
 end)
 
 -- -----------------------------------------------------------------------

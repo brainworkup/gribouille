@@ -46,19 +46,22 @@ function M.relative_link(from_qmd, target_qmd)
 end
 
 function M.resolve_refs_in_text(text, from_qmd, index, strict, source_file, source_line)
-  return (text:gsub("@([%w_%-]+)", function(name)
+  return (text:gsub("@([%w_%-]+)(%(?%)?)", function(name, suffix)
+    if suffix ~= "" and suffix ~= "()" then
+      return "@" .. name .. suffix
+    end
     local target = index[name]
     if not target then
-      local msg = string.format("unresolved @ref `@%s`", name)
+      local msg = string.format("unresolved @ref `@%s%s`", name, suffix)
       if source_file then
         msg = string.format("%s:%d: %s", source_file, source_line or 0, msg)
       end
       if strict then error("typstdoc: " .. msg, 0) end
       util.log_warn(msg)
-      return "@" .. name
+      return "@" .. name .. suffix
     end
     local link = M.relative_link(from_qmd, target.qmd_path)
-    return string.format("[`%s`](%s)", name, link)
+    return string.format("[`%s%s`](%s)", name, suffix, link)
   end))
 end
 
