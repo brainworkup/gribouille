@@ -156,14 +156,14 @@
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param spec Plot spec dictionary (the dict\@plot builds internally).
+/// \@param plot Plot spec dictionary (the dict\@plot builds internally).
 ///
 /// \@returns The alt string, or `none` if absent.
 ///
 /// \@examples-static Pull the alt text from a built spec for accessibility
 /// reporting.
 /// ```
-/// #let spec = (data: (), alt: "Scatter of weight vs mpg")
-/// #let alt = get-alt-text(spec)
+/// #let p = (data: (), alt: "Scatter of weight vs mpg")
+/// #let alt = get-alt-text(p)
 /// ```
-#let get-alt-text(spec) = spec.at("alt", default: none)
+#let get-alt-text(plot) = plot.at("alt", default: none)
