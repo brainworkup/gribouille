@@ -1145,16 +1145,13 @@
 #let standalone(guides, trained, theme, width-cm, height-cm) = {
   let ctx = (trained: trained, palette: default-discrete, theme: theme)
   cetz.canvas(length: 1cm, {
-    cetz.draw.hide(cetz.draw.rect((0, 0), (width-cm, height-cm)), bounds: true)
+    import cetz.draw: hide, rect
+    hide(rect((0, 0), (width-cm, height-cm)), bounds: true)
     draw(
       guides,
       ctx,
       panel-rect: (x: 0.0, y: 0.0, w: 0.0, h: height-cm),
       margin: (left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
-      legend-gap: 0.0,
-      sec-y-extent: 0.0,
-      sec-x-extent: 0.0,
-      right-strip: 0.0,
       theme: theme,
     )
   })
