@@ -1055,8 +1055,7 @@
   origin,
   inner-size,
   guides: (),
-  legend-origin: none,
-  legend-height: 0,
+  legend-args: none,
   show-x-labels: true,
   show-y-labels: true,
   show-x-title: true,
@@ -1761,8 +1760,18 @@
     )
   }
 
-  if guides.len() > 0 and legend-origin != none {
-    legend-mod.draw(guides, ctx, legend-origin, legend-height, theme)
+  if guides.len() > 0 and legend-args != none {
+    legend-mod.draw(
+      guides,
+      ctx,
+      panel-rect: legend-args.panel-rect,
+      margin: legend-args.margin,
+      legend-gap: legend-args.legend-gap,
+      sec-y-extent: legend-args.sec-y-extent,
+      sec-x-extent: legend-args.sec-x-extent,
+      right-strip: legend-args.right-strip,
+      theme: theme,
+    )
   }
 }
 
@@ -2372,6 +2381,7 @@
   let guides = ctx.guides
   let legend-gap = ctx.legend-gap
   let sec-y-extent = ctx.sec-y-extent
+  let sec-x-extent = ctx.sec-x-extent
   let margin = ctx.margin
   let width-units = ctx.width-units
   let height-units = ctx.height-units
@@ -2564,9 +2574,18 @@
       legend-mod.draw(
         guides,
         lctx,
-        (margin.left + grid-w + sec-y-extent + legend-gap, margin.bottom),
-        grid-h,
-        theme,
+        panel-rect: (
+          x: margin.left,
+          y: margin.bottom,
+          w: grid-w,
+          h: grid-h,
+        ),
+        margin: margin,
+        legend-gap: legend-gap,
+        sec-y-extent: sec-y-extent,
+        sec-x-extent: sec-x-extent,
+        right-strip: 0.0,
+        theme: theme,
       )
     }
   })
@@ -2583,6 +2602,7 @@
   let guides = ctx.guides
   let legend-gap = ctx.legend-gap
   let sec-y-extent = ctx.sec-y-extent
+  let sec-x-extent = ctx.sec-x-extent
   let margin = ctx.margin
   let width-units = ctx.width-units
   let height-units = ctx.height-units
@@ -2738,12 +2758,18 @@
       legend-mod.draw(
         guides,
         lctx,
-        (
-          margin.left + grid-w + right-strip + sec-y-extent + legend-gap,
-          margin.bottom,
+        panel-rect: (
+          x: margin.left,
+          y: margin.bottom,
+          w: grid-w,
+          h: grid-h,
         ),
-        grid-h,
-        theme,
+        margin: margin,
+        legend-gap: legend-gap,
+        sec-y-extent: sec-y-extent,
+        sec-x-extent: sec-x-extent,
+        right-strip: right-strip,
+        theme: theme,
       )
     }
   })
@@ -2758,6 +2784,7 @@
   guides,
   legend-gap,
   sec-y-extent,
+  sec-x-extent,
   margin,
   width-units,
   height-units,
@@ -2786,8 +2813,14 @@
       (px-lo, py-lo),
       (inner-w, inner-h),
       guides: guides,
-      legend-origin: (px-lo + inner-w + sec-y-extent + legend-gap, py-lo),
-      legend-height: inner-h,
+      legend-args: (
+        panel-rect: (x: px-lo, y: py-lo, w: inner-w, h: inner-h),
+        margin: margin,
+        legend-gap: legend-gap,
+        sec-y-extent: sec-y-extent,
+        sec-x-extent: sec-x-extent,
+        right-strip: 0.0,
+      ),
       flipped: _is-flipped(coord),
       x-extents: x-extents,
       y-extents: y-extents,
@@ -3045,10 +3078,6 @@
     auto-margin,
   )
 
-  // Slice 6 will dispatch to all sides; for now the draw pass still pins to
-  // the right, so filter so non-right guides only contribute to margins.
-  guides = guides.filter(g => g.placement.side == "right")
-
   let canvas = if facet-wrap-mode {
     _render-canvas-wrap((
       spec: spec,
@@ -3061,6 +3090,7 @@
       guides: guides,
       legend-gap: legend-gap,
       sec-y-extent: sec-y-extent,
+      sec-x-extent: sec-x-extent,
       margin: margin,
       width-units: width-units,
       height-units: height-units,
@@ -3085,6 +3115,7 @@
       guides: guides,
       legend-gap: legend-gap,
       sec-y-extent: sec-y-extent,
+      sec-x-extent: sec-x-extent,
       margin: margin,
       width-units: width-units,
       height-units: height-units,
@@ -3104,6 +3135,7 @@
       guides,
       legend-gap,
       sec-y-extent,
+      sec-x-extent,
       margin,
       width-units,
       height-units,

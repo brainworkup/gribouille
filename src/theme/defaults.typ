@@ -52,6 +52,7 @@
   panel-background: element-rect(),
   plot-background: element-rect(),
   strip-background: element-rect(),
+  legend-background: element-rect(),
 
   // Layer-default aesthetics shared across supporting geoms. All-`none`
   // entries leave the per-geom hardcoded fallback in place; users override

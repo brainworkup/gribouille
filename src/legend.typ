@@ -12,7 +12,7 @@
 #import "utils/palette.typ": spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour
-#import "theme/theme.typ": _text-style
+#import "theme/theme.typ": _rect-fill, _text-style
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-display-name
 #import "utils/typst-markup.typ": resolve-prose
@@ -957,26 +957,162 @@
   )
 }
 
-#let draw(guides, ctx, origin, height, theme) = {
-  if guides.len() == 0 { return }
-  let (ox, oy) = origin
-  let cursor = oy + height
+#let _draw-guide-body(g, ctx, ox, cursor, theme, title-h) = {
+  if g.kind == "swatch" {
+    _draw-swatch(g, ctx, ox, cursor, theme, title-h)
+  } else if g.kind == "size-ladder" {
+    _draw-size-ladder(g, ctx, ox, cursor, theme, title-h)
+  } else if g.kind == "colourbar" {
+    _draw-colourbar(g, ctx, ox, cursor, theme, title-h)
+  } else if g.kind == "custom" {
+    _draw-custom(g, ox, cursor, theme, title-h)
+  } else {
+    panic("legend.draw: unknown guide kind \"" + g.kind + "\"")
+  }
+}
+
+#let _guide-render-height(g, title-h) = {
+  if g.kind == "swatch" { return _swatch-height(g, title-h) }
+  if g.kind == "size-ladder" { return _size-ladder-height(g, title-h) }
+  if g.kind == "colourbar" { return _colourbar-height(g, title-h) }
+  if g.kind == "custom" { return _custom-height(g, title-h) }
+  panic("legend: unknown guide kind \"" + g.kind + "\"")
+}
+
+#let _draw-side(
+  side,
+  side-guides,
+  ctx,
+  panel-rect,
+  margin,
+  legend-gap,
+  sec-y-extent,
+  sec-x-extent,
+  right-strip,
+  theme,
+) = {
+  if side-guides.len() == 0 { return }
   let title-h = _legend-title-h(theme)
-  for g in guides {
-    if g.kind == "swatch" {
-      _draw-swatch(g, ctx, ox, cursor, theme, title-h)
-      cursor -= _swatch-height(g, title-h)
-    } else if g.kind == "size-ladder" {
-      _draw-size-ladder(g, ctx, ox, cursor, theme, title-h)
-      cursor -= _size-ladder-height(g, title-h)
-    } else if g.kind == "colourbar" {
-      _draw-colourbar(g, ctx, ox, cursor, theme, title-h)
-      cursor -= _colourbar-height(g, title-h)
-    } else if g.kind == "custom" {
-      _draw-custom(g, ox, cursor, theme, title-h)
-      cursor -= _custom-height(g, title-h)
+  let stack-gap = legend-gap
+  let px = panel-rect.x
+  let py = panel-rect.y
+  let pw = panel-rect.w
+  let ph = panel-rect.h
+
+  if side == "right" or side == "left" {
+    let ox = if side == "right" {
+      px + pw + sec-y-extent + right-strip + legend-gap
     } else {
-      panic("legend.draw: unknown guide kind \"" + g.kind + "\"")
+      px - margin.left + 0.05
     }
+    let cursor = py + ph
+    for g in side-guides {
+      _draw-guide-body(g, ctx, ox, cursor, theme, title-h)
+      cursor -= _guide-render-height(g, title-h) + stack-gap
+    }
+  } else {
+    let max-h = 0.0
+    for g in side-guides {
+      let h = _guide-render-height(g, title-h)
+      if h > max-h { max-h = h }
+    }
+    let cursor-y = if side == "top" {
+      py + ph + sec-x-extent + legend-gap + max-h
+    } else {
+      py - margin.bottom + 0.4 + max-h
+    }
+    let cursor-x = px
+    for g in side-guides {
+      _draw-guide-body(g, ctx, cursor-x, cursor-y, theme, title-h)
+      cursor-x += g.width + stack-gap
+    }
+  }
+}
+
+// Resolve a Typst length or ratio against `panel-dim` (cm). Ratios are
+// interpreted as fractions of the panel dimension.
+#let _resolve-offset(value, panel-dim) = {
+  if type(value) == ratio { panel-dim * (value / 100%) } else if (
+    type(value) == length
+  ) { value / 1cm } else { 0.0 }
+}
+
+#let _draw-inside(g, ctx, panel-rect, theme) = {
+  let title-h = _legend-title-h(theme)
+  let align = g.placement.align
+  let h-align = if align == none { left } else {
+    let a = align.x
+    if a == none { left } else { a }
+  }
+  let v-align = if align == none { top } else {
+    let a = align.y
+    if a == none { top } else { a }
+  }
+
+  let ox = if h-align == right {
+    panel-rect.x + panel-rect.w - g.width
+  } else if h-align == center {
+    panel-rect.x + (panel-rect.w - g.width) / 2
+  } else {
+    panel-rect.x
+  }
+  let oy-top = if v-align == bottom {
+    panel-rect.y + g.height
+  } else if v-align == horizon {
+    panel-rect.y + (panel-rect.h + g.height) / 2
+  } else {
+    panel-rect.y + panel-rect.h
+  }
+
+  ox += _resolve-offset(g.placement.dx, panel-rect.w)
+  oy-top -= _resolve-offset(g.placement.dy, panel-rect.h)
+
+  let bg = _rect-fill(theme, "legend-background")
+  if bg != none {
+    cetz.draw.rect(
+      (ox, oy-top - g.height),
+      (ox + g.width, oy-top),
+      fill: bg,
+      stroke: none,
+    )
+  }
+
+  _draw-guide-body(g, ctx, ox, oy-top, theme, title-h)
+}
+
+#let draw(
+  guides,
+  ctx,
+  panel-rect: none,
+  margin: none,
+  legend-gap: 0.0,
+  sec-y-extent: 0.0,
+  sec-x-extent: 0.0,
+  right-strip: 0.0,
+  theme: none,
+) = {
+  if guides.len() == 0 { return }
+  let buckets = (top: (), right: (), bottom: (), left: (), inside: ())
+  for g in guides {
+    let side = g.placement.side
+    if side == "none" { continue }
+    buckets.at(side).push(g)
+  }
+  for side in ("top", "right", "bottom", "left") {
+    _draw-side(
+      side,
+      buckets.at(side),
+      ctx,
+      panel-rect,
+      margin,
+      legend-gap,
+      sec-y-extent,
+      sec-x-extent,
+      right-strip,
+      theme,
+    )
+  }
+  for g in buckets.inside {
+    _draw-inside(g, ctx, panel-rect, theme)
   }
 }
