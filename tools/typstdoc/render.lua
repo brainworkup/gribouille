@@ -408,7 +408,7 @@ function M.render_sidebar(category_order, functions)
     "      title: Reference",
     "      style: docked",
     "      align: left",
-    "      collapse-level: 3",
+    "      collapse-level: 2",
     "      contents:",
     "        - section: Reference",
     "          href: reference/index.qmd",
