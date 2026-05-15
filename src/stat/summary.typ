@@ -34,7 +34,7 @@
 ///
 /// \@param fun Summary helper name or callable returning `(y, ymin, ymax)`.
 /// \@param fun-args Keyword arguments forwarded to the helper or callable, for
-///   example `(mult: 2)` for `mean-se` or `(conf: 0.5)` for `median-hilow`.
+///   example `(multiplier: 2)` for `mean-se` or `(conf: 0.5)` for `median-hilow`.
 /// \@param axis Output axis: `"both"` (default), `"x"`, or `"y"`.
 ///
 /// \@returns Statistic object with `name: "summary"`, consumed by geom layers.

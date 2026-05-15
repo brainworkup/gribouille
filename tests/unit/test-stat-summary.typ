@@ -24,15 +24,15 @@
 #assert(calc.abs(r-mse.ymin - 2.292893) < 1e-4)
 #assert(calc.abs(r-mse.ymax - 3.707107) < 1e-4)
 
-// mult: 2 doubles the half-width.
-#let r-mse2 = mean-se((1, 2, 3, 4, 5), mult: 2)
+// multiplier: 2 doubles the half-width.
+#let r-mse2 = mean-se((1, 2, 3, 4, 5), multiplier: 2)
 #assert.eq(r-mse2.y, 3.0)
 #assert(
   calc.abs((r-mse2.ymax - r-mse2.ymin) - 2 * (r-mse.ymax - r-mse.ymin)) < 1e-9,
 )
 
 // --- mean-sd on 1..5 -------------------------------------------------------
-// Default mult = 1, sd ≈ 1.5811, so half-width ≈ 1.5811.
+// Default multiplier = 1, sd ≈ 1.5811, so half-width ≈ 1.5811.
 
 #let r-sd = mean-sd((1, 2, 3, 4, 5))
 #assert.eq(r-sd.y, 3.0)

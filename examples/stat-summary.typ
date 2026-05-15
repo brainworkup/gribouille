@@ -17,13 +17,13 @@
       position: position-jitter(width: 0.12),
     ),
     geom-errorbar(
-      stat: stat-summary(fun: "mean-se", fun-args: (mult: 1)),
+      stat: stat-summary(fun: "mean-se", fun-args: (multiplier: 1)),
       width: 0.25,
       stroke: 1pt,
       colour: accent,
     ),
     geom-point(
-      stat: stat-summary(fun: "mean-se", fun-args: (mult: 1)),
+      stat: stat-summary(fun: "mean-se", fun-args: (multiplier: 1)),
       size: 3.5pt,
       fill: accent,
     ),

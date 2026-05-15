@@ -245,10 +245,10 @@
   )
 }
 
-/// Mean and standard-error band: `mean ± mult * se`.
+/// Mean and standard-error band: `mean ± multiplier * se`.
 ///
 /// `se = sd / sqrt(n)` using the sample standard deviation. Returns
-/// `(y: <mean>, ymin: <mean - mult * se>, ymax: <mean + mult * se>)`.
+/// `(y: <mean>, ymin: <mean - multiplier * se>, ymax: <mean + multiplier * se>)`.
 ///
 /// \@category Helpers
 /// \@subcategory Summary functions
@@ -256,7 +256,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
-/// \@param mult Multiplier on the standard error.
+/// \@param multiplier Multiplier on the standard error.
 /// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics; total weight stands in for `n` in the standard-error denominator.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -267,12 +267,12 @@
 /// // s.y == 4, s.ymin ≈ 3.29, s.ymax ≈ 4.71
 /// ```
 ///
-/// \@examples-static Bump `mult` to 2 for an approximate 95% interval
+/// \@examples-static Bump `multiplier` to 2 for an approximate 95% interval
 /// (assuming a roughly normal sampling distribution).
 /// ```
-/// #let s = mean-se((2, 3, 4, 5, 6), mult: 2)
+/// #let s = mean-se((2, 3, 4, 5, 6), multiplier: 2)
 /// ```
-#let mean-se(values, mult: 1, weights: none) = {
+#let mean-se(values, multiplier: 1, weights: none) = {
   if weights != none {
     let p = _to-weighted(values, weights)
     let n = p.xs.len()
@@ -283,14 +283,14 @@
     let se = if n < 2 or total == 0 {
       0.0
     } else { _wsd(p.xs, p.ws) / calc.sqrt(total) }
-    return (y: m, ymin: m - mult * se, ymax: m + mult * se)
+    return (y: m, ymin: m - multiplier * se, ymax: m + multiplier * se)
   }
   let xs = _to-numeric(values)
   let n = xs.len()
   if n == 0 { return _empty-summary }
   let m = _mean(xs)
   let se = if n < 2 { 0.0 } else { _sd(xs) / calc.sqrt(n) }
-  (y: m, ymin: m - mult * se, ymax: m + mult * se)
+  (y: m, ymin: m - multiplier * se, ymax: m + multiplier * se)
 }
 
 /// Mean with normal-approximation confidence interval.
@@ -345,7 +345,7 @@
   (y: m, ymin: m - z * se, ymax: m + z * se)
 }
 
-/// Mean and standard-deviation band: `mean ± mult * sd`.
+/// Mean and standard-deviation band: `mean ± multiplier * sd`.
 ///
 /// \@category Helpers
 /// \@subcategory Summary functions
@@ -353,7 +353,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
-/// \@param mult Multiplier on the sample standard deviation.
+/// \@param multiplier Multiplier on the sample standard deviation.
 /// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics for the weighted standard deviation.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -365,22 +365,22 @@
 ///
 /// \@examples-static Widen to ±2 σ for a two-deviation spread.
 /// ```
-/// #let s = mean-sd((2, 3, 4, 5, 6), mult: 2)
+/// #let s = mean-sd((2, 3, 4, 5, 6), multiplier: 2)
 /// ```
-#let mean-sd(values, mult: 1, weights: none) = {
+#let mean-sd(values, multiplier: 1, weights: none) = {
   if weights != none {
     let p = _to-weighted(values, weights)
     if p.xs.len() == 0 { return _empty-summary }
     let m = _wmean(p.xs, p.ws)
     if m == none { return _empty-summary }
     let s = _wsd(p.xs, p.ws)
-    return (y: m, ymin: m - mult * s, ymax: m + mult * s)
+    return (y: m, ymin: m - multiplier * s, ymax: m + multiplier * s)
   }
   let xs = _to-numeric(values)
   if xs.len() == 0 { return _empty-summary }
   let m = _mean(xs)
   let s = _sd(xs)
-  (y: m, ymin: m - mult * s, ymax: m + mult * s)
+  (y: m, ymin: m - multiplier * s, ymax: m + multiplier * s)
 }
 
 /// Median plus a central interval covering `conf` proportion of the data.
@@ -542,8 +542,8 @@
     return name(values, weights: weights, ..fun-args)
   }
   if name == "mean-se" {
-    let mult = fun-args.at("mult", default: 1)
-    return mean-se(values, mult: mult, weights: weights)
+    let multiplier = fun-args.at("multiplier", default: 1)
+    return mean-se(values, multiplier: multiplier, weights: weights)
   } else if name == "mean-cl-normal" {
     let conf = fun-args.at("conf", default: 0.95)
     return mean-cl-normal(values, conf: conf, weights: weights)
@@ -553,8 +553,8 @@
     let seed = fun-args.at("seed", default: 0)
     return mean-cl-boot(values, conf: conf, n-boot: n-boot, seed: seed)
   } else if name == "mean-sd" {
-    let mult = fun-args.at("mult", default: 1)
-    return mean-sd(values, mult: mult, weights: weights)
+    let multiplier = fun-args.at("multiplier", default: 1)
+    return mean-sd(values, multiplier: multiplier, weights: weights)
   } else if name == "median-hilow" {
     let conf = fun-args.at("conf", default: 0.5)
     return median-hilow(values, conf: conf)
