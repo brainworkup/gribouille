@@ -578,6 +578,7 @@
     }
     g.insert("placement", first.placement)
     g.insert("width", _guide-width(g))
+    g.insert("height", _guide-height(g))
     guides.push(g)
   }
 
@@ -601,6 +602,7 @@
       placement: placement,
     )
     custom.insert("width", _guide-width(custom))
+    custom.insert("height", _guide-height(custom))
     guides.push(custom)
   }
 
@@ -631,14 +633,30 @@
   bundle
 }
 
-#let estimate-width(guides) = {
-  if guides.len() == 0 { return 0.0 }
-  let max-width = 0.0
-  for g in guides {
-    let w = g.at("width", default: 0.0)
-    if w > max-width { max-width = w }
+// Per-side cm totals consumed by the renderer to grow the panel margin on
+// each occupied side. Inside legends contribute nothing to margins; their
+// anchor data is returned in `inside` so the draw pass can place each one
+// independently.
+#let estimate-extents(guides) = {
+  let extents = (top: 0.0, right: 0.0, bottom: 0.0, left: 0.0, inside: ())
+  for (i, g) in guides.enumerate() {
+    let side = g.placement.side
+    if side == "right" or side == "left" {
+      let w = g.at("width", default: 0.0)
+      if w > extents.at(side) { extents.insert(side, w) }
+    } else if side == "top" or side == "bottom" {
+      let h = g.at("height", default: 0.0)
+      if h > extents.at(side) { extents.insert(side, h) }
+    } else if side == "inside" {
+      extents.inside.push((
+        idx: i,
+        align: g.placement.align,
+        dx: g.placement.dx,
+        dy: g.placement.dy,
+      ))
+    }
   }
-  max-width
+  extents
 }
 
 // Vertical gap between the legend title and the first guide entry, resolved

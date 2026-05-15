@@ -2943,9 +2943,16 @@
   let height-units = spec.height / 1cm
 
   let guides = legend-mod.guides-for(spec, trained)
-  let legend-width = legend-mod.estimate-width(guides)
+  let extents = legend-mod.estimate-extents(guides)
+  let any-legend = (
+    extents.top > 0
+      or extents.right > 0
+      or extents.bottom > 0
+      or extents.left > 0
+      or extents.inside.len() > 0
+  )
   let legend-title-style = _text-style(theme, "legend-title")
-  let legend-gap = if legend-width > 0 {
+  let legend-gap = if any-legend {
     _text-margin-cm(legend-title-style, "left", 1.6em)
   } else { 0.0 }
 
@@ -3024,17 +3031,23 @@
   // single-tick minimum. Without the cap, `px-hi - px-lo` goes negative and
   // axis labels render reversed (panel becomes mirror-imaged into the legend).
   let max-right-margin = calc.max(0.0, width-units - left-extent - 0.5)
-  let right-extent = 0.3 + sec-y-extent + legend-gap + legend-width
+  let _side-gap = side => (
+    extents.at(side) + (if extents.at(side) > 0 { legend-gap } else { 0.0 })
+  )
   let auto-margin = (
-    left: calc.max(1.5, left-extent),
-    bottom: calc.max(1.1, bottom-extent),
-    top: 0.3 + sec-x-extent,
-    right: calc.min(right-extent, max-right-margin),
+    left: calc.max(1.5, left-extent + _side-gap("left")),
+    bottom: calc.max(1.1, bottom-extent + _side-gap("bottom")),
+    top: 0.3 + sec-x-extent + _side-gap("top"),
+    right: calc.min(0.3 + sec-y-extent + _side-gap("right"), max-right-margin),
   )
   let margin = _resolve-margin(
     theme.at("plot-margin", default: none),
     auto-margin,
   )
+
+  // Slice 6 will dispatch to all sides; for now the draw pass still pins to
+  // the right, so filter so non-right guides only contribute to margins.
+  guides = guides.filter(g => g.placement.side == "right")
 
   let canvas = if facet-wrap-mode {
     _render-canvas-wrap((
