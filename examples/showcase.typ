@@ -13,7 +13,7 @@
     fill: "species",
   ),
   layers: (
-    geom-point(size: 2pt, alpha: 0.85),
+    geom-point(size: 2pt, alpha: 0.65),
     geom-smooth(method: "lm", alpha: 0.2),
   ),
   facet: facet-wrap("island", labeller: label-both()),
@@ -27,6 +27,10 @@
     fill: "Species",
   ),
   theme: theme-minimal(),
+  guides: guides(
+    colour: guide-legend(position: bottom + right),
+    fill: guide-legend(position: bottom + right),
+  ),
   width: 12cm,
   height: 9cm,
 )
