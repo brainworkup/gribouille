@@ -1154,6 +1154,10 @@
 //   right/left → cursor starts at the canvas top, advances downward.
 //   top        → labels grow downward from `max-h`; baseline at 0.
 //   bottom     → margin.bottom: 0.4 cancels `_draw-side`'s bottom offset.
+//
+// `width-cm` and `height-cm` size the canvas; the `set-viewport` call shrinks
+// the cetz coordinate window to those bounds without leaving cetz's auto-pad
+// margin around content (which would show up as visible whitespace).
 #let standalone(guides, trained, theme, side, width-cm, height-cm) = {
   let ctx = (trained: trained, palette: default-discrete, theme: theme)
   let panel-h = if side == "right" or side == "left" { height-cm } else { 0.0 }
@@ -1163,15 +1167,23 @@
     top: 0.0,
     bottom: if side == "bottom" { 0.4 } else { 0.0 },
   )
-  cetz.canvas(length: 1cm, {
-    import cetz.draw: hide, rect
-    hide(rect((0, 0), (width-cm, height-cm)), bounds: true)
-    draw(
-      guides,
-      ctx,
-      panel-rect: (x: 0.0, y: 0.0, w: 0.0, h: panel-h),
-      margin: margin,
-      theme: theme,
-    )
-  })
+  block(
+    width: width-cm * 1cm,
+    height: height-cm * 1cm,
+    above: 0pt,
+    below: 0pt,
+    breakable: false,
+    clip: true,
+    cetz.canvas(length: 1cm, padding: 0, {
+      import cetz.draw: hide, rect
+      hide(rect((0, 0), (width-cm, height-cm)), bounds: true)
+      draw(
+        guides,
+        ctx,
+        panel-rect: (x: 0.0, y: 0.0, w: 0.0, h: panel-h),
+        margin: margin,
+        theme: theme,
+      )
+    }),
+  )
 }

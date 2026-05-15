@@ -1,6 +1,7 @@
 #import "render.typ": render-plot-deferred
 #import "legend.typ" as legend-mod
 #import "theme/defaults.typ": merge-theme
+#import "theme/elements.typ": margin
 
 #let _is-plot-spec(x) = (
   type(x) == dictionary
@@ -117,7 +118,7 @@
 /// #compose(
 ///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
 ///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
-///   layout: "grid", columns: 2,
+///   layout: "grid", columns: (auto, auto),
 /// )
 /// ```
 ///
@@ -127,7 +128,7 @@
 /// #compose(
 ///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp")),
 ///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"), size: "wt")),
-///   layout: "grid", columns: 2,
+///   layout: "grid", columns: (auto, auto),
 ///   collect: ("colour",),
 /// )
 /// ```
@@ -137,7 +138,7 @@
 /// #compose(
 ///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
 ///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
-///   layout: "grid", columns: 2,
+///   layout: "grid", columns: (auto, auto),
 ///   guides-placement: "bottom",
 /// )
 /// ```
@@ -209,12 +210,38 @@
       }
     }
 
+    // Whichever side hosts the shared legend collapses its panel-side margin
+    // to a tick-mark stub so the panel butts up against the hoisted legend
+    // canvas. Other sides stay `auto` and keep their native axis-label space.
+    // Whichever side hosts the shared legend collapses its panel-side margin
+    // to a tick-mark stub so the panel butts up against the hoisted legend
+    // canvas. The other side keeps its native margin so axis labels and
+    // titles still fit. For bottom/left, the panel hosts its own axis title
+    // (x-axis title for bottom, y-axis title for left), so we leave the
+    // native margin alone.
+    let trim = if guides-placement == "top" {
+      margin(top: 0cm)
+    } else if guides-placement == "right" {
+      margin(right: 0cm)
+    } else { none }
+    // bottom + left placement keep native margins because the panel still
+    // hosts its x-axis title / y-axis title on those sides.
+    let trim-spec(spec) = if trim == none { spec } else {
+      let new-theme = if spec.at("theme", default: none) == none {
+        (plot-margin: trim)
+      } else {
+        let t = spec.theme
+        (..t, plot-margin: trim)
+      }
+      (..spec, theme: new-theme)
+    }
+
     let final-panels = if hoisted.len() == 0 {
       probes.map(p => p.content)
     } else {
       panels.map(spec => {
         render-plot-deferred(
-          spec,
+          trim-spec(spec),
           suppress-aesthetics: hoisted,
         ).content
       })
@@ -246,10 +273,20 @@
       size.height,
     )
 
+    // grid() cells lay out without paragraph spacing, so the only gap between
+    // panel-block and legend-canvas is `gutter`.
     if guides-placement == "right" {
-      stack(dir: ltr, spacing: gutter, panel-block, legend-canvas)
+      grid(
+        columns: (auto, auto),
+        gutter: gutter,
+        panel-block, legend-canvas,
+      )
     } else if guides-placement == "left" {
-      stack(dir: ltr, spacing: gutter, legend-canvas, panel-block)
+      grid(
+        columns: (auto, auto),
+        gutter: gutter,
+        legend-canvas, panel-block,
+      )
     } else if guides-placement == "bottom" {
       stack(dir: ttb, spacing: gutter, panel-block, legend-canvas)
     } else {
