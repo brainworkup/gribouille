@@ -230,9 +230,9 @@
 
 #let _scale-hue(
   aesthetic,
-  h: (15deg, 375deg),
-  c: 100,
-  l: 65,
+  hue: (15deg, 375deg),
+  chroma: 100,
+  luminance: 65,
   name: none,
   limits: none,
   labels: auto,
@@ -241,7 +241,7 @@
   aesthetic: aesthetic,
   type: "discrete",
   name: name,
-  palette: hue-palette(12, h: h, c: c, l: l),
+  palette: hue-palette(12, h: hue, c: chroma, l: luminance),
   limits: limits,
   labels: labels,
 )
@@ -1678,12 +1678,12 @@
 
 /// Discrete equally-spaced hue colour scale.
 ///
-/// Steps `n` hues across the angular range `h` in OKLCh space, picking
-/// chroma and luminance from `c` and `l`. Defaults to
-/// `h = (15deg, 375deg)`, `c = 100`, `l = 65`.
+/// Steps `n` hues across the angular range `hue` in OKLCh space, picking
+/// chroma and luminance from `chroma` and `luminance`. Defaults to
+/// `hue: (15deg, 375deg)`, `chroma: 100`, `luminance: 65`.
 ///
 /// OKLCh is used as a perceptually uniform near-equivalent of HCL, which
-/// Typst does not expose directly. The first colour sits at `h.at(0)` and
+/// Typst does not expose directly. The first colour sits at `hue.at(0)` and
 /// successive colours step by `(end - start) / n`, so the endpoint is
 /// excluded and the wheel never duplicates a hue when `start` and `end`
 /// differ by a full turn.
@@ -1693,9 +1693,9 @@
 /// \@stability stable
 /// \@since 0.2.0
 ///
-/// \@param h Pair `(start, end)` of hue angles.
-/// \@param c Chroma in `[0, 100]`.
-/// \@param l Luminance in `[0, 100]`.
+/// \@param hue Pair `(start, end)` of hue angles.
+/// \@param chroma Chroma in `[0, 100]`.
+/// \@param luminance Luminance in `[0, 100]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
@@ -1721,8 +1721,7 @@
 /// )
 /// ```
 ///
-/// \@examples Lower `c` (chroma) and `l` (luminance) yield a muted, pastel-like
-/// palette.
+/// \@examples Lower `chroma` and `luminance` yield a muted, pastel-like palette.
 /// ```
 /// //| alt: "Scatter chart of four points where sp maps to evenly-spaced muted pastel hues from the OKLCh wheel at chroma 50 and luminance 80."
 /// #let d = (
@@ -1735,7 +1734,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "sp"),
 ///   layers: (geom-point(size: 3pt),),
-///   scales: (scale-colour-hue(c: 50, l: 80),),
+///   scales: (scale-colour-hue(chroma: 50, luminance: 80),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -1753,9 +1752,9 @@
 /// \@stability stable
 /// \@since 0.2.0
 ///
-/// \@param h Pair `(start, end)` of hue angles.
-/// \@param c Chroma in `[0, 100]`.
-/// \@param l Luminance in `[0, 100]`.
+/// \@param hue Pair `(start, end)` of hue angles.
+/// \@param chroma Chroma in `[0, 100]`.
+/// \@param luminance Luminance in `[0, 100]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
