@@ -11,7 +11,7 @@
 #import "utils/pretty.typ": pretty
 #import "utils/format.typ": format-break
 #import "utils/colour.typ": resolve-continuous-colour
-#import "utils/palette.typ": spec-palette
+#import "utils/palette.typ": default-discrete, spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour
 #import "theme/theme.typ": _rect-fill, _text-style
@@ -197,6 +197,24 @@
   if a.transform != b.transform { return false }
   if a.temporal != b.temporal { return false }
   true
+}
+
+// Cross-panel merge predicate used by `compose()` on the final guide dicts
+// returned by `guides-for`. Two guides are equivalent across panels when they
+// share kind, title, aesthetic mix, and the user-visible content (levels +
+// labels for swatches; domain + breaks + labels for ladders and colourbars).
+// Placement and per-panel grid shape (`nrow`/`ncol`) are deliberately ignored
+// because compose forces a single shared side and grid shape on its own.
+// Custom guides never hoist (no scale to compare).
+#let can-merge-cross-panel(a, b) = {
+  if a.kind != b.kind { return false }
+  if a.kind == "custom" { return false }
+  if a.title != b.title { return false }
+  if a.aesthetics != b.aesthetics { return false }
+  if a.kind == "swatch" {
+    return a.levels == b.levels and a.labels == b.labels
+  }
+  a.domain == b.domain and a.breaks == b.breaks and a.labels == b.labels
 }
 
 // Pass-A precedence: aesthetic-driven first, geom fallback last. See plan §2.
@@ -1117,4 +1135,27 @@
   for g in buckets.inside {
     _draw-inside(g, ctx, panel-rect, theme)
   }
+}
+
+// Render a free-standing legend canvas containing `guides`. Used by
+// `compose()` to draw the shared, hoisted legend outside any plot panel.
+// The canvas is sized to (`width-cm`, `height-cm`); `panel-rect` is collapsed
+// at the origin and all extents are zero so `_draw-side` lays guides out
+// against the canvas's own bounds.
+#let standalone(guides, trained, theme, width-cm, height-cm) = {
+  let ctx = (trained: trained, palette: default-discrete, theme: theme)
+  cetz.canvas(length: 1cm, {
+    cetz.draw.hide(cetz.draw.rect((0, 0), (width-cm, height-cm)), bounds: true)
+    draw(
+      guides,
+      ctx,
+      panel-rect: (x: 0.0, y: 0.0, w: 0.0, h: height-cm),
+      margin: (left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
+      legend-gap: 0.0,
+      sec-y-extent: 0.0,
+      sec-x-extent: 0.0,
+      right-strip: 0.0,
+      theme: theme,
+    )
+  })
 }
