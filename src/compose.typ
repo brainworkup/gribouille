@@ -48,16 +48,16 @@
   first != none
 }
 
-#let _coerce-placement(g, side) = {
-  let placement = g.placement
-  placement.side = side
-  placement.direction = if side == "top" or side == "bottom" {
-    "horizontal"
-  } else { "vertical" }
-  let out = g
-  out.placement = placement
-  out
-}
+#let _coerce-placement(g, side) = (
+  ..g,
+  placement: (
+    ..g.placement,
+    side: side,
+    direction: if side == "top" or side == "bottom" {
+      "horizontal"
+    } else { "vertical" },
+  ),
+)
 
 #let _legend-canvas-size(guides, side) = {
   let extents = legend-mod.estimate-extents(guides)
@@ -131,6 +131,8 @@
       if not _all-mergeable(per-panel, a) { continue }
       hoisted.push(a)
       let g = _coerce-placement(per-panel.first().at(a), guides-placement)
+      // A merged guide (e.g., colour+fill on the same column) is reached
+      // through every aesthetic it carries, so dedup by aesthetic mix.
       if not hoisted-guides.any(h => h.aesthetics == g.aesthetics) {
         hoisted-guides.push(g)
       }
