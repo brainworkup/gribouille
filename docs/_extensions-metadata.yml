@@ -9,6 +9,7 @@ extensions:
   typst-render:
     root: "../"
     preamble: "_typst-preamble.typ"
+    style: "display: block; margin-inline: auto;"
     background: auto
     foreground: auto
     width: auto
