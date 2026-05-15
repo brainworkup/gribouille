@@ -700,6 +700,14 @@
   )
 }
 
+// Gap (cm) `render-plot` inserts between a plot panel and its side legend.
+// Exposed so `compose()` can match the same offset when the panel-margin
+// override leaves no intrinsic cetz padding (right-side default placement).
+#let legend-gap(theme) = {
+  let s = _text-style(theme, "legend-title")
+  resolve-margin-side-cm(s.margin.left, 1.6em, size-pt: s.size / 1pt)
+}
+
 #let _swatch-height(guide, title-h) = {
   let shape = _grid-shape(
     guide.levels.len(),

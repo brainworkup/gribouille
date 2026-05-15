@@ -276,30 +276,28 @@
       size.width,
       size.height,
     )
-    // The panel-block and the shared legend are separate Typst blocks, each
-    // a cetz canvas. cetz auto-pads canvases around text drawables (font
-    // descent + leading); that intrinsic padding already produces a visual
-    // gap matching `render-plot`'s in-canvas `legend-gap` (~1.6em). Adding
-    // explicit Typst spacing on top would compound and look wider than a
-    // single-plot side-legend.
-    let legend-spacing = 0cm
+    // For right placement the panel-margin override trims the panel's right
+    // side to 0 cm; with no intrinsic cetz padding on that side the legend
+    // would butt against the panel data area, so add `legend-gap` to match a
+    // single-plot side-legend offset. Other sides leave the panel-block's
+    // own axis-text / cetz-baseline padding to provide the visual gap.
+    let right-gap = legend-mod.legend-gap(theme) * 1cm
 
     if guides-placement == "right" {
       grid(
         columns: (auto, auto),
-        gutter: legend-spacing,
+        gutter: right-gap,
         panel-block, legend-canvas,
       )
     } else if guides-placement == "left" {
       grid(
         columns: (auto, auto),
-        gutter: legend-spacing,
         legend-canvas, panel-block,
       )
     } else if guides-placement == "bottom" {
-      stack(dir: ttb, spacing: legend-spacing, panel-block, legend-canvas)
+      stack(dir: ttb, panel-block, legend-canvas)
     } else {
-      stack(dir: ttb, spacing: legend-spacing, legend-canvas, panel-block)
+      stack(dir: ttb, legend-canvas, panel-block)
     }
   }
 }
