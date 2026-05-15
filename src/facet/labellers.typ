@@ -224,7 +224,7 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-grid(
 ///     rows: "sex",
-///     cols: "sp",
+///     columns: "sp",
 ///     labeller: labeller(rules: (sex: label-both(), sp: label-value())),
 ///   ),
 ///   width: 10cm,
@@ -249,7 +249,7 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   facet: facet-grid(
 ///     rows: "sex",
-///     cols: "sp",
+///     columns: "sp",
 ///     labeller: labeller(
 ///       rules: (sex: label-both()),
 ///       default: label-context(),
