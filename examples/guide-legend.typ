@@ -27,7 +27,9 @@
   make-panel("guide-legend(reverse: true)", guides(
     colour: guide-legend(reverse: true),
   )),
-  make-panel("guide-legend(ncol: 2)", guides(colour: guide-legend(ncol: 2))),
+  make-panel("guide-legend(ncolumn: 2)", guides(
+    colour: guide-legend(ncolumn: 2),
+  )),
   make-panel(
     "guide-legend(position: \"bottom\")",
     guides(colour: guide-legend(position: "bottom")),

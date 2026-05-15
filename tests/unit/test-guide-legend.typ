@@ -9,7 +9,7 @@
 #assert.eq(g.aesthetic, none)
 #assert.eq(g.title, none)
 #assert.eq(g.nrow, none)
-#assert.eq(g.ncol, none)
+#assert.eq(g.ncolumn, none)
 #assert.eq(g.reverse, true)
 #assert.eq(g.placement.side, "right")
 #assert.eq(g.placement.align, none)
@@ -17,9 +17,9 @@
 #assert.eq(g.placement.order, none)
 #assert.eq(g.placement.byrow, false)
 
-#let g2 = guide-legend(title: "Group", ncol: 2)
+#let g2 = guide-legend(title: "Group", ncolumn: 2)
 #assert.eq(g2.title, "Group")
-#assert.eq(g2.ncol, 2)
+#assert.eq(g2.ncolumn, 2)
 #assert.eq(g2.reverse, false)
 
 #let g-top = guide-legend(position: "top")

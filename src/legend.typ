@@ -185,7 +185,7 @@
   if a.t.type != b.t.type { return false }
   if a.title != b.title { return false }
   if a.nrow != b.nrow { return false }
-  if a.ncol != b.ncol { return false }
+  if a.ncolumn != b.ncolumn { return false }
   if a.reverse != b.reverse { return false }
   if _placement-key(a.placement) != _placement-key(b.placement) { return false }
   if a.t.type == "discrete" {
@@ -203,7 +203,7 @@
 // returned by `guides-for`. Two guides are equivalent across panels when they
 // share kind, title, aesthetic mix, and the user-visible content (levels +
 // labels for swatches; domain + breaks + labels for ladders and colourbars).
-// Placement and per-panel grid shape (`nrow`/`ncol`) are deliberately ignored
+// Placement and per-panel grid shape (`nrow`/`ncolumn`) are deliberately ignored
 // because compose forces a single shared side and grid shape on its own.
 // Custom guides never hoist (no scale to compare).
 #let can-merge-cross-panel(a, b) = {
@@ -281,9 +281,9 @@
   let nrow = if override != none { override.at("nrow", default: none) } else {
     none
   }
-  let ncol = if override != none { override.at("ncol", default: none) } else {
-    none
-  }
+  let ncolumn = if override != none {
+    override.at("ncolumn", default: none)
+  } else { none }
   let reverse = if override != none {
     override.at("reverse", default: false)
   } else { false }
@@ -293,7 +293,7 @@
     t: t,
     title: title,
     nrow: nrow,
-    ncol: ncol,
+    ncolumn: ncolumn,
     reverse: reverse,
     placement: placement,
     contributors: contributors,
@@ -432,7 +432,7 @@
     let shape = _grid-shape(
       g.levels.len(),
       g.nrow,
-      g.ncol,
+      g.ncolumn,
       g.placement.direction,
     )
     let layout = _swatch-layout(g.levels, shape, g.placement.byrow)
@@ -481,7 +481,7 @@
     let shape = _grid-shape(
       g.levels.len(),
       g.nrow,
-      g.ncol,
+      g.ncolumn,
       g.placement.direction,
     )
     return title-h + _SWATCH-LINE-H * shape.rows + _GUIDE-PAD-V
@@ -555,7 +555,7 @@
         levels: levels,
         labels: first.labels,
         nrow: first.nrow,
-        ncol: first.ncol,
+        ncolumn: first.ncolumn,
         key: key-kind,
         typst-mark: typst-mark,
       )
@@ -712,7 +712,7 @@
   let shape = _grid-shape(
     guide.levels.len(),
     guide.nrow,
-    guide.ncol,
+    guide.ncolumn,
     guide.placement.direction,
   )
   title-h + _SWATCH-LINE-H * shape.rows + _GUIDE-PAD-V
@@ -766,7 +766,7 @@
   let shape = _grid-shape(
     guide.levels.len(),
     guide.nrow,
-    guide.ncol,
+    guide.ncolumn,
     guide.placement.direction,
   )
   let layout = _swatch-layout(guide.levels, shape, byrow)

@@ -44,10 +44,10 @@
     layers: (geom-point(size: 4pt),),
     guides: guides(colour: guide-legend(
       direction: "horizontal",
-      ncol: 2,
+      ncolumn: 2,
       byrow: true,
     )),
-    labs: labs(title: "direction: \"horizontal\", ncol: 2, byrow: true"),
+    labs: labs(title: "direction: \"horizontal\", ncolumn: 2, byrow: true"),
     width: 12cm,
     height: 5cm,
   ),

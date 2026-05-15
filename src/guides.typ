@@ -20,7 +20,7 @@
 ///
 /// \@examples Lay the colour legend out across two columns.
 /// ```
-/// //| alt: "Scatter chart with three points coloured by group whose colour legend is laid out across two columns via guide-legend(ncol: 2)."
+/// //| alt: "Scatter chart with three points coloured by group whose colour legend is laid out across two columns via guide-legend(ncolumn: 2)."
 /// #let d = (
 ///   (x: 1, y: 1, g: "a"),
 ///   (x: 2, y: 2, g: "b"),
@@ -30,7 +30,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "g"),
 ///   layers: (geom-point(size: 3pt),),
-///   guides: guides(colour: guide-legend(ncol: 2)),
+///   guides: guides(colour: guide-legend(ncolumn: 2)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

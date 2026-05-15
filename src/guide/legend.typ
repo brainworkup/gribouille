@@ -2,7 +2,7 @@
 ///!
 ///! Build a guide spec the legend renderer respects when bound to an
 ///! aesthetic via \@guides. Customise level order with `reverse`, the
-///! swatch grid with `nrow` / `ncol` / `byrow`, and placement with
+///! swatch grid with `nrow` / `ncolumn` / `byrow`, and placement with
 ///! `position` / `direction` / `order`.
 
 #let _VALID-SIDES = ("none", "top", "right", "bottom", "left")
@@ -79,7 +79,7 @@
 ///
 /// \@param title Override the legend title; `none` keeps the default from labs or scale.
 /// \@param nrow Number of rows when laying out levels in a grid; `none` for default.
-/// \@param ncol Number of columns when laying out levels in a grid; `none` for default.
+/// \@param ncolumn Number of columns when laying out levels in a grid; `none` for default.
 /// \@param reverse Reverse the order of levels.
 /// \@param position Where the legend sits. One of `"top"`, `"right"`, `"bottom"`, `"left"`, `"none"`, a Typst alignment (e.g. `top + right`) for inside-panel placement, or a dict `(dx:, dy:)` / `(x:, y:)` for arbitrary offsets. Wide horizontal legends on `"top"` / `"bottom"` can overflow the panel edge.
 /// \@param direction Flow direction of swatch entries: `"horizontal"` or `"vertical"`. `auto` infers from `position` (horizontal for top/bottom, vertical otherwise).
@@ -118,7 +118,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "g"),
 ///   layers: (geom-point(size: 3pt),),
-///   guides: guides(fill: guide-legend(title: "Group", ncol: 2)),
+///   guides: guides(fill: guide-legend(title: "Group", ncolumn: 2)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -132,7 +132,7 @@
 ///   data: penguins,
 ///   mapping: aes(x: "flipper-len", y: "body-mass", fill: "species"),
 ///   layers: (geom-point(size: 2pt),),
-///   guides: guides(fill: guide-legend(title: "Species", ncol: 3)),
+///   guides: guides(fill: guide-legend(title: "Species", ncolumn: 3)),
 ///   labs: labs(x: "Flipper Length (mm)", y: "Body Mass (g)"),
 ///   width: 14cm,
 ///   height: 6cm,
@@ -143,7 +143,7 @@
 #let guide-legend(
   title: none,
   nrow: none,
-  ncol: none,
+  ncolumn: none,
   reverse: false,
   position: "right",
   direction: auto,
@@ -154,7 +154,7 @@
   aesthetic: none,
   title: title,
   nrow: nrow,
-  ncol: ncol,
+  ncolumn: ncolumn,
   reverse: reverse,
   placement: _normalise-position(position, direction, order, byrow),
 )
