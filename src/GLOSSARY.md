@@ -29,18 +29,13 @@ Run the survey command at the bottom before extending the table.
 
 ## Scale / training
 
-| Term         | Expansion          | Notes                                                            |
-| ------------ | ------------------ | ---------------------------------------------------------------- |
-| `trained`    | scale-trained dict | `ctx.trained.<aes>`; carries `type`, `domain`, `range`, palette. |
-| `dom`        | domain             | trained input range for an aesthetic.                            |
-| `rng`        | range              | trained output range (often pixels or palette indices).          |
-| `cont`       | continuous         | trained scale type for numeric aesthetics.                       |
-| `disc`       | discrete           | trained scale type for categorical aesthetics.                   |
-| `tr` / `trn` | transform          | scale transform name (`log10`, `sqrt`, `reverse`, …).            |
-| `fwd`        | forward transform  | data → transformed value.                                        |
-| `inv`        | inverse transform  | transformed value → data.                                        |
-| `sec`        | secondary axis     | `sec-axis()` config bound to the primary scale.                  |
-| `ref`        | mapping reference  | `mapping-ref` annotation (e.g., `as-factor()` forced-discrete).  |
+| Term      | Expansion          | Notes                                                            |
+| --------- | ------------------ | ---------------------------------------------------------------- |
+| `trained` | scale-trained dict | `ctx.trained.<aes>`; carries `type`, `domain`, `range`, palette. |
+| `fwd`     | forward transform  | data → transformed value (`transform-fwd`).                      |
+| `inv`     | inverse transform  | transformed value → data (`transform-inv`).                      |
+| `sec`     | secondary axis     | `sec-axis()` config bound to the primary scale.                  |
+| `ref`     | mapping reference  | `mapping-ref` annotation (e.g., `as-factor()` forced-discrete).  |
 
 ## Geometry / panel
 
@@ -73,8 +68,6 @@ Run the survey command at the bottom before extending the table.
 | `xs`        | parsed x values     | numeric x array post-`parse-number`.                                 |
 | `ys`        | parsed y values     | numeric y array.                                                     |
 | `xv` / `yv` | parsed x / y scalar | one parsed numeric value, typically inside a per-row map.            |
-| `xa` / `xb` | endpoint x          | `a`/`b` for the two ends of a pair (`(a, b)` in adjacent-row walks). |
-| `ya` / `yb` | endpoint y          | same.                                                                |
 | `grp`       | group key           | discrete group identifier (string, joined by `\u{1}` for compounds). |
 | `cat`       | category            | discrete level on a categorical scale.                               |
 | `num`       | numeric             | parsed scalar.                                                       |
