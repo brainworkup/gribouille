@@ -1,21 +1,21 @@
 ///! Wrap faceting.
 ///!
 ///! One panel per level of a discrete variable, wrapped into a grid of
-///! `ncol` columns (or `nrow` rows).
+///! `ncolumn` columns (or `nrow` rows).
 
 #import "labellers.typ": label-value
 
 /// Wrap facets: one panel per level of a discrete variable.
 ///
-/// Panels are arranged into a grid of `ncol` columns (or `nrow` rows when
-/// `ncol` is `none`).
+/// Panels are arranged into a grid of `ncolumn` columns (or `nrow` rows
+/// when `ncolumn` is `none`).
 ///
 /// \@category Facets
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param var Name of the discrete column whose levels drive the panels.
-/// \@param ncol Number of columns in the panel grid, or `none` for automatic.
+/// \@param variable Name of the discrete column whose levels drive the panels.
+/// \@param ncolumn Number of columns in the panel grid, or `none` for automatic.
 /// \@param nrow Number of rows in the panel grid, or `none` for automatic.
 /// \@param scales Scale policy. One of `"fixed"` (default, every panel
 ///   shares both axes), `"free"` (each panel trains x and y on its own
@@ -43,7 +43,7 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   facet: facet-wrap("sp", ncol: 3, scales: "free_y"),
+///   facet: facet-wrap("sp", ncolumn: 3, scales: "free_y"),
 ///   width: 12cm,
 ///   height: 7cm,
 /// )
@@ -81,7 +81,7 @@
 ///     fill: "species",
 ///   ),
 ///   layers: (geom-point(size: 2pt, alpha: 0.85),),
-///   facet: facet-wrap("island", ncol: 3),
+///   facet: facet-wrap("island", ncolumn: 3),
 ///   labs: labs(x: "Flipper Length (mm)", y: "Body Mass (g)", fill: "Species"),
 ///   width: 14cm,
 ///   height: 5cm,
@@ -90,8 +90,8 @@
 ///
 /// \@see \@facet-grid, \@plot
 #let facet-wrap(
-  var,
-  ncol: none,
+  variable,
+  ncolumn: none,
   nrow: none,
   scales: "fixed",
   labeller: label-value(),
@@ -104,8 +104,8 @@
   (
     kind: "facet",
     facet: "wrap",
-    var: var,
-    ncol: ncol,
+    variable: variable,
+    ncolumn: ncolumn,
     nrow: nrow,
     scales: scales,
     labeller: labeller,

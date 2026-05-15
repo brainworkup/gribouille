@@ -8,7 +8,7 @@
   data: mpg,
   mapping: aes(x: "displ", y: "hwy", colour: "class"),
   layers: (geom-point(size: 2.5pt, alpha: 0.85),),
-  facet: facet-wrap("cyl", ncol: 3),
+  facet: facet-wrap("cyl", ncolumn: 3),
   guides: guides(colour: guide-none()),
   labs: labs(
     title: "Highway Fuel Economy by Cylinder Count",

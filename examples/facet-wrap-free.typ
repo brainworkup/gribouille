@@ -18,7 +18,7 @@
     geom-line(stroke: 1.2pt, colour: rgb("#1f77b4")),
     geom-point(size: 2pt),
   ),
-  facet: facet-wrap("scale", ncol: 3, scales: "free_y"),
+  facet: facet-wrap("scale", ncolumn: 3, scales: "free_y"),
   labs: labs(
     title: "Per-panel y axis with scales = free_y",
     subtitle: "Each panel trains its own y range so disparate magnitudes read clearly",

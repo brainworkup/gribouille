@@ -25,7 +25,7 @@
     data: data,
     mapping: aes(x: "x", y: "y"),
     layers: (geom-point(),),
-    facet: facet-wrap("grp", ncol: 3, labeller: label-wrap(width: 10)),
+    facet: facet-wrap("grp", ncolumn: 3, labeller: label-wrap(width: 10)),
     width: 12cm,
     height: 4cm,
   ),
@@ -35,7 +35,7 @@
     layers: (geom-point(),),
     facet: facet-grid(
       rows: "side",
-      cols: "grp",
+      columns: "grp",
       labeller: label-wrap(width: 10),
     ),
     width: 12cm,

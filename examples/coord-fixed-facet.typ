@@ -20,7 +20,7 @@
     geom-line(stroke: 1pt, colour: accent),
     geom-point(size: 2pt, fill: accent),
   ),
-  facet: facet-wrap("line", ncol: 3),
+  facet: facet-wrap("line", ncolumn: 3),
   coord: coord-fixed(ratio: 1),
   labs: labs(
     title: "Coord-Fixed Inside Facet-Wrap",

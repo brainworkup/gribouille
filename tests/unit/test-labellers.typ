@@ -12,7 +12,7 @@
 
 // label-both: shows "var: level" with the configured separator.
 #assert.eq(lab.format(lab.label-both(), "cyl", "6"), "cyl: 6")
-#assert.eq(lab.format(lab.label-both(sep: " = "), "cyl", "6"), "cyl = 6")
+#assert.eq(lab.format(lab.label-both(separator: " = "), "cyl", "6"), "cyl = 6")
 
 // label-context: appends the row count when the renderer supplies one,
 // otherwise falls back to the bare level.

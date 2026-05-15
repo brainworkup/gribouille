@@ -26,7 +26,7 @@
     geom-line(stroke: 1.2pt, colour: rgb("#1f77b4")),
     geom-point(size: 2.5pt),
   ),
-  facet: facet-wrap("scale", ncol: 3, scales: "free"),
+  facet: facet-wrap("scale", ncolumn: 3, scales: "free"),
   labs: labs(
     title: "scales = free trains both x and y per panel",
     subtitle: "Useful when groups span very different domains in both directions",

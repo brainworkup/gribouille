@@ -8,7 +8,7 @@
   data: penguins,
   mapping: aes(x: "flipper-len", y: "body-mass", colour: "species"),
   layers: (geom-point(size: 2pt, alpha: 0.85),),
-  facet: facet-grid(rows: "sex", cols: "species", labeller: label-both()),
+  facet: facet-grid(rows: "sex", columns: "species", labeller: label-both()),
   scales: (scale-y-continuous(labels: format-comma()),),
   guides: guides(colour: guide-none()),
   labs: labs(

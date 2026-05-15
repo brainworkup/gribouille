@@ -1,21 +1,21 @@
 ///! Grid faceting.
 ///!
-///! Panels arranged on a `row x col` grid, driven by two discrete variables.
+///! Panels arranged on a `row x column` grid, driven by two discrete variables.
 ///! v1 supports shared scales only.
 
 #import "labellers.typ": label-value
 
-/// Grid facets: panels on a row x col grid from two discrete variables.
+/// Grid facets: panels on a row x column grid from two discrete variables.
 ///
-/// Either `rows` or `cols` may be `none`, but not both. Only shared scales
-/// are supported in v1.
+/// Either `rows` or `columns` may be `none`, but not both. Only shared
+/// scales are supported in v1.
 ///
 /// \@category Facets
 /// \@stability stable
 /// \@since 0.0.1
 ///
 /// \@param rows Name of the discrete column driving panel rows, or `none`.
-/// \@param cols Name of the discrete column driving panel columns, or `none`.
+/// \@param columns Name of the discrete column driving panel columns, or `none`.
 /// \@param scales Scale policy. Only `"fixed"` is supported in v1.
 /// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
@@ -37,13 +37,13 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   facet: facet-grid(rows: "sex", cols: "sp"),
+///   facet: facet-grid(rows: "sex", columns: "sp"),
 ///   width: 12cm,
 ///   height: 7cm,
 /// )
 /// ```
 ///
-/// \@examples Pass only `rows:` (or only `cols:`) for a one-dimensional
+/// \@examples Pass only `rows:` (or only `columns:`) for a one-dimensional
 /// grid layout.
 /// ```
 /// //| alt: "Two scatter panels stacked vertically, one row per sex (F, M), both showing the same y = 1.5x line over x = 0 to 5."
@@ -66,21 +66,21 @@
 /// \@see \@facet-wrap, \@plot
 #let facet-grid(
   rows: none,
-  cols: none,
+  columns: none,
   scales: "fixed",
   labeller: label-value(),
 ) = {
   if scales != "fixed" {
     panic("facet-grid currently supports scales: \"fixed\" only")
   }
-  if rows == none and cols == none {
-    panic("facet-grid needs at least one of rows: or cols:")
+  if rows == none and columns == none {
+    panic("facet-grid needs at least one of rows: or columns:")
   }
   (
     kind: "facet",
     facet: "grid",
     rows: rows,
-    cols: cols,
+    columns: columns,
     scales: scales,
     labeller: labeller,
   )

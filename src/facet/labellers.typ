@@ -40,13 +40,13 @@
 
 /// Labeller showing both the variable name and the level.
 ///
-/// Produces a label of the form `"<var>: <level>"`, e.g., `"cyl: 6"`.
+/// Produces a label of the form `"<variable>: <level>"`, e.g., `"cyl: 6"`.
 ///
 /// \@category Facets
 /// \@stability stable
 /// \@since 0.0.1
 ///
-/// \@param sep Separator between the variable name and the level.
+/// \@param separator Separator between the variable name and the level.
 ///
 /// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
 ///
@@ -69,7 +69,7 @@
 /// )
 /// ```
 ///
-/// \@examples Override `sep` to use a different separator.
+/// \@examples Override `separator` to use a different separator.
 /// ```
 /// //| alt: "Two scatter panels faceted by sp with strip labels using ' = ' as separator, e.g., 'sp = a' and 'sp = b'."
 /// #let d = ()
@@ -82,17 +82,17 @@
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   facet: facet-wrap("sp", labeller: label-both(sep: " = ")),
+///   facet: facet-wrap("sp", labeller: label-both(separator: " = ")),
 ///   width: 10cm,
 ///   height: 5cm,
 /// )
 /// ```
 ///
 /// \@see \@label-value, \@label-context, \@labeller
-#let label-both(sep: ": ") = (
+#let label-both(separator: ": ") = (
   kind: "labeller",
   labeller: "both",
-  sep: sep,
+  separator: separator,
 )
 
 /// Labeller appending the row count for each level.
@@ -315,7 +315,7 @@
 #let apply-one(lab, var, level, count) = {
   if lab == none { return level }
   if lab.labeller == "value" { return level }
-  if lab.labeller == "both" { return var + lab.sep + level }
+  if lab.labeller == "both" { return var + lab.separator + level }
   if lab.labeller == "context" {
     if count == none { return level }
     return level + " (n = " + str(count) + ")"

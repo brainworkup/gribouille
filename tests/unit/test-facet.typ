@@ -12,7 +12,7 @@
 #let f-fixed = facet-wrap("g")
 #assert.eq(f-fixed.scales, "fixed")
 #assert.eq(f-fixed.facet, "wrap")
-#assert.eq(f-fixed.var, "g")
+#assert.eq(f-fixed.variable, "g")
 
 #let f-free = facet-wrap("g", scales: "free")
 #assert.eq(f-free.scales, "free")

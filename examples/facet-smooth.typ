@@ -13,7 +13,7 @@
     geom-point(size: 2.5pt, alpha: 0.85, colour: accent),
     geom-smooth(method: "lm", colour: accent, fill: accent, alpha: 0.2),
   ),
-  facet: facet-wrap("cyl", ncol: 3, labeller: label-both()),
+  facet: facet-wrap("cyl", ncolumn: 3, labeller: label-both()),
   labs: labs(
     title: "Per-Panel Linear Smoother",
     subtitle: "Each fit follows only the rows in its own panel",

@@ -2226,7 +2226,7 @@
 
 #let _grid-facet-keyers(spec) = {
   let r = spec.facet.rows
-  let c = spec.facet.cols
+  let c = spec.facet.columns
   if r != none and c != none {
     return (
       row: row => (
@@ -2252,20 +2252,20 @@
   let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
 
   let wrap-levels = if facet-wrap-mode {
-    _raw-levels-for(spec, spec.facet.var)
+    _raw-levels-for(spec, spec.facet.variable)
   } else { () }
 
   let grid-row-levels = if facet-grid-mode and spec.facet.rows != none {
     _raw-levels-for(spec, spec.facet.rows)
   } else if facet-grid-mode { ("",) } else { () }
-  let grid-col-levels = if facet-grid-mode and spec.facet.cols != none {
-    _raw-levels-for(spec, spec.facet.cols)
+  let grid-col-levels = if facet-grid-mode and spec.facet.columns != none {
+    _raw-levels-for(spec, spec.facet.columns)
   } else if facet-grid-mode { ("",) } else { () }
 
   // Partition each layer's data once by the facet key, then look up each
   // panel's subset in O(1).
   let panels = if facet-wrap-mode {
-    let var = spec.facet.var
+    let var = spec.facet.variable
     let layer-groups = spec.layers.map(l => group-by(
       _resolve-data(l, spec.data),
       row => _facet-cell-str(row, var),
@@ -2436,8 +2436,8 @@
 
   let levels = wrap-levels
   let n = levels.len()
-  let ncol = if spec.facet.ncol != none {
-    spec.facet.ncol
+  let ncol = if spec.facet.ncolumn != none {
+    spec.facet.ncolumn
   } else if spec.facet.nrow != none {
     calc.ceil(n / spec.facet.nrow)
   } else {
@@ -2446,7 +2446,7 @@
   let nrow = calc.max(1, int(calc.ceil(n / ncol)))
   let strip-texts = _strip-texts(
     spec.facet.at("labeller", default: none),
-    spec.facet.var,
+    spec.facet.variable,
     levels,
     i => _panel-row-count(panels.at(i).layers),
   )
@@ -2614,7 +2614,7 @@
   let y-sec-extents = ctx.y-sec-extents
 
   let row-var = spec.facet.rows
-  let col-var = spec.facet.cols
+  let col-var = spec.facet.columns
   let row-levels = grid-row-levels
   let col-levels = grid-col-levels
   let n-rows = calc.max(1, row-levels.len())

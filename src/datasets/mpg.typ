@@ -63,7 +63,7 @@
 ///     geom-point(size: 2pt),
 ///     geom-smooth(method: "lm", se: false),
 ///   ),
-///   facet: facet-wrap("class", ncol: 3),
+///   facet: facet-wrap("class", ncolumn: 3),
 ///   width: 12cm,
 ///   height: 7cm,
 /// )
