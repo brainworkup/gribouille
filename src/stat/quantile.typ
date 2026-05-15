@@ -142,7 +142,7 @@
         x: x,
         y: fit.intercept + fit.slope * x,
         group: group-key,
-        quantile: tau,
+        _quantile: tau,
       ))
     }
   }

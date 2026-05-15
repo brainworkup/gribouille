@@ -26,14 +26,14 @@
 // Bin 0 spans [0, 0.75), midpoint 0.375. Bin 3 spans [2.25, 3.0], midpoint 2.625.
 #assert.eq(r.data.at(0).x, 0.375)
 #assert.eq(r.data.at(0).y, 0.5)
-#assert.eq(r.data.at(0).bin-count, 3)
+#assert.eq(r.data.at(0)._bin-count, 3)
 #assert.eq(r.data.at(1).x, 0.375)
 #assert.eq(r.data.at(1).y, 1.5)
 #assert.eq(r.data.at(2).x, 0.375)
 #assert.eq(r.data.at(2).y, 2.5)
 #assert.eq(r.data.at(3).x, 2.625)
 #assert.eq(r.data.at(3).y, 0.5)
-#assert.eq(r.data.at(3).bin-count, 1)
+#assert.eq(r.data.at(3)._bin-count, 1)
 
 // stackratio scales the y spacing.
 #let r2 = apply(data, (x: "x"), params: (bins: 4, stackratio: 2.0))

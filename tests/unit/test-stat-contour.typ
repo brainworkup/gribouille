@@ -57,8 +57,8 @@
 #assert.eq(r.mapping.x, "x")
 #assert.eq(r.mapping.group, "group")
 #assert(r.data.len() > 0)
-// Every emitted row carries a `level` and a `group`.
-#assert("level" in r.data.first())
+// Every emitted row carries a `_level` and a `group`.
+#assert("_level" in r.data.first())
 #assert("group" in r.data.first())
 // Rows come in pairs (one segment = two rows sharing a group).
 #let groups = r.data.map(row => row.group)
@@ -71,7 +71,7 @@
   aes(x: "x", y: "y", z: "z"),
   params: (bins: 99, binwidth: none, breaks: (1.5, 2.5)),
 )
-#let levels = r-breaks.data.map(row => row.level).dedup().sorted()
+#let levels = r-breaks.data.map(row => row._level).dedup().sorted()
 #assert.eq(levels, (1.5, 2.5))
 
 // --- missing z aesthetic returns nothing ---

@@ -79,8 +79,8 @@
     let segs = isolines(grid.xs, grid.ys, grid.z, level)
     for (si, ((x0, y0), (x1, y1))) in segs.enumerate() {
       let group = str(li) + ":" + str(si)
-      rows.push((x: x0, y: y0, level: level, group: group))
-      rows.push((x: x1, y: y1, level: level, group: group))
+      rows.push((x: x0, y: y0, _level: level, group: group))
+      rows.push((x: x1, y: y1, _level: level, group: group))
     }
   }
   (data: rows, mapping: new-mapping)

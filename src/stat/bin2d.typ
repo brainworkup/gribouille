@@ -54,7 +54,7 @@
       xmax: "xmax",
       ymin: "ymin",
       ymax: "ymax",
-      fill: "count",
+      fill: "_count",
     ),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
@@ -81,8 +81,8 @@
       xmax: xm + grid.x-width / 2,
       ymin: ym - grid.y-width / 2,
       ymax: ym + grid.y-width / 2,
-      count: n,
-      density: n / cell-area,
+      _count: n,
+      _density: n / cell-area,
     ))
   }
   (data: rows, mapping: new-mapping)

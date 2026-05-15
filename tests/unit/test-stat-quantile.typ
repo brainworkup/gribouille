@@ -35,7 +35,7 @@
 
 // Group key reflects tau.
 #assert.eq(r.data.first().group, "q0.5")
-#assert.eq(r.data.first().quantile, 0.5)
+#assert.eq(r.data.first()._quantile, 0.5)
 
 // Three quantiles → three groups → 3 * (n-samples + 1) rows.
 #let r3 = apply(
@@ -74,7 +74,7 @@
 
 // Per-tau slope from the first and last sampled points (x = 0 and x = 6).
 #let line-of(rows, tau) = {
-  let pts = rows.filter(p => p.quantile == tau)
+  let pts = rows.filter(p => p._quantile == tau)
   let lo = pts.first()
   let hi = pts.last()
   let slope = (hi.y - lo.y) / (hi.x - lo.x)

@@ -12,12 +12,12 @@
 #import "../../src/theme/grey.typ": theme-grey
 #import "../../src/geom/bar.typ": geom-bar
 
-#let rows = ((x: "a", count: 3), (x: "b", count: 5))
+#let rows = ((x: "a", _count: 3), (x: "b", _count: 5))
 
 // --- string expr: rewrite the mapping field ----------------------------
 
-#let r = eval-after-stat(rows, (x: "x", y: after-stat("count")), (:))
-#assert.eq(r.mapping.y, "count")
+#let r = eval-after-stat(rows, (x: "x", y: after-stat("_count")), (:))
+#assert.eq(r.mapping.y, "_count")
 #assert.eq(r.mapping.x, "x")
 #assert.eq(r.rows, rows)
 
@@ -25,7 +25,7 @@
 
 #let r2 = eval-after-stat(
   rows,
-  (x: "x", y: after-stat((row, _) => row.count * 2)),
+  (x: "x", y: after-stat((row, _) => row._count * 2)),
   (:),
 )
 #assert.eq(r2.mapping.y, "_as_y")
@@ -34,9 +34,9 @@
 
 // --- no-op when mapping carries no markers -----------------------------
 
-#let r3 = eval-after-stat(rows, (x: "x", y: "count"), (:))
+#let r3 = eval-after-stat(rows, (x: "x", y: "_count"), (:))
 #assert.eq(r3.rows, rows)
-#assert.eq(r3.mapping.y, "count")
+#assert.eq(r3.mapping.y, "_count")
 
 // --- end-to-end: after-stat("_count") matches geom-bar() y baseline ---
 

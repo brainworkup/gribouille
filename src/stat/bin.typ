@@ -77,7 +77,7 @@
       y: c,
       width: cells.grid.width,
       _count: c,
-      density: c / denom,
+      _density: c / denom,
     )
   })
   (data: rows, mapping: new-mapping)

@@ -62,7 +62,7 @@
       xmax: "xmax",
       ymin: "ymin",
       ymax: "ymax",
-      fill: "value",
+      fill: "_value",
     ),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
@@ -93,7 +93,7 @@
       xmax: xm + grid.x-width / 2,
       ymin: ym - grid.y-width / 2,
       ymax: ym + grid.y-width / 2,
-      value: value,
+      _value: value,
     ))
   }
   (data: rows, mapping: new-mapping)

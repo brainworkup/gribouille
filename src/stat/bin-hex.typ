@@ -47,7 +47,7 @@
 #let apply(data, mapping, params: (:)) = {
   let new-mapping = stat-output-mapping(
     mapping,
-    (x: "x", y: "y", fill: "count"),
+    (x: "x", y: "y", fill: "_count"),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
   let result = hex-cells(
@@ -66,8 +66,8 @@
     .map(c => (
       x: c.cx,
       y: c.cy,
-      count: c.count,
-      density: c.count / cell-area,
+      _count: c.count,
+      _density: c.count / cell-area,
       _hex-dx: grid.dx,
       _hex-dy: grid.dy,
     ))

@@ -57,7 +57,7 @@
 #let apply(data, mapping, params: (:)) = {
   let new-mapping = stat-output-mapping(
     mapping,
-    (x: "x", y: "y", fill: "value"),
+    (x: "x", y: "y", fill: "_value"),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
   let z-col = mapping.at("z", default: none)
@@ -79,7 +79,7 @@
     rows.push((
       x: c.cx,
       y: c.cy,
-      value: value,
+      _value: value,
       _hex-dx: grid.dx,
       _hex-dy: grid.dy,
     ))

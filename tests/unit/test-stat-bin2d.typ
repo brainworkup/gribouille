@@ -51,14 +51,14 @@
   (a: 1.5, b: 1.5),
 )
 #let r = apply(raw, aes(x: "a", y: "b"), params: (bins: 2, binwidth: none))
-#assert.eq(r.mapping.fill, "count")
+#assert.eq(r.mapping.fill, "_count")
 #assert.eq(r.mapping.xmin, "xmin")
 #assert.eq(r.mapping.ymax, "ymax")
 #assert.eq(r.data.len(), 3)
-#let total = r.data.fold(0, (acc, row) => acc + row.count)
+#let total = r.data.fold(0, (acc, row) => acc + row._count)
 #assert.eq(total, 5)
 // Two bins reach count 2: (0.5, 0.5)+(0.7, 0.7) and the doubled (1.5, 1.5).
-#let big = r.data.filter(row => row.count == 2)
+#let big = r.data.filter(row => row._count == 2)
 #assert.eq(big.len(), 2)
 #let top-right = big.filter(row => row.x > 1.0 and row.y > 1.0)
 #assert.eq(top-right.len(), 1)

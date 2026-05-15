@@ -61,7 +61,7 @@
 #let apply(data, mapping, params: (:)) = {
   let new-mapping = stat-output-mapping(
     mapping,
-    (x: "x", y: "y", size: "n"),
+    (x: "x", y: "y", size: "_n"),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
   let x-col = mapping.at("x", default: none)
@@ -94,7 +94,7 @@
     let p = proto.at(key)
     let n = counts.at(key)
     let prop = if total == 0 { 0.0 } else { n / total }
-    rows.push((x: p.x, y: p.y, n: n, prop: prop))
+    rows.push((x: p.x, y: p.y, _n: n, _prop: prop))
   }
 
   (data: rows, mapping: new-mapping)

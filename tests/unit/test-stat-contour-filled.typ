@@ -55,10 +55,10 @@
   aes(x: "x", y: "y", z: "z"),
   params: (bins: 3, binwidth: none, breaks: auto),
 )
-#assert.eq(r.mapping.fill, "level")
+#assert.eq(r.mapping.fill, "_level")
 #assert.eq(r.mapping.group, "group")
 #assert(r.data.len() > 0)
-#assert("level" in r.data.first())
+#assert("_level" in r.data.first())
 
 // Distinct bands -> distinct group prefixes.
 #let bands = r.data.map(row => row.group.split(":").at(0)).dedup()
@@ -71,7 +71,7 @@
   aes(x: "x", y: "y", z: "z"),
   params: (bins: 99, binwidth: none, breaks: (2.0, 4.0)),
 )
-#let levels = r-breaks.data.map(row => row.level).dedup().sorted()
+#let levels = r-breaks.data.map(row => row._level).dedup().sorted()
 // Two break values + two extent edges -> three bands -> three lower bounds:
 // z-lo (0), 2.0, and 4.0.
 #assert.eq(levels, (0.0, 2.0, 4.0))

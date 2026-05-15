@@ -24,17 +24,17 @@
 #assert.eq(r-sum.data.len(), 2)
 #assert.eq(r-sum.data.at(0).x, 1)
 #assert.eq(r-sum.data.at(0).y, 1)
-#assert.eq(r-sum.data.at(0).n, 2)
-#assert(calc.abs(r-sum.data.at(0).prop - 2 / 3) < 1e-9)
+#assert.eq(r-sum.data.at(0)._n, 2)
+#assert(calc.abs(r-sum.data.at(0)._prop - 2 / 3) < 1e-9)
 #assert.eq(r-sum.data.at(1).x, 2)
 #assert.eq(r-sum.data.at(1).y, 2)
-#assert.eq(r-sum.data.at(1).n, 1)
-#assert(calc.abs(r-sum.data.at(1).prop - 1 / 3) < 1e-9)
+#assert.eq(r-sum.data.at(1)._n, 1)
+#assert(calc.abs(r-sum.data.at(1)._prop - 1 / 3) < 1e-9)
 
-// Output mapping wires `size` to `n`.
+// Output mapping wires `size` to `_n`.
 #assert.eq(r-sum.mapping.x, "x")
 #assert.eq(r-sum.mapping.y, "y")
-#assert.eq(r-sum.mapping.size, "n")
+#assert.eq(r-sum.mapping.size, "_n")
 
 // --- geom-count: layer dict shape -----------------------------------------
 

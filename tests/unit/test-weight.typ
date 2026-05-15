@@ -37,8 +37,8 @@
   (x: "x", y: "y", weight: "w"),
   (:),
 )
-#assert.eq(r-sum.data.at(0).n, 8)
-#assert.eq(r-sum.data.at(1).n, 1)
+#assert.eq(r-sum.data.at(0)._n, 8)
+#assert.eq(r-sum.data.at(1)._n, 1)
 
 // stat-bin sums weights per bin instead of counting rows.
 #let df-bin = (

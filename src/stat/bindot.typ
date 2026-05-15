@@ -74,7 +74,7 @@
   let rows = assignments.map(a => (
     x: bin-midpoint(grid.lo, grid.width, a.bin),
     y: (a.stack + 0.5) * stackratio,
-    bin-count: counts.at(a.bin),
+    _bin-count: counts.at(a.bin),
     width: grid.width,
   ))
   (data: rows, mapping: new-mapping)

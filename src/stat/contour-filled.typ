@@ -54,7 +54,7 @@
 #let apply(data, mapping, params: (:)) = {
   let new-mapping = stat-output-mapping(
     mapping,
-    (x: "x", y: "y", group: "group", fill: "level"),
+    (x: "x", y: "y", group: "group", fill: "_level"),
   )
   if mapping == none { return (data: (), mapping: new-mapping) }
   let x-col = mapping.at("x", default: none)
@@ -86,7 +86,7 @@
     for (ci, poly) in polys.enumerate() {
       let group = str(bi) + ":" + str(ci)
       for v in poly {
-        rows.push((x: v.x, y: v.y, level: lo, group: group))
+        rows.push((x: v.x, y: v.y, _level: lo, group: group))
       }
     }
   }

@@ -40,7 +40,7 @@
 
 // Humanise a stat output column name for use as an axis or legend title:
 // drop the synthetic leading underscores and capitalise the first letter
-// (`"_count"` -> `"Count"`, `"density"` -> `"Density"`). Returns `name`
+// (`"_count"` -> `"Count"`, `"_density"` -> `"Density"`). Returns `name`
 // unchanged when it is empty after trimming.
 #let _stat-label(name) = {
   let trimmed = name.trim("_", at: start)

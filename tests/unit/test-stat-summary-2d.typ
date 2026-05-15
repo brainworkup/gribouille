@@ -22,13 +22,13 @@
   aes(x: "a", y: "b", z: "z"),
   params: (fun: "mean", bins: 2),
 )
-#assert.eq(r-mean.mapping.fill, "value")
+#assert.eq(r-mean.mapping.fill, "_value")
 #assert.eq(r-mean.data.len(), 2)
 // Bin (0,0) holds (1, 3) -> mean 2; bin (1,1) holds (10, 20) -> mean 15.
 #let cell-00 = r-mean.data.filter(row => row.y < 1.0).at(0)
-#assert.eq(cell-00.value, 2.0)
+#assert.eq(cell-00._value, 2.0)
 #let cell-11 = r-mean.data.filter(row => row.y > 1.0).at(0)
-#assert.eq(cell-11.value, 15.0)
+#assert.eq(cell-11._value, 15.0)
 
 // `sum` reduction.
 #let r-sum = apply(
@@ -36,7 +36,7 @@
   aes(x: "a", y: "b", z: "z"),
   params: (fun: "sum", bins: 2),
 )
-#assert.eq(r-sum.data.filter(row => row.y > 1.0).at(0).value, 30)
+#assert.eq(r-sum.data.filter(row => row.y > 1.0).at(0)._value, 30)
 
 // Callable `fun`.
 #let r-fn = apply(
@@ -44,7 +44,7 @@
   aes(x: "a", y: "b", z: "z"),
   params: (fun: xs => xs.len(), bins: 2),
 )
-#assert.eq(r-fn.data.filter(row => row.y > 1.0).at(0).value, 2)
+#assert.eq(r-fn.data.filter(row => row.y > 1.0).at(0)._value, 2)
 
 // Missing `z` aesthetic returns an empty result.
 #let r-noz = apply(

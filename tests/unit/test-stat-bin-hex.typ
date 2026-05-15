@@ -45,17 +45,17 @@
 #assert(calc.abs(v.at(0).at(0)) < 1e-9)
 #assert(calc.abs(v.at(0).at(1) - q) < 1e-9)
 
-// apply(): rows have x, y at hex centre, count, density.
+// apply(): rows have x, y at hex centre, _count, _density.
 #let raw = (
   (a: 0.1, b: 0.1),
   (a: 0.12, b: 0.11),
   (a: 2.0, b: 2.0),
 )
 #let r = apply(raw, aes(x: "a", y: "b"), params: (bins: 4, binwidth: none))
-#assert.eq(r.mapping.fill, "count")
+#assert.eq(r.mapping.fill, "_count")
 #assert.eq(r.mapping.x, "x")
 #assert.eq(r.data.len(), 2)
-#let total = r.data.fold(0, (acc, row) => acc + row.count)
+#let total = r.data.fold(0, (acc, row) => acc + row._count)
 #assert.eq(total, 3)
 // Hex-specific draw hints come along for the ride.
 #assert("_hex-dx" in r.data.first())

@@ -1,5 +1,5 @@
 // `stat-info(name)` covers every stat the dispatcher knows about, and
-// `stat-bin` publishes `_count` and `density` columns.
+// `stat-bin` publishes `_count` and `_density` columns.
 
 #import "../../src/stat/info.typ": stat-info, stat-names
 #import "../../src/stat/bin.typ" as bin-stat
@@ -38,11 +38,11 @@
   )
 }
 
-// --- bin publishes `_count` and `density` ------------------------------
+// --- bin publishes `_count` and `_density` -----------------------------
 
 #let info = stat-info("bin")
 #assert(info.outputs.contains("_count"))
-#assert(info.outputs.contains("density"))
+#assert(info.outputs.contains("_density"))
 #assert(info.outputs.contains("y"))
 #assert(info.outputs.contains("x"))
 #assert(info.outputs.contains("width"))
@@ -51,12 +51,12 @@
 #let r = bin-stat.apply(raw, aes(x: "x"), params: (bins: 4, binwidth: none))
 #let row = r.data.at(0)
 #assert("_count" in row)
-#assert("density" in row)
+#assert("_density" in row)
 #let total = r.data.fold(0, (acc, b) => acc + b._count)
 #assert.eq(total, raw.len())
 #let dens-sum = r.data.fold(
   0,
-  (acc, b) => acc + b.density * b.width,
+  (acc, b) => acc + b._density * b.width,
 )
 #assert(calc.abs(dens-sum - 1.0) < 1e-9)
 

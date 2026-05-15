@@ -50,7 +50,9 @@
 // --- title resolution: marker -> humanised stat name -------------------
 
 #assert.eq(late-binding-name(after-stat("_count")), "Count")
-#assert.eq(late-binding-name(after-stat("density")), "Density")
+#assert.eq(late-binding-name(after-stat("_density")), "Density")
+#assert.eq(late-binding-name(after-stat("_bin-count")), "Bin-count")
+#assert.eq(late-binding-name(after-stat("_quantile")), "Quantile")
 #assert.eq(late-binding-name(after-stat((row, ctx) => row.count)), none)
 #assert.eq(late-binding-name("col"), none)
 #assert.eq(mapping-display-name(after-stat("_count")), "Count")

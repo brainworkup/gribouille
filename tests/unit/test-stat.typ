@@ -74,7 +74,7 @@
 #assert.eq(r-bindot.mapping.y, "y")
 #assert.eq(r-bindot.mapping.colour, "g")
 
-// --- stat-sum: preserves grouping while still publishing size: "n" ---
+// --- stat-sum: preserves grouping while still publishing size: "_n" --
 
 #let df-sum = (
   (x: 1, y: 1, g: "a"),
@@ -84,7 +84,7 @@
 #let r-sum = apply-stat("sum", df-sum, (x: "x", y: "y", fill: "g"), (:))
 #assert.eq(r-sum.mapping.x, "x")
 #assert.eq(r-sum.mapping.y, "y")
-#assert.eq(r-sum.mapping.size, "n")
+#assert.eq(r-sum.mapping.size, "_n")
 #assert.eq(r-sum.mapping.fill, "g")
 
 // --- stat-qq / stat-qq-line: preserve grouping; drop stale `sample` key ---

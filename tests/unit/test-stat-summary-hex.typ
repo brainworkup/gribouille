@@ -20,9 +20,9 @@
   aes(x: "a", y: "b", z: "z"),
   params: (fun: "sum", bins: 4),
 )
-#assert.eq(r.mapping.fill, "value")
+#assert.eq(r.mapping.fill, "_value")
 #assert.eq(r.data.len(), 2)
-#let total = r.data.fold(0, (acc, row) => acc + row.value)
+#let total = r.data.fold(0, (acc, row) => acc + row._value)
 #assert.eq(total, 12)
 // Geom hint propagated.
 #assert("_hex-dx" in r.data.first())
@@ -41,7 +41,7 @@
   aes(x: "a", y: "b", z: "z"),
   params: (fun: xs => xs.len(), bins: 4),
 )
-#let counts = r-fn.data.map(row => row.value).sorted()
+#let counts = r-fn.data.map(row => row._value).sorted()
 #assert.eq(counts, (1, 2))
 
 stat-summary-hex tests passed.
