@@ -83,7 +83,15 @@ See [`typst.toml`](typst.toml) and [`src/deps.typ`](src/deps.typ) for the author
 
 ## Contributing
 
+Contributions are welcome.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for bug reporting, development setup, and commit conventions.
 Short identifiers used across the source tree (`ctx`, `spec`, `mapping`, `cx`, `cy`, `lo`, `hi`, …) are catalogued in [`src/GLOSSARY.md`](src/GLOSSARY.md).
+
+## Citation
+
+If you use _Gribouille_ in your work, please cite it.
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff).
+GitHub renders it via the "Cite this repository" widget on the repository sidebar.
 
 ## License
 
