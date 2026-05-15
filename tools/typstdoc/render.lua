@@ -174,20 +174,10 @@ local function emit_returns(fn, from_qmd, index, strict)
   return table.concat(out, "\n")
 end
 
-local function lookup_stat_outputs(fn, stat_info)
-  if not stat_info then return nil end
-  if not fn.doc or fn.doc.category ~= "Stats" then return nil end
-  local bare = fn.name:match("^stat%-(.+)$")
-  if not bare then return nil end
-  local entry = stat_info[bare]
-  if not entry then
-    entry = stat_info[(bare:gsub("%-", "_"))]
-  end
-  return entry
-end
-
 local function emit_outputs(fn, stat_info)
-  local entry = lookup_stat_outputs(fn, stat_info)
+  if not stat_info or not fn.doc or fn.doc.category ~= "Stats" then return "" end
+  local bare = fn.name:match("^stat%-(.+)$")
+  local entry = bare and stat_info[bare]
   if not entry then return "" end
   local out = { "## Outputs", "" }
   if #entry.outputs == 0 then

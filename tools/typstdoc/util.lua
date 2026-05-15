@@ -131,4 +131,46 @@ function M.slugify(s)
   return (s:lower():gsub("[^%w]+", "-"):gsub("^%-", ""):gsub("%-$", ""))
 end
 
+function M.find_balanced_block(text, header_pattern)
+  local start = text:find(header_pattern)
+  if not start then return nil end
+  local open_paren = text:find("[%({]", start)
+  if not open_paren then return nil end
+  local opener = text:sub(open_paren, open_paren)
+  local closer = (opener == "(") and ")" or "}"
+  local depth = 0
+  local in_string = false
+  local string_char
+  local i = open_paren
+  local len = #text
+  while i <= len do
+    local c = text:sub(i, i)
+    if in_string then
+      if c == "\\" and i < len then
+        i = i + 2
+      else
+        if c == string_char then in_string = false end
+        i = i + 1
+      end
+    elseif c == '"' or c == "'" then
+      in_string = true
+      string_char = c
+      i = i + 1
+    elseif c == "/" and text:sub(i + 1, i + 1) == "/" then
+      local nl = text:find("\n", i, true)
+      i = (nl or len) + 1
+    elseif c == opener then
+      depth = depth + 1
+      i = i + 1
+    elseif c == closer then
+      depth = depth - 1
+      if depth == 0 then return text:sub(open_paren + 1, i - 1) end
+      i = i + 1
+    else
+      i = i + 1
+    end
+  end
+  return nil
+end
+
 return M
