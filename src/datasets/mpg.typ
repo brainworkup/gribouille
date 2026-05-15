@@ -21,6 +21,9 @@
 /// The bundled literal is stored in column-store form; \@plot accepts either
 /// column-store or row-store input and normalises internally.
 ///
+/// **Source:** subset of the `mpg` dataset bundled with the ggplot2 R package; see `help("mpg")` in R.
+/// Originally extracted from the US Environmental Protection Agency's fuel economy data, <https://fueleconomy.gov/>, restricted to models with a new release every year between 1999 and 2008.
+///
 /// \@category Datasets
 /// \@stability stable
 /// \@since 0.0.1

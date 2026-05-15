@@ -4,7 +4,6 @@
 ///! Three species (Adelie, Chinstrap, Gentoo) measured on three islands
 ///! (Torgersen, Biscoe, Dream) across years 2007-2009.
 ///! Missing values are represented as `none`.
-///! Source: Horst AM, Hill AP, Gorman KB (2020). palmerpenguins R package.
 
 /// Morphological measurements for 344 penguins (Palmer Archipelago).
 ///
@@ -22,6 +21,20 @@
 ///
 /// The bundled literal is stored in column-store form; \@plot accepts either
 /// column-store or row-store input and normalises internally.
+///
+/// **Source:** bundled from the R `datasets` package; see `help("penguins")` in R.
+/// Compiled for R by Kaye E, Turner H, Gorman KB, Horst AM, Presmanes Hill A (2025), [doi:10.5281/zenodo.14902740](https://doi.org/10.5281/zenodo.14902740).
+///
+/// **Original data:** Palmer Station Antarctica LTER, Gorman KB (2020):
+///
+/// - Adelie: [doi:10.6073/pasta/98b16d7d563f265cb52372c8ca99e60f](https://doi.org/10.6073/pasta/98b16d7d563f265cb52372c8ca99e60f).
+/// - Gentoo: [doi:10.6073/pasta/7fca67fb28d56ee2ffa3d9370ebda689](https://doi.org/10.6073/pasta/7fca67fb28d56ee2ffa3d9370ebda689).
+/// - Chinstrap: [doi:10.6073/pasta/c14dfcfada8ea13a17536e73eb6fbe9e](https://doi.org/10.6073/pasta/c14dfcfada8ea13a17536e73eb6fbe9e).
+///
+/// **References:**
+///
+/// - Gorman KB, Williams TD, Fraser WR (2014). Ecological Sexual Dimorphism and Environmental Variability within a Community of Antarctic Penguins (Genus Pygoscelis). _PLoS ONE_, 9(3), e90081, [doi:10.1371/journal.pone.0090081](https://doi.org/10.1371/journal.pone.0090081).
+/// - Horst AM, Presmanes Hill A, Gorman KB (2022). Palmer Archipelago Penguins Data in the palmerpenguins R Package: An Alternative to Anderson's Irises. _The R Journal_, 14(1), 244-254, [doi:10.32614/RJ-2022-020](https://doi.org/10.32614/RJ-2022-020).
 ///
 /// \@category Datasets
 /// \@stability stable

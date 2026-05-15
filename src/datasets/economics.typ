@@ -23,6 +23,15 @@
 /// The bundled literal is stored in column-store form; \@plot accepts either
 /// column-store or row-store input and normalises internally.
 ///
+/// **Source:** shape and column definitions follow the `economics` dataset bundled with the ggplot2 R package; see `help("economics")` in R.
+/// Original series come from the US Federal Reserve Economic Data (FRED), <https://fred.stlouisfed.org/>:
+///
+/// - `pce`: <https://fred.stlouisfed.org/series/PCE>.
+/// - `pop`: <https://fred.stlouisfed.org/series/POP>.
+/// - `psavert`: <https://fred.stlouisfed.org/series/PSAVERT>.
+/// - `uempmed`: <https://fred.stlouisfed.org/series/UEMPMED>.
+/// - `unemploy`: <https://fred.stlouisfed.org/series/UNEMPLOY>.
+///
 /// \@category Datasets
 /// \@stability stable
 /// \@since 0.0.1
