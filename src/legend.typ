@@ -3,7 +3,9 @@
 // Per-aesthetic candidates are built first, then grouped: candidates that
 // describe the same underlying scale (same column, type, levels/domain,
 // labels and title) collapse into a single guide whose key glyph carries
-// every merged aesthetic. Renders to the right of the panel.
+// every merged aesthetic. Each guide carries a `placement` record (side,
+// alignment, direction, byrow, order) that drives where it renders and how
+// the swatch grid flows.
 
 #import "deps.typ": cetz
 #import "utils/pretty.typ": pretty

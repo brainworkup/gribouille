@@ -103,6 +103,14 @@ Run the survey command at the bottom before extending the table.
 | `mm`   | millimetres              | rare; example datasets (penguins flipper length). |
 | `cb`   | callback                 | user-supplied closure passed through.             |
 
+## Legend placement
+
+| Term        | Expansion                  | Notes                                                                                                                          |
+| ----------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `placement` | guide placement record     | `(side, align, dx, dy, direction, order, byrow)` attached to every guide; consumed by `legend.draw`.                           |
+| `extents`   | per-side legend extents    | dict `(top, right, bottom, left, inside)` returned by `legend.estimate-extents`; cm totals plus inside-anchor records.         |
+| `side`      | placement side             | `"top"` / `"right"` / `"bottom"` / `"left"` for margin slots, `"inside"` for panel-overlay placement, `"none"` to suppress.    |
+
 ## Survey
 
 Re-run before extending the table:
