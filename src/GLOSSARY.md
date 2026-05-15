@@ -6,26 +6,26 @@ Run the survey command at the bottom before extending the table.
 
 ## Pipeline
 
-| Term      | Expansion                              | Notes                                                                    |
-| --------- | -------------------------------------- | ------------------------------------------------------------------------ |
-| `geom`    | geometric layer                        | `geom_*` namespace; layer dict tagged `kind: "layer"`.                   |
-| `aes`     | aesthetic mapping                      | `aes()` constructor; `(channel: column-name-or-marker, ...)`.            |
-| `stat`    | statistical transform                  | `stat_*` namespace; dispatched via `src/stat/apply.typ`.                 |
-| `pos`     | position adjustment                    | `position_*` namespace (stack, dodge, fill, jitter, …).                  |
-| `spec`    | plot specification dict                | the user-built dict consumed by `render-plot`.                           |
-| `ctx`     | per-draw context                       | dict passed to every geom's `draw(layer, ctx)`.                          |
-| `mapping` | column-name dict                       | flattened `aes` (`(x: "col", y: "col", colour: "col", ...)`).            |
-| `layer`   | one entry of `spec.layers`             | dict tagged `kind: "layer"` carrying `geom`, `mapping`, `data`, …        |
-| `map`     | mapping (when shortened)               | local variable name; same shape as `mapping`.                            |
-| `params`  | layer-specific parameters              | `layer.params.<channel>` carries pinned values (`stroke`, `colour`, …).  |
-| `draw`    | per-geom render entry point            | every geom exports `draw(layer, ctx)`.                                   |
-| `eval`    | evaluate (closure / late-binding lane) | `eval-after-stat`, `eval-stage`, …                                       |
-| `args`    | arguments                              | Typst `..args` rest binding.                                             |
-| `fun`     | function / closure                     | user-supplied closure passed via `fun:` (`stat-manual`, `stat-summary`). |
-| `defer`   | deferred render                        | `plot(defer: true)` returns the spec dict instead of content, for `compose`. |
-| `compose` | multi-plot composition                 | arranges deferred plots and hoists shared legends; see `src/compose.typ`. |
+| Term      | Expansion                              | Notes                                                                                  |
+| --------- | -------------------------------------- | -------------------------------------------------------------------------------------- |
+| `geom`    | geometric layer                        | `geom_*` namespace; layer dict tagged `kind: "layer"`.                                 |
+| `aes`     | aesthetic mapping                      | `aes()` constructor; `(channel: column-name-or-marker, ...)`.                          |
+| `stat`    | statistical transform                  | `stat_*` namespace; dispatched via `src/stat/apply.typ`.                               |
+| `pos`     | position adjustment                    | `position_*` namespace (stack, dodge, fill, jitter, …).                                |
+| `spec`    | plot specification dict                | the user-built dict consumed by `render-plot`.                                         |
+| `ctx`     | per-draw context                       | dict passed to every geom's `draw(layer, ctx)`.                                        |
+| `mapping` | column-name dict                       | flattened `aes` (`(x: "col", y: "col", colour: "col", ...)`).                          |
+| `layer`   | one entry of `spec.layers`             | dict tagged `kind: "layer"` carrying `geom`, `mapping`, `data`, …                      |
+| `map`     | mapping (when shortened)               | local variable name; same shape as `mapping`.                                          |
+| `params`  | layer-specific parameters              | `layer.params.<channel>` carries pinned values (`stroke`, `colour`, …).                |
+| `draw`    | per-geom render entry point            | every geom exports `draw(layer, ctx)`.                                                 |
+| `eval`    | evaluate (closure / late-binding lane) | `eval-after-stat`, `eval-stage`, …                                                     |
+| `args`    | arguments                              | Typst `..args` rest binding.                                                           |
+| `fun`     | function / closure                     | user-supplied closure passed via `fun:` (`stat-manual`, `stat-summary`).               |
+| `defer`   | deferred render                        | `plot(defer: true)` returns the spec dict instead of content, for `compose`.           |
+| `compose` | multi-plot composition                 | arranges deferred plots and hoists shared legends; see `src/compose.typ`.              |
 | `hoist`   | per-aesthetic legend lift              | promote a per-panel guide into the shared legend when every panel agrees on the scale. |
-| `probe`   | first-pass deferred render             | initial `render-plot-deferred` call that reads guides before suppression. |
+| `probe`   | first-pass deferred render             | initial `render-plot-deferred` call that reads guides before suppression.              |
 
 ## Scale / training
 
@@ -78,35 +78,35 @@ Run the survey command at the bottom before extending the table.
 
 ## Colour / theme
 
-| Term     | Expansion         | Notes                                                  |
-| -------- | ----------------- | ------------------------------------------------------ |
-| `pal`    | palette           | colour palette dict (discrete or continuous).          |
-| `ink`    | foreground colour | theme primary text/line colour (defaults to `black`).  |
-| `paper`  | background colour | theme canvas / panel background (defaults to `white`). |
-| `accent` | highlight colour  | theme accent (used by some geom defaults).             |
+| Term     | Expansion          | Notes                                                                                                  |
+| -------- | ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `pal`    | palette            | colour palette dict (discrete or continuous).                                                          |
+| `ink`    | foreground colour  | theme primary text/line colour (defaults to `black`).                                                  |
+| `paper`  | background colour  | theme canvas / panel background (defaults to `white`).                                                 |
+| `accent` | highlight colour   | theme accent (used by some geom defaults).                                                             |
 | `tint`   | bar/area body fill | geom fill role: `col-mix(ink, paper, geom-fill-tint-amount)` (default `0.35`, equivalent to `grey35`). |
 
 ## Geometry helpers / misc
 
-| Term   | Expansion                | Notes                                             |
-| ------ | ------------------------ | ------------------------------------------------- |
-| `band` | band                     | rectangular shaded region (utils/band.typ).       |
-| `gap`  | gap between bins or bars | x-distance between adjacent bin centres.          |
+| Term   | Expansion                | Notes                                                                |
+| ------ | ------------------------ | -------------------------------------------------------------------- |
+| `band` | band                     | rectangular shaded region (utils/band.typ).                          |
+| `gap`  | gap between bins or bars | x-distance between adjacent bin centres.                             |
 | `pad`  | padding                  | breathing room (cm) around laid-out content (e.g., strip band text). |
-| `sub`  | sub-record / sub-element | nested theme element (e.g., `theme-sub-axis`).    |
-| `qq`   | quantile-quantile        | `geom-qq`, `stat-qq`, `stat-qq-line`.             |
-| `se`   | standard error           | `mean-se`, `geom-errorbar` summary.               |
-| `sp`   | species                  | example data column (penguins / iris-style).      |
-| `mm`   | millimetres              | rare; example datasets (penguins flipper length). |
-| `cb`   | callback                 | user-supplied closure passed through.             |
+| `sub`  | sub-record / sub-element | nested theme element (e.g., `theme-sub-axis`).                       |
+| `qq`   | quantile-quantile        | `geom-qq`, `stat-qq`, `stat-qq-line`.                                |
+| `se`   | standard error           | `mean-se`, `geom-errorbar` summary.                                  |
+| `sp`   | species                  | example data column (penguins / iris-style).                         |
+| `mm`   | millimetres              | rare; example datasets (penguins flipper length).                    |
+| `cb`   | callback                 | user-supplied closure passed through.                                |
 
 ## Legend placement
 
-| Term        | Expansion                  | Notes                                                                                                                          |
-| ----------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `placement` | guide placement record     | `(side, align, dx, dy, direction, order, byrow)` attached to every guide; consumed by `legend.draw`.                           |
-| `extents`   | per-side legend extents    | dict `(top, right, bottom, left, inside)` returned by `legend.estimate-extents`; cm totals plus inside-anchor records.         |
-| `side`      | placement side             | `"top"` / `"right"` / `"bottom"` / `"left"` for margin slots, `"inside"` for panel-overlay placement, `"none"` to suppress.    |
+| Term        | Expansion               | Notes                                                                                                                       |
+| ----------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `placement` | guide placement record  | `(side, align, dx, dy, direction, order, byrow)` attached to every guide; consumed by `legend.draw`.                        |
+| `extents`   | per-side legend extents | dict `(top, right, bottom, left, inside)` returned by `legend.estimate-extents`; cm totals plus inside-anchor records.      |
+| `side`      | placement side          | `"top"` / `"right"` / `"bottom"` / `"left"` for margin slots, `"inside"` for panel-overlay placement, `"none"` to suppress. |
 
 ## Survey
 
