@@ -34,6 +34,28 @@
   "linetype",
 )
 
+// Default placement when a candidate has no user override. Mirrors the
+// defaults on `guide-legend()` / `guide-custom()`.
+#let _default-placement = (
+  side: "right",
+  align: none,
+  dx: 0pt,
+  dy: 0pt,
+  direction: "vertical",
+  order: none,
+  byrow: false,
+)
+
+// Equality key for placement comparisons. Two candidates with different keys
+// never merge into a single guide.
+#let _placement-key(placement) = (
+  placement.side,
+  placement.align,
+  placement.direction,
+  placement.order,
+  placement.byrow,
+)
+
 #let _guide-title(t, spec, aes-name) = {
   if (
     t.at("spec", default: none) != none
@@ -161,6 +183,7 @@
   if a.nrow != b.nrow { return false }
   if a.ncol != b.ncol { return false }
   if a.reverse != b.reverse { return false }
+  if _placement-key(a.placement) != _placement-key(b.placement) { return false }
   if a.t.type == "discrete" {
     if a.levels != b.levels { return false }
     if a.labels != b.labels { return false }
@@ -237,6 +260,9 @@
   let reverse = if override != none {
     override.at("reverse", default: false)
   } else { false }
+  let placement = if override != none {
+    override.at("placement", default: _default-placement)
+  } else { _default-placement }
 
   let cand = (
     aes: aes-name,
@@ -245,6 +271,7 @@
     nrow: nrow,
     ncol: ncol,
     reverse: reverse,
+    placement: placement,
     contributors: contributors,
     column: _column-for(spec, aes-name),
     typst-mark: t.at("typst-mark", default: false),
@@ -378,7 +405,9 @@
   let candidates = ()
   for aes-name in _aesthetic-order {
     let cand = _candidate(spec, trained, overrides, aes-name)
-    if cand != none { candidates.push(cand) }
+    if cand == none { continue }
+    if cand.placement.side == "none" { continue }
+    candidates.push(cand)
   }
 
   let groups = ()
@@ -466,6 +495,7 @@
         n-breaks: info.n-breaks,
       )
     }
+    g.insert("placement", first.placement)
     g.insert("width", _guide-width(g))
     guides.push(g)
   }
@@ -477,6 +507,8 @@
   for g in overrides.values() {
     if type(g) != dictionary { continue }
     if g.at("kind", default: none) != "guide-custom" { continue }
+    let placement = g.at("placement", default: _default-placement)
+    if placement.side == "none" { continue }
     let cm-w = _custom-dim-cm(g.width, _CUSTOM-DEFAULT-WIDTH)
     let cm-h = _custom-dim-cm(g.height, _CUSTOM-DEFAULT-HEIGHT)
     let custom = (
@@ -485,6 +517,7 @@
       cm-width: cm-w,
       cm-height: cm-h,
       title: g.title,
+      placement: placement,
     )
     custom.insert("width", _guide-width(custom))
     guides.push(custom)

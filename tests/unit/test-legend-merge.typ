@@ -165,4 +165,105 @@
 #assert.eq(g8.at(0).aesthetics, ("linetype",))
 #assert.eq(g8.at(0).key, "line")
 
+#let _placement(side, direction) = (
+  side: side,
+  align: none,
+  dx: 0pt,
+  dy: 0pt,
+  direction: direction,
+  order: none,
+  byrow: false,
+)
+#let _top-placement = _placement("top", "horizontal")
+
+// 9. Divergent placement splits: colour wants "top", fill defaults to "right",
+// so the two stay as separate guides even when the column matches.
+#let g9 = guides-for(
+  (
+    mapping: (colour: "g", fill: "g"),
+    layers: (layer-point(),),
+    guides: (
+      colour: (
+        kind: "guide",
+        suppress: false,
+        title: none,
+        nrow: none,
+        ncol: none,
+        reverse: false,
+        placement: _top-placement,
+      ),
+    ),
+  ),
+  (
+    colour: (type: "discrete", domain: ("a", "b")),
+    fill: (type: "discrete", domain: ("a", "b")),
+  ),
+)
+#assert.eq(g9.len(), 2)
+#assert.eq(g9.at(0).aesthetics, ("colour",))
+#assert.eq(g9.at(0).placement.side, "top")
+#assert.eq(g9.at(1).aesthetics, ("fill",))
+#assert.eq(g9.at(1).placement.side, "right")
+
+// 10. Matching placement on both overrides lets the merge proceed.
+#let g10 = guides-for(
+  (
+    mapping: (colour: "g", fill: "g"),
+    layers: (layer-point(),),
+    guides: (
+      colour: (
+        kind: "guide",
+        suppress: false,
+        title: none,
+        nrow: none,
+        ncol: none,
+        reverse: false,
+        placement: _top-placement,
+      ),
+      fill: (
+        kind: "guide",
+        suppress: false,
+        title: none,
+        nrow: none,
+        ncol: none,
+        reverse: false,
+        placement: _top-placement,
+      ),
+    ),
+  ),
+  (
+    colour: (type: "discrete", domain: ("a", "b")),
+    fill: (type: "discrete", domain: ("a", "b")),
+  ),
+)
+#assert.eq(g10.len(), 1)
+#assert.eq(g10.at(0).aesthetics, ("colour", "fill"))
+#assert.eq(g10.at(0).placement.side, "top")
+
+// 11. `position: "none"` suppresses the guide entirely.
+#let _none-placement = _placement("none", "vertical")
+#let g11 = guides-for(
+  (
+    mapping: (colour: "g", fill: "h"),
+    layers: (layer-point(),),
+    guides: (
+      colour: (
+        kind: "guide",
+        suppress: false,
+        title: none,
+        nrow: none,
+        ncol: none,
+        reverse: false,
+        placement: _none-placement,
+      ),
+    ),
+  ),
+  (
+    colour: (type: "discrete", domain: ("a", "b")),
+    fill: (type: "discrete", domain: ("a", "b")),
+  ),
+)
+#assert.eq(g11.len(), 1)
+#assert.eq(g11.at(0).aesthetics, ("fill",))
+
 Legend-merge tests passed.
