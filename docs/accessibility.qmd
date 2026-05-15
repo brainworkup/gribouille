@@ -116,7 +116,7 @@ Colour still fails, though, whenever colour is *removed*: greyscale print, photo
 Two things help.
 
 - Continuous data: [`scale-colour-viridis-c`](reference/scales/scale-colour-viridis-c.qmd) (and the binned [`scale-colour-viridis-b`](reference/scales/scale-colour-viridis-b.qmd)) is perceptually uniform and increases monotonically in lightness, so it survives greyscale; use [`scale-colour-viridis-d`](reference/scales/scale-colour-viridis-d.qmd) for the discrete version.
-- Other discrete palettes: [`scale-colour-brewer`](reference/scales/scale-colour-brewer.qmd) exposes the ColorBrewer families; turn on the "colour-blind safe" filter on [colorbrewer2.org](https://colorbrewer2.org) to pick one. Avoid [`scale-colour-hue`](reference/scales/scale-colour-hue.qmd) (evenly spaced hues, the ggplot2 default) for categorical data unless you have a specific reason, as it is not colour-blind safe.
+- Other discrete palettes: [`scale-colour-brewer`](reference/scales/scale-colour-brewer.qmd) exposes the ColorBrewer families; turn on the "colour-blind safe" filter on [colorbrewer2.org](https://colorbrewer2.org) to pick one. Avoid [`scale-colour-hue`](reference/scales/scale-colour-hue.qmd) for categorical data unless you have a specific reason, as it is not colour-blind safe.
 
 The reliable fix when a figure must read in black and white is a second, non-colour channel: map the grouping variable to `shape:` and/or `linetype:` as well as `colour:`, controlled by [`scale-shape`](reference/scales/scale-shape.qmd) and [`scale-linetype`](reference/scales/scale-linetype.qmd).
 Shape and linetype only stay legible for low-cardinality factors, roughly six levels or fewer.
