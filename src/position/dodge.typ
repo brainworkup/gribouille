@@ -69,8 +69,7 @@
 #let position-dodge(width: 0.9, padding: 0.1) = (
   kind: "position",
   name: "dodge",
-  width: width,
-  padding: padding,
+  params: (width: width, padding: padding),
 )
 
 #let _row-width(row, default-width) = {

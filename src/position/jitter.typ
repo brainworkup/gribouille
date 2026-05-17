@@ -66,9 +66,7 @@
 #let position-jitter(width: 0.4, height: 0.4, seed: 0) = (
   kind: "position",
   name: "jitter",
-  width: width,
-  height: height,
-  seed: seed,
+  params: (width: width, height: height, seed: seed),
 )
 
 // Deterministic pseudo-random in [-1, 1) seeded by an integer index. Uses

@@ -465,7 +465,7 @@
     position-spec
   } else { position-spec.at("name", default: "identity") }
   let position-params = if type(position-spec) == str { params } else {
-    position-spec
+    position-spec.at("params", default: (:))
   }
   let pos-data = stat-data
   let pos-mapping = stat-mapping

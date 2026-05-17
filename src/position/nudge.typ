@@ -62,8 +62,7 @@
 #let position-nudge(x: 0, y: 0) = (
   kind: "position",
   name: "nudge",
-  x: x,
-  y: y,
+  params: (x: x, y: y),
 )
 
 #let apply(data, mapping, params: (:)) = {

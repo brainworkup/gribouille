@@ -77,10 +77,12 @@
 ) = (
   kind: "position",
   name: "jitterdodge",
-  width: width,
-  height: height,
-  dodge-width: dodge-width,
-  seed: seed,
+  params: (
+    width: width,
+    height: height,
+    dodge-width: dodge-width,
+    seed: seed,
+  ),
 )
 
 #let apply(data, mapping, params: (:)) = {
