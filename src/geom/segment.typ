@@ -5,7 +5,6 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
-#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Segment layer: one line from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -102,7 +101,6 @@
   if x-trained == none or y-trained == none { return }
 
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
-  let pinned-stroke = resolve-pinned-stroke(layer, ctx, 0.8pt)
 
   for row in data {
     let x0 = parse-number(row.at(x-col, default: none))
@@ -131,7 +129,7 @@
       mapping,
       ctx,
       row,
-      pinned-stroke,
+      0.8pt,
     )
     cetz.draw.line(
       (cx0, cy0),

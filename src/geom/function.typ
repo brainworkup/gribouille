@@ -9,7 +9,6 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
-#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.
 ///
@@ -135,11 +134,19 @@
   let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)
   let final-colour = apply-alpha(colour, alpha)
 
+  let thickness = resolve-channel(
+    "linewidth",
+    layer,
+    mapping,
+    ctx,
+    (:),
+    0.8pt,
+  )
   cetz.draw.line(
     ..pts,
     stroke: (
       paint: final-colour,
-      thickness: resolve-pinned-stroke(layer, ctx, 0.8pt),
+      thickness: thickness,
       dash: layer.params.linetype,
     ),
   )

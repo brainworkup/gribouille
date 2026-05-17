@@ -10,7 +10,6 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
-#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Curved segment layer: one quadratic bezier from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -152,7 +151,6 @@
   if x-trained == none or y-trained == none { return }
 
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
-  let pinned-stroke = resolve-pinned-stroke(layer, ctx, 0.8pt)
   let curvature = layer.params.curvature
   let cos-angle = calc.cos(layer.params.angle)
   let n = layer.params.n
@@ -186,7 +184,7 @@
       mapping,
       ctx,
       row,
-      pinned-stroke,
+      0.8pt,
     )
     cetz.draw.line(
       ..pts,

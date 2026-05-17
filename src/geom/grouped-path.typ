@@ -8,7 +8,6 @@
 #import "../utils/group.typ": partition-by-group
 #import "../utils/radial.typ": project-point
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
-#import "../utils/stroke.typ": resolve-pinned-stroke
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -45,7 +44,7 @@
   pts
 }
 
-#let draw-grouped-paths(layer, ctx, build-pts, stroke-fallback: 0.8pt) = {
+#let draw-grouped-paths(layer, ctx, build-pts) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
   if mapping == none or mapping.x == none or mapping.y == none { return }
@@ -53,10 +52,9 @@
   if x-trained == none { return }
 
   // theme.geom.colour fills in for unmapped lines so a brand colour propagates;
-  // pinned stroke (user-supplied length, else `theme.geom.linewidth`, else
-  // the per-geom default) becomes the linewidth-aesthetic fallback.
+  // resolve-channel("linewidth", ...) folds the auto/theme/per-geom-default
+  // cascade for stroke thickness.
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
-  let pinned-stroke = resolve-pinned-stroke(layer, ctx, stroke-fallback)
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
@@ -79,7 +77,7 @@
       mapping,
       ctx,
       leader,
-      pinned-stroke,
+      0.8pt,
     )
     cetz.draw.line(
       ..pts,

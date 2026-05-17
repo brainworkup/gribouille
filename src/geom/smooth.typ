@@ -13,7 +13,6 @@
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/aes-pair.typ": aes-set
 #import "../utils/radial.typ": project-point
-#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -168,7 +167,6 @@
   } else {
     geom-colour-default(geom-defaults(ctx.theme), role: "accent")
   }
-  let pinned-stroke = resolve-pinned-stroke(layer, ctx, 1pt)
 
   // Partition by group key (scale-aware: only discrete aesthetics group).
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
@@ -237,7 +235,7 @@
         mapping,
         ctx,
         rows.first(),
-        pinned-stroke,
+        1pt,
       )
       let dash = resolve-channel(
         "linetype",

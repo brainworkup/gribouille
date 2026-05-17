@@ -10,15 +10,8 @@
 #import "../scale/train.typ": map-axis-data
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
-#import "../utils/stroke.typ": resolve-pinned-stroke
 
-#let _draw-axis-lines(
-  intercepts,
-  user-axis,
-  layer,
-  ctx,
-  stroke-fallback: 0.6pt,
-) = {
+#let _draw-axis-lines(intercepts, user-axis, layer, ctx) = {
   let flipped = ctx.at("flipped", default: false)
   let trained-axis = if flipped {
     if user-axis == "x" { "y" } else { "x" }
@@ -43,7 +36,7 @@
     mapping,
     ctx,
     (:),
-    resolve-pinned-stroke(layer, ctx, stroke-fallback),
+    0.6pt,
   )
   let stroke-spec = (
     paint: fill,

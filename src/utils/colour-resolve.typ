@@ -4,6 +4,7 @@
 #import "./palette.typ": spec-palette
 #import "./types.typ": parse-number
 #import "./late-binding.typ": after-scale-source, apply-after-scale
+#import "../theme/theme.typ": geom-default, geom-defaults
 
 /// Resolve `source-col` for `channel` through the channel's trained
 /// scale, returning `default` when either is missing.
@@ -134,24 +135,34 @@
 /// Priority order:
 /// 1. Pinned `layer.params.linewidth` when set to a non-`auto`, non-`none` length.
 /// 2. The trained linewidth scale, if `mapping.linewidth` is set.
-/// 3. `default-thickness` otherwise.
-///
-/// `default-thickness` is conventionally the layer's `params.stroke` length, so
-/// when neither the mapping nor an explicit `linewidth:` pin applies, the
-/// layer's configured stroke length is used as the fallback thickness.
+/// 3. Pinned `layer.params.stroke` when set to a length.
+/// 4. `theme.geom.linewidth` when the layer's `stroke:` is `auto`.
+/// 5. `params.stroke-fallback` when set (used by wrapper layers like
+///    \@geom-contour / \@geom-quantile that dispatch through another geom).
+/// 6. `default-thickness` otherwise.
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.linewidth`.
 /// \@param mapping The resolved aesthetic mapping.
-/// \@param ctx The plot context exposing `trained`.
+/// \@param ctx The plot context exposing `trained` and `theme`.
 /// \@param sample-row The row used to read the linewidth value.
-/// \@param default-thickness Fallback thickness when no mapping or pin applies.
+/// \@param default-thickness Per-geom default thickness when no pin or mapping resolves.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let resolve-linewidth(layer, mapping, ctx, sample-row, default-thickness) = {
   let pinned-lw = layer.params.at("linewidth", default: auto)
   if pinned-lw != auto and pinned-lw != none and type(pinned-lw) == length {
     return pinned-lw
   }
+  let pinned-stroke = layer.params.at("stroke", default: auto)
+  let effective-default = if type(pinned-stroke) == length {
+    pinned-stroke
+  } else if pinned-stroke == auto {
+    geom-default(
+      geom-defaults(ctx.theme),
+      "linewidth",
+      layer.params.at("stroke-fallback", default: default-thickness),
+    )
+  } else { default-thickness }
   let spec = if mapping == none { none } else {
     mapping.at("linewidth", default: none)
   }
@@ -160,7 +171,7 @@
     col,
     ctx,
     sample-row,
-    default-thickness,
+    effective-default,
   )
   apply-after-scale(scaled, spec, ctx, sample-row)
 }
