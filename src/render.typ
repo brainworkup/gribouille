@@ -13,7 +13,7 @@
 #import "position/apply.typ": apply-position
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": (
-  _line-stroke, _rect-fill, _scalar-cascade, _text-style,
+  _line-stroke, _rect-style, _scalar-cascade, _text-style,
 )
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
@@ -1126,21 +1126,25 @@
   let outer-radial = radial-ctx(coord, x-trained, y-trained, px-range, py-range)
   let is-radial = outer-radial != none
 
-  let _panel-fill = _rect-fill(theme, "panel-background", fallback: theme.paper)
-  if _panel-fill != none {
+  let _panel = _rect-style(
+    theme,
+    "panel-background",
+    fallback-fill: theme.paper,
+  )
+  if _panel.fill != none or _panel.stroke != none {
     if is-radial {
       cetz.draw.circle(
         outer-radial.centre,
         radius: outer-radial.r-max,
-        fill: _panel-fill,
-        stroke: none,
+        fill: _panel.fill,
+        stroke: _panel.stroke,
       )
     } else {
       rect(
         (px-lo, py-lo),
         (px-hi, py-hi),
-        fill: _panel-fill,
-        stroke: none,
+        fill: _panel.fill,
+        stroke: _panel.stroke,
       )
     }
   }
@@ -2114,7 +2118,7 @@
 }
 
 #let _render-style(theme) = (
-  strip-fill: _rect-fill(theme, "strip-background", fallback: theme.paper),
+  strip: _rect-style(theme, "strip-background", fallback-fill: theme.paper),
   strip-text: _text-style(theme, "strip-text"),
   ax-title: _per-side(
     (p, s, _) => _text-style(theme, p + "-" + s),
@@ -2129,8 +2133,8 @@
   cetz.draw.rect(
     corner-lo,
     corner-hi,
-    fill: style.strip-fill,
-    stroke: none,
+    fill: style.strip.fill,
+    stroke: style.strip.stroke,
   )
   let (cx, cy) = (
     (corner-lo.at(0) + corner-hi.at(0)) / 2,
@@ -2879,9 +2883,14 @@
 }
 
 #let _render-decorate(canvas, labs, theme) = {
-  let plot-bg = _rect-fill(theme, "plot-background")
-  let _wrap(content) = if plot-bg != none {
-    block(fill: plot-bg, breakable: false, content)
+  let plot-bg = _rect-style(theme, "plot-background")
+  let _wrap(content) = if plot-bg.fill != none or plot-bg.stroke != none {
+    block(
+      fill: plot-bg.fill,
+      stroke: plot-bg.stroke,
+      breakable: false,
+      content,
+    )
   } else { content }
   if labs == none { return _wrap(canvas) }
   let title = _text-style(theme, "plot-title")

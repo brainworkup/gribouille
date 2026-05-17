@@ -228,7 +228,7 @@
   stroke: stroke,
 )
 
-/// Rectangle element: fill and stroke.
+/// Rectangle element: fill, outline colour, and stroke thickness.
 ///
 /// Pass the result to \@theme under keys like `panel-background`.
 ///
@@ -238,7 +238,8 @@
 /// \@since 0.0.1
 ///
 /// \@param fill Rectangle fill colour, or `none` to inherit.
-/// \@param stroke Rectangle stroke, or `none` to inherit.
+/// \@param colour Outline colour, or `none` to inherit.
+/// \@param stroke Outline thickness (a Typst length), or `none` for no outline.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -258,7 +259,7 @@
 ///
 /// \@examples Add a stroke to frame the panel as well as fill it.
 /// ```
-/// //| alt: "Scatter plot of y against x with a cream-filled panel ringed by a 1pt amber stroke via element-rect fill and stroke."
+/// //| alt: "Scatter plot of y against x with a cream-filled panel ringed by a 1pt amber stroke via element-rect fill, colour, and stroke."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -266,7 +267,8 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(panel-background: element-rect(
 ///     fill: rgb("#fff7e6"),
-///     stroke: 1pt + rgb("#cc7a00"),
+///     colour: rgb("#cc7a00"),
+///     stroke: 1pt,
 ///   )),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -274,9 +276,10 @@
 /// ```
 ///
 /// \@see \@theme, \@element-text, \@element-line, \@element-blank
-#let element-rect(fill: none, stroke: none) = (
+#let element-rect(fill: none, colour: none, stroke: none) = (
   kind: "element-rect",
   fill: fill,
+  colour: colour,
   stroke: stroke,
 )
 

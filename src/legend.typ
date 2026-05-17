@@ -14,7 +14,7 @@
 #import "utils/palette.typ": default-discrete, spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour
-#import "theme/theme.typ": _rect-fill, _text-style
+#import "theme/theme.typ": _rect-style, _text-style
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-display-name
 #import "utils/typst-markup.typ": resolve-prose
@@ -1107,13 +1107,13 @@
   ox += _resolve-offset(g.placement.dx, panel-rect.w)
   oy-top -= _resolve-offset(g.placement.dy, panel-rect.h)
 
-  let bg = _rect-fill(theme, "legend-background")
-  if bg != none {
+  let bg = _rect-style(theme, "legend-background")
+  if bg.fill != none or bg.stroke != none {
     cetz.draw.rect(
       (ox, oy-top - g.height),
       (ox + g.width, oy-top),
-      fill: bg,
-      stroke: none,
+      fill: bg.fill,
+      stroke: bg.stroke,
     )
   }
 

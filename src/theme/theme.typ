@@ -293,19 +293,36 @@
   )
 }
 
-/// Resolve a rect surface into a fill colour, or `none` for `element-blank`.
+/// Resolve a rect surface into a fill colour and outline stroke.
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
 /// \@param surface Rect surface key, e.g., `"panel-background"`.
-/// \@param fallback Fill used when neither surface nor parent sets one.
-/// \@returns Colour, or `none` to skip drawing.
-#let _rect-fill(theme, surface, fallback: none) = {
+/// \@param fallback-fill Fill used when neither surface nor parent sets one.
+/// \@param fallback-colour Outline paint used when only a thickness is set.
+/// \@returns Dict `(fill, stroke)` where each entry is a Typst value or `none`.
+#let _rect-style(theme, surface, fallback-fill: none, fallback-colour: none) = {
   let el = resolve-element(theme, surface)
-  if el.at("kind", default: none) == "element-blank" { return none }
+  if el.at("kind", default: none) == "element-blank" {
+    return (fill: none, stroke: none)
+  }
   let fill = el.at("fill", default: none)
-  if fill != none { return fill }
-  fallback
+  let colour = el.at("colour", default: none)
+  let thickness = el.at("stroke", default: none)
+  let stroke = if thickness == 0pt or (colour == none and thickness == none) {
+    none
+  } else {
+    let paint = if colour != none {
+      colour
+    } else if fallback-colour != none {
+      fallback-colour
+    } else { theme.ink }
+    (paint: paint, thickness: if thickness != none { thickness } else { 0.5pt })
+  }
+  (
+    fill: if fill != none { fill } else { fallback-fill },
+    stroke: stroke,
+  )
 }
 
 #let _apply-element(out, key, value) = {
