@@ -17,8 +17,15 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../utils/stroke.typ": resolve-pinned-stroke
 
-#let _draw-errorbar-axis(layer, ctx, axis, cap-extent) = {
+#let _draw-errorbar-axis(
+  layer,
+  ctx,
+  axis,
+  cap-extent,
+  stroke-fallback: 0.8pt,
+) = {
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
   if mapping == none { return }
@@ -42,6 +49,7 @@
     (ctx.resolve-colour)(colour-trained, ctx.palette)
   } else { none }
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let pinned-stroke = resolve-pinned-stroke(layer, ctx, stroke-fallback)
 
   let extent-is-length = type(cap-extent) == length
   let half = if extent-is-length {
@@ -83,7 +91,7 @@
       mapping,
       ctx,
       row,
-      layer.params.stroke,
+      pinned-stroke,
     )
 
     let stroke-spec = (

@@ -64,7 +64,7 @@
   mapping: none,
   data: none,
   size: auto,
-  stroke: 0.5pt,
+  stroke: auto,
   fill: auto,
   colour: auto,
   alpha: auto,

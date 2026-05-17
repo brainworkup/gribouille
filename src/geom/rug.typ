@@ -9,6 +9,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Marginal rug ticks at each row's x and / or y position.
 ///
@@ -77,7 +78,7 @@
   data: none,
   sides: "bl",
   length: 0.15cm,
-  stroke: 0.4pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   inherit-aes: true,
@@ -123,6 +124,7 @@
     (ctx.resolve-colour)(colour-trained, ctx.palette)
   } else { none }
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let pinned-stroke = resolve-pinned-stroke(layer, ctx, 0.4pt)
 
   let (px-lo, px-hi) = ctx.px-range
   let (py-lo, py-hi) = ctx.py-range
@@ -147,7 +149,7 @@
       mapping,
       ctx,
       row,
-      layer.params.stroke,
+      pinned-stroke,
     )
     let stroke-spec = (paint: final-colour, thickness: thickness)
 

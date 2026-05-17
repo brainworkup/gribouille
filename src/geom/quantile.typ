@@ -57,7 +57,7 @@
   data: none,
   quantiles: (0.25, 0.5, 0.75),
   n-samples: 64,
-  stroke: 0.6pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: auto,
@@ -71,6 +71,7 @@
   data: data,
   params: (
     stroke: stroke,
+    stroke-fallback: 0.6pt,
     colour: colour,
     alpha: alpha,
     linetype: linetype,

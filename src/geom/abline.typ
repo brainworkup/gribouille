@@ -11,6 +11,7 @@
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/radial.typ": radial-point
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Straight reference line described by slope and intercept.
 ///
@@ -70,7 +71,7 @@
   slope: 1,
   intercept: 0,
   colour: auto,
-  stroke: 0.6pt,
+  stroke: auto,
   alpha: auto,
   linetype: "solid",
   inherit-aes: false,
@@ -133,7 +134,7 @@
     mapping,
     ctx,
     (:),
-    layer.params.stroke,
+    resolve-pinned-stroke(layer, ctx, 0.6pt),
   )
   let stroke-spec = (
     paint: fill,

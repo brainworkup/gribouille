@@ -5,6 +5,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Pointrange layer: a marker at `(x, y)` plus a linerange from `ymin` to `ymax`.
 ///
@@ -71,7 +72,7 @@
   mapping: none,
   data: none,
   size: 2.5pt,
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   fill: auto,
   alpha: auto,
@@ -113,6 +114,7 @@
   if x-trained == none or y-trained == none { return }
 
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let pinned-stroke = resolve-pinned-stroke(layer, ctx, 0.8pt)
 
   for row in data {
     let xv = row.at(x-col, default: none)
@@ -151,7 +153,7 @@
       mapping,
       ctx,
       row,
-      layer.params.stroke,
+      pinned-stroke,
     )
     cetz.draw.line(
       (cx-lo, cy-lo),

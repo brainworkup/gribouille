@@ -75,7 +75,7 @@
 #let geom-line(
   mapping: none,
   data: none,
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: auto,

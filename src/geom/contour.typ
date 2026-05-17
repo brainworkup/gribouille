@@ -52,7 +52,7 @@
   bins: 10,
   binwidth: none,
   breaks: auto,
-  stroke: 0.6pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: auto,
@@ -64,6 +64,7 @@
   data: data,
   params: (
     stroke: stroke,
+    stroke-fallback: 0.6pt,
     colour: colour,
     alpha: alpha,
     linetype: linetype,

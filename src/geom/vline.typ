@@ -62,7 +62,7 @@
 #let geom-vline(
   xintercept: none,
   colour: auto,
-  stroke: 0.6pt,
+  stroke: auto,
   alpha: auto,
   linetype: "solid",
   inherit-aes: false,

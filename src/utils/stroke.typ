@@ -1,5 +1,7 @@
 #import "colour-resolve.typ": resolve-stroke-colour, resolve-stroke-width
-#import "../theme/theme.typ": default-stroke-thickness
+#import "../theme/theme.typ": (
+  default-stroke-thickness, geom-default, geom-defaults,
+)
 
 /// Build a CeTZ stroke dictionary by injecting `paint` into a thickness-only stroke spec, or returns `none` when the layer disabled the stroke.
 ///
@@ -12,6 +14,32 @@
 /// \@param stroke-param The layer's `params.stroke` value.
 /// \@param stroke-paint The resolved stroke colour.
 /// \@returns A CeTZ stroke dictionary or `none`.
+/// Resolve `layer.params.stroke` to a concrete length when the constructor
+/// left it `auto`, consulting `theme.geom.linewidth` first and falling back
+/// to the per-geom default.
+///
+/// Returns the layer's pinned value (length, `none`, or stroke dict) unchanged
+/// when not `auto`, so user overrides always win.
+///
+/// \@internal
+/// \@param layer The layer providing `params.stroke`.
+/// \@param ctx The plot context exposing `theme`.
+/// \@param fallback Per-geom default thickness used when the theme also
+///   leaves `element-geom.linewidth` unset.
+/// \@returns A length, `none`, or stroke dict.
+#let resolve-pinned-stroke(layer, ctx, fallback) = {
+  let s = layer.params.stroke
+  if s != auto { return s }
+  // Wrapper layers (e.g. `geom-contour`/`geom-quantile` dispatching via
+  // `geom: "path"`/`"line"`) override the host geom's visual default by
+  // setting `params.stroke-fallback`.
+  let effective-fallback = layer.params.at(
+    "stroke-fallback",
+    default: fallback,
+  )
+  geom-default(geom-defaults(ctx.theme), "linewidth", effective-fallback)
+}
+
 #let build-stroke(stroke-param, stroke-paint) = {
   if stroke-param == none { return none }
   if stroke-paint == none { return none }

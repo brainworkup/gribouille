@@ -61,7 +61,7 @@
   mapping: none,
   data: none,
   direction: "hv",
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: auto,

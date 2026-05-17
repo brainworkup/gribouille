@@ -66,7 +66,7 @@
   data: none,
   bins: 30,
   binwidth: none,
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: auto,

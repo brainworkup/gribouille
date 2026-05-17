@@ -9,6 +9,7 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Polyline of `fun(x)` sampled uniformly across the x-range.
 ///
@@ -74,7 +75,7 @@
   fun: none,
   n: 101,
   xlim: none,
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: "solid",
@@ -138,7 +139,7 @@
     ..pts,
     stroke: (
       paint: final-colour,
-      thickness: layer.params.stroke,
+      thickness: resolve-pinned-stroke(layer, ctx, 0.8pt),
       dash: layer.params.linetype,
     ),
   )

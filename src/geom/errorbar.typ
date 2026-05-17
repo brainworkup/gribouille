@@ -67,7 +67,7 @@
   mapping: none,
   data: none,
   width: 0.4,
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: "solid",

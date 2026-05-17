@@ -9,6 +9,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../utils/stroke.typ": resolve-pinned-stroke
 
 /// Spoke layer: one segment from `(x, y)` along `(angle, radius)` per row.
 ///
@@ -57,7 +58,7 @@
   data: none,
   angle: 0deg,
   radius: 1,
-  stroke: 0.8pt,
+  stroke: auto,
   colour: auto,
   alpha: auto,
   linetype: "solid",
@@ -118,6 +119,7 @@
   let sin-fb = calc.sin(angle-fallback)
 
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let pinned-stroke = resolve-pinned-stroke(layer, ctx, 0.8pt)
 
   for row in data {
     let x0 = parse-number(row.at(x-col, default: none))
@@ -152,7 +154,7 @@
       mapping,
       ctx,
       row,
-      layer.params.stroke,
+      pinned-stroke,
     )
     cetz.draw.line(
       (cx0, cy0),
