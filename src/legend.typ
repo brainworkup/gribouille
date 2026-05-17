@@ -1086,7 +1086,7 @@
   if type(value) == ratio { panel-dim * (value / 100%) } else if (
     type(value) == length
   ) { value / 1cm } else {
-    panic("legend offset must be a length or ratio; got " + repr(value))
+    panic("legend: offset must be a length or ratio; got " + repr(value))
   }
 }
 

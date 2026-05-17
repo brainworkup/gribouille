@@ -87,23 +87,30 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = make-layer(
-  "curve",
-  mapping: mapping,
-  data: data,
-  params: (
-    curvature: curvature,
-    angle: angle,
-    n: n,
-    stroke: stroke,
-    colour: colour,
-    alpha: alpha,
-    linetype: linetype,
-  ),
-  stat: stat,
-  position: position,
-  inherit-aes: inherit-aes,
-)
+) = {
+  if curvature < -1 or curvature > 1 {
+    panic(
+      "geom-curve: curvature must be in [-1, 1]; got " + repr(curvature) + ".",
+    )
+  }
+  make-layer(
+    "curve",
+    mapping: mapping,
+    data: data,
+    params: (
+      curvature: curvature,
+      angle: angle,
+      n: n,
+      stroke: stroke,
+      colour: colour,
+      alpha: alpha,
+      linetype: linetype,
+    ),
+    stat: stat,
+    position: position,
+    inherit-aes: inherit-aes,
+  )
+}
 
 // Quadratic-bezier samples between (cx0, cy0) and (cx1, cy1). The control
 // point sits perpendicular to the chord at a distance proportional to

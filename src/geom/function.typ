@@ -80,20 +80,25 @@
   alpha: auto,
   linetype: "solid",
   inherit-aes: false,
-) = make-layer(
-  "function",
-  data: (),
-  params: (
-    fun: fun,
-    n: n,
-    xlim: xlim,
-    stroke: stroke,
-    colour: colour,
-    alpha: alpha,
-    linetype: linetype,
-  ),
-  inherit-aes: inherit-aes,
-)
+) = {
+  if n < 2 {
+    panic("geom-function: n must be at least 2; got " + repr(n) + ".")
+  }
+  make-layer(
+    "function",
+    data: (),
+    params: (
+      fun: fun,
+      n: n,
+      xlim: xlim,
+      stroke: stroke,
+      colour: colour,
+      alpha: alpha,
+      linetype: linetype,
+    ),
+    inherit-aes: inherit-aes,
+  )
+}
 
 #let draw(layer, ctx) = {
   let fun = layer.params.fun
