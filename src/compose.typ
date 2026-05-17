@@ -110,15 +110,15 @@
 ///
 /// \@examples Auto-collect: identical `colour` legend hoisted to the right.
 /// ```
-/// //| alt: "Two side-by-side mtcars scatter panels sharing a single colour legend by cylinder count hoisted to the right of the panel grid."
+/// //| alt: "Two side-by-side mpg scatter panels sharing a single colour legend by cylinder count hoisted to the right of the panel grid."
 /// #let panel(map) = plot(
-///   data: mtcars, mapping: map,
+///   data: mpg, mapping: map,
 ///   layers: (geom-point(size: 3pt),),
 ///   width: 6cm, height: 4cm, defer: true,
 /// )
 /// #compose(
-///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
-///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+///   panel(aes(x: "displ", y: "hwy", colour: as-factor("cyl"))),
+///   panel(aes(x: "displ", y: "cty", colour: as-factor("cyl"))),
 ///   layout: "grid", columns: (auto, auto),
 /// )
 /// ```
@@ -126,10 +126,15 @@
 /// \@examples Restrict hoisting: shared `colour` only, per-plot `size` ladders
 /// stay in each panel.
 /// ```
-/// //| alt: "Two mtcars scatter panels sharing a single colour-by-cylinder legend on the right while each panel keeps its own size legend bound to a different column."
+/// //| alt: "Two mpg scatter panels sharing a single colour-by-cylinder legend on the right while each panel keeps its own size legend bound to a different column."
+/// #let panel(map) = plot(
+///   data: mpg, mapping: map,
+///   layers: (geom-point(size: 3pt),),
+///   width: 6cm, height: 4cm, defer: true,
+/// )
 /// #compose(
-///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"), size: "hp")),
-///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"), size: "wt")),
+///   panel(aes(x: "displ", y: "hwy", colour: as-factor("cyl"), size: "cty")),
+///   panel(aes(x: "displ", y: "cty", colour: as-factor("cyl"), size: "hwy")),
 ///   layout: "grid", columns: (auto, auto),
 ///   collect: ("colour",),
 /// )
@@ -137,10 +142,15 @@
 ///
 /// \@examples Place the shared legend below the panels.
 /// ```
-/// //| alt: "Two side-by-side mtcars scatter panels sharing a single colour-by-cylinder legend placed horizontally below the panel grid."
+/// //| alt: "Two side-by-side mpg scatter panels sharing a single colour-by-cylinder legend placed horizontally below the panel grid."
+/// #let panel(map) = plot(
+///   data: mpg, mapping: map,
+///   layers: (geom-point(size: 3pt),),
+///   width: 6cm, height: 4cm, defer: true,
+/// )
 /// #compose(
-///   panel(aes(x: "wt", y: "mpg", colour: as-factor("cyl"))),
-///   panel(aes(x: "hp", y: "mpg", colour: as-factor("cyl"))),
+///   panel(aes(x: "displ", y: "hwy", colour: as-factor("cyl"))),
+///   panel(aes(x: "displ", y: "cty", colour: as-factor("cyl"))),
 ///   layout: "grid", columns: (auto, auto),
 ///   guides-placement: "bottom",
 /// )
