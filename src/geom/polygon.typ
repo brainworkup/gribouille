@@ -68,7 +68,8 @@
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-polygon(
 ///     fill: rgb("#4c78a8"),
-///     stroke: 1pt + black,
+///     colour: black,
+///     stroke: 1pt,
 ///     alpha: 0.7,
 ///   ),),
 ///   width: 10cm,

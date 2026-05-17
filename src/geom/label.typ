@@ -93,12 +93,14 @@
 ///   layers: (
 ///     geom-label(
 ///       fill: rgb("#fff7e6"),
-///       stroke: 0.6pt + rgb("#cc7a00"),
+///       colour: rgb("#cc7a00"),
+///       stroke: 0.6pt,
 ///       radius: 3pt,
 ///       inset: 4pt,
 ///       dy: 0.3,
 ///     ),
 ///   ),
+///   scales: (scale-y-continuous(expand: 15%),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )

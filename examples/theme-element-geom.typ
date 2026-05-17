@@ -26,7 +26,7 @@
   plot(
     data: d,
     mapping: aes(x: "q", y: "revenue"),
-    layers: (geom-col(stroke: 0.6pt + black),),
+    layers: (geom-col(colour: black, stroke: 0.6pt),),
     theme: custom-theme,
     width: 12cm,
     height: 9cm,
