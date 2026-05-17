@@ -1,6 +1,7 @@
 ///! Annotation geom that encloses each group with a chosen shape.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/radial.typ": project-point
 #import "../utils/types.typ": parse-number
@@ -209,9 +210,8 @@
         + ".",
     )
   }
-  (
-    kind: "layer",
-    geom: "mark",
+  make-layer(
+    "mark",
     mapping: mapping,
     data: data,
     params: (

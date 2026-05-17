@@ -1,3 +1,4 @@
+#import "../layer.typ": make-layer
 #import "../stat/bin.typ": stat-bin
 
 ///! Histogram of a continuous variable.
@@ -87,9 +88,8 @@
   alpha: auto,
   position: "stack",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "col",
+) = make-layer(
+  "col",
   mapping: mapping,
   data: data,
   params: (

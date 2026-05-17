@@ -1,3 +1,4 @@
+#import "../layer.typ": make-layer
 #import "../stat/bin.typ": stat-bin
 
 ///! Line connecting binned counts along x.
@@ -72,9 +73,8 @@
   linetype: auto,
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "line",
+) = make-layer(
+  "line",
   mapping: mapping,
   data: data,
   params: (

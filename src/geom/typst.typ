@@ -1,5 +1,6 @@
 ///! Text geom that always evaluates its `label` aesthetic as Typst markup.
 
+#import "../layer.typ": make-layer
 #import "./text.typ" as text-geom
 
 /// Text label layer whose `label` aesthetic is always evaluated as Typst markup.
@@ -105,9 +106,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "typst",
+) = make-layer(
+  "typst",
   mapping: mapping,
   data: data,
   params: (

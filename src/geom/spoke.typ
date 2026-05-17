@@ -5,6 +5,7 @@
 ///! and `yend = y + radius * sin(angle)`.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
@@ -64,9 +65,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "spoke",
+) = make-layer(
+  "spoke",
   mapping: mapping,
   data: data,
   params: (

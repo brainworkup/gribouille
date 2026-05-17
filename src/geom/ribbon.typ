@@ -7,6 +7,7 @@
 ///! sideways ribbon and should be inspected per use.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/aes-pair.typ": resolve-pair-defaults
@@ -86,9 +87,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "ribbon",
+) = make-layer(
+  "ribbon",
   mapping: mapping,
   data: data,
   params: (colour: colour, fill: fill, stroke: stroke, alpha: alpha),

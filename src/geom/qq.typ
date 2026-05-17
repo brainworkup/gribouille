@@ -2,6 +2,8 @@
 ///!
 ///! Thin wrapper around \@geom-point that computes its data via \@stat-qq.
 
+#import "../layer.typ": make-layer
+
 /// Q-Q point layer: sorted sample versus theoretical quantile.
 ///
 /// The `sample` aesthetic selects the column to compare against the chosen
@@ -69,9 +71,8 @@
   distribution: "normal",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "point",
+) = make-layer(
+  "point",
   mapping: mapping,
   data: data,
   params: (

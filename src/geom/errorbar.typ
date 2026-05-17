@@ -1,5 +1,6 @@
 ///! Vertical line from `ymin` to `ymax` with horizontal caps at each `x`.
 
+#import "../layer.typ": make-layer
 #import "../utils/errorbar-draw.typ": _draw-errorbar-axis
 
 /// Errorbar layer: vertical range with a horizontal cap at each end.
@@ -74,9 +75,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "errorbar",
+) = make-layer(
+  "errorbar",
   mapping: mapping,
   data: data,
   params: (

@@ -6,6 +6,7 @@
 ///! `ymin`, `ymax`, optional `outliers`).
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": axis-band
@@ -102,9 +103,8 @@
   stat: "boxplot",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "boxplot",
+) = make-layer(
+  "boxplot",
   mapping: mapping,
   data: data,
   params: (

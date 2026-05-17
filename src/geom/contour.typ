@@ -1,5 +1,6 @@
 ///! Contour-line geom. Wraps \@stat-contour over the grouped-path renderer.
 
+#import "../layer.typ": make-layer
 #import "../stat/contour.typ": stat-contour
 
 /// Contour-line layer: marching-squares iso-lines over a regular `(x, y, z)`
@@ -57,9 +58,8 @@
   alpha: auto,
   linetype: auto,
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "path",
+) = make-layer(
+  "path",
   mapping: mapping,
   data: data,
   params: (
@@ -70,6 +70,5 @@
     linetype: linetype,
   ),
   stat: stat-contour(bins: bins, binwidth: binwidth, breaks: breaks),
-  position: "identity",
   inherit-aes: inherit-aes,
 )

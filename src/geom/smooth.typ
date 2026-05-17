@@ -5,6 +5,7 @@
 ///! pointwise confidence band drawn when `se: true`.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../theme/theme.typ": geom-colour-default, geom-defaults
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../stat/smooth.typ": stat-smooth
@@ -116,9 +117,8 @@
   alpha: auto,
   linetype: auto,
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "smooth",
+) = make-layer(
+  "smooth",
   mapping: mapping,
   data: data,
   params: (
@@ -132,7 +132,6 @@
     linetype: linetype,
   ),
   stat: stat-smooth(method: method, se: se, level: level),
-  position: "identity",
   inherit-aes: inherit-aes,
 )
 

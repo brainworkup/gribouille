@@ -4,6 +4,7 @@
 ///! distribution of one or both positional aesthetics.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../utils/types.typ": parse-number
@@ -81,9 +82,8 @@
   colour: auto,
   alpha: auto,
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "rug",
+) = make-layer(
+  "rug",
   mapping: mapping,
   data: data,
   params: (
@@ -93,8 +93,6 @@
     colour: colour,
     alpha: alpha,
   ),
-  stat: "identity",
-  position: "identity",
   inherit-aes: inherit-aes,
 )
 

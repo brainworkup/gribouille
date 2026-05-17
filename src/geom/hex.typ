@@ -2,6 +2,7 @@
 ///! polygon draw routine.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../stat/bin-hex.typ": stat-bin-hex
@@ -65,9 +66,8 @@
   stroke: none,
   alpha: auto,
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "hex",
+) = make-layer(
+  "hex",
   mapping: mapping,
   data: data,
   params: (
@@ -77,7 +77,6 @@
     alpha: alpha,
   ),
   stat: stat-bin-hex(bins: bins, binwidth: binwidth),
-  position: "identity",
   inherit-aes: inherit-aes,
 )
 

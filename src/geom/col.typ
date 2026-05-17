@@ -5,6 +5,7 @@
 ///! `"dodge"`, and `"fill"` via the matching position adjustments.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
@@ -94,9 +95,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "col",
+) = make-layer(
+  "col",
   mapping: mapping,
   data: data,
   params: (

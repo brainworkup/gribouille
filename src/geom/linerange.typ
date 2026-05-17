@@ -1,6 +1,7 @@
 ///! Vertical range from `ymin` to `ymax` at each `x`.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
@@ -73,9 +74,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "linerange",
+) = make-layer(
+  "linerange",
   mapping: mapping,
   data: data,
   params: (stroke: stroke, colour: colour, alpha: alpha, linetype: linetype),

@@ -1,5 +1,6 @@
 ///! Filled-contour geom. Wraps \@stat-contour-filled over polygon fills.
 
+#import "../layer.typ": make-layer
 #import "../stat/contour-filled.typ": stat-contour-filled
 
 /// Filled iso-band layer: marching-squares cell clipping over a regular
@@ -60,9 +61,8 @@
   stroke: none,
   alpha: auto,
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "polygon",
+) = make-layer(
+  "polygon",
   mapping: mapping,
   data: data,
   params: (
@@ -72,6 +72,5 @@
     alpha: alpha,
   ),
   stat: stat-contour-filled(bins: bins, binwidth: binwidth, breaks: breaks),
-  position: "identity",
   inherit-aes: inherit-aes,
 )

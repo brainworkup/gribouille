@@ -4,6 +4,7 @@
 ///! with a fill and border, use \@geom-label.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/label-draw.typ": draw-segment, prepare-draw, row-centre
 #import "../utils/typst-markup.typ": eval-as-markup
@@ -118,9 +119,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "text",
+) = make-layer(
+  "text",
   mapping: mapping,
   data: data,
   params: (

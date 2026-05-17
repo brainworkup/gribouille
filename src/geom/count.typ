@@ -4,6 +4,8 @@
 ///! \@stat-sum aggregates duplicate `(x, y)` rows into one row per unique pair
 ///! and exposes the count via the `size` aesthetic.
 
+#import "../layer.typ": make-layer
+
 /// Count layer drawing one marker per unique `(x, y)`, sized by frequency.
 ///
 /// \@category Geoms
@@ -80,9 +82,8 @@
   stat: "sum",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "point",
+) = make-layer(
+  "point",
   mapping: mapping,
   data: data,
   params: (

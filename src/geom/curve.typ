@@ -6,6 +6,7 @@
 ///! same draw chain.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
@@ -86,9 +87,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "curve",
+) = make-layer(
+  "curve",
   mapping: mapping,
   data: data,
   params: (

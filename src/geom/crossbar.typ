@@ -1,6 +1,7 @@
 ///! Hollow box from `ymin` to `ymax` with a thicker bar at `y` (the median).
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": axis-band
@@ -87,9 +88,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "crossbar",
+) = make-layer(
+  "crossbar",
   mapping: mapping,
   data: data,
   params: (

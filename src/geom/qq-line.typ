@@ -2,6 +2,8 @@
 ///!
 ///! Thin wrapper around \@geom-line that computes its data via \@stat-qq-line.
 
+#import "../layer.typ": make-layer
+
 /// Q-Q reference line layer fitted through the IQR of the sample.
 ///
 /// The `sample` aesthetic selects the column whose 25th and 75th quantiles
@@ -67,9 +69,8 @@
   distribution: "normal",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "line",
+) = make-layer(
+  "line",
   mapping: mapping,
   data: data,
   params: (

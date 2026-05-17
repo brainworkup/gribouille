@@ -5,6 +5,7 @@
 ///! data units on the x-axis and one stack-row in y units.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../stat/bindot.typ": stat-bindot
@@ -72,9 +73,8 @@
   alpha: auto,
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "dotplot",
+) = make-layer(
+  "dotplot",
   mapping: mapping,
   data: data,
   params: (

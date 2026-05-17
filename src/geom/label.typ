@@ -4,6 +4,7 @@
 ///! fill, stroke, inset, and corner radius.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/label-draw.typ": draw-segment, prepare-draw, row-centre
@@ -137,9 +138,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "label",
+) = make-layer(
+  "label",
   mapping: mapping,
   data: data,
   params: (

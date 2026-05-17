@@ -5,6 +5,7 @@
 ///! generates its own samples from `fun`.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/radial.typ": project-point
 #import "../utils/colour-resolve.typ": apply-alpha
@@ -79,10 +80,8 @@
   alpha: auto,
   linetype: "solid",
   inherit-aes: false,
-) = (
-  kind: "layer",
-  geom: "function",
-  mapping: none,
+) = make-layer(
+  "function",
   data: (),
   params: (
     fun: fun,
@@ -93,8 +92,6 @@
     alpha: alpha,
     linetype: linetype,
   ),
-  stat: "identity",
-  position: "identity",
   inherit-aes: inherit-aes,
 )
 
