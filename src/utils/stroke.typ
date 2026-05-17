@@ -1,4 +1,5 @@
 #import "colour-resolve.typ": resolve-stroke-colour, resolve-stroke-width
+#import "../theme/theme.typ": default-stroke-thickness
 
 /// Build a CeTZ stroke dictionary by injecting `paint` into a thickness-only stroke spec, or returns `none` when the layer disabled the stroke.
 ///
@@ -38,7 +39,7 @@
 /// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
 /// \@param sample-row The row used to read the colour value.
 /// \@param default-colour The colour used when no scale resolution applies, or `none` to suppress the stroke entirely.
-/// \@param default-thickness Fallback stroke thickness when `params.stroke == auto` and no `linewidth` mapping resolves; defaults to `0.5pt`.
+/// \@param default-thickness Fallback stroke thickness when `params.stroke == auto` and no `linewidth` mapping resolves; defaults to \@default-stroke-thickness.
 /// \@returns A CeTZ stroke dictionary or `none`.
 #let resolve-stroke-spec(
   layer,
@@ -46,7 +47,7 @@
   ctx,
   sample-row,
   default-colour,
-  default-thickness: 0.5pt,
+  default-thickness: default-stroke-thickness,
 ) = {
   let stroke-param = layer.params.stroke
   if stroke-param == none { return none }

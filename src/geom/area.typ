@@ -13,7 +13,8 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+  default-stroke-thickness, geom-colour-default, geom-default, geom-defaults,
+  geom-fill-default,
 )
 
 /// Area layer: filled polygon from `y = 0` up to `y` along x, per group.
@@ -102,7 +103,11 @@
   if y-trained.type != "continuous" { return }
 
   let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-default(g-defaults, "linewidth", 0.5pt)
+  let default-thickness = geom-default(
+    g-defaults,
+    "linewidth",
+    default-stroke-thickness,
+  )
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,

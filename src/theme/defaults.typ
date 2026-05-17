@@ -7,6 +7,7 @@
 #import "elements.typ": (
   element-geom, element-line, element-rect, element-text, margin,
 )
+#import "theme.typ": default-stroke-thickness
 
 // Read document colours injected by the typst-render Quarto extension via
 // --input flags. Falls back to black/white when rendering standalone.
@@ -30,7 +31,7 @@
 
   // Inherited base records (cascade parents for descendant surfaces)
   text: element-text(size: 9pt, weight: "regular"),
-  line: element-line(stroke: 0.5pt),
+  line: element-line(stroke: default-stroke-thickness),
   rect: element-rect(),
 
   // Per-surface text records
@@ -44,9 +45,9 @@
   plot-caption: element-text(size: 8pt),
 
   // Per-surface line records
-  panel-grid: element-line(stroke: 0.5pt),
-  axis-line: element-line(stroke: 0.5pt),
-  axis-ticks: element-line(stroke: 0.5pt),
+  panel-grid: element-line(stroke: default-stroke-thickness),
+  axis-line: element-line(stroke: default-stroke-thickness),
+  axis-ticks: element-line(stroke: default-stroke-thickness),
 
   // Per-surface rect records
   panel-background: element-rect(),

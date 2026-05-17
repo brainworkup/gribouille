@@ -269,7 +269,10 @@
   )
 }
 
-#let _default-stroke-thickness = 0.5pt
+// Default stroke thickness applied wherever a line / outline surface omits
+// `stroke:` or a layer-default `linewidth` slot is unset.
+// \@internal
+#let default-stroke-thickness = 0.5pt
 
 /// Resolve a line surface into a stroke dict, or `none` for `element-blank`.
 ///
@@ -292,7 +295,7 @@
   (
     paint: paint,
     thickness: if thickness != none { thickness } else {
-      _default-stroke-thickness
+      default-stroke-thickness
     },
   )
 }
@@ -324,7 +327,7 @@
     (
       paint: paint,
       thickness: if thickness != none { thickness } else {
-        _default-stroke-thickness
+        default-stroke-thickness
       },
     )
   }
