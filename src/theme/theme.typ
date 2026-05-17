@@ -24,9 +24,11 @@
     "panel-grid": "line",
     "axis-line": "line",
     "axis-ticks": "line",
+    "legend-ticks": "line",
     "panel-background": "rect",
     "plot-background": "rect",
     "strip-background": "rect",
+    "legend-bar": "rect",
   )
   // Each axis family gains per-axis (-x, -y) and per-side (-x-bottom, -x-top,
   // -y-left, -y-right) variants that cascade up to their family.

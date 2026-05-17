@@ -14,7 +14,7 @@
 #import "utils/palette.typ": default-discrete, spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour
-#import "theme/theme.typ": _rect-style, _text-style
+#import "theme/theme.typ": _line-stroke, _rect-style, _text-style
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-display-name
 #import "utils/typst-markup.typ": resolve-prose
@@ -902,6 +902,16 @@
   let bar-bottom = bar-top - bar-h
   let bar-left = ox
   let bar-right = ox + bar-w
+  let bar-frame = _rect-style(theme, "legend-bar", fallback-colour: ink)
+  // Backstop fill (visible through transparent gradient stops only).
+  if bar-frame.fill != none {
+    cetz.draw.rect(
+      (bar-left, bar-bottom),
+      (bar-right, bar-top),
+      fill: bar-frame.fill,
+      stroke: none,
+    )
+  }
   let steps = if guide.at("binned", default: false) {
     guide.at("n-breaks", default: 5)
   } else { 40 }
@@ -929,12 +939,15 @@
       )
     }
   }
-  cetz.draw.rect(
-    (bar-left, bar-bottom),
-    (bar-right, bar-top),
-    fill: none,
-    stroke: (paint: ink, thickness: 0.2pt),
-  )
+  if bar-frame.stroke != none {
+    cetz.draw.rect(
+      (bar-left, bar-bottom),
+      (bar-right, bar-top),
+      fill: none,
+      stroke: bar-frame.stroke,
+    )
+  }
+  let tick-stroke = _line-stroke(theme, "legend-ticks", fallback-colour: ink)
   let breaks = guide.at("breaks", default: pretty(lo, hi, n: 5))
   let labels = guide.at("labels", default: auto)
   let typst-mark = guide.at("typst-mark", default: false)
@@ -954,11 +967,13 @@
     )
     if horizontal {
       let cx = bar-left + t * bar-w
-      cetz.draw.line(
-        (cx, bar-bottom),
-        (cx, bar-bottom - tick-len),
-        stroke: (paint: ink, thickness: 0.3pt),
-      )
+      if tick-stroke != none {
+        cetz.draw.line(
+          (cx, bar-bottom),
+          (cx, bar-bottom - tick-len),
+          stroke: tick-stroke,
+        )
+      }
       cetz.draw.content(
         (cx, bar-bottom - tick-len - tick-gap),
         text(size: text-size, fill: text-colour)[#tick-text],
@@ -966,11 +981,13 @@
       )
     } else {
       let cy = bar-bottom + t * bar-h
-      cetz.draw.line(
-        (bar-right, cy),
-        (bar-right + tick-len, cy),
-        stroke: (paint: ink, thickness: 0.3pt),
-      )
+      if tick-stroke != none {
+        cetz.draw.line(
+          (bar-right, cy),
+          (bar-right + tick-len, cy),
+          stroke: tick-stroke,
+        )
+      }
       cetz.draw.content(
         (bar-right + tick-len + tick-gap, cy),
         text(size: text-size, fill: text-colour)[#tick-text],

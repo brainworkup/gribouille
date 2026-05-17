@@ -48,12 +48,14 @@
   panel-grid: element-line(stroke: default-stroke-thickness),
   axis-line: element-line(stroke: default-stroke-thickness),
   axis-ticks: element-line(stroke: default-stroke-thickness),
+  legend-ticks: element-line(stroke: 0.3pt),
 
   // Per-surface rect records
   panel-background: element-rect(),
   plot-background: element-rect(),
   strip-background: element-rect(),
   legend-background: element-rect(),
+  legend-bar: element-rect(stroke: 0.2pt),
 
   // Layer-default aesthetics shared across supporting geoms. All-`none`
   // entries leave the per-geom hardcoded fallback in place; users override
