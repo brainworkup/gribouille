@@ -7,7 +7,7 @@ body-classes: examples-page
 engine: markdown
 listing:
   - id: gallery
-    template: ../assets/templates/example-gallery.ejs.md
+    template: ../assets/templates/_example-gallery.ejs.md
     contents: gallery.yml
     categories: false
     sort-ui: false
