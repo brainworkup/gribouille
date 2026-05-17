@@ -1,25 +1,29 @@
 // Position adjustment dispatcher. Sits between stat and render in
 // `_prepare-layer`.
 
-#import "identity.typ"
-#import "stack.typ"
-#import "dodge.typ"
-#import "fill.typ" as fill-mod
-#import "jitter.typ" as jitter-mod
-#import "jitterdodge.typ" as jitterdodge-mod
-#import "nudge.typ" as nudge-mod
+#import "identity.typ" as identity-pos
+#import "stack.typ" as stack-pos
+#import "dodge.typ" as dodge-pos
+#import "fill.typ" as fill-pos
+#import "jitter.typ" as jitter-pos
+#import "jitterdodge.typ" as jitterdodge-pos
+#import "nudge.typ" as nudge-pos
+
+#let _POSITIONS = (
+  identity: identity-pos.apply,
+  stack: stack-pos.apply,
+  dodge: dodge-pos.apply,
+  fill: fill-pos.apply,
+  jitter: jitter-pos.apply,
+  jitterdodge: jitterdodge-pos.apply,
+  nudge: nudge-pos.apply,
+)
 
 #let apply-position(name, data, mapping, params: (:)) = {
-  if name == none or name == "identity" {
-    return identity.apply(data, mapping, params: params)
+  let resolved = if name == none { "identity" } else { name }
+  let apply = _POSITIONS.at(resolved, default: none)
+  if apply == none {
+    panic("position: unknown adjustment \"" + str(resolved) + "\"")
   }
-  if name == "stack" { return stack.apply(data, mapping, params: params) }
-  if name == "dodge" { return dodge.apply(data, mapping, params: params) }
-  if name == "fill" { return fill-mod.apply(data, mapping, params: params) }
-  if name == "jitter" { return jitter-mod.apply(data, mapping, params: params) }
-  if name == "jitterdodge" {
-    return jitterdodge-mod.apply(data, mapping, params: params)
-  }
-  if name == "nudge" { return nudge-mod.apply(data, mapping, params: params) }
-  panic("Unknown position adjustment: " + name)
+  apply(data, mapping, params: params)
 }
