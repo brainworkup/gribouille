@@ -70,7 +70,7 @@
 /// ```
 ///
 /// \@see \@geom-qq-line, \@stat-qq
-#let stat-qq-line() = (kind: "stat", name: "qq-line")
+#let stat-qq-line() = (kind: "stat", name: "qq-line", params: (:))
 
 #let apply(data, mapping, params: (:)) = {
   // The input `sample` aesthetic referenced a user column; that column has

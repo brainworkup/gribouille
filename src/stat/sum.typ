@@ -56,7 +56,7 @@
 /// ```
 ///
 /// \@see \@geom-count, \@stat-count, \@stat-unique
-#let stat-sum() = (kind: "stat", name: "sum")
+#let stat-sum() = (kind: "stat", name: "sum", params: (:))
 
 #let apply(data, mapping, params: (:)) = {
   let new-mapping = stat-output-mapping(

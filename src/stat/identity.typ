@@ -52,6 +52,6 @@
 /// ```
 ///
 /// \@see \@stat-count, \@stat-bin, \@stat-smooth
-#let stat-identity() = (kind: "stat", name: "identity")
+#let stat-identity() = (kind: "stat", name: "identity", params: (:))
 
 #let apply(data, mapping, params: (:)) = (data: data, mapping: mapping)

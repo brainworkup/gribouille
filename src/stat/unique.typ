@@ -52,7 +52,7 @@
 /// ```
 ///
 /// \@see \@stat-identity, \@stat-sum
-#let stat-unique() = (kind: "stat", name: "unique")
+#let stat-unique() = (kind: "stat", name: "unique", params: (:))
 
 #let apply(data, mapping, params: (:)) = {
   let x-col = if mapping != none { mapping.at("x", default: none) } else {

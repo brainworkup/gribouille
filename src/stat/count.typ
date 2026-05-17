@@ -57,7 +57,7 @@
 /// ```
 ///
 /// \@see \@geom-bar, \@stat-bin, \@stat-identity
-#let stat-count() = (kind: "stat", name: "count")
+#let stat-count() = (kind: "stat", name: "count", params: (:))
 
 #let apply(data, mapping, params: (:)) = {
   let x-col = if mapping != none { mapping.at("x", default: none) } else {

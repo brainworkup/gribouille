@@ -150,7 +150,7 @@
   let entry = _STATS.at(name, default: none)
   if entry == none { return (:) }
   let ctor = entry.at("ctor", default: none)
-  if ctor == none { (:) } else { ctor().at("params", default: (:)) }
+  if ctor == none { (:) } else { ctor().params }
 }
 
 #let setup-stat(name, data, mapping, params) = {

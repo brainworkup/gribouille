@@ -56,7 +56,7 @@
 /// ```
 ///
 /// \@see \@stat-bin, \@stat-count
-#let stat-ecdf() = (kind: "stat", name: "ecdf")
+#let stat-ecdf() = (kind: "stat", name: "ecdf", params: (:))
 
 #let apply(data, mapping, params: (:)) = {
   let x-col = if mapping != none { mapping.at("x", default: none) } else {

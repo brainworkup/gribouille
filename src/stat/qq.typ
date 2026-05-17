@@ -54,7 +54,7 @@
 /// ```
 ///
 /// \@see \@geom-qq, \@stat-qq-line
-#let stat-qq() = (kind: "stat", name: "qq")
+#let stat-qq() = (kind: "stat", name: "qq", params: (:))
 
 #let apply(data, mapping, params: (:)) = {
   // The input `sample` aesthetic referenced a user column; that column has
