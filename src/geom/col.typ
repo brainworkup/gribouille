@@ -14,8 +14,8 @@
 )
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../theme/theme.typ": (
-  default-stroke-thickness, geom-colour-default, geom-default, geom-defaults,
-  geom-fill-default,
+  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+  geom-linewidth,
 )
 
 /// Bar layer with heights taken from the y aesthetic.
@@ -130,11 +130,7 @@
   )
 
   let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-default(
-    g-defaults,
-    "linewidth",
-    default-stroke-thickness,
-  )
+  let default-thickness = geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
@@ -262,11 +258,7 @@
   )
 
   let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-default(
-    g-defaults,
-    "linewidth",
-    default-stroke-thickness,
-  )
+  let default-thickness = geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,

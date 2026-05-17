@@ -13,8 +13,8 @@
 #import "../utils/radial.typ": project-point
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../theme/theme.typ": (
-  default-stroke-thickness, geom-colour-default, geom-default, geom-defaults,
-  geom-fill-default,
+  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+  geom-linewidth,
 )
 
 /// Filled band between `ymin` and `ymax` along the x aesthetic.
@@ -127,11 +127,7 @@
   if pts.any(p => p == none) { return }
 
   let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-default(
-    g-defaults,
-    "linewidth",
-    default-stroke-thickness,
-  )
+  let default-thickness = geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,

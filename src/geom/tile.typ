@@ -10,8 +10,8 @@
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../utils/band.typ": axis-band
 #import "../theme/theme.typ": (
-  default-stroke-thickness, geom-colour-default, geom-default, geom-defaults,
-  geom-fill-default,
+  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
+  geom-linewidth,
 )
 
 /// Tile layer: filled rectangle centred at `(x, y)` per row.
@@ -121,11 +121,7 @@
   let width-col = mapping.at("width", default: none)
   let height-col = mapping.at("height", default: none)
   let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-default(
-    g-defaults,
-    "linewidth",
-    default-stroke-thickness,
-  )
+  let default-thickness = geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,

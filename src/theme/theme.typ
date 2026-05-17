@@ -107,6 +107,9 @@
 // \@internal
 #let geom-fill-tint-amount = 0.35
 
+// \@internal
+#let default-stroke-thickness = 0.5pt
+
 /// Resolve `theme.geom` to a flat layer-defaults dict.
 ///
 /// Returns the shape produced by \@element-geom; `none` slots leave per-geom
@@ -169,6 +172,18 @@
 /// \@param defaults Element-geom record from \@geom-defaults.
 /// \@returns A colour.
 #let geom-accent(defaults) = geom-default(defaults, "accent", rgb("#3366FF"))
+
+/// Resolve the geom `linewidth` default: `element-geom.linewidth` if set,
+/// else \@default-stroke-thickness.
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@returns A length.
+#let geom-linewidth(defaults) = geom-default(
+  defaults,
+  "linewidth",
+  default-stroke-thickness,
+)
 
 /// Resolve a geom's default stroke/text colour.
 ///
@@ -268,11 +283,6 @@
     margin: _normalise-text-margin(el.at("margin", default: none)),
   )
 }
-
-// Default stroke thickness applied wherever a line / outline surface omits
-// `stroke:` or a layer-default `linewidth` slot is unset.
-// \@internal
-#let default-stroke-thickness = 0.5pt
 
 /// Resolve a line surface into a stroke dict, or `none` for `element-blank`.
 ///
