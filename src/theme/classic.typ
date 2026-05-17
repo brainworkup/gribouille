@@ -77,7 +77,7 @@
   (
     panel-background: element-rect(fill: paper),
     panel-grid: element-blank(),
-    axis-line: element-line(colour: ink, thickness: 0.6pt),
+    axis-line: element-line(colour: ink, stroke: 0.6pt),
   ),
   fields,
 )

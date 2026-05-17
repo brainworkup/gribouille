@@ -138,7 +138,7 @@
     y: "Body Mass (g)",
   ),
   theme: theme-minimal(
-    axis-line: element-line(thickness: 0.5pt),
+    axis-line: element-line(stroke: 0.5pt),
     tick-length: 0.05cm,
   ),
   guides: guides(

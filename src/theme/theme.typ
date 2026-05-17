@@ -280,7 +280,7 @@
   let el = resolve-element(theme, surface)
   if el.at("kind", default: none) == "element-blank" { return none }
   let colour = el.at("colour", default: none)
-  let thickness = el.at("thickness", default: none)
+  let thickness = el.at("stroke", default: none)
   if thickness == 0pt { return none }
   let paint = if colour != none {
     colour

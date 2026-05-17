@@ -29,10 +29,10 @@
 #assert.eq(merged.panel-background.fill, rgb("#ff9900"))
 
 // axis-ticks: independent line surface, parented to `line`.
-#let tt = merge-theme(theme(axis-ticks: element-line(thickness: 1.2pt)))
-#assert.eq(tt.axis-ticks.thickness, 1.2pt)
+#let tt = merge-theme(theme(axis-ticks: element-line(stroke: 1.2pt)))
+#assert.eq(tt.axis-ticks.stroke, 1.2pt)
 #let resolved = resolve-element(tt, "axis-ticks")
-#assert.eq(resolved.thickness, 1.2pt)
+#assert.eq(resolved.stroke, 1.2pt)
 
 // axis-ticks inherits colour from the base `line` record, not from `axis-line`.
 #let tt2 = merge-theme(theme(
@@ -85,9 +85,9 @@
 )
 
 // axis-ticks side variants cascade from axis-ticks to every side.
-#let s5 = merge-theme(theme(axis-ticks: element-line(thickness: 2pt)))
-#assert.eq(resolve-element(s5, "axis-ticks-x-bottom").thickness, 2pt)
-#assert.eq(resolve-element(s5, "axis-ticks-y-right").thickness, 2pt)
+#let s5 = merge-theme(theme(axis-ticks: element-line(stroke: 2pt)))
+#assert.eq(resolve-element(s5, "axis-ticks-x-bottom").stroke, 2pt)
+#assert.eq(resolve-element(s5, "axis-ticks-y-right").stroke, 2pt)
 
 // tick-length scalar cascade: side > axis > base.
 #import "../../src/theme/theme.typ": _scalar-cascade

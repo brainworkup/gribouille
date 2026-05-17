@@ -30,7 +30,7 @@
 
   // Inherited base records (cascade parents for descendant surfaces)
   text: element-text(size: 9pt, weight: "regular"),
-  line: element-line(thickness: 0.5pt),
+  line: element-line(stroke: 0.5pt),
   rect: element-rect(),
 
   // Per-surface text records
@@ -44,9 +44,9 @@
   plot-caption: element-text(size: 8pt),
 
   // Per-surface line records
-  panel-grid: element-line(thickness: 0.5pt),
-  axis-line: element-line(thickness: 0.5pt),
-  axis-ticks: element-line(thickness: 0.5pt),
+  panel-grid: element-line(stroke: 0.5pt),
+  axis-line: element-line(stroke: 0.5pt),
+  axis-ticks: element-line(stroke: 0.5pt),
 
   // Per-surface rect records
   panel-background: element-rect(),

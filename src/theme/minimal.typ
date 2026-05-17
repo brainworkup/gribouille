@@ -105,7 +105,7 @@
       plot-background: _plot-bg,
       panel-grid: element-line(
         colour: col-mix(ink, _paper, 0.7),
-        thickness: 0.4pt,
+        stroke: 0.4pt,
       ),
       axis-line: element-blank(),
       tick-length: 0cm,

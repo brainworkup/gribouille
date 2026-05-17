@@ -79,9 +79,9 @@
     panel-background: element-rect(fill: paper),
     panel-grid: element-line(
       colour: col-mix(ink, paper, 0.7),
-      thickness: 0.3pt,
+      stroke: 0.3pt,
     ),
-    axis-line: element-line(colour: ink, thickness: 0.8pt),
+    axis-line: element-line(colour: ink, stroke: 0.8pt),
     axis-text: element-text(colour: ink),
   ),
   fields,

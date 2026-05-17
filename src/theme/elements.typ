@@ -175,7 +175,7 @@
   margin: margin,
 )
 
-/// Line element: colour and thickness.
+/// Line element: colour and stroke thickness.
 ///
 /// Pass the result to \@theme under keys like `panel-grid` or `axis-line`.
 ///
@@ -185,7 +185,7 @@
 /// \@since 0.0.1
 ///
 /// \@param colour Line colour, or `none` to inherit.
-/// \@param thickness Line thickness (a Typst length), or `none`.
+/// \@param stroke Line thickness (a Typst length), or `none`.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -204,7 +204,7 @@
 /// ```
 ///
 /// \@examples Strengthen the axis line by setting both `colour` and
-/// `thickness`.
+/// `stroke`.
 /// ```
 /// //| alt: "Scatter plot of y against x with axis lines drawn 1pt thick in red via element-line on the axis-line surface."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
@@ -214,7 +214,7 @@
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(axis-line: element-line(
 ///     colour: rgb("#cc0000"),
-///     thickness: 1pt,
+///     stroke: 1pt,
 ///   )),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -222,10 +222,10 @@
 /// ```
 ///
 /// \@see \@theme, \@element-text, \@element-rect, \@element-blank
-#let element-line(colour: none, thickness: none) = (
+#let element-line(colour: none, stroke: none) = (
   kind: "element-line",
   colour: colour,
-  thickness: thickness,
+  stroke: stroke,
 )
 
 /// Rectangle element: fill and stroke.
