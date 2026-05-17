@@ -269,6 +269,8 @@
   )
 }
 
+#let _default-stroke-thickness = 0.5pt
+
 /// Resolve a line surface into a stroke dict, or `none` for `element-blank`.
 ///
 /// \@internal
@@ -289,7 +291,9 @@
   } else { theme.ink }
   (
     paint: paint,
-    thickness: if thickness != none { thickness } else { 0.5pt },
+    thickness: if thickness != none { thickness } else {
+      _default-stroke-thickness
+    },
   )
 }
 
@@ -317,7 +321,12 @@
     } else if fallback-colour != none {
       fallback-colour
     } else { theme.ink }
-    (paint: paint, thickness: if thickness != none { thickness } else { 0.5pt })
+    (
+      paint: paint,
+      thickness: if thickness != none { thickness } else {
+        _default-stroke-thickness
+      },
+    )
   }
   (
     fill: if fill != none { fill } else { fallback-fill },
