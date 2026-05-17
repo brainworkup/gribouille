@@ -6,6 +6,7 @@
 ///! parameters.
 
 #import "../deps.typ": cetz
+#import "../layer.typ": make-layer
 #import "../utils/palette.typ": default-shapes, palette-at, spec-palette
 #import "../utils/level-resolve.typ": bin-index
 #import "../utils/aes-resolve.typ": resolve-channel
@@ -121,9 +122,8 @@
   stat: "identity",
   position: "identity",
   inherit-aes: true,
-) = (
-  kind: "layer",
-  geom: "point",
+) = make-layer(
+  "point",
   mapping: mapping,
   data: data,
   params: (

@@ -4,6 +4,7 @@
 ///! stair-step: a horizontal then vertical move (`direction: "hv"`,
 ///! default) or vertical then horizontal (`direction: "vh"`).
 
+#import "../layer.typ": make-layer
 #import "grouped-path.typ": draw-grouped-paths, rows-to-points, sort-rows-by-x
 
 /// Step layer connecting observations as a stair-step path, one per group.
@@ -72,9 +73,8 @@
   if direction != "hv" and direction != "vh" {
     panic("geom-step: direction must be \"hv\" or \"vh\"")
   }
-  (
-    kind: "layer",
-    geom: "step",
+  make-layer(
+    "step",
     mapping: mapping,
     data: data,
     params: (

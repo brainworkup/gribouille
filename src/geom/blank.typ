@@ -3,6 +3,8 @@
 ///! Renders nothing but contributes its data to scale training. Useful for
 ///! forcing axis training without drawing marks.
 
+#import "../layer.typ": make-layer
+
 /// Invisible layer used to extend trained scales without drawing marks.
 ///
 /// Typical mappings are `x` and / or `y`; any aesthetic in the mapping
@@ -50,14 +52,10 @@
 /// ```
 ///
 /// \@see \@geom-rug, \@geom-function
-#let geom-blank(mapping: none, data: none, inherit-aes: true) = (
-  kind: "layer",
-  geom: "blank",
+#let geom-blank(mapping: none, data: none, inherit-aes: true) = make-layer(
+  "blank",
   mapping: mapping,
   data: data,
-  params: (:),
-  stat: "identity",
-  position: "identity",
   inherit-aes: inherit-aes,
 )
 
