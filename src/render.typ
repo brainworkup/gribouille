@@ -2257,7 +2257,9 @@
   let geom = layer.at("geom", default: none)
   if geom not in label-draw.LABEL-GEOMS { return layer }
   let params = layer.at("params", default: (:))
-  if not params.at("segment", default: false) { return layer }
+  if not (
+    params.at("segment", default: false) or params.at("repel", default: false)
+  ) { return layer }
   let mapping = layer.at("mapping", default: none)
   if mapping == none { return layer }
   let label-col = mapping.at("label", default: none)

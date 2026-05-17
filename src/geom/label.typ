@@ -6,17 +6,12 @@
 #import "../deps.typ": cetz
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/aes-resolve.typ": resolve-channel
-#import "../utils/label-draw.typ": (
-  compute-aabbs, compute-placements, draw-segment, segment-config,
-)
-#import "../utils/radial.typ": project-point
+#import "../utils/label-draw.typ": draw-segment, prepare-draw, row-centre
 #import "../utils/stroke.typ": build-stroke
 #import "../utils/typst-markup.typ": eval-as-markup
 #import "../theme/theme.typ": (
   geom-colour-default, geom-defaults, geom-fill-default,
 )
-
-#let _to-cm(v) = if type(v) == length { v / 1cm } else { v }
 
 /// Boxed text label layer reading strings from the `label` aesthetic.
 ///
@@ -50,6 +45,13 @@
 /// \@param arrow Draw a small V-mark at the anchor end of the connector.
 /// \@param arrow-length Arrow stroke length (a Typst length).
 /// \@param box-padding Extra cm padding added around each measured box when routing connectors.
+/// \@param repel Repel boxes off each other (and off their anchor points) via an iterative force-based layout, ggrepel-style. Pair with `segment: true` to keep the visual link to each anchor.
+/// \@param point-padding Minimum clearance (cm) between a box and any anchor point when `repel` is on.
+/// \@param max-iter Maximum number of repulsion iterations.
+/// \@param force-pull Strength of the spring pull that keeps each box near its anchor.
+/// \@param force-push Strength of the repulsion between overlapping boxes.
+/// \@param force-segment Strength of the penalty that pushes a box off another label's connector path.
+/// \@param seed Random seed for the small initial jitter applied to coincident anchors.
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -123,6 +125,13 @@
   arrow: false,
   arrow-length: 4pt,
   box-padding: 0.05,
+  repel: false,
+  point-padding: 0.05,
+  max-iter: 100,
+  force-pull: 0.1,
+  force-push: 0.2,
+  force-segment: 0.3,
+  seed: 0,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -149,6 +158,13 @@
     arrow: arrow,
     arrow-length: arrow-length,
     box-padding: box-padding,
+    repel: repel,
+    point-padding: point-padding,
+    max-iter: max-iter,
+    force-pull: force-pull,
+    force-push: force-push,
+    force-segment: force-segment,
+    seed: seed,
   ),
   stat: stat,
   position: position,
@@ -177,43 +193,11 @@
   let label-typst = layer
     .at("typst-marks", default: (:))
     .at("label", default: false)
-  let dx-base = _to-cm(layer.params.dx)
-  let dy-base = _to-cm(layer.params.dy)
-  let segment-on = layer.params.segment
-  let needs-placement = (
-    segment-on
-      or (
-        mapping.at("nudge-x", default: none) != none
-          or mapping.at("nudge-y", default: none) != none
-      )
-  )
-
-  let placements = if needs-placement {
-    compute-placements(ctx, mapping, data, dx-base, dy-base)
-  } else { () }
-  let aabbs = if segment-on {
-    compute-aabbs(
-      placements,
-      layer.at("_label-sizes", default: ()),
-      layer.params.box-padding,
-    )
-  } else { () }
-  let seg-cfg = if segment-on { segment-config(layer.params, theme-colour) }
+  let state = prepare-draw(layer, ctx, mapping, data, theme-colour)
 
   for (idx, row) in data.enumerate() {
-    let centre = if needs-placement {
-      let p = placements.at(idx)
-      if p == none { continue }
-      p.centre
-    } else {
-      let projected = project-point(
-        ctx,
-        row.at(mapping.x, default: none),
-        row.at(mapping.y, default: none),
-      )
-      if projected == none { continue }
-      (projected.at(0) + dx-base, projected.at(1) + dy-base)
-    }
+    let centre = row-centre(state, ctx, mapping, idx, row)
+    if centre == none { continue }
     let label = row.at(label-col, default: none)
     if label == none { continue }
     if label-typst { label = eval-as-markup(label) }
@@ -257,8 +241,8 @@
       radius: layer.params.radius,
       text(size: text-size, fill: text-paint)[#label],
     )
-    if segment-on {
-      draw-segment(idx, placements.at(idx), aabbs, seg-cfg)
+    if state.segment-on {
+      draw-segment(idx, state.placements.at(idx), state.aabbs, state.seg-cfg)
     }
     cetz.draw.content(
       centre,

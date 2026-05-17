@@ -21,6 +21,16 @@
   (x-lo: cx - hw, y-lo: cy - hh, x-hi: cx + hw, y-hi: cy + hh)
 }
 
+// AABB overlap: returns `(ox, oy)` strictly positive when the two boxes
+// intersect, else `none`. Used by the repel algorithm to derive a push
+// vector from a pair of overlapping label boxes.
+#let aabb-overlap(a, b) = {
+  let ox = calc.min(a.x-hi, b.x-hi) - calc.max(a.x-lo, b.x-lo)
+  let oy = calc.min(a.y-hi, b.y-hi) - calc.max(a.y-lo, b.y-lo)
+  if ox <= 0 or oy <= 0 { return none }
+  (ox, oy)
+}
+
 // Liang-Barsky parametric clip: return the `t` value in `[0, 1]` where the
 // line from `p0` to `p1` first enters `aabb`, or `none` when the segment
 // stays entirely outside. Each `(p, q)` pair describes one of the four

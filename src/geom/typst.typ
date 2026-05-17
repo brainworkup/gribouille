@@ -29,6 +29,13 @@
 /// \@param arrow Draw a small V-mark at the anchor end of the connector.
 /// \@param arrow-length Arrow stroke length (a Typst length).
 /// \@param box-padding Extra cm padding around each measured label when routing connectors.
+/// \@param repel Repel labels off each other (and off their anchor points) via an iterative force-based layout, ggrepel-style. Pair with `segment: true` to keep the visual link to each anchor.
+/// \@param point-padding Minimum clearance (cm) between a label and any anchor point when `repel` is on.
+/// \@param max-iter Maximum number of repulsion iterations.
+/// \@param force-pull Strength of the spring pull that keeps each label near its anchor.
+/// \@param force-push Strength of the repulsion between overlapping labels.
+/// \@param force-segment Strength of the penalty that pushes a label off another label's connector path.
+/// \@param seed Random seed for the small initial jitter applied to coincident anchors.
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -88,6 +95,13 @@
   arrow: false,
   arrow-length: 4pt,
   box-padding: 0.05,
+  repel: false,
+  point-padding: 0.05,
+  max-iter: 100,
+  force-pull: 0.1,
+  force-push: 0.2,
+  force-segment: 0.3,
+  seed: 0,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -111,6 +125,13 @@
     arrow: arrow,
     arrow-length: arrow-length,
     box-padding: box-padding,
+    repel: repel,
+    point-padding: point-padding,
+    max-iter: max-iter,
+    force-pull: force-pull,
+    force-push: force-push,
+    force-segment: force-segment,
+    seed: seed,
   ),
   stat: stat,
   position: position,
