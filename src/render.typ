@@ -33,7 +33,9 @@
 #import "utils/margin.typ": (
   length-to-cm, resolve-margin-side, resolve-margin-side-cm,
 )
-#import "utils/measure.typ": measure-labels-cm
+#import "utils/label-draw.typ" as label-draw
+#import "utils/measure.typ": measure-labels-cm, measure-text-cm
+#import "utils/typst-markup.typ": eval-as-markup
 #import "data.typ": _normalise-data, group-by
 #import "geom/point.typ" as point-geom
 #import "geom/line.typ" as line-geom
@@ -2247,6 +2249,44 @@
   )
 }
 
+// Typst `measure()` is unreachable inside cetz canvas closures, so size each
+// row's final label here and stash the result on the layer. The segment
+// router consumes the sizes to clip connectors at the label edge and to
+// detect crossings against sibling labels.
+#let _measure-label-sizes(layer) = {
+  let geom = layer.at("geom", default: none)
+  if geom not in label-draw.LABEL-GEOMS { return layer }
+  let params = layer.at("params", default: (:))
+  if not params.at("segment", default: false) { return layer }
+  let mapping = layer.at("mapping", default: none)
+  if mapping == none { return layer }
+  let label-col = mapping.at("label", default: none)
+  let const-label = params.at("label", default: none)
+  let use-const = const-label != none
+  if not use-const and label-col == none { return layer }
+  let label-typst = (
+    layer.at("typst-marks", default: (:)).at("label", default: false)
+      or geom == "typst"
+  )
+  let size = params.at("size", default: 8pt)
+  let inset = params.at("inset", default: 0pt)
+  let inset-cm = if type(inset) == length { inset / 1cm } else { 0.0 }
+  let sizes = layer
+    .at("data", default: ())
+    .map(row => {
+      let label = if use-const { const-label } else {
+        row.at(label-col, default: none)
+      }
+      if label == none { return (w: 0.0, h: 0.0) }
+      if label-typst and type(label) == str { label = eval-as-markup(label) }
+      let m = measure-text-cm(label, size)
+      (w: m.width + 2 * inset-cm, h: m.height + 2 * inset-cm)
+    })
+  let new = layer
+  new.insert("_label-sizes", sizes)
+  new
+}
+
 #let _render-prepare(spec, theme) = {
   let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
   let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
@@ -2937,6 +2977,19 @@
     })
     new
   })
+
+  // Faceted plots render the per-panel copies under `panels`; single plots
+  // render `prepared` directly. Only the path that the canvas dispatch will
+  // touch needs label sizes.
+  if facet-wrap-mode or facet-grid-mode {
+    panels = panels.map(p => {
+      let new = p
+      new.layers = p.layers.map(_measure-label-sizes)
+      new
+    })
+  } else {
+    prepared = prepared.map(_measure-label-sizes)
+  }
 
   trained = _post-train(trained, prepared)
 

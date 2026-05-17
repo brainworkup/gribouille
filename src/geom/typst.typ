@@ -22,6 +22,13 @@
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length.
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length.
 /// \@param label Constant label drawn at every row's `(x, y)`. Accepts a Typst content block (`[#math.alpha]`, `[*bold*]`) or a markup string (`"$alpha$"`) eval'd as Typst at render time. When `none`, the label is read from the `label` aesthetic mapping.
+/// \@param segment Draw a connector from each label back to its anchor point. When `true`, the connector is routed to avoid the AABBs of other labels of the same layer; dropped when no L-bend clears the obstacles.
+/// \@param segment-colour Connector paint. `auto` inherits the theme `ink`.
+/// \@param segment-stroke Connector thickness (a Typst length).
+/// \@param min-segment-length Connectors shorter than this distance (canvas units, 1 = 1cm) are suppressed.
+/// \@param arrow Draw a small V-mark at the anchor end of the connector.
+/// \@param arrow-length Arrow stroke length (a Typst length).
+/// \@param box-padding Extra cm padding around each measured label when routing connectors.
 /// \@param stat Statistical transform name. Usually `"identity"`.
 /// \@param position Position adjustment name. Usually `"identity"`.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
@@ -74,6 +81,13 @@
   dx: 0,
   dy: 0,
   label: none,
+  segment: false,
+  segment-colour: auto,
+  segment-stroke: 0.4pt,
+  min-segment-length: 0.05,
+  arrow: false,
+  arrow-length: 4pt,
+  box-padding: 0.05,
   stat: "identity",
   position: "identity",
   inherit-aes: true,
@@ -90,6 +104,13 @@
     dx: dx,
     dy: dy,
     label: label,
+    segment: segment,
+    segment-colour: segment-colour,
+    segment-stroke: segment-stroke,
+    min-segment-length: min-segment-length,
+    arrow: arrow,
+    arrow-length: arrow-length,
+    box-padding: box-padding,
   ),
   stat: stat,
   position: position,

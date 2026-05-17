@@ -48,6 +48,8 @@
 /// \@param angle Column name for the ellipse rotation in radians (\@geom-ellipse) or the spoke direction in radians (\@geom-spoke).
 /// \@param radius Column name for the spoke length in data units (\@geom-spoke).
 /// \@param z Column name for the value summarised over a 2D grid (\@stat-summary-2d, \@stat-summary-hex).
+/// \@param nudge-x Column name or scalar for per-row x offsets applied to text/label/typst geoms, in data units. Combines with layer-level `dx`.
+/// \@param nudge-y Column name or scalar for per-row y offsets applied to text/label/typst geoms, in data units. Combines with layer-level `dy`.
 ///
 /// \@returns Dictionary tagged `kind: "aes"`, consumed by \@plot and geom layers.
 ///
@@ -155,6 +157,8 @@
   angle: none,
   radius: none,
   z: none,
+  nudge-x: none,
+  nudge-y: none,
 ) = (
   kind: "aes",
   x: x,
@@ -187,4 +191,6 @@
   b: b,
   angle: angle,
   radius: radius,
+  nudge-x: nudge-x,
+  nudge-y: nudge-y,
 )

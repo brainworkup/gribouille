@@ -47,6 +47,9 @@ Run the survey command at the bottom before extending the table.
 | `py`   | panel y               | panel y range.                                                     |
 | `dx`   | delta x               | offset from `(cx, cy)` (e.g., `geom-text(dx: 4pt)`).               |
 | `dy`   | delta y               | offset from `(cx, cy)`.                                            |
+| `nudge-x` | per-row x offset (data units) | aesthetic on `geom-text`/`label`/`typst`; combined with `dx`. |
+| `nudge-y` | per-row y offset (data units) | aesthetic on `geom-text`/`label`/`typst`; combined with `dy`. |
+| `aabb` | axis-aligned bounding box | `(x-lo, y-lo, x-hi, y-hi)` dict from `utils/segment-route.typ`. |
 | `lo`   | lower bound           | endpoint of an interval (whisker, error bar, axis range).          |
 | `hi`   | upper bound           | endpoint of an interval.                                           |
 | `mid`  | midpoint              | midpoint of two values (`stat-connect("mid")`, `geom-boxplot`, …). |
@@ -95,6 +98,8 @@ Run the survey command at the bottom before extending the table.
 | `pad`  | padding                  | breathing room (cm) around laid-out content (e.g., strip band text). |
 | `sub`  | sub-record / sub-element | nested theme element (e.g., `theme-sub-axis`).                       |
 | `qq`   | quantile-quantile        | `geom-qq`, `stat-qq`, `stat-qq-line`.                                |
+| `segment` | connector line          | thin line from a label back to its anchor, opt-in via `segment: true` on text/label/typst geoms. |
+| `route` | routed connector polyline | output of `route-segment`: straight `(p0, p1)` or L-bend `(p0, mid, p1)`, else `none`. |
 | `se`   | standard error           | `mean-se`, `geom-errorbar` summary.                                  |
 | `sp`   | species                  | example data column (penguins / iris-style).                         |
 | `mm`   | millimetres              | rare; example datasets (penguins flipper length).                    |
