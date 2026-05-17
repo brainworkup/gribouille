@@ -10,7 +10,7 @@
 /// 2. The fill scale, when `fill-mapping` is `true`, a fill mapping is set, and the fill scale is trained.
 /// 3. `default-fill` otherwise.
 ///
-/// `colour-fallback` is off by default: the `colour` aesthetic drives strokes, not fills, and must be opted into explicitly when a geom truly wants the legacy fallback.
+/// `colour-fallback` is off by default: the `colour` aesthetic drives strokes, not fills, and must be opted into explicitly when a geom truly wants the colour-as-fill fallback.
 ///
 /// Applies the per-row alpha (mapped or fixed) via \@apply-alpha as the final step.
 ///

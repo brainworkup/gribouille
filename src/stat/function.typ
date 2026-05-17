@@ -22,7 +22,6 @@
 /// \@param fun Callable taking a numeric x and returning a numeric y.
 /// \@param n Number of samples taken uniformly across the range.
 /// \@param xlim Pair `(lo, hi)` bounding the sampling range, or `none` to derive from data.
-/// \@param args Reserved for forwarding extra arguments to `fun`. Currently unused.
 ///
 /// \@returns Statistic object with `name: "function"`, consumed by geom layers.
 ///
@@ -68,10 +67,10 @@
 /// ```
 ///
 /// \@see \@geom-function, \@stat-smooth
-#let stat-function(fun: x => x, n: 101, xlim: (0, 1), args: (:)) = (
+#let stat-function(fun: x => x, n: 101, xlim: (0, 1)) = (
   kind: "stat",
   name: "function",
-  params: (fun: fun, n: n, xlim: xlim, args: args),
+  params: (fun: fun, n: n, xlim: xlim),
 )
 
 #let _resolve-xlim(xlim, data, mapping) = {

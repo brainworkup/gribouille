@@ -834,8 +834,8 @@
 
 // Read a `guide-axis(...)` or `guide-axis-stack(...)` configuration off the
 // plot spec. Single guides flatten to `(angle, n-dodge, logticks, stack)`;
-// stacks add `(guides, spacing)` plus aggregate fields so legacy consumers
-// (label-anchor, log-minors) still see a sensible single-row view.
+// stacks add `(guides, spacing)` plus aggregate fields so flat (non-stack)
+// callers (label-anchor, log-minors) still see a sensible single-row view.
 #let _read-axis-guide(spec, aes) = {
   let g = spec.at("guides", default: (:)).at(aes, default: none)
   if g == none { return (angle: 0, n-dodge: 1, logticks: false, stack: false) }
@@ -865,7 +865,7 @@
 
 // Read a `guide-axis-theta(...)` configuration off the plot spec. Returns
 // `none` when no theta guide is bound so the radial renderer keeps its
-// spoke-only legacy path.
+// spoke-only path (no theta guide).
 #let _read-theta-guide(spec) = {
   let g = spec.at("guides", default: (:)).at("theta", default: none)
   if g == none { return none }
@@ -925,7 +925,7 @@
 )
 
 // Either the supplied extents record or `_empty-extents(size)` when caller
-// did not measure any labels (e.g., legacy code paths or absent secondary axis).
+// did not measure any labels (e.g., callers that skip measurement or have no secondary axis).
 #let _resolve-extents(extents, size) = if extents != none {
   extents
 } else { _empty-extents(size) }
@@ -1169,7 +1169,7 @@
   }
   // Pre-compute row metadata for each axis: the sub-guide, the cumulative
   // dodge offset (in row units) up to this sub-guide, and the inter-row gap
-  // offset (in cm). Lifted out of the per-break draw loops so legacy plots
+  // offset (in cm). Lifted out of the per-break draw loops so flat plots
   // walk a single tuple instead of rebuilding it every label.
   let _stack-rows(g, gap) = {
     let rows = _axis-guide-rows(g)
@@ -1547,7 +1547,7 @@
     }
 
     // Outer axis arc plus optional minor ticks (the `guide-axis-theta`
-    // guide). Spoke-only legacy plots skip this whole block.
+    // guide). Spoke-only plots (no theta guide) skip this whole block.
     if theta-guide != none and _ax-line.xb != none {
       let (theta-lo, theta-hi) = (theta-range.at(0), theta-range.at(1))
       let span = calc.abs(theta-hi - theta-lo)
