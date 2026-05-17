@@ -20,7 +20,7 @@
 /// \@param bins Scalar or `(x, y)` pair — target bin counts.
 /// \@param binwidth Scalar or `(x, y)` pair — fixed pitches.
 ///
-/// \@returns Statistic object with `name: "summary_hex"`.
+/// \@returns Statistic object with `name: "summary-hex"`.
 ///
 /// \@examples Override the default hex statistic via a dictionary-merge so
 /// each cell paints by the mean `z` over a 25-bin grid.
@@ -50,7 +50,7 @@
 /// \@see \@stat-bin-hex, \@stat-summary-2d
 #let stat-summary-hex(fun: "mean", bins: 30, binwidth: none) = (
   kind: "stat",
-  name: "summary_hex",
+  name: "summary-hex",
   params: (fun: fun, bins: bins, binwidth: binwidth),
 )
 

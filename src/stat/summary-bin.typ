@@ -28,7 +28,7 @@
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
 /// \@param fun-args Keyword arguments forwarded to the helper.
 ///
-/// \@returns Statistic object with `name: "summary_bin"`, consumed by geom
+/// \@returns Statistic object with `name: "summary-bin"`, consumed by geom
 ///   layers.
 ///
 /// \@examples Mean and standard-error bands per bin, drawn as a polyline.
@@ -46,7 +46,7 @@
 /// )
 /// ```
 ///
-/// \@examples `stat: "summary_bin"` is equivalent to `stat: stat-summary-bin()`
+/// \@examples `stat: "summary-bin"` is equivalent to `stat: stat-summary-bin()`
 /// with defaults (`fun: "mean-se"`, `bins: 30`). Use the constructor to
 /// customise the reduction or partition.
 /// ```
@@ -74,7 +74,7 @@
   fun-args: (:),
 ) = (
   kind: "stat",
-  name: "summary_bin",
+  name: "summary-bin",
   params: (
     fun: fun,
     bins: bins,

@@ -21,7 +21,7 @@
 /// \@param binwidth Fixed step between successive levels. Overrides `bins`.
 /// \@param breaks Explicit array of level boundaries. Overrides the rest.
 ///
-/// \@returns Statistic object with `name: "contour_filled"`.
+/// \@returns Statistic object with `name: "contour-filled"`.
 ///
 /// \@examples Drive `geom-polygon` with the constructor form to fill eight
 /// iso-bands of `sin(x) * cos(y)` and paint them via the viridis palette.
@@ -47,7 +47,7 @@
 /// \@see \@geom-contour-filled, \@stat-contour
 #let stat-contour-filled(bins: 10, binwidth: none, breaks: auto) = (
   kind: "stat",
-  name: "contour_filled",
+  name: "contour-filled",
   params: (bins: bins, binwidth: binwidth, breaks: breaks),
 )
 

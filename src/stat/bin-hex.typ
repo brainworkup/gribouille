@@ -16,7 +16,7 @@
 /// \@param bins Scalar or `(x, y)` pair — target bin counts.
 /// \@param binwidth Scalar or `(x, y)` pair — fixed pitches.
 ///
-/// \@returns Statistic object with `name: "bin_hex"`.
+/// \@returns Statistic object with `name: "bin-hex"`.
 ///
 /// \@examples `stat-bin-hex` powers `geom-hex`; pass `bins` (or `binwidth`)
 /// through the wrapper to bin a noisy scatter onto a 20-bin hex grid
@@ -40,7 +40,7 @@
 /// \@see \@geom-hex, \@stat-bin-2d
 #let stat-bin-hex(bins: 30, binwidth: none) = (
   kind: "stat",
-  name: "bin_hex",
+  name: "bin-hex",
   params: (bins: bins, binwidth: binwidth),
 )
 

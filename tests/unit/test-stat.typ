@@ -105,11 +105,11 @@
 #assert.eq(r-qql.mapping.colour, "g")
 #assert.eq(r-qql.mapping.at("sample", default: none), none)
 
-// --- stat-summary_bin: preserves grouping alongside synthesised columns ---
+// --- stat-summary-bin: preserves grouping alongside synthesised columns ---
 
 #let df-sb = range(0, 10).map(i => (x: i, y: i * 2.0, g: "a"))
 #let r-sb = apply-stat(
-  "summary_bin",
+  "summary-bin",
   df-sb,
   (x: "x", y: "y", fill: "g"),
   (bins: 3, fun: "mean-se"),

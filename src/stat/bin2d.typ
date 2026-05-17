@@ -17,7 +17,7 @@
 /// \@param bins Scalar or `(x, y)` pair — target bin counts when binwidth is `none`.
 /// \@param binwidth Scalar or `(x, y)` pair — fixed bin widths. Overrides `bins` per axis.
 ///
-/// \@returns Statistic object with `name: "bin_2d"`.
+/// \@returns Statistic object with `name: "bin-2d"`.
 ///
 /// \@examples Drive `geom-rect` with the constructor form to bin a noisy
 /// scatter into a 20-by-20 grid coloured by count.
@@ -40,7 +40,7 @@
 /// \@see \@geom-bin-2d, \@stat-bin
 #let stat-bin-2d(bins: 30, binwidth: none) = (
   kind: "stat",
-  name: "bin_2d",
+  name: "bin-2d",
   params: (bins: bins, binwidth: binwidth),
 )
 

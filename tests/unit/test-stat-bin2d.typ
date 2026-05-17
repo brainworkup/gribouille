@@ -11,7 +11,7 @@
 
 #let s = stat-bin-2d(bins: 4)
 #assert.eq(s.kind, "stat")
-#assert.eq(s.name, "bin_2d")
+#assert.eq(s.name, "bin-2d")
 #assert.eq(s.params.bins, 4)
 #assert.eq(s.params.binwidth, none)
 

@@ -9,7 +9,7 @@
 
 #let s = stat-bin-hex(bins: 4)
 #assert.eq(s.kind, "stat")
-#assert.eq(s.name, "bin_hex")
+#assert.eq(s.name, "bin-hex")
 #assert.eq(s.params.bins, 4)
 
 // hex-grid resolves pitches from extents and bins.

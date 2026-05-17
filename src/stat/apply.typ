@@ -43,12 +43,12 @@
     ctor: bin-stat.stat-bin,
     setup: panel-bin-grid,
   ),
-  bin_2d: (
+  "bin-2d": (
     apply: bin2d-stat.apply,
     ctor: bin2d-stat.stat-bin-2d,
     setup: panel-bin-grid-2d,
   ),
-  bin_hex: (
+  "bin-hex": (
     apply: bin-hex-stat.apply,
     ctor: bin-hex-stat.stat-bin-hex,
     setup: panel-hex-grid,
@@ -62,7 +62,7 @@
     apply: contour-stat.apply,
     ctor: contour-stat.stat-contour,
   ),
-  contour_filled: (
+  "contour-filled": (
     apply: contour-filled-stat.apply,
     ctor: contour-filled-stat.stat-contour-filled,
   ),
@@ -86,16 +86,16 @@
     apply: summary-stat.apply,
     ctor: summary-stat.stat-summary,
   ),
-  summary_bin: (
+  "summary-bin": (
     apply: summary-bin-stat.apply,
     ctor: summary-bin-stat.stat-summary-bin,
     setup: panel-bin-grid,
   ),
-  summary_2d: (
+  "summary-2d": (
     apply: summary-2d-stat.apply,
     ctor: summary-2d-stat.stat-summary-2d,
   ),
-  summary_hex: (
+  "summary-hex": (
     apply: summary-hex-stat.apply,
     ctor: summary-hex-stat.stat-summary-hex,
   ),

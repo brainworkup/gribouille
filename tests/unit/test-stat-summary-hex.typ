@@ -6,7 +6,7 @@
 
 #let s = stat-summary-hex(fun: "sum", bins: 4)
 #assert.eq(s.kind, "stat")
-#assert.eq(s.name, "summary_hex")
+#assert.eq(s.name, "summary-hex")
 #assert.eq(s.params.fun, "sum")
 
 // Two near-duplicate points fall in the same cell; their z values reduce.

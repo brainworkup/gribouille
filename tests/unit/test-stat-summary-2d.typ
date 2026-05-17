@@ -6,7 +6,7 @@
 
 #let s = stat-summary-2d(fun: "mean", bins: 2)
 #assert.eq(s.kind, "stat")
-#assert.eq(s.name, "summary_2d")
+#assert.eq(s.name, "summary-2d")
 #assert.eq(s.params.fun, "mean")
 #assert.eq(s.params.bins, 2)
 

@@ -129,7 +129,7 @@
 
 #let df-bin = range(0, 10).map(i => (x: i, y: i))
 #let r-bin = apply-stat(
-  "summary_bin",
+  "summary-bin",
   df-bin,
   (x: "x", y: "y"),
   (fun: "mean-se", bins: 2, binwidth: none, "fun-args": (:)),

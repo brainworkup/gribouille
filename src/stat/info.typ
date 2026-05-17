@@ -11,7 +11,7 @@
 #let _STAT-INFO = (
   identity: (outputs: ()),
   bin: (outputs: ("x", "y", "width", "_count", "_density")),
-  bin_2d: (
+  "bin-2d": (
     outputs: (
       "x",
       "y",
@@ -23,10 +23,10 @@
       "ymax",
     ),
   ),
-  bin_hex: (outputs: ("x", "y", "_count", "_density")),
+  "bin-hex": (outputs: ("x", "y", "_count", "_density")),
   bindot: (outputs: ("x", "y", "_bin-count", "width")),
   contour: (outputs: ("x", "y", "group", "_level")),
-  contour_filled: (outputs: ("x", "y", "group", "_level")),
+  "contour-filled": (outputs: ("x", "y", "group", "_level")),
   count: (outputs: ("x", "_count")),
   sum: (outputs: ("x", "y", "_n", "_prop")),
   smooth: (outputs: ("x", "y", "ymin", "ymax")),
@@ -44,9 +44,9 @@
     ),
   ),
   summary: (outputs: ("x", "y", "xmin", "xmax", "ymin", "ymax")),
-  summary_bin: (outputs: ("x", "y", "ymin", "ymax")),
-  summary_2d: (outputs: ("x", "y", "_value", "xmin", "xmax", "ymin", "ymax")),
-  summary_hex: (outputs: ("x", "y", "_value")),
+  "summary-bin": (outputs: ("x", "y", "ymin", "ymax")),
+  "summary-2d": (outputs: ("x", "y", "_value", "xmin", "xmax", "ymin", "ymax")),
+  "summary-hex": (outputs: ("x", "y", "_value")),
   ecdf: (outputs: ("x", "y")),
   unique: (outputs: ()),
   qq: (outputs: ("theoretical", "sample")),

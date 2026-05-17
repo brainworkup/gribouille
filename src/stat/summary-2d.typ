@@ -20,7 +20,7 @@
 /// \@param bins Scalar or `(x, y)` pair — target bin counts.
 /// \@param binwidth Scalar or `(x, y)` pair — fixed bin widths.
 ///
-/// \@returns Statistic object with `name: "summary_2d"`.
+/// \@returns Statistic object with `name: "summary-2d"`.
 ///
 /// \@examples Reduce a `z` aesthetic over a 25-by-25 grid: each cell paints
 /// by the mean of the values that fell inside it.
@@ -48,7 +48,7 @@
 /// \@see \@stat-bin-2d, \@stat-summary-bin
 #let stat-summary-2d(fun: "mean", bins: 30, binwidth: none) = (
   kind: "stat",
-  name: "summary_2d",
+  name: "summary-2d",
   params: (fun: fun, bins: bins, binwidth: binwidth),
 )
 

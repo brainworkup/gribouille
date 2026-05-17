@@ -7,7 +7,7 @@
 
 #let s = stat-contour-filled(bins: 4)
 #assert.eq(s.kind, "stat")
-#assert.eq(s.name, "contour_filled")
+#assert.eq(s.name, "contour-filled")
 
 // --- single cell, level fully inside ---
 
