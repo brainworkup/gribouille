@@ -965,35 +965,31 @@
       ),
       eval-strings: _legend-text.typst,
     )
-    if horizontal {
+    let (tick-from, tick-to, label-pos, label-anchor) = if horizontal {
       let cx = bar-left + t * bar-w
-      if tick-stroke != none {
-        cetz.draw.line(
-          (cx, bar-bottom),
-          (cx, bar-bottom - tick-len),
-          stroke: tick-stroke,
-        )
-      }
-      cetz.draw.content(
+      (
+        (cx, bar-bottom),
+        (cx, bar-bottom - tick-len),
         (cx, bar-bottom - tick-len - tick-gap),
-        text(size: text-size, fill: text-colour)[#tick-text],
-        anchor: "north",
+        "north",
       )
     } else {
       let cy = bar-bottom + t * bar-h
-      if tick-stroke != none {
-        cetz.draw.line(
-          (bar-right, cy),
-          (bar-right + tick-len, cy),
-          stroke: tick-stroke,
-        )
-      }
-      cetz.draw.content(
+      (
+        (bar-right, cy),
+        (bar-right + tick-len, cy),
         (bar-right + tick-len + tick-gap, cy),
-        text(size: text-size, fill: text-colour)[#tick-text],
-        anchor: "west",
+        "west",
       )
     }
+    if tick-stroke != none {
+      cetz.draw.line(tick-from, tick-to, stroke: tick-stroke)
+    }
+    cetz.draw.content(
+      label-pos,
+      text(size: text-size, fill: text-colour)[#tick-text],
+      anchor: label-anchor,
+    )
   }
 }
 

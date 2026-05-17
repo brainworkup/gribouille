@@ -48,6 +48,7 @@
   panel-grid: element-line(stroke: default-stroke-thickness),
   axis-line: element-line(stroke: default-stroke-thickness),
   axis-ticks: element-line(stroke: default-stroke-thickness),
+  // Thinner than `default-stroke-thickness` to keep colour-bar ticks subtle.
   legend-ticks: element-line(stroke: 0.3pt),
 
   // Per-surface rect records
@@ -55,6 +56,7 @@
   plot-background: element-rect(),
   strip-background: element-rect(),
   legend-background: element-rect(),
+  // Hairline frame around the colour-bar gradient.
   legend-bar: element-rect(stroke: 0.2pt),
 
   // Layer-default aesthetics shared across supporting geoms. All-`none`
