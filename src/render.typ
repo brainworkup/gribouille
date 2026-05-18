@@ -8,6 +8,7 @@
   mapping-ref-col, positional-aesthetics, train, transform-fwd, transform-inv,
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
+#import "scale/oob.typ": filter-oob
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
 #import "stat/info.typ": stat-info
 #import "position/apply.typ": apply-position, position-name-of
@@ -3058,6 +3059,22 @@
   // coord-flip swaps trained x and y so axis labels swap automatically;
   // direction-sensitive geoms branch on `ctx.flipped` inside their draw.
   trained = _apply-flip(trained, coord)
+
+  // Drop (or clamp under `oob: "squish"`) rows whose value falls outside any
+  // user-supplied scale `limits`. Runs after training so the trained domain
+  // is the rendered cutoff; before per-panel re-train so panel scales see
+  // the filtered subset.
+  let strict = spec.at("strict", default: false)
+  let oob-pass = filter-oob(prepared, trained, strict: strict)
+  prepared = oob-pass.layers
+  if facet-wrap-mode or facet-grid-mode {
+    panels = panels.map(p => {
+      let pass = filter-oob(p.layers, trained, strict: strict)
+      let new = p
+      new.layers = pass.layers
+      new
+    })
+  }
 
   // For facet-wrap with non-fixed scales, train each panel's positional axes
   // on its own subset so x and/or y differ across panels. Non-positional
