@@ -1,5 +1,9 @@
 // Position adjustment dispatcher. Sits between stat and render in
-// `_prepare-layer`.
+// `_prepare-layer`. Every position's `apply` declares the same
+// `(data, mapping, params:, coord:)` signature so the dispatcher can
+// forward without per-position branching; only `stack` and `fill`
+// currently read `coord:` to flip cumulation direction under
+// `coord-radial`.
 
 #import "identity.typ" as identity-pos
 #import "stack.typ" as stack-pos
