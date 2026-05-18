@@ -153,6 +153,9 @@
     geom-fill-default(g-defaults, role: "paper"),
   )
   let outlier-colour-param = layer.params.outlier-colour
+  let outlier-paint-of(resolved-stroke) = if outlier-colour-param != auto {
+    outlier-colour-param
+  } else { resolved-stroke }
   let stroke-thickness = layer.params.stroke
   let half-width = layer.params.width / 2
   let cap-half = half-width * layer.params.whisker-cap
@@ -249,9 +252,7 @@
           cetz.draw.line(..cap-lo-pts, stroke: stroke-spec)
           cetz.draw.line(..cap-hi-pts, stroke: stroke-spec)
         }
-        let outlier-paint = if (
-          outlier-colour-param != auto and outlier-colour-param != none
-        ) { outlier-colour-param } else { resolved-stroke }
+        let outlier-paint = outlier-paint-of(resolved-stroke)
         let outliers = row.at("outliers", default: ())
         for ov in outliers {
           let v = parse-number(ov)
@@ -299,9 +300,7 @@
             stroke: stroke-spec,
           )
         }
-        let outlier-paint = if (
-          outlier-colour-param != auto and outlier-colour-param != none
-        ) { outlier-colour-param } else { resolved-stroke }
+        let outlier-paint = outlier-paint-of(resolved-stroke)
         let outliers = row.at("outliers", default: ())
         for ov in outliers {
           let v = parse-number(ov)
@@ -406,9 +405,7 @@
       )
     }
 
-    let outlier-paint = if (
-      outlier-colour-param != auto and outlier-colour-param != none
-    ) { outlier-colour-param } else { resolved-stroke }
+    let outlier-paint = outlier-paint-of(resolved-stroke)
     let outliers = row.at("outliers", default: ())
     for ov in outliers {
       let v = parse-number(ov)

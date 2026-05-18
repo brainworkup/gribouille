@@ -7,8 +7,9 @@
 
 /// Whether an aesthetic was set by the user, either as a pinned parameter or as a column mapping.
 ///
-/// "Set" excludes the `auto` and `none` sentinels for pins, and the absence
-/// of a column for mappings.
+/// "Set" excludes the `auto` sentinel for pins (the fallback marker) and the
+/// absence of a column for mappings. `none` counts as set: the user explicitly
+/// disabled the aesthetic.
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params`.
@@ -17,7 +18,7 @@
 /// \@returns A boolean indicating whether the user supplied this aesthetic.
 #let aes-set(layer, mapping, name) = {
   let pin = layer.params.at(name, default: auto)
-  let pinned = pin != auto and pin != none
+  let pinned = pin != auto
   let mapped = mapping != none and mapping.at(name, default: none) != none
   pinned or mapped
 }

@@ -33,9 +33,7 @@
   let span-trained = ctx.trained.at(axis, default: none)
   if centre-trained == none or span-trained == none { return }
 
-  let colour-pinned = (
-    layer.params.colour != auto and layer.params.colour != none
-  )
+  let colour-pinned = layer.params.colour != auto
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
   let resolve-colour = if colour-trained != none {

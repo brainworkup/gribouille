@@ -142,6 +142,7 @@
 )
 
 #let draw(layer, ctx) = {
+  if layer.params.shape == none { return }
   let mapping = (ctx.resolve-mapping)(layer)
   let data = (ctx.resolve-data)(layer)
   if mapping == none or mapping.x == none or mapping.y == none { return }
@@ -159,7 +160,7 @@
   )
 
   let shape-param = layer.params.shape
-  let shape-pinned = shape-param != auto and shape-param != none
+  let shape-pinned = shape-param != auto
   let shape-spec = mapping.at("shape", default: none)
   let shape-col = after-scale-source(shape-spec)
   let shape-trained = ctx.trained.at("shape", default: none)

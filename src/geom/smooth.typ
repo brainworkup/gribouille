@@ -151,12 +151,8 @@
   let colour-trained = ctx.trained.at("colour", default: none)
   let fill-trained = ctx.trained.at("fill", default: none)
 
-  let colour-pinned = (
-    layer.params.colour != auto and layer.params.colour != none
-  )
-  let fill-pinned = (
-    layer.params.fill != auto and layer.params.fill != none
-  )
+  let colour-pinned = layer.params.colour != auto
+  let fill-pinned = layer.params.fill != auto
   // Exclusive-default rule: when only `fill` is set, the line is suppressed.
   let suppress-line = (
     aes-set(layer, mapping, "fill") and not aes-set(layer, mapping, "colour")

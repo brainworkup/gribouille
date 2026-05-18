@@ -6,9 +6,10 @@
 /// Resolve a fill colour for a row sample.
 ///
 /// Priority order:
-/// 1. Fixed `layer.params.fill` when it is not `auto` and not `none`.
-/// 2. The fill scale, when `fill-mapping` is `true`, a fill mapping is set, and the fill scale is trained.
-/// 3. `default-fill` otherwise.
+/// 1. `layer.params.fill == none` → returns `none` (user disabled the fill).
+/// 2. Fixed `layer.params.fill` when it is not `auto`.
+/// 3. The fill scale, when `fill-mapping` is `true`, a fill mapping is set, and the fill scale is trained.
+/// 4. `default-fill` otherwise.
 ///
 /// `colour-fallback` is off by default: the `colour` aesthetic drives strokes, not fills, and must be opted into explicitly when a geom truly wants the colour-as-fill fallback.
 ///
@@ -35,10 +36,11 @@
   default-alpha: 1,
 ) = {
   let fill-param = layer.params.at("fill", default: auto)
+  if fill-param == none { return none }
   let fill-spec = if fill-mapping { mapping.at("fill", default: none) } else {
     none
   }
-  let resolved = if fill-param != auto and fill-param != none {
+  let resolved = if fill-param != auto {
     fill-param
   } else if not fill-mapping {
     if colour-fallback {

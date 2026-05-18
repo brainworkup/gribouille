@@ -127,9 +127,9 @@
   }
   if pts.len() < 2 { return }
 
-  let colour = if (
-    layer.params.colour != auto and layer.params.colour != none
-  ) { layer.params.colour } else {
+  let colour = if layer.params.colour != auto {
+    layer.params.colour
+  } else {
     geom-colour-default(geom-defaults(ctx.theme))
   }
   let mapping = (ctx.resolve-mapping)(layer)

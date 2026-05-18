@@ -141,7 +141,7 @@
 
 #let _layer-pins(layer, aes-name) = {
   let v = layer.params.at(aes-name, default: auto)
-  v != auto and v != none
+  v != auto
 }
 
 

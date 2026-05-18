@@ -128,8 +128,8 @@
   rgb("#abcdef"),
 )
 
-// 10. `params.colour: none` falls through to the mapping (mirrors the
-// `resolve-fill-colour` semantics for `params.fill: none`).
+// 10. `params.colour: none` disables the stroke colour entirely: the mapping
+// is ignored and the resolver returns `none`.
 #assert.eq(
   resolve-stroke-colour(
     (geom: "point", params: (colour: none, alpha: 1)),
@@ -138,7 +138,20 @@
     (k: "a"),
     rgb("#cccccc"),
   ),
-  rgb("#ff0000"),
+  none,
+)
+
+// 10b. `params.fill: none` disables the fill: the trained fill scale is
+// ignored and the resolver returns `none`.
+#assert.eq(
+  resolve-fill-colour(
+    layer(fill: none),
+    (fill: "k"),
+    ctx-fill,
+    (k: "a"),
+    rgb("#cccccc"),
+  ),
+  none,
 )
 
 // 11. Per-row alpha is applied on top of the resolved colour. With alpha 0.5,
@@ -173,10 +186,11 @@
   none,
 )
 
-// 13. `aes-set` distinguishes pinned, mapped, and unset states.
+// 13. `aes-set` distinguishes pinned, mapped, and unset states. `none`
+// counts as set: the user explicitly disabled the aesthetic.
 #let make-layer(params) = (geom: "x", params: params)
 #assert.eq(aes-set(make-layer((colour: auto)), (:), "colour"), false)
-#assert.eq(aes-set(make-layer((colour: none)), (:), "colour"), false)
+#assert.eq(aes-set(make-layer((colour: none)), (:), "colour"), true)
 #assert.eq(
   aes-set(make-layer((colour: rgb("#ff0000"))), (:), "colour"),
   true,
@@ -241,6 +255,27 @@
     df,
   ),
   (dc, df),
+)
+
+// 14b. `none` pin counts as "user set this": the exclusive-default rule
+// suppresses the *other* aesthetic's default just as a concrete pin would.
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: none, fill: auto)),
+    (:),
+    dc,
+    df,
+  ),
+  (dc, none),
+)
+#assert.eq(
+  resolve-pair-defaults(
+    make-layer((colour: auto, fill: none)),
+    (:),
+    dc,
+    df,
+  ),
+  (none, df),
 )
 
 // 15. `build-stroke` returns `none` when the resolved paint is `none`, so

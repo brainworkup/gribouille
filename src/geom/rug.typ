@@ -112,9 +112,7 @@
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
 
-  let colour-pinned = (
-    layer.params.colour != auto and layer.params.colour != none
-  )
+  let colour-pinned = layer.params.colour != auto
   let colour-col = mapping.at("colour", default: none)
   let colour-trained = ctx.trained.at("colour", default: none)
   let resolve-colour = if colour-trained != none {

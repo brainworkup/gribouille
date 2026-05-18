@@ -15,6 +15,7 @@
 }
 
 #let draw-marker(pos, kind, size, paint, stroke-spec) = {
+  if kind == none { return }
   let (cx, cy) = pos
   if kind == "circle" {
     cetz.draw.circle((cx, cy), radius: size, fill: paint, stroke: stroke-spec)
