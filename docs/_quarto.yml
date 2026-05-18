@@ -55,9 +55,9 @@ website:
       - text: "Guides"
         menu:
           - text: "Theming"
-            href: theming.qmd
+            href: guides/theming.qmd
           - text: "Accessibility"
-            href: accessibility.qmd
+            href: guides/accessibility.qmd
       - text: "Reference"
         href: reference/index.qmd
       - text: "Examples"

@@ -13,9 +13,9 @@ Both apply whether you embed plots in a Quarto document or compile Typst yoursel
 
 ## Alt text on a plot
 
-Every [`plot`](reference/core/plot.qmd) call accepts an `alt:` parameter: the text alternative a screen reader announces in place of the figure.
+Every [`plot`](../reference/core/plot.qmd) call accepts an `alt:` parameter: the text alternative a screen reader announces in place of the figure.
 Keep it to one or two short sentences, describe the takeaway rather than just naming the axes, and do not repeat the visible title word for word.
-The visible labels (title, subtitle, caption, axis and legend titles) belong on [`labs`](reference/labs/labs.qmd); `alt:` is the non-visible description, not a substitute for a caption.
+The visible labels (title, subtitle, caption, axis and legend titles) belong on [`labs`](../reference/labs/labs.qmd); `alt:` is the non-visible description, not a substitute for a caption.
 
 ```typst
 #plot(
@@ -64,13 +64,13 @@ Set it with the `alt` cell option; pair it with `cap` and `label: fig-…` when 
 `alt` becomes the `alt` attribute on the rendered `<img>` in HTML and the `alt` argument of `image()` in Quarto Typst output, so the description survives in every format.
 `output-filename` follows this project's convention of a leading `/` (resolved against the Quarto project root); in your own project use whatever path your `_quarto.yml` expects.
 Keep a `plot(alt: …)` inside the block only if you also compile the same `.typ` file directly, as in the next section; through [`typst-render`](https://github.com/mcanouil/quarto-typst-render) it has no effect.
-The [Get Started](get-started/index.qmd) tutorial sets `alt` on every example block, so each step is a worked example of this pattern.
+The [Get Started](../get-started/index.qmd) tutorial sets `alt` on every example block, so each step is a worked example of this pattern.
 
 For example, this page renders a penguins plot through [`typst-render`](https://github.com/mcanouil/quarto-typst-render) like so:
 
 ```{typst}
 //| echo: false
-//| output-filename: "/assets/typst-render/accessibility/penguins-alt.svg"
+//| output-filename: "accessibility-penguins-alt.svg"
 //| alt: "Body mass rises with flipper length for all three penguin species; Gentoo are the heaviest and have the longest flippers."
 #plot(
   data: penguins,
@@ -111,21 +111,21 @@ To confirm the result, `pdfinfo -struct-text plot.pdf` should show a single `Fig
 
 ## Colour and redundant encoding
 
-Gribouille's default discrete colour scale is the [Okabe-Ito palette](reference/scales/scale-colour-okabe-ito.qmd) (Wong 2011), chosen to stay distinguishable for the common forms of colour-vision deficiency, so a plain `aes(colour: …)` already starts on safe ground.
+Gribouille's default discrete colour scale is the [Okabe-Ito palette](../reference/scales/scale-colour-okabe-ito.qmd) (Wong 2011), chosen to stay distinguishable for the common forms of colour-vision deficiency, so a plain `aes(colour: …)` already starts on safe ground.
 Colour still fails, though, whenever colour is *removed*: greyscale print, photocopies, some projectors.
 Two things help.
 
-- Continuous data: [`scale-colour-viridis-c`](reference/scales/scale-colour-viridis-c.qmd) (and the binned [`scale-colour-viridis-b`](reference/scales/scale-colour-viridis-b.qmd)) is perceptually uniform and increases monotonically in lightness, so it survives greyscale; use [`scale-colour-viridis-d`](reference/scales/scale-colour-viridis-d.qmd) for the discrete version.
-- Other discrete palettes: [`scale-colour-brewer`](reference/scales/scale-colour-brewer.qmd) exposes the ColorBrewer families; turn on the "colour-blind safe" filter on [colorbrewer2.org](https://colorbrewer2.org) to pick one. Avoid [`scale-colour-hue`](reference/scales/scale-colour-hue.qmd) for categorical data unless you have a specific reason, as it is not colour-blind safe.
+- Continuous data: [`scale-colour-viridis-c`](../reference/scales/scale-colour-viridis-c.qmd) (and the binned [`scale-colour-viridis-b`](../reference/scales/scale-colour-viridis-b.qmd)) is perceptually uniform and increases monotonically in lightness, so it survives greyscale; use [`scale-colour-viridis-d`](../reference/scales/scale-colour-viridis-d.qmd) for the discrete version.
+- Other discrete palettes: [`scale-colour-brewer`](../reference/scales/scale-colour-brewer.qmd) exposes the ColorBrewer families; turn on the "colour-blind safe" filter on [colorbrewer2.org](https://colorbrewer2.org) to pick one. Avoid [`scale-colour-hue`](../reference/scales/scale-colour-hue.qmd) for categorical data unless you have a specific reason, as it is not colour-blind safe.
 
-The reliable fix when a figure must read in black and white is a second, non-colour channel: map the grouping variable to `shape:` and/or `linetype:` as well as `colour:`, controlled by [`scale-shape`](reference/scales/scale-shape.qmd) and [`scale-linetype`](reference/scales/scale-linetype.qmd).
+The reliable fix when a figure must read in black and white is a second, non-colour channel: map the grouping variable to `shape:` and/or `linetype:` as well as `colour:`, controlled by [`scale-shape`](../reference/scales/scale-shape.qmd) and [`scale-linetype`](../reference/scales/scale-linetype.qmd).
 Shape and linetype only stay legible for low-cardinality factors, roughly six levels or fewer.
 
 In the example below the colours are still the default Okabe-Ito, but `species` is also mapped to point shape, so the three groups remain separable with no colour at all.
 
 ```{typst}
 //| echo: true
-//| output-filename: "/assets/typst-render/accessibility/penguins-shape.svg"
+//| output-filename: "accessibility-penguins-shape.svg"
 //| alt: "Body mass against flipper length for three penguin species, each shown in a distinct colour and a distinct point shape."
 #plot(
   data: penguins,
@@ -150,4 +150,4 @@ In the example below the colours are still the default Okabe-Ito, but `species` 
 
 ## See also
 
-- [`get-alt-text`](reference/helpers/get-alt-text.qmd) reads the alt text back off a plot spec, which is useful if you generate plots programmatically and want their descriptions in a manifest or index.
+- [`get-alt-text`](../reference/helpers/get-alt-text.qmd) reads the alt text back off a plot spec, which is useful if you generate plots programmatically and want their descriptions in a manifest or index.
