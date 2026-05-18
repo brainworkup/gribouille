@@ -31,6 +31,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          # Drop the default GITHUB_TOKEN extraheader so subsequent steps
+          # can re-point `origin` at the App token below.
+          persist-credentials: false
 
       - name: Set up Git user
         id: setup-git
@@ -39,6 +43,15 @@ jobs:
           gh-app-id: ${{ vars.APP_ID }}
           app-key: ${{ secrets.APP_KEY }}
           gh-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate git push as the App
+        env:
+          GH_TOKEN: ${{ steps.setup-git.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote set-url origin \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
       - name: Read Typst version from typst.toml
         id: typst-version
@@ -75,11 +88,11 @@ jobs:
           git commit -m "${COMMIT}"
 
           if [[ "${DIRECT}" == "true" ]]; then
-            # Direct push to the dispatched branch via the App token so a
-            # protected `main` still accepts the commit (relies on the App
-            # being allow-listed to bypass branch protection).
-            git remote set-url origin \
-              "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+            # Direct push to the dispatched branch; the remote already
+            # carries the App token (see "Authenticate git push as the
+            # App" step) so a protected `main` still accepts the commit
+            # provided the App is allow-listed for branch protection
+            # bypass.
             git push origin "HEAD:${GITHUB_REF_NAME}"
             {
               echo "## Visual snapshots refreshed (direct push)"
