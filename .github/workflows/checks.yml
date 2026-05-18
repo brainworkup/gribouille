@@ -1,4 +1,4 @@
-name: CI
+name: Checks
 
 on:
   push:
@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           {
-            echo "## CI: Typst compile"
+            echo "## Checks: Typst compile"
             echo ""
             echo "| Section | File | Status |"
             echo "| ------- | ---- | ------ |"
@@ -93,7 +93,7 @@ jobs:
     name: Visual snapshot diff
     runs-on: ubuntu-latest
     # Serialise against the refresh workflow on the same ref so a
-    # `snapshot-refresh` push and a CI run can't fight over goldens.
+    # `snapshot-refresh` push and a checks run can't fight over goldens.
     concurrency:
       group: snapshot-refresh-${{ github.ref }}
       cancel-in-progress: false
