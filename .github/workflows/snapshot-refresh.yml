@@ -45,16 +45,12 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Configure git user as the App
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          USER_ID=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
+      - name: Set up Git user
+        uses: ./.github/actions/setup-git-user
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          app-slug: ${{ steps.app-token.outputs.app-slug }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Read Typst version from typst.toml
         id: typst-version
