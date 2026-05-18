@@ -5,11 +5,13 @@
 /// fixed layer parameter), the *other* aesthetic must not receive its default
 /// value. Defaults apply only when neither has been set.
 
-/// Whether an aesthetic was set by the user, either as a pinned parameter or as a column mapping.
+/// Whether an aesthetic was set to a positive value by the user, either as a pinned parameter or as a column mapping.
 ///
-/// "Set" excludes the `auto` sentinel for pins (the fallback marker) and the
-/// absence of a column for mappings. `none` counts as set: the user explicitly
-/// disabled the aesthetic.
+/// "Set" excludes both the `auto` sentinel (fallback marker) and the `none`
+/// sentinel (explicit disable) for pins, plus the absence of a column for
+/// mappings. A `none` pin is *not* counted here so the exclusive-default rule
+/// does not suppress the opposite aesthetic's default: disabling fill should
+/// leave the stroke default intact, not also strip it.
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params`.
@@ -18,7 +20,7 @@
 /// \@returns A boolean indicating whether the user supplied this aesthetic.
 #let aes-set(layer, mapping, name) = {
   let pin = layer.params.at(name, default: auto)
-  let pinned = pin != auto
+  let pinned = pin != auto and pin != none
   let mapped = mapping != none and mapping.at(name, default: none) != none
   pinned or mapped
 }

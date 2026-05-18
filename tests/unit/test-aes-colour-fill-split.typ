@@ -186,11 +186,12 @@
   none,
 )
 
-// 13. `aes-set` distinguishes pinned, mapped, and unset states. `none`
-// counts as set: the user explicitly disabled the aesthetic.
+// 13. `aes-set` distinguishes pinned, mapped, and unset states. A `none`
+// pin counts as unset for the exclusive-default rule, so disabling one
+// aesthetic does not strip the other aesthetic's default.
 #let make-layer(params) = (geom: "x", params: params)
 #assert.eq(aes-set(make-layer((colour: auto)), (:), "colour"), false)
-#assert.eq(aes-set(make-layer((colour: none)), (:), "colour"), true)
+#assert.eq(aes-set(make-layer((colour: none)), (:), "colour"), false)
 #assert.eq(
   aes-set(make-layer((colour: rgb("#ff0000"))), (:), "colour"),
   true,
@@ -257,8 +258,9 @@
   (dc, df),
 )
 
-// 14b. `none` pin counts as "user set this": the exclusive-default rule
-// suppresses the *other* aesthetic's default just as a concrete pin would.
+// 14b. A `none` pin must not trigger the exclusive-default rule: disabling
+// fill alone should leave the stroke default intact so the geom can still
+// render an outline, and vice versa.
 #assert.eq(
   resolve-pair-defaults(
     make-layer((colour: none, fill: auto)),
@@ -266,7 +268,7 @@
     dc,
     df,
   ),
-  (dc, none),
+  (dc, df),
 )
 #assert.eq(
   resolve-pair-defaults(
@@ -275,7 +277,7 @@
     dc,
     df,
   ),
-  (none, df),
+  (dc, df),
 )
 
 // 15. `build-stroke` returns `none` when the resolved paint is `none`, so
