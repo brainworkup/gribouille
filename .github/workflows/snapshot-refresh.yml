@@ -2,6 +2,12 @@ name: Refresh visual snapshots
 
 on:
   workflow_dispatch:
+    inputs:
+      direct:
+        description: "Commit goldens straight to the dispatched branch (bypasses PR + auto-merge). Requires the App to bypass branch protection."
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -53,15 +59,33 @@ jobs:
         with:
           mode: update
 
-      - name: Open PR if goldens changed
+      - name: Commit goldens (PR or direct)
         env:
           GH_TOKEN: ${{ steps.setup-git.outputs.token }}
+          DIRECT: ${{ inputs.direct }}
         shell: bash
         run: |
           set -euo pipefail
           git add tests/visual/golden
           if git diff --cached --quiet; then
             echo "No golden changes." >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+
+          git commit -m "${COMMIT}"
+
+          if [[ "${DIRECT}" == "true" ]]; then
+            # Direct push to the dispatched branch via the App token so a
+            # protected `main` still accepts the commit (relies on the App
+            # being allow-listed to bypass branch protection).
+            git remote set-url origin \
+              "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            {
+              echo "## Visual snapshots refreshed (direct push)"
+              echo ""
+              git diff --stat HEAD~1 HEAD || true
+            } >> "${GITHUB_STEP_SUMMARY}"
             exit 0
           fi
 
@@ -72,8 +96,6 @@ jobs:
             git push origin --delete "${BRANCH}"
           fi
           git checkout -b "${BRANCH}"
-
-          git commit -m "${COMMIT}"
           git push --force origin "${BRANCH}"
 
           sleep 5
