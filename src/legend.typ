@@ -11,7 +11,7 @@
 #import "utils/pretty.typ": pretty
 #import "utils/format.typ": format-break
 #import "utils/colour.typ": resolve-continuous-colour
-#import "utils/palette.typ": default-discrete, spec-palette
+#import "utils/palette.typ": default-discrete, spec-attr, spec-palette
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour
 #import "theme/theme.typ": _line-stroke, _rect-style, _text-style
@@ -870,10 +870,23 @@
   }
 }
 
-#let _resolve-bar-colour(trained, value, palette, ink) = {
-  if trained == none or value == none { return ink }
-  let pal = spec-palette(trained, palette)
-  resolve-continuous-colour(trained, value, pal, ink)
+// Build positioned gradient stops for a continuous colourbar. Diverging
+// palettes (with `midpoint`) pin the middle stop at the midpoint's normalised
+// position; degenerate palettes flatten to a single colour across the bar.
+#let _gradient-stops(pal, midpoint, lo, hi, ink) = {
+  if pal.len() == 0 { return ((ink, 0%), (ink, 100%)) }
+  if pal.len() == 1 {
+    return ((pal.first(), 0%), (pal.first(), 100%))
+  }
+  if midpoint != none and pal.len() >= 3 and hi > lo {
+    let mid-pos = calc.max(0.0, calc.min(1.0, (midpoint - lo) / (hi - lo)))
+    return (
+      (pal.first(), 0%),
+      (pal.at(1), mid-pos * 100%),
+      (pal.last(), 100%),
+    )
+  }
+  pal
 }
 
 #let _draw-colourbar(guide, ctx, ox, cursor, theme, title-h) = {
@@ -907,32 +920,38 @@
       stroke: none,
     )
   }
-  let steps = if guide.at("binned", default: false) {
-    guide.at("n-breaks", default: 5)
-  } else { 40 }
-  for i in range(steps) {
-    let t = (i + 0.5) / steps
-    let value = lo + t * (hi - lo)
-    let colour = _resolve-bar-colour(trained, value, ctx.palette, ink)
-    if horizontal {
-      let step-w = bar-w / steps
-      let x-lo = bar-left + i * step-w
-      cetz.draw.rect(
-        (x-lo, bar-bottom),
-        (x-lo + step-w, bar-top),
-        fill: colour,
-        stroke: none,
-      )
-    } else {
-      let step-h = bar-h / steps
-      let y-lo = bar-bottom + i * step-h
-      cetz.draw.rect(
-        (bar-left, y-lo),
-        (bar-right, y-lo + step-h),
-        fill: colour,
-        stroke: none,
-      )
+  let pal = spec-palette(trained, ctx.palette)
+  if guide.at("binned", default: false) {
+    let steps = guide.at("n-breaks", default: 5)
+    let step-w = bar-w / steps
+    let step-h = bar-h / steps
+    for i in range(steps) {
+      let t = (i + 0.5) / steps
+      let value = lo + t * (hi - lo)
+      let colour = resolve-continuous-colour(trained, value, pal, ink)
+      let (rect-lo, rect-hi) = if horizontal {
+        let x-lo = bar-left + i * step-w
+        ((x-lo, bar-bottom), (x-lo + step-w, bar-top))
+      } else {
+        let y-lo = bar-bottom + i * step-h
+        ((bar-left, y-lo), (bar-right, y-lo + step-h))
+      }
+      cetz.draw.rect(rect-lo, rect-hi, fill: colour, stroke: colour)
     }
+  } else {
+    let stops = _gradient-stops(
+      pal,
+      spec-attr(trained, "midpoint"),
+      lo,
+      hi,
+      ink,
+    )
+    cetz.draw.rect(
+      (bar-left, bar-bottom),
+      (bar-right, bar-top),
+      fill: gradient.linear(..stops, dir: if horizontal { ltr } else { btt }),
+      stroke: none,
+    )
   }
   if bar-frame.stroke != none {
     cetz.draw.rect(

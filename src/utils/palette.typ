@@ -1,6 +1,8 @@
 // Default colour palettes.
-// The library default discrete palette is Okabe-Ito: CVD-safety takes
-// priority over the older "no purple" preference, so #cc79a7 is intentional.
+// Discrete default is Okabe-Ito (CVD-safety over the older "no purple"
+// preference). Continuous default is viridis.
+
+#import "viridis.typ": viridis
 
 /// Okabe-Ito colour-vision-deficiency-safe qualitative palette.
 ///
@@ -47,6 +49,8 @@
 )
 
 #let default-discrete = okabe-ito
+
+#let default-continuous = viridis
 
 // Shape palette: keywords resolved by geom-point's `_draw-shape`.
 // Covers the most common shape indices without overlap.
@@ -317,16 +321,25 @@
 // Index a palette with modulo wrap so out-of-range indices cycle.
 #let palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
 
-// Resolve the palette declared on a trained scale, falling back to `fallback`.
-// Returns `fallback` when the scale is untrained, has no spec, or sets the
-// palette to `auto` or `none`. Used by geoms (linetype, shape) and the
-// level-driven legend kernel.
+// Resolve the palette declared on a trained scale. When the scale carries no
+// explicit palette, continuous scales receive `default-continuous`; everything
+// else falls back to the caller-supplied `fallback` (typically the discrete
+// default). Used by geoms (linetype, shape) and the level-driven legend kernel.
 #let spec-palette(trained, fallback) = {
   if trained == none { return fallback }
   let spec = trained.at("spec", default: none)
+  let p = if spec == none { auto } else { spec.at("palette", default: auto) }
+  if p != auto and p != none { return p }
+  if trained.type == "continuous" { default-continuous } else { fallback }
+}
+
+// Read a single attribute (`key`) from a trained scale's `spec` dict, returning
+// `fallback` when the scale is untrained or the spec is missing the key.
+#let spec-attr(trained, key, fallback: none) = {
+  if trained == none { return fallback }
+  let spec = trained.at("spec", default: none)
   if spec == none { return fallback }
-  let p = spec.at("palette", default: auto)
-  if p == auto or p == none { fallback } else { p }
+  spec.at(key, default: fallback)
 }
 
 /// Look up a ColorBrewer palette by name.

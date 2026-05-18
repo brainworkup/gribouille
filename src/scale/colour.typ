@@ -370,10 +370,10 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
-/// \@examples Default ramp interpolating between the library's low and high
-/// blue stops.
+/// \@examples Default viridis ramp interpolating across the library's
+/// continuous palette.
 /// ```
-/// //| alt: "Scatter chart of twelve diagonal points coloured by z along a continuous blue ramp from dark navy at low values to light sky-blue at high values."
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along the default continuous viridis ramp from dark purple at low values to bright yellow at high values."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -388,7 +388,7 @@
 /// \@examples Pin `limits` to clip the trained domain and render extremes at
 /// the palette endpoints.
 /// ```
-/// //| alt: "Scatter chart of twelve diagonal points coloured by z along the continuous blue ramp, with limits 1 through 4 clamping out-of-range values to palette endpoints."
+/// //| alt: "Scatter chart of twelve diagonal points coloured by z along the continuous viridis ramp, with limits 1 through 4 clamping out-of-range values to palette endpoints."
 /// #let d = range(0, 12).map(i => (x: i, y: i, z: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -495,7 +495,7 @@
 ///
 /// \@examples Default ramp filling bars by their numeric value.
 /// ```
-/// //| alt: "Bar chart of three bars a, b, c filled along the default continuous blue ramp from dark navy at low y to light sky-blue at high y."
+/// //| alt: "Bar chart of three bars a, b, c filled along the default continuous viridis ramp from dark purple at low y to bright yellow at high y."
 /// #let d = (
 ///   (grp: "a", y: 1),
 ///   (grp: "b", y: 2),
@@ -514,7 +514,7 @@
 /// \@examples The default ramp shown as a continuous swatch via \@geom-rect
 /// over a sampled gradient.
 /// ```
-/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the default continuous fill ramp from dark navy on the left to light sky-blue on the right."
+/// //| alt: "Colour-bar swatch of sixteen rectangles displaying the default continuous viridis fill ramp from dark purple on the left to bright yellow on the right."
 /// #let d = range(0, 16).map(i => (
 ///   xmin: i, xmax: i + 1, ymin: 0, ymax: 1, z: i,
 /// ))

@@ -1,9 +1,7 @@
 // Viridis-family colour ramps.
 // 10-stop approximations of the MPL 2.0 tables from matplotlib; sufficient for
 // discrete swatches and interpolated continuous fills in CeTZ.
-// Avoiding purple-heavy default palettes outside viridis itself per user
-// preference: viridis/magma/plasma/inferno/cividis are kept available but
-// never chosen automatically.
+// magma/plasma/inferno/cividis available but not auto-selected.
 
 #let viridis = (
   rgb("#440154"),
