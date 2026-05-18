@@ -20,7 +20,7 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param size Marker size (a Typst length).
-/// \@param stroke Marker stroke; `none` means no outline.
+/// \@param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
 /// \@param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
 /// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
 /// \@param alpha Marker opacity in `[0, 1]`.
@@ -63,7 +63,7 @@
   mapping: none,
   data: none,
   size: auto,
-  stroke: none,
+  stroke: auto,
   fill: auto,
   colour: auto,
   alpha: auto,
