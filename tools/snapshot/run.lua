@@ -27,6 +27,7 @@ Options:
   --tolerance <n> Max AE pixel count per diff (default: 0).
   --fuzz <pct>    ImageMagick `-fuzz` value (default: 1%).
   --only <key>    Only run sources whose key contains this substring.
+  --jobs <n>      Parallel typst compiles (default: $JOBS or 1).
   --help          Show this help and exit.
 ]]
 
@@ -47,6 +48,7 @@ local function parse_args(argv)
     tolerance = 0,
     fuzz = "1%",
     only = nil,
+    jobs = tonumber(os.getenv("JOBS")) or 1,
   }
   local i = 1
   local function take_value(flag)
@@ -66,6 +68,7 @@ local function parse_args(argv)
     elseif a == "--tolerance" then opts.tolerance = tonumber(take_value(a)) or opts.tolerance
     elseif a == "--fuzz" then opts.fuzz = take_value(a)
     elseif a == "--only" then opts.only = take_value(a)
+    elseif a == "--jobs" then opts.jobs = math.max(1, tonumber(take_value(a)) or opts.jobs)
     elseif a == "--help" or a == "-h" then io.write(USAGE); os.exit(0)
     else io.stderr:write("snapshot: unknown arg: " .. a .. "\n"); io.write(USAGE); os.exit(2)
     end
@@ -74,25 +77,47 @@ local function parse_args(argv)
   return opts
 end
 
-local function compile_typst(src_typ, out_png, root, ppi)
-  local cmd = string.format(
-    "typst compile %s --root %s --ppi %d %s 2>&1",
-    shell_quote(src_typ), shell_quote(root), ppi, shell_quote(out_png)
-  )
-  local code, out = util.popen_capture(cmd)
-  return code == 0, out
+-- Spawn up to `jobs` typst processes in parallel and drain each batch
+-- before starting the next. Returns an array aligned with `sources`,
+-- where each entry is `{ code, log, png }`.
+local function compile_batch(sources, opts)
+  local results = {}
+  local i = 1
+  while i <= #sources do
+    local batch = {}
+    while #batch < opts.jobs and i <= #sources do
+      local s = sources[i]
+      local png = string.format("%s/png/%s.png", opts.build_root, s.key)
+      local cmd = string.format(
+        "typst compile %s --root %s --ppi %d %s 2>&1",
+        shell_quote(s.src_typ), shell_quote(opts.root), opts.ppi, shell_quote(png)
+      )
+      batch[#batch + 1] = { idx = i, handle = io.popen(cmd, "r"), png = png }
+      i = i + 1
+    end
+    for _, b in ipairs(batch) do
+      local out = b.handle:read("*a")
+      local _, _, code = b.handle:close()
+      results[b.idx] = { code = code or 0, log = out, png = b.png }
+    end
+  end
+  return results
 end
 
--- ImageMagick `compare -metric AE` writes the pixel-difference count last on stderr.
--- Uses the v6/v7-compatible `compare` entry point rather than `magick compare`.
+-- ImageMagick `compare -metric AE` writes "<ae>" or "<ae> (<normalised>)" on
+-- stderr. Uses the v6/v7-compatible `compare` entry point rather than
+-- `magick compare`. Exit codes: 0 == identical, 1 == differs but ran
+-- cleanly, >=2 == error. Returns `code, ae, log`; on error `ae` is nil so
+-- callers don't confuse a crashed compare with a clean 0-pixel match.
 local function diff_images(golden, current, diff_png, fuzz)
   local cmd = string.format(
     "compare -metric AE -fuzz %s %s %s %s 2>&1",
     fuzz, shell_quote(golden), shell_quote(current), shell_quote(diff_png)
   )
   local code, out = util.popen_capture(cmd)
-  local ae = tonumber(out:match("(%d+)%s*$")) or 0
-  return code, ae
+  local ae
+  if code <= 1 then ae = tonumber(out:match("^%s*(%d+)")) end
+  return code, ae, out
 end
 
 local function main()
@@ -110,15 +135,8 @@ local function main()
     root = opts.root,
     build_root = build_root,
     golden_root = golden_root,
+    only = opts.only,
   })
-
-  if opts.only then
-    local filtered = {}
-    for _, s in ipairs(sources) do
-      if s.key:find(opts.only, 1, true) then filtered[#filtered + 1] = s end
-    end
-    sources = filtered
-  end
 
   if #sources == 0 then
     io.stderr:write("snapshot: no sources matched\n")
@@ -130,16 +148,17 @@ local function main()
     util.make_dir(golden_root .. "/docstrings")
   end
 
+  opts.build_root = build_root
   local compile_fail, diff_fail, missing, ok = {}, {}, {}, 0
+  local compiled = compile_batch(sources, opts)
 
-  for _, s in ipairs(sources) do
-    local png = string.format("%s/png/%s.png", build_root, s.key)
-    local compiled, log = compile_typst(s.src_typ, png, opts.root, opts.ppi)
-    if not compiled then
+  for i, s in ipairs(sources) do
+    local r = compiled[i]
+    if r.code ~= 0 then
       compile_fail[#compile_fail + 1] = s.key
-      io.write(string.format("COMPILE-FAIL %s\n%s\n", s.key, log))
+      io.write(string.format("COMPILE-FAIL %s\n%s\n", s.key, r.log))
     elseif opts.update then
-      util.copy_file(png, s.golden)
+      util.copy_file(r.png, s.golden)
       ok = ok + 1
       io.write(string.format("update       %s\n", s.key))
     elseif not util.file_exists(s.golden) then
@@ -147,9 +166,12 @@ local function main()
       io.write(string.format("MISSING      %s (no golden at %s)\n", s.key, s.golden))
     else
       local diff_png = string.format("%s/diff/%s.png", build_root, s.key)
-      local code, ae = diff_images(s.golden, png, diff_png, opts.fuzz)
-      if code > 1 or ae > opts.tolerance then
-        diff_fail[#diff_fail + 1] = string.format("%s (AE=%d, exit=%d)", s.key, ae, code)
+      local code, ae, log = diff_images(s.golden, r.png, diff_png, opts.fuzz)
+      if ae == nil then
+        diff_fail[#diff_fail + 1] = string.format("%s (compare exit=%d)", s.key, code)
+        io.write(string.format("COMPARE-ERR  %s exit=%d\n%s\n", s.key, code, log))
+      elseif ae > opts.tolerance then
+        diff_fail[#diff_fail + 1] = string.format("%s (AE=%d)", s.key, ae)
         io.write(string.format("DIFF         %s  AE=%d\n", s.key, ae))
       else
         ok = ok + 1
@@ -171,12 +193,8 @@ local function main()
     for _, line in ipairs(diff_fail) do io.write("  " .. line .. "\n") end
   end
 
-  if not opts.update and (#compile_fail + #missing + #diff_fail) > 0 then
-    os.exit(1)
-  end
-  if opts.update and #compile_fail > 0 then
-    os.exit(1)
-  end
+  local check_fail = not opts.update and (#missing + #diff_fail) > 0
+  if #compile_fail > 0 or check_fail then os.exit(1) end
 end
 
 main()
