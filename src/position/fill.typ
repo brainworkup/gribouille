@@ -1,7 +1,9 @@
 ///! Fill position adjustment.
 ///!
 ///! Stacks bars and then normalises each x bucket so the totals sum to 1.
-///! Useful for proportion plots where absolute counts don't matter.
+///! Useful for proportion plots where absolute counts don't matter. The
+///! first row for each x sits at the top of the stack so the visual order
+///! matches the legend.
 
 #import "../utils/types.typ": parse-number
 
@@ -84,10 +86,11 @@
     let k = str(xv)
     let tot = totals.at(k, default: 1.0)
     if tot == 0 { tot = 1.0 }
-    let prev = running.at(k, default: 0.0)
-    let ymin = prev / tot
-    let ymax = (prev + yv) / tot
-    running.insert(k, prev + yv)
+    let cum = running.at(k, default: 0.0)
+    let top = tot - cum
+    let ymax = top / tot
+    let ymin = (top - yv) / tot
+    running.insert(k, cum + yv)
     let new-row = row
     new-row.insert("ymin", ymin)
     new-row.insert("ymax", ymax)

@@ -17,21 +17,28 @@
 )
 #let mapping = (x: "q", y: "y", fill: "g")
 
-// stack: running cumulative per x.
+// stack: first data row sits at the top of each x bucket so the visual
+// order matches the legend.
 #let stacked = apply-position("stack", df, mapping)
-#assert.eq(stacked.data.at(0).ymin, 0)
-#assert.eq(stacked.data.at(0).ymax, 10)
-#assert.eq(stacked.data.at(1).ymin, 10)
-#assert.eq(stacked.data.at(1).ymax, 30)
+#assert.eq(stacked.data.at(0).ymin, 20)
+#assert.eq(stacked.data.at(0).ymax, 30)
+#assert.eq(stacked.data.at(1).ymin, 0)
+#assert.eq(stacked.data.at(1).ymax, 20)
+#assert.eq(stacked.data.at(2).ymin, 10)
+#assert.eq(stacked.data.at(2).ymax, 40)
+#assert.eq(stacked.data.at(3).ymin, 0)
+#assert.eq(stacked.data.at(3).ymax, 10)
 #assert.eq(stacked.mapping.ymin, "ymin")
 #assert.eq(stacked.mapping.ymax, "ymax")
 
-// fill: normalised per x.
+// fill: same top-down order, normalised per x.
 #let filled = apply-position("fill", df, mapping)
-#assert.eq(filled.data.at(0).ymin, 0.0)
-#assert.eq(filled.data.at(0).ymax, 10.0 / 30.0)
-#assert.eq(filled.data.at(1).ymax, 1.0)
-#assert.eq(filled.data.at(2).ymax, 30.0 / 40.0)
+#assert.eq(filled.data.at(0).ymin, 20.0 / 30.0)
+#assert.eq(filled.data.at(0).ymax, 1.0)
+#assert.eq(filled.data.at(1).ymin, 0.0)
+#assert.eq(filled.data.at(1).ymax, 20.0 / 30.0)
+#assert.eq(filled.data.at(2).ymax, 1.0)
+#assert.eq(filled.data.at(3).ymax, 10.0 / 40.0)
 
 // dodge: uniform widths match the legacy slot layout exactly.
 #let dodged = apply-position("dodge", df, mapping)

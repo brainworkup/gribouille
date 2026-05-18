@@ -1,16 +1,17 @@
 ///! Stack position adjustment.
 ///!
 ///! Cumulates y per x bucket, writing `ymin` and `ymax` per row so geoms
-///! that honour them (like \@geom-col) can draw the stacked segment. Groups
-///! sharing the same x and discrete aesthetic are stacked in the order rows
-///! appear in `data`.
+///! that honour them (like \@geom-col) can draw the stacked segment. The
+///! first row for each x sits at the top of the stack so the visual order
+///! matches the legend (top entry = top band).
 
 #import "../utils/types.typ": parse-number
 
 /// Stack position adjustment: cumulate y per x bucket.
 ///
-/// Stacking is per x bucket across all groups, so different groups at the
-/// same x are stacked on top of each other in row order.
+/// Stacking is per x bucket across all groups. The first row for each x
+/// sits at the top of the stack, so the visual order matches the legend
+/// (top entry = top band) when data rows follow the legend order.
 ///
 /// Typically set on a layer as `position: "stack"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.
@@ -69,7 +70,15 @@
   let y-col = mapping.at("y", default: none)
   if x-col == none or y-col == none { return (data: data, mapping: mapping) }
 
-  // Cumulative running totals keyed by x value.
+  let totals = (:)
+  for row in data {
+    let xv = row.at(x-col, default: none)
+    let yv = parse-number(row.at(y-col, default: none))
+    if xv == none or yv == none { continue }
+    let k = str(xv)
+    totals.insert(k, totals.at(k, default: 0.0) + yv)
+  }
+
   let running = (:)
   let out = ()
   for row in data {
@@ -80,10 +89,10 @@
       continue
     }
     let k = str(xv)
-    let prev = running.at(k, default: 0.0)
-    let ymin = prev
-    let ymax = prev + yv
-    running.insert(k, ymax)
+    let cum = running.at(k, default: 0.0)
+    let ymax = totals.at(k) - cum
+    let ymin = ymax - yv
+    running.insert(k, cum + yv)
     let new-row = row
     new-row.insert("ymin", ymin)
     new-row.insert("ymax", ymax)
