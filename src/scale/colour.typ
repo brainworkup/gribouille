@@ -524,6 +524,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-continuous(),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -579,6 +580,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-discrete(),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
@@ -699,6 +701,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-manual(values: pal),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 6cm,
 ///   height: 1cm,
 /// )
@@ -914,6 +917,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-viridis-d(option: "magma"),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 6cm,
 ///   height: 1cm,
 /// )
@@ -966,6 +970,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-viridis-c(),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -1039,6 +1044,7 @@
 ///   mapping: aes(xmin: "xmin", xmax: "xmax", ymin: "ymin", ymax: "ymax", fill: "c"),
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-identity(),),
+///   theme: theme-void(),
 ///   width: 6cm,
 ///   height: 1cm,
 /// )
@@ -1091,6 +1097,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-viridis-b(option: "plasma", n-breaks: 6),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
@@ -1208,6 +1215,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-brewer(palette: "Spectral"),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
@@ -1492,6 +1500,7 @@
 ///     high: rgb("#a50f15"),
 ///   ),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -1533,6 +1542,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-gradient2(midpoint: 0),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -1572,6 +1582,7 @@
 ///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
 ///   )),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -1668,6 +1679,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-grey(),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
@@ -1774,6 +1786,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-hue(),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
@@ -2073,6 +2086,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-distiller(palette: "Spectral"),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -2336,6 +2350,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-steps(n-breaks: 5),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -2376,6 +2391,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-steps2(midpoint: 0, n-breaks: 6),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -2416,6 +2432,7 @@
 ///     rgb("#1a9850"), rgb("#ffffbf"), rgb("#d73027"),
 ///   ), n-breaks: 6),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
@@ -2455,6 +2472,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-fermenter(palette: "Spectral", n-breaks: 5),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 10cm,
 ///   height: 1cm,
 /// )
