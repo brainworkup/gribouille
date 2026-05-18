@@ -11,6 +11,7 @@
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
 #import "stat/info.typ": stat-info
 #import "position/apply.typ": apply-position
+#import "theme/current.typ": _theme-state
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": (
   _line-stroke, _rect-style, _scalar-cascade, _text-style,
@@ -2979,7 +2980,10 @@
 }
 
 #let render-plot-deferred(spec, suppress-aesthetics: (), tight-sides: ()) = {
-  let theme = merge-theme(spec.theme)
+  let user-theme = if spec.theme != none { spec.theme } else {
+    _theme-state.get()
+  }
+  let theme = merge-theme(user-theme)
   let labs = spec.at("labs", default: none)
 
   let style = _render-style(theme)

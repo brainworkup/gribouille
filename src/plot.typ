@@ -1,5 +1,4 @@
 #import "render.typ": render-plot
-#import "theme/current.typ": _theme-state
 #import "data.typ": _normalise-data
 
 /// Compose a layered plot from data, aesthetics, and geom layers.
@@ -110,11 +109,6 @@
     )
   }
   context {
-    let effective-theme = if theme != none {
-      theme
-    } else {
-      _theme-state.get()
-    }
     let spec = (
       data: _normalise-data(data),
       mapping: mapping,
@@ -122,7 +116,7 @@
       scales: scales,
       coord: coord,
       facet: facet,
-      theme: effective-theme,
+      theme: theme,
       labs: labs,
       guides: guides,
       width: width,

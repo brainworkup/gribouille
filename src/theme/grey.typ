@@ -1,8 +1,7 @@
 ///! Grey theme preset.
 ///!
 ///! Light grey panel background with white gridlines and thin black axes.
-///! Library default. Derives element colours from `ink` and `paper` via
-///! `col-mix`.
+///! Derives element colours from `ink` and `paper` via `col-mix`.
 
 #import "../utils/colour.typ": col-mix
 #import "defaults.typ": _tr-ink, _tr-paper
@@ -10,8 +9,6 @@
 #import "theme.typ": _preset
 
 /// Grey theme: light grey panel with white gridlines.
-///
-/// This is the gribouille default theme.
 ///
 /// \@category Themes
 /// \@subcategory Complete themes
@@ -25,9 +22,9 @@
 ///
 /// \@returns Theme dictionary consumed by \@plot.
 ///
-/// \@examples Library default: light grey panel with white gridlines.
+/// \@examples Light grey panel with white gridlines.
 /// ```
-/// //| alt: "Scatter plot of y against x on the library default light grey panel with white gridlines and thin black axes."
+/// //| alt: "Scatter plot of y against x on the grey theme with a light grey panel, white gridlines and thin black axes."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

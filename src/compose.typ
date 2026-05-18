@@ -1,5 +1,6 @@
 #import "render.typ": render-plot-deferred
 #import "legend.typ" as legend-mod
+#import "theme/current.typ": _theme-state
 #import "theme/defaults.typ": merge-theme
 #import "theme/elements.typ": margin
 
@@ -278,7 +279,10 @@
       return panel-block
     }
 
-    let theme = merge-theme(panels.first().theme)
+    let first-theme = panels.first().theme
+    let theme = merge-theme(
+      if first-theme != none { first-theme } else { _theme-state.get() },
+    )
     let trained = probes.first().trained
     let size = _legend-canvas-size(hoisted-guides, guides-placement)
     let legend-canvas = legend-mod.standalone(

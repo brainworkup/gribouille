@@ -4,8 +4,9 @@
 // `resolve-element` in `theme.typ`; user themes override individual records or
 // pass spot-overrides via the master `text` / `line` / `rect` keys.
 
+#import "../utils/colour.typ": col-mix
 #import "elements.typ": (
-  element-geom, element-line, element-rect, element-text, margin,
+  element-blank, element-geom, element-line, element-rect, element-text, margin,
 )
 #import "theme.typ": default-stroke-thickness
 
@@ -22,7 +23,7 @@
 
 #let default-theme = (
   kind: "theme",
-  name: "grey",
+  name: "minimal",
 
   // Base colours
   ink: _tr-ink,
@@ -72,10 +73,21 @@
   tick-labels: true,
 )
 
+// Surface overrides for theme-minimal, the library default.
+#let minimal-surfaces(ink, paper) = (
+  panel-background: element-blank(),
+  plot-background: element-rect(),
+  panel-grid: element-line(colour: col-mix(ink, paper, 0.7), stroke: 0.4pt),
+  axis-line: element-blank(),
+  tick-length: 0cm,
+)
+
 #let merge-theme(user) = {
-  if user == none { return default-theme }
+  let src = if user == none { minimal-surfaces(_tr-ink, _tr-paper) } else {
+    user
+  }
   let merged = default-theme
-  for (k, v) in user.pairs() {
+  for (k, v) in src.pairs() {
     merged.insert(k, v)
   }
   merged
