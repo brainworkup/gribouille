@@ -74,6 +74,7 @@
 ///     geom-point(size: 2pt),
 ///     geom-label(dy: 0.25),
 ///   ),
+///   scales: (scale-y-continuous(expand: 15%),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
