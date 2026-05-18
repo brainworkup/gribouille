@@ -11,6 +11,9 @@
 /tests/**/output/
 /tests/**/*.pdf
 
+# Visual snapshot build artefacts (goldens live under tests/visual/golden/)
+/build/snapshot/
+
 # Quarto build artefacts
 /.quarto/
 /docs/_site/
