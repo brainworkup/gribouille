@@ -29,8 +29,40 @@ jobs:
           luaVersion: "5.4"
 
       - name: Run typstdoc tests
+        id: typstdoc
         shell: bash
-        run: lua tools/typstdoc/test/run.lua
+        run: |
+          set -euo pipefail
+          lua tools/typstdoc/test/run.lua 2>&1 | tee "${RUNNER_TEMP}/typstdoc.log"
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="${RUNNER_TEMP}/typstdoc.log"
+          if [[ ! -f "${log}" ]]; then
+            {
+              echo "## typstdoc tests"
+              echo "- Status: failed (no log captured)"
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          totals_line=$(grep -E '^[0-9]+ passed, [0-9]+ failed$' "${log}" | tail -1 || true)
+          passed=$(awk '{print $1}' <<< "${totals_line:-0 passed, 0 failed}")
+          failed=$(awk '{print $3}' <<< "${totals_line:-0 passed, 0 failed}")
+          total=$((passed + failed))
+          {
+            echo "## typstdoc tests"
+            if [[ "${failed}" -gt 0 ]]; then
+              echo "- Status: failed (${passed}/${total})"
+              echo ""
+              echo "### Failures"
+              grep -E '^  FAIL ' "${log}" | sed -E 's/^  FAIL (.*)$/- `\1`/'
+            else
+              echo "- Status: passed (${passed}/${total})"
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
 
   typst-compile:
     name: Compile Typst sources
@@ -49,16 +81,6 @@ jobs:
         with:
           typst-version: ${{ steps.typst-version.outputs.version }}
 
-      - name: Prepare summary
-        shell: bash
-        run: |
-          {
-            echo "## Checks: Typst compile"
-            echo ""
-            echo "| Section | File | Status |"
-            echo "| ------- | ---- | ------ |"
-          } >> "${GITHUB_STEP_SUMMARY}"
-
       - name: Compile unit tests
         id: unit
         uses: ./.github/actions/typst-compile
@@ -74,19 +96,42 @@ jobs:
           label: example
           glob: "examples/*.typ"
 
-      - name: Totals
+      - name: Summary
         if: always()
         shell: bash
         env:
           UNIT_PASSED: ${{ steps.unit.outputs.passed }}
           UNIT_TOTAL: ${{ steps.unit.outputs.total }}
+          UNIT_FAILED: ${{ steps.unit.outputs.failed }}
+          UNIT_FAILURES: ${{ steps.unit.outputs.failures }}
           EXAMPLES_PASSED: ${{ steps.examples.outputs.passed }}
           EXAMPLES_TOTAL: ${{ steps.examples.outputs.total }}
+          EXAMPLES_FAILED: ${{ steps.examples.outputs.failed }}
+          EXAMPLES_FAILURES: ${{ steps.examples.outputs.failures }}
         run: |
-          {
+          set -euo pipefail
+          render_section() {
+            local title="$1" passed="$2" total="$3" failed="$4" failures="$5"
+            passed="${passed:-0}"
+            total="${total:-0}"
+            failed="${failed:-0}"
             echo ""
-            echo "- Unit tests: ${UNIT_PASSED:-0}/${UNIT_TOTAL:-0}"
-            echo "- Examples: ${EXAMPLES_PASSED:-0}/${EXAMPLES_TOTAL:-0}"
+            echo "### ${title}"
+            if [[ "${failed}" -gt 0 ]]; then
+              echo "- Status: failed (${passed}/${total})"
+              echo ""
+              echo "#### Failures"
+              while IFS= read -r line; do
+                [[ -n "${line}" ]] && echo "- \`${line}\`"
+              done <<< "${failures}"
+            else
+              echo "- Status: passed (${passed}/${total})"
+            fi
+          }
+          {
+            echo "## Typst compile"
+            render_section "Unit tests" "${UNIT_PASSED}" "${UNIT_TOTAL}" "${UNIT_FAILED}" "${UNIT_FAILURES}"
+            render_section "Examples" "${EXAMPLES_PASSED}" "${EXAMPLES_TOTAL}" "${EXAMPLES_FAILED}" "${EXAMPLES_FAILURES}"
           } >> "${GITHUB_STEP_SUMMARY}"
 
   visual-snapshots:
@@ -120,6 +165,38 @@ jobs:
         uses: ./.github/actions/typst-snapshot
         with:
           mode: check
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="${RUNNER_TEMP}/snapshot.log"
+          if [[ ! -f "${log}" ]]; then
+            {
+              echo "## Visual snapshots"
+              echo "- Status: failed (no log captured)"
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          totals_line=$(grep -E '^snapshots: [0-9]+/[0-9]+ ok$' "${log}" | tail -1 || true)
+          passed=$(sed -E 's|^snapshots: ([0-9]+)/[0-9]+ ok$|\1|' <<< "${totals_line:-snapshots: 0/0 ok}")
+          total=$(sed -E 's|^snapshots: [0-9]+/([0-9]+) ok$|\1|' <<< "${totals_line:-snapshots: 0/0 ok}")
+          failures=$(grep -E '^(COMPILE-FAIL|DIFF|MISSING|COMPARE-ERR) ' "${log}" || true)
+          {
+            echo "## Visual snapshots"
+            if [[ -n "${failures}" ]]; then
+              echo "- Status: failed (${passed}/${total})"
+              echo ""
+              echo "### Failures"
+              while IFS= read -r line; do
+                key=$(awk '{print $2}' <<< "${line}")
+                echo "- \`${key}\`"
+              done <<< "${failures}"
+            else
+              echo "- Status: passed (${passed}/${total})"
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
 
   package-check:
     name: Run typst-package-check
@@ -188,5 +265,33 @@ jobs:
           echo "STAGE=${STAGE}" >> "${GITHUB_ENV}"
 
       - name: Run typst-package-check
+        id: pkgcheck
         shell: bash
-        run: typst-package-check check "${STAGE}"
+        run: |
+          set -euo pipefail
+          typst-package-check check "${STAGE}" 2>&1 | tee "${RUNNER_TEMP}/pkgcheck.log"
+
+      - name: Summary
+        if: always()
+        shell: bash
+        env:
+          OUTCOME: ${{ steps.pkgcheck.outcome }}
+        run: |
+          set -euo pipefail
+          log="${RUNNER_TEMP}/pkgcheck.log"
+          {
+            echo "## Package check"
+            if [[ "${OUTCOME}" == "success" ]]; then
+              echo "- Status: passed"
+            else
+              echo "- Status: failed"
+              if [[ -f "${log}" ]]; then
+                echo ""
+                echo "### Failures"
+                echo ""
+                echo '```'
+                tail -n 30 "${log}"
+                echo '```'
+              fi
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"

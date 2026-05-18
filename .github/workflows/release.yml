@@ -60,16 +60,6 @@ jobs:
         with:
           typst-version: ${{ steps.typst-version.outputs.version }}
 
-      - name: Prepare summary
-        shell: bash
-        run: |
-          {
-            echo "## Release validate"
-            echo ""
-            echo "| Section | File | Status |"
-            echo "| ------- | ---- | ------ |"
-          } >> "${GITHUB_STEP_SUMMARY}"
-
       - name: Compile unit tests
         id: unit
         uses: ./.github/actions/typst-compile
@@ -77,16 +67,33 @@ jobs:
           label: unit
           glob: "tests/unit/*.typ"
 
-      - name: Totals
+      - name: Summary
         if: always()
         shell: bash
         env:
           UNIT_PASSED: ${{ steps.unit.outputs.passed }}
           UNIT_TOTAL: ${{ steps.unit.outputs.total }}
+          UNIT_FAILED: ${{ steps.unit.outputs.failed }}
+          UNIT_FAILURES: ${{ steps.unit.outputs.failures }}
         run: |
+          set -euo pipefail
+          passed="${UNIT_PASSED:-0}"
+          total="${UNIT_TOTAL:-0}"
+          failed="${UNIT_FAILED:-0}"
           {
+            echo "## Release validate"
             echo ""
-            echo "- Unit tests: ${UNIT_PASSED:-0}/${UNIT_TOTAL:-0}"
+            echo "### Unit tests"
+            if [[ "${failed}" -gt 0 ]]; then
+              echo "- Status: failed (${passed}/${total})"
+              echo ""
+              echo "#### Failures"
+              while IFS= read -r line; do
+                [[ -n "${line}" ]] && echo "- \`${line}\`"
+              done <<< "${UNIT_FAILURES}"
+            else
+              echo "- Status: passed (${passed}/${total})"
+            fi
           } >> "${GITHUB_STEP_SUMMARY}"
 
   bump-version:

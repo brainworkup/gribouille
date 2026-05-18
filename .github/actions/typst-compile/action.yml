@@ -20,6 +20,12 @@ outputs:
   total:
     description: "Total number of files considered."
     value: ${{ steps.compile.outputs.total }}
+  failed:
+    description: "Number of files that failed to compile."
+    value: ${{ steps.compile.outputs.failed }}
+  failures:
+    description: "Newline-joined paths of files that failed to compile."
+    value: ${{ steps.compile.outputs.failures }}
 
 runs:
   using: composite
@@ -27,29 +33,33 @@ runs:
     - id: compile
       shell: bash
       env:
-        LABEL: ${{ inputs.label }}
         GLOB: ${{ inputs.glob }}
         ROOT: ${{ inputs.root }}
       run: |
+        set -euo pipefail
         shopt -s nullglob
-        FAILED=0
+        FAILED_COUNT=0
         PASSED=0
         TOTAL=0
+        FAILURES=()
         for f in ${GLOB}; do
           TOTAL=$((TOTAL + 1))
           echo "::group::Compile ${f}"
           if typst compile "${f}" --root "${ROOT}" "/tmp/$(basename "${f%.typ}").pdf"; then
             PASSED=$((PASSED + 1))
-            echo "| ${LABEL} | \`${f}\` | pass |" >> "${GITHUB_STEP_SUMMARY}"
           else
             echo "::error file=${f}::Typst compilation failed"
-            FAILED=1
-            echo "| ${LABEL} | \`${f}\` | **fail** |" >> "${GITHUB_STEP_SUMMARY}"
+            FAILED_COUNT=$((FAILED_COUNT + 1))
+            FAILURES+=("${f}")
           fi
           echo "::endgroup::"
         done
         {
           echo "passed=${PASSED}"
           echo "total=${TOTAL}"
+          echo "failed=${FAILED_COUNT}"
+          echo "failures<<EOF"
+          for path in "${FAILURES[@]}"; do echo "${path}"; done
+          echo "EOF"
         } >> "${GITHUB_OUTPUT}"
-        exit "${FAILED}"
+        if [[ ${FAILED_COUNT} -gt 0 ]]; then exit 1; fi

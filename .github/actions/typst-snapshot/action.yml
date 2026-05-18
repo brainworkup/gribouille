@@ -32,9 +32,10 @@ runs:
         JOBS: ${{ inputs.jobs }}
       run: |
         set -euo pipefail
+        log="${RUNNER_TEMP}/snapshot.log"
         case "${MODE}" in
-          check)  lua tools/snapshot/run.lua --check --jobs "${JOBS}" ;;
-          update) lua tools/snapshot/run.lua --update --jobs "${JOBS}" ;;
+          check)  lua tools/snapshot/run.lua --check --jobs "${JOBS}" 2>&1 | tee "${log}" ;;
+          update) lua tools/snapshot/run.lua --update --jobs "${JOBS}" 2>&1 | tee "${log}" ;;
           *) echo "::error::unknown snapshot mode: ${MODE}"; exit 2 ;;
         esac
 
