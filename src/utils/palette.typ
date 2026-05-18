@@ -356,6 +356,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-manual(values: pal),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
@@ -375,6 +376,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-manual(values: pal),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )

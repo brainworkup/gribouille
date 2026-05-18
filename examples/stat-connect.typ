@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 14cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let d = range(0, 8).map(i => (x: i, y: calc.rem(i * 3 + 2, 5)))
 
@@ -26,6 +26,6 @@
   ),
   labs: labs(title: "Stat-Connect: Hv (blue) vs Mid (orange)"),
   theme: theme-minimal(),
-  width: 14cm,
-  height: 8cm,
+  width: 12cm,
+  height: 9cm,
 )

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 14cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let d = (
   (q: "Q1", revenue: 12, segment: "Retail"),
@@ -35,6 +35,6 @@
       text: element-text(size: 8pt),
     )
     + theme-sub-plot(title: element-text(size: 13pt, weight: "bold")),
-  width: 14cm,
-  height: 8cm,
+  width: 12cm,
+  height: 9cm,
 )

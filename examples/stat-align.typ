@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: 14cm)
+#set page(width: auto, height: auto, margin: 0.5cm)
 
 #let d = (
   (x: 0, y: 1, k: "a"),
@@ -22,6 +22,6 @@
   layers: (geom-area(stat: stat-align(), position: "stack", alpha: 0.7),),
   labs: labs(title: "Stat-Align: Stacked Areas on a Shared X-Grid"),
   theme: theme-minimal(),
-  width: 14cm,
-  height: 8cm,
+  width: 12cm,
+  height: 9cm,
 )

@@ -66,6 +66,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-brewer(palette: "Set1"),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )

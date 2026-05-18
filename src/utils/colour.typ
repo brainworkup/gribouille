@@ -33,6 +33,7 @@
 ///   layers: (geom-rect(),),
 ///   scales: (scale-fill-manual(values: stops),),
 ///   guides: guides(fill: guide-none()),
+///   theme: theme-void(),
 ///   width: 8cm,
 ///   height: 1cm,
 /// )
