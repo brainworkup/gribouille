@@ -125,13 +125,10 @@ jobs:
           sed -E -i 's|(@preview/cetz:)[0-9][0-9A-Za-z.+-]*|\1'"${LATEST_CETZ}"'|' src/deps.typ
           git --no-pager diff -- typst.toml src/deps.typ
 
-      - name: Create branch, commit, push
+      - name: Compose commit subject
         if: ${{ steps.diff.outputs.any == 'true' }}
-        id: push
+        id: subject
         env:
-          GH_TOKEN: ${{ steps.setup-git.outputs.token }}
-          CURRENT_TYPST: ${{ steps.current.outputs.typst }}
-          CURRENT_CETZ: ${{ steps.current.outputs.cetz }}
           LATEST_TYPST: ${{ steps.latest.outputs.typst }}
           LATEST_CETZ: ${{ steps.latest.outputs.cetz }}
           TYPST_CHANGED: ${{ steps.diff.outputs.typst_changed }}
@@ -139,16 +136,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git show-ref --quiet "refs/heads/${BRANCH}"; then
-            git branch -D "${BRANCH}"
-          fi
-          if git ls-remote --exit-code --heads origin "${BRANCH}" >/dev/null 2>&1; then
-            git push origin --delete "${BRANCH}"
-          fi
-          git checkout -b "${BRANCH}"
-
-          git add typst.toml src/deps.typ
-
           if [[ "$TYPST_CHANGED" == "true" && "$CETZ_CHANGED" == "true" ]]; then
             SUBJECT="ci: bump typst to ${LATEST_TYPST}, cetz to ${LATEST_CETZ}"
           elif [[ "$TYPST_CHANGED" == "true" ]]; then
@@ -156,20 +143,27 @@ jobs:
           else
             SUBJECT="ci: bump cetz to ${LATEST_CETZ}"
           fi
+          echo "subject=${SUBJECT}" >> "${GITHUB_OUTPUT}"
 
-          git commit -m "${SUBJECT}"
-          git push --force origin "${BRANCH}"
-
-          {
-            echo "subject=${SUBJECT}"
-          } >> "${GITHUB_OUTPUT}"
+      - name: Commit bump via API
+        if: ${{ steps.diff.outputs.any == 'true' }}
+        id: commit
+        uses: ./.github/actions/commit-via-api
+        with:
+          token: ${{ steps.setup-git.outputs.token }}
+          branch: ${{ env.BRANCH }}
+          base-branch: ${{ github.ref_name }}
+          message: ${{ steps.subject.outputs.subject }}
+          paths: |
+            typst.toml
+            src/deps.typ
 
       - name: Open pull request
         if: ${{ steps.diff.outputs.any == 'true' }}
         id: pr
         env:
           GH_TOKEN: ${{ steps.setup-git.outputs.token }}
-          SUBJECT: ${{ steps.push.outputs.subject }}
+          SUBJECT: ${{ steps.subject.outputs.subject }}
           CURRENT_TYPST: ${{ steps.current.outputs.typst }}
           CURRENT_CETZ: ${{ steps.current.outputs.cetz }}
           LATEST_TYPST: ${{ steps.latest.outputs.typst }}

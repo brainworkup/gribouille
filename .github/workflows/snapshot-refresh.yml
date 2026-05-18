@@ -71,43 +71,50 @@ jobs:
         with:
           mode: update
 
-      - name: Commit goldens (PR or direct)
+      - name: Detect golden changes
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -N tests/visual/golden
+          if git diff --quiet -- tests/visual/golden; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "No golden changes." >> "${GITHUB_STEP_SUMMARY}"
+          else
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Compute target branch
+        if: ${{ steps.changes.outputs.changed == 'true' }}
+        id: target
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           DIRECT: ${{ inputs.direct }}
         shell: bash
         run: |
           set -euo pipefail
-          git add tests/visual/golden
-          if git diff --cached --quiet; then
-            echo "No golden changes." >> "${GITHUB_STEP_SUMMARY}"
-            exit 0
-          fi
-
-          git commit -m "${COMMIT}"
-
           if [[ "${DIRECT}" == "true" ]]; then
-            # Checkout was performed with the App token, so the App
-            # identity drives this push and the `mcanouil-dev` bypass on
-            # the branch protection rule applies.
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-            {
-              echo "## Visual snapshots refreshed (direct push)"
-              echo ""
-              git diff --stat HEAD~1 HEAD || true
-            } >> "${GITHUB_STEP_SUMMARY}"
-            exit 0
+            echo "branch=${GITHUB_REF_NAME}" >> "${GITHUB_OUTPUT}"
+          else
+            echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
           fi
 
-          if git show-ref --quiet "refs/heads/${BRANCH}"; then
-            git branch -D "${BRANCH}"
-          fi
-          if git ls-remote --exit-code --heads origin "${BRANCH}" >/dev/null 2>&1; then
-            git push origin --delete "${BRANCH}"
-          fi
-          git checkout -b "${BRANCH}"
-          git push --force origin "${BRANCH}"
+      - name: Commit goldens via API
+        if: ${{ steps.changes.outputs.changed == 'true' }}
+        id: commit
+        uses: ./.github/actions/commit-via-api
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: ${{ steps.target.outputs.branch }}
+          base-branch: ${{ github.ref_name }}
+          message: ${{ env.COMMIT }}
 
+      - name: Open and auto-merge PR
+        if: ${{ steps.changes.outputs.changed == 'true' && inputs.direct != true }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
           sleep 5
           PR_URL=$(gh pr create \
             --fill-first \
@@ -116,10 +123,19 @@ jobs:
             --label "Type: CI/CD :robot:")
           sleep 5
           gh pr merge --auto --squash --delete-branch "${BRANCH}"
-
           {
             echo "## Visual snapshots refreshed"
             echo ""
             echo "- PR: ${PR_URL}"
-            git diff --stat "origin/${GITHUB_REF_NAME}" HEAD || true
+            echo "- Commit: ${{ steps.commit.outputs.commit-url }}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Direct-push summary
+        if: ${{ steps.changes.outputs.changed == 'true' && inputs.direct == true }}
+        shell: bash
+        run: |
+          {
+            echo "## Visual snapshots refreshed (direct push)"
+            echo ""
+            echo "- Commit: ${{ steps.commit.outputs.commit-url }}"
           } >> "${GITHUB_STEP_SUMMARY}"
