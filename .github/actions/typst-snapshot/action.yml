@@ -6,6 +6,10 @@ inputs:
     description: "Either 'check' (default, gates CI) or 'update' (rewrites goldens)."
     required: false
     default: "check"
+  jobs:
+    description: "Parallel typst compiles passed as --jobs (default: 4 to match ubuntu-latest vCPUs)."
+    required: false
+    default: "4"
 
 runs:
   using: composite
@@ -25,11 +29,12 @@ runs:
       shell: bash
       env:
         MODE: ${{ inputs.mode }}
+        JOBS: ${{ inputs.jobs }}
       run: |
         set -euo pipefail
         case "${MODE}" in
-          check)  lua tools/snapshot/run.lua --check ;;
-          update) lua tools/snapshot/run.lua --update ;;
+          check)  lua tools/snapshot/run.lua --check --jobs "${JOBS}" ;;
+          update) lua tools/snapshot/run.lua --update --jobs "${JOBS}" ;;
           *) echo "::error::unknown snapshot mode: ${MODE}"; exit 2 ;;
         esac
 

@@ -92,6 +92,11 @@ jobs:
   visual-snapshots:
     name: Visual snapshot diff
     runs-on: ubuntu-latest
+    # Serialise against the refresh workflow on the same ref so a
+    # `snapshot-refresh` push and a CI run can't fight over goldens.
+    concurrency:
+      group: snapshot-refresh-${{ github.ref }}
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
