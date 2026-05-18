@@ -84,9 +84,10 @@ local function compile_typst(src_typ, out_png, root, ppi)
 end
 
 -- ImageMagick `compare -metric AE` writes the pixel-difference count last on stderr.
+-- Uses the v6/v7-compatible `compare` entry point rather than `magick compare`.
 local function diff_images(golden, current, diff_png, fuzz)
   local cmd = string.format(
-    "magick compare -metric AE -fuzz %s %s %s %s 2>&1",
+    "compare -metric AE -fuzz %s %s %s %s 2>&1",
     fuzz, shell_quote(golden), shell_quote(current), shell_quote(diff_png)
   )
   local code, out = util.popen_capture(cmd)

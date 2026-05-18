@@ -1,0 +1,45 @@
+name: Compile + diff visual snapshots
+description: Run the snapshot harness in --check or --update mode and surface diff artefacts.
+
+inputs:
+  mode:
+    description: "Either 'check' (default, gates CI) or 'update' (rewrites goldens)."
+    required: false
+    default: "check"
+
+runs:
+  using: composite
+  steps:
+    - name: Install ImageMagick and pinned fonts
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+          imagemagick \
+          fonts-liberation \
+          fonts-noto-core
+
+    - name: Run snapshot harness
+      id: snapshot
+      shell: bash
+      env:
+        MODE: ${{ inputs.mode }}
+      run: |
+        set -euo pipefail
+        case "${MODE}" in
+          check)  lua tools/snapshot/run.lua --check ;;
+          update) lua tools/snapshot/run.lua --update ;;
+          *) echo "::error::unknown snapshot mode: ${MODE}"; exit 2 ;;
+        esac
+
+    - name: Upload diffs on failure
+      if: failure() && inputs.mode == 'check'
+      uses: actions/upload-artifact@v4
+      with:
+        name: visual-snapshot-diffs
+        path: |
+          build/snapshot/diff/
+          build/snapshot/png/
+        if-no-files-found: ignore
+        retention-days: 14

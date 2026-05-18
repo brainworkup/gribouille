@@ -28,7 +28,7 @@ PDFs are not committed; they are build artefacts and ignored.
 ## Golden snapshots
 
 Harness: `tools/snapshot/run.lua`.
-Reuses the typstdoc parser to extract every renderable `/// @examples` fence into a temporary wrapped `.typ`, compiles each file (plus every `examples/*.typ`) to a PNG at 144 ppi, and diffs the result against the committed golden with `magick compare -metric AE -fuzz 1%`.
+Reuses the typstdoc parser to extract every renderable `/// @examples` fence into a temporary wrapped `.typ`, compiles each file (plus every `examples/*.typ`) to a PNG at 144 ppi, and diffs the result against the committed golden with `compare -metric AE -fuzz 1%` (ImageMagick).
 
 Goldens live under `golden/examples/<name>.png` and `golden/docstrings/<fn>-<idx>.png`.
 
@@ -57,8 +57,8 @@ Local macOS or Windows renders will not match byte-for-byte; treat the harness a
 
 ### Bootstrap and refresh
 
-To regenerate the goldens after a deliberate change, trigger the `Visual snapshots — refresh` workflow (`workflow_dispatch`).
-It runs `--update`, commits the result, and pushes back to the branch.
+To regenerate the goldens after a deliberate change, trigger the `Refresh visual snapshots` workflow (`workflow_dispatch`).
+It runs `--update` and pushes the refreshed PNGs back to the dispatched branch.
 
 ### Useful flags
 

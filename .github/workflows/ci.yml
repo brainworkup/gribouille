@@ -94,6 +94,38 @@ jobs:
             echo "- Examples: ${EXAMPLES_PASSED:-0}/${EXAMPLES_TOTAL:-0}"
           } >> "${GITHUB_STEP_SUMMARY}"
 
+  visual-snapshots:
+    name: Visual snapshot diff
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Read Typst version from typst.toml
+        id: typst-version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(awk -F'"' '/^compiler[[:space:]]*=/ { print $2; exit }' typst.toml)
+          [[ -n "$version" ]] || { echo "::error::compiler not found in typst.toml"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: ${{ steps.typst-version.outputs.version }}
+
+      - name: Set up Lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: "5.4"
+
+      - name: Run visual snapshot harness
+        uses: ./.github/actions/typst-snapshot
+        with:
+          mode: check
+
   package-check:
     name: Run typst-package-check
     runs-on: ubuntu-latest

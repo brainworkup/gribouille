@@ -1,0 +1,73 @@
+name: Refresh visual snapshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: snapshot-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Recompile and commit goldens
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Git user
+        id: setup-git
+        uses: ./.github/actions/setup-git-user
+        with:
+          gh-app-id: ${{ vars.APP_ID }}
+          app-key: ${{ secrets.APP_KEY }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read Typst version from typst.toml
+        id: typst-version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(awk -F'"' '/^compiler[[:space:]]*=/ { print $2; exit }' typst.toml)
+          [[ -n "$version" ]] || { echo "::error::compiler not found in typst.toml"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: ${{ steps.typst-version.outputs.version }}
+
+      - name: Set up Lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: "5.4"
+
+      - name: Regenerate goldens
+        uses: ./.github/actions/typst-snapshot
+        with:
+          mode: update
+
+      - name: Commit and push if changed
+        env:
+          GH_TOKEN: ${{ steps.setup-git.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add tests/visual/golden
+          if git diff --cached --quiet; then
+            echo "No golden changes." >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+          git commit -m "chore(tests): refresh visual snapshots"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          {
+            echo "## Visual snapshots refreshed"
+            echo ""
+            git diff --cached --stat HEAD~1 HEAD || true
+          } >> "${GITHUB_STEP_SUMMARY}"
