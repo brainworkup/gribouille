@@ -105,8 +105,8 @@ jobs:
     outputs:
       version: ${{ steps.bump.outputs.version }}
       release_date: ${{ steps.bump.outputs.release_date }}
-      pr_url: ${{ steps.bump-pr.outputs.pr_url }}
-      commit_sha: ${{ steps.commit.outputs.commit-sha }}
+      pr_url: ${{ steps.bump.outputs.pr_url }}
+      commit_sha: ${{ steps.bump.outputs.commit_sha }}
 
     steps:
       - name: Create GitHub App token
@@ -141,9 +141,10 @@ jobs:
 
       - name: Compute next version and update sources
         id: bump
+        env:
+          GH_TOKEN: ${{ steps.setup-git.outputs.token }}
         shell: bash
         run: |
-          set -euo pipefail
           CURRENT=$(grep -E '^version[[:space:]]*=' typst.toml | sed -E 's/.*"([^"]+)".*/\1/')
           IFS='.' read -r MAJOR MINOR PATCH <<< "${CURRENT}"
           case "${BUMP}" in
@@ -155,38 +156,25 @@ jobs:
           VERSION="${MAJOR}.${MINOR}.${PATCH}"
           DATE=$(date -u +%Y-%m-%d)
 
+          if git show-ref --quiet "refs/heads/${BRANCH}"; then
+            git branch -D "${BRANCH}"
+          fi
+          if git ls-remote --exit-code --heads origin "${BRANCH}" >/dev/null 2>&1; then
+            git push origin --delete "${BRANCH}"
+          fi
+          git checkout -b "${BRANCH}"
+
           sed -E -i 's/^(version[[:space:]]*=[[:space:]]*")[^"]+/\1'"${VERSION}"'/' typst.toml
           sed -E -i 's/^(version:[[:space:]]*).*/\1'"${VERSION}"'/' CITATION.cff
           sed -E -i 's/^(date-released:[[:space:]]*).*/\1"'"${DATE}"'"/' CITATION.cff
           sed -i "s/^## Unreleased/## ${VERSION} (${DATE})/" CHANGELOG.md
           sed -E -i 's|(@preview/gribouille:)[0-9]+\.[0-9]+\.[0-9]+|\1'"${VERSION}"'|' README.md
 
-          {
-            echo "version=${VERSION}"
-            echo "release_date=${DATE}"
-          } >> "${GITHUB_OUTPUT}"
+          git add typst.toml CITATION.cff CHANGELOG.md README.md
+          git commit -m "ci: bump version to ${VERSION} :rocket:"
+          COMMIT_SHA=$(git rev-parse HEAD)
+          git push --force origin "${BRANCH}"
 
-      - name: Commit bump via API
-        id: commit
-        uses: ./.github/actions/commit-via-api
-        with:
-          token: ${{ steps.setup-git.outputs.token }}
-          branch: ${{ env.BRANCH }}
-          base-branch: ${{ github.ref_name }}
-          message: "ci: bump version to ${{ steps.bump.outputs.version }} :rocket:"
-          paths: |
-            typst.toml
-            CITATION.cff
-            CHANGELOG.md
-            README.md
-
-      - name: Open and auto-merge bump PR
-        id: bump-pr
-        env:
-          GH_TOKEN: ${{ steps.setup-git.outputs.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
           sleep 5
           PR_URL=$(gh pr create \
             --fill-first \
@@ -195,8 +183,11 @@ jobs:
             --label "Type: CI/CD :robot:")
           sleep 5
           gh pr merge --auto --squash --delete-branch "${BRANCH}"
+
           {
-            echo "commit_sha=${{ steps.commit.outputs.commit-sha }}"
+            echo "version=${VERSION}"
+            echo "release_date=${DATE}"
+            echo "commit_sha=${COMMIT_SHA}"
             echo "pr_url=${PR_URL}"
           } >> "${GITHUB_OUTPUT}"
 
@@ -205,8 +196,8 @@ jobs:
         env:
           VERSION: ${{ steps.bump.outputs.version }}
           DATE: ${{ steps.bump.outputs.release_date }}
-          PR_URL: ${{ steps.bump-pr.outputs.pr_url }}
-          COMMIT_SHA: ${{ steps.commit.outputs.commit-sha }}
+          PR_URL: ${{ steps.bump.outputs.pr_url }}
+          COMMIT_SHA: ${{ steps.bump.outputs.commit_sha }}
         run: |
           {
             echo "## Version bump"
