@@ -12,18 +12,19 @@ concurrency:
 
 jobs:
   refresh:
-    name: Recompile and commit goldens
+    name: Recompile and open PR
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
+
+    env:
+      BRANCH: ci/snapshot-refresh
+      COMMIT: "chore(tests): refresh visual snapshots"
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          # Drop the default GITHUB_TOKEN credentials so the push step
-          # authenticates with the GitHub App token resolved below.
-          persist-credentials: false
 
       - name: Set up Git user
         id: setup-git
@@ -52,7 +53,7 @@ jobs:
         with:
           mode: update
 
-      - name: Commit and push if changed
+      - name: Open PR if goldens changed
         env:
           GH_TOKEN: ${{ steps.setup-git.outputs.token }}
         shell: bash
@@ -63,12 +64,30 @@ jobs:
             echo "No golden changes." >> "${GITHUB_STEP_SUMMARY}"
             exit 0
           fi
-          git commit -m "chore(tests): refresh visual snapshots"
-          git remote set-url origin \
-            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+          if git show-ref --quiet "refs/heads/${BRANCH}"; then
+            git branch -D "${BRANCH}"
+          fi
+          if git ls-remote --exit-code --heads origin "${BRANCH}" >/dev/null 2>&1; then
+            git push origin --delete "${BRANCH}"
+          fi
+          git checkout -b "${BRANCH}"
+
+          git commit -m "${COMMIT}"
+          git push --force origin "${BRANCH}"
+
+          sleep 5
+          PR_URL=$(gh pr create \
+            --fill-first \
+            --base "${GITHUB_REF_NAME}" \
+            --head "${BRANCH}" \
+            --label "Type: CI/CD :robot:")
+          sleep 5
+          gh pr merge --auto --squash --delete-branch "${BRANCH}"
+
           {
             echo "## Visual snapshots refreshed"
             echo ""
-            git diff --stat HEAD~1 HEAD || true
+            echo "- PR: ${PR_URL}"
+            git diff --stat "origin/${GITHUB_REF_NAME}" HEAD || true
           } >> "${GITHUB_STEP_SUMMARY}"
