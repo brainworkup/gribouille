@@ -8,6 +8,8 @@
 // continuous centre axis, fraction of slot for discrete).
 
 #import "../deps.typ": cetz
+#import "../position/apply.typ": layer-position-name
+#import "../position/dodge.typ": dodge-centre, dodge-half
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-position
 #import "../utils/band.typ": axis-band
@@ -50,6 +52,7 @@
     ctx.py-range
   }
   let span-range = if axis == "y" { ctx.py-range } else { ctx.px-range }
+  let position-name = layer-position-name(layer)
 
   for row in data {
     let raw-centre = row.at(centre-col, default: none)
@@ -66,6 +69,18 @@
     } else {
       let band = axis-band(centre-trained, raw-centre, half, centre-range)
       if band == none { (centre-c, centre-c) } else { band }
+    }
+
+    // Dodge shifts the centre and shrinks the cap by the dodge slot count.
+    // Only the band-derived path has a meaningful "bucket" to dodge within;
+    // a pinned Typst-length cap has no relation to the discrete slot, so
+    // dodge is left as a no-op there.
+    if position-name == "dodge" and not extent-is-length {
+      let cap-span = cap-hi - cap-lo
+      centre-c = dodge-centre(row, centre-c, cap-span)
+      let half = dodge-half(row, cap-span / 2)
+      cap-lo = centre-c - half
+      cap-hi = centre-c + half
     }
 
     let colour = if colour-pinned {

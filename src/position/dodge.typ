@@ -72,6 +72,20 @@
   params: (width: width, padding: padding),
 )
 
+/// Shift a centre coordinate by this row's dodge offset.
+///
+/// `bucket` is the canvas span of the dodge bucket the row belongs to (the
+/// total width the dodged slots fill collectively).
+/// \@internal
+#let dodge-centre(row, c, bucket) = (
+  c + row.at("_dodge-offset", default: 0) * bucket
+)
+
+/// Shrink a half-width by this row's dodge slot count.
+///
+/// \@internal
+#let dodge-half(row, half) = half / row.at("_dodge-n", default: 1)
+
 #let _row-width(row, default-width) = {
   let w = parse-number(row.at("width", default: none))
   if w == none { default-width } else { w }

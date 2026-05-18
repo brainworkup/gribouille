@@ -31,3 +31,19 @@
   }
   apply(data, mapping, params: params, coord: coord)
 }
+
+/// Normalise a position spec (string or position dict) to its name.
+///
+/// \@internal
+#let position-name-of(spec) = if spec == none {
+  "identity"
+} else if type(spec) == str { spec } else {
+  spec.at("name", default: "identity")
+}
+
+/// Read a layer's `position` field and normalise to its name.
+///
+/// \@internal
+#let layer-position-name(layer) = position-name-of(
+  layer.at("position", default: "identity"),
+)

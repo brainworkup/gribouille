@@ -22,7 +22,7 @@
 /// \@param alpha Line opacity in `[0, 1]`.
 /// \@param linetype Dash keyword. Defaults to `"solid"`.
 /// \@param stat Statistical transform name. Usually `"identity"`.
-/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param position Position adjustment name. Defaults to `"identity"`; use `"dodge"` to offset groups within each y slot (no-op when `height` is a Typst length).
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

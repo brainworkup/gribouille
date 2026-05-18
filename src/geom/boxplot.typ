@@ -7,6 +7,8 @@
 
 #import "../deps.typ": cetz
 #import "../layer.typ": make-layer
+#import "../position/apply.typ": layer-position-name
+#import "../position/dodge.typ": dodge-centre, dodge-half
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": axis-band
@@ -15,7 +17,6 @@
   radial-wedge,
 )
 #import "../utils/types.typ": parse-number
-#import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": build-stroke
 #import "../theme/theme.typ": (
   geom-colour-default, geom-defaults, geom-fill-default,
@@ -36,7 +37,7 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param width Box width in x data units. For discrete x this is also a data-unit width.
-/// \@param colour Stroke colour for the box, median, and whiskers. `auto` falls back to the theme ink only when neither `colour` nor `fill` is set.
+/// \@param colour Stroke colour for the box, median, and whiskers. `auto` falls back to the theme ink, since the outline carries the box's structure even when `fill` supplies the body colour.
 /// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
 /// \@param stroke Stroke thickness for the box outline and whiskers.
 /// \@param alpha Box opacity in `[0, 1]`.
@@ -146,12 +147,10 @@
   if x-trained == none or y-trained == none { return }
 
   let g-defaults = geom-defaults(ctx.theme)
-  let (default-colour, default-fill) = resolve-pair-defaults(
-    layer,
-    mapping,
-    geom-colour-default(g-defaults),
-    geom-fill-default(g-defaults, role: "paper"),
-  )
+  // Box outline, median, and whiskers carry the boxplot's structure, so
+  // the stroke default always stands even when fill is mapped or pinned.
+  let default-colour = geom-colour-default(g-defaults)
+  let default-fill = geom-fill-default(g-defaults, role: "paper")
   let outlier-colour-param = layer.params.outlier-colour
   let outlier-paint-of(resolved-stroke) = if outlier-colour-param != auto {
     outlier-colour-param
@@ -320,6 +319,8 @@
 
   if y-trained.type != "continuous" { return }
 
+  let position-name = layer-position-name(layer)
+
   for row in data {
     let raw-x = row.at(x-col, default: none)
     let cx = map-position(x-trained, raw-x, ctx.px-range)
@@ -358,6 +359,18 @@
     let (cx-lo, cx-hi) = boaxis-band
     let (cap-lo, cap-hi) = cap-band
 
+    let centre = cx
+    if position-name == "dodge" {
+      let span = cx-hi - cx-lo
+      centre = dodge-centre(row, cx, span)
+      let box-half = dodge-half(row, span / 2)
+      let cap-half-shrunk = dodge-half(row, (cap-hi - cap-lo) / 2)
+      cx-lo = centre - box-half
+      cx-hi = centre + box-half
+      cap-lo = centre - cap-half-shrunk
+      cap-hi = centre + cap-half-shrunk
+    }
+
     let final-fill = resolve-channel(
       "fill",
       layer,
@@ -389,8 +402,16 @@
       stroke: stroke-spec,
     )
 
-    cetz.draw.line((cx, cy-whisker-lo), (cx, cy-lower), stroke: stroke-spec)
-    cetz.draw.line((cx, cy-upper), (cx, cy-whisker-hi), stroke: stroke-spec)
+    cetz.draw.line(
+      (centre, cy-whisker-lo),
+      (centre, cy-lower),
+      stroke: stroke-spec,
+    )
+    cetz.draw.line(
+      (centre, cy-upper),
+      (centre, cy-whisker-hi),
+      stroke: stroke-spec,
+    )
 
     if layer.params.whisker-cap > 0 {
       cetz.draw.line(
@@ -412,7 +433,7 @@
       if v == none { continue }
       let cy = map-axis(y-trained, v, ctx.py-range)
       cetz.draw.circle(
-        (cx, cy),
+        (centre, cy),
         radius: layer.params.outlier-size,
         fill: outlier-paint,
         stroke: none,

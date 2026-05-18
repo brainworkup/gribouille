@@ -2,6 +2,8 @@
 
 #import "../deps.typ": cetz
 #import "../layer.typ": make-layer
+#import "../position/apply.typ": layer-position-name
+#import "../position/dodge.typ": dodge-centre, dodge-half
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis, map-position
 #import "../utils/band.typ": axis-band
@@ -10,7 +12,6 @@
   radial-wedge,
 )
 #import "../utils/types.typ": parse-number
-#import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": build-stroke
 #import "../theme/theme.typ": (
   geom-colour-default, geom-defaults, geom-fill-default,
@@ -30,13 +31,13 @@
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `ymin`, `ymax`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
 /// \@param width Box width. In x data units for continuous x; a fraction of the slot width for discrete x.
-/// \@param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink only when neither `colour` nor `fill` is set.
+/// \@param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink, since the outline and median carry the crossbar's structure even when `fill` supplies the body colour.
 /// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
 /// \@param stroke Stroke thickness for the box outline.
 /// \@param middle-stroke Stroke thickness for the median bar.
 /// \@param alpha Box opacity in `[0, 1]`.
 /// \@param stat Statistical transform name. Usually `"identity"`.
-/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param position Position adjustment name. Defaults to `"identity"`; use `"dodge"` to place groups side by side per fill level.
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.
@@ -121,14 +122,13 @@
   if x-trained == none or y-trained == none { return }
 
   let g-defaults = geom-defaults(ctx.theme)
-  let (default-colour, default-fill) = resolve-pair-defaults(
-    layer,
-    mapping,
-    geom-colour-default(g-defaults),
-    geom-fill-default(g-defaults, role: "paper"),
-  )
+  // Box outline and median bar carry the crossbar's structure, so the
+  // stroke default always stands even when fill is mapped or pinned.
+  let default-colour = geom-colour-default(g-defaults)
+  let default-fill = geom-fill-default(g-defaults, role: "paper")
 
   let half-width = layer.params.width / 2
+  let position-name = layer-position-name(layer)
 
   let radial = ctx.at("radial", default: none)
   if radial != none {
@@ -217,6 +217,14 @@
 
     let band = axis-band(x-trained, raw-x, half-width, ctx.px-range)
     let (cx-lo, cx-hi) = if band == none { (cx, cx) } else { band }
+
+    if position-name == "dodge" {
+      let span = cx-hi - cx-lo
+      let centre = dodge-centre(row, cx, span)
+      let half = dodge-half(row, span / 2)
+      cx-lo = centre - half
+      cx-hi = centre + half
+    }
 
     let final-fill = resolve-channel(
       "fill",

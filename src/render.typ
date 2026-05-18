@@ -10,7 +10,7 @@
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
 #import "stat/info.typ": stat-info
-#import "position/apply.typ": apply-position
+#import "position/apply.typ": apply-position, position-name-of
 #import "theme/current.typ": _theme-state
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": (
@@ -21,7 +21,7 @@
 #import "utils/format.typ": format-break
 #import "utils/palette.typ": default-discrete, palette-at, spec-palette
 #import "utils/colour.typ": resolve-continuous-colour
-#import "utils/group.typ": group-cols, partition-by-group
+#import "utils/group.typ": group-aesthetics, group-cols, partition-by-group
 #import "utils/typst-markup.typ": is-typst-markup, resolve-prose
 #import "utils/aes-resolve.typ": merge-mapping, resolve-label
 #import "utils/late-binding.typ": (
@@ -443,6 +443,15 @@
         last-mapping.insert(k, v)
       }
     }
+    // Re-attach grouping aesthetics the stat dropped from its base mapping;
+    // the columns were re-injected above so downstream can still resolve them.
+    for gc-key in group-aesthetics {
+      let v = mapping.at(gc-key, default: none)
+      if v == none { continue }
+      if last-mapping.at(gc-key, default: none) == none {
+        last-mapping.insert(gc-key, v)
+      }
+    }
     stat-data = combined
     stat-mapping = last-mapping
   }
@@ -468,9 +477,7 @@
   // `position:` accepts either a string name (default params) or a dict
   // returned by a `position-*()` constructor carrying its own params.
   let position-spec = layer.at("position", default: "identity")
-  let position-name = if type(position-spec) == str {
-    position-spec
-  } else { position-spec.at("name", default: "identity") }
+  let position-name = position-name-of(position-spec)
   let position-params = if type(position-spec) == str { params } else {
     position-spec.at("params", default: (:))
   }

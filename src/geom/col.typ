@@ -6,6 +6,8 @@
 
 #import "../deps.typ": cetz
 #import "../layer.typ": make-layer
+#import "../position/apply.typ": layer-position-name
+#import "../position/dodge.typ": dodge-centre, dodge-half
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "../utils/types.typ": parse-number
@@ -120,7 +122,7 @@
 
   let cat-col = mapping.x
   let value-col = mapping.y
-  let position = layer.at("position", default: "identity")
+  let position = layer-position-name(layer)
   let vmin-col = mapping.at("ymin", default: none)
   let vmax-col = mapping.at("ymax", default: none)
   let use-minmax = (
@@ -235,7 +237,7 @@
   let cat-range = if flipped { ctx.py-range } else { ctx.px-range }
   if value-trained.type != "continuous" { return }
 
-  let position = layer.at("position", default: "identity")
+  let position = layer-position-name(layer)
   let vmin-col = mapping.at(
     if flipped { "xmin" } else { "ymin" },
     default: none,
@@ -323,10 +325,9 @@
     let centre = cat-c
     let bar-half = half
     if position == "dodge" {
-      let offset = row.at("_dodge-offset", default: 0)
-      let n = row.at("_dodge-n", default: 1)
-      centre = cat-c + offset * category-span * bar-width-fraction
-      bar-half = (category-span * bar-width-fraction / n) / 2
+      let bucket = category-span * bar-width-fraction
+      centre = dodge-centre(row, cat-c, bucket)
+      bar-half = dodge-half(row, bucket / 2)
     }
 
     let final-fill = resolve-channel(
