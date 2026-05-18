@@ -61,13 +61,20 @@
 /// ```
 ///
 /// \@see \@scale-shape-manual, \@geom-point
-#let scale-shape(name: none, palette: auto, limits: none, labels: auto) = (
+#let scale-shape(
+  name: none,
+  palette: auto,
+  limits: none,
+  oob: "drop",
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "shape",
   type: "discrete",
   name: name,
   palette: if palette == auto { default-shapes } else { palette },
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -131,13 +138,20 @@
 /// ```
 ///
 /// \@see \@scale-shape, \@geom-point
-#let scale-shape-manual(values: (), name: none, limits: none, labels: auto) = (
+#let scale-shape-manual(
+  values: (),
+  name: none,
+  limits: none,
+  oob: "drop",
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "shape",
   type: "discrete",
   name: name,
   palette: values,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -222,6 +236,7 @@
   palette: auto,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -230,6 +245,7 @@
   name: name,
   palette: if palette == auto { default-shapes } else { palette },
   limits: limits,
+  oob: oob,
   labels: labels,
   binned: true,
   n-breaks: n-breaks,

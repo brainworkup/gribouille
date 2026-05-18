@@ -52,6 +52,7 @@
   name: none,
   range: (1pt, 6pt),
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -61,6 +62,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -119,6 +121,7 @@
   range: (1pt, 6pt),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -127,6 +130,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: auto,
   labels: labels,
   binned: true,
@@ -192,6 +196,7 @@
   name: none,
   range: (1pt, 6pt),
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -201,6 +206,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
   size-trans: "area",
@@ -261,6 +267,7 @@
   range: (1pt, 6pt),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -269,6 +276,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: auto,
   labels: labels,
   binned: true,
@@ -358,6 +366,7 @@
   values: (),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -366,6 +375,7 @@
   name: name,
   palette: values,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -407,6 +417,7 @@
   name: none,
   range: (1pt, 6pt),
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -416,6 +427,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )

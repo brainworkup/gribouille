@@ -70,6 +70,7 @@
   name: none,
   range: (0.4pt, 1.4pt),
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -79,6 +80,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -123,6 +125,7 @@
   values: (),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -131,6 +134,7 @@
   name: name,
   palette: values,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -183,6 +187,7 @@
   range: (0.4pt, 1.4pt),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -191,6 +196,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: auto,
   labels: labels,
   binned: true,

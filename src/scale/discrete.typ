@@ -7,6 +7,7 @@
   aesthetic,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
   expand: auto,
 ) = (
@@ -15,6 +16,7 @@
   type: "discrete",
   name: name,
   limits: limits,
+  oob: oob,
   labels: labels,
   expand: expand,
 )
@@ -75,14 +77,19 @@
 /// ```
 ///
 /// \@see \@scale-y-discrete, \@scale-x-continuous
-#let scale-x-discrete(name: none, limits: none, labels: auto, expand: auto) = (
-  _discrete-scale(
-    "x",
-    name: name,
-    limits: limits,
-    labels: labels,
-    expand: expand,
-  )
+#let scale-x-discrete(
+  name: none,
+  limits: none,
+  oob: "drop",
+  labels: auto,
+  expand: auto,
+) = _discrete-scale(
+  "x",
+  name: name,
+  limits: limits,
+  oob: oob,
+  labels: labels,
+  expand: expand,
 )
 
 /// Discrete y scale: axis title, level ordering, and tick labels.
@@ -138,12 +145,17 @@
 /// ```
 ///
 /// \@see \@scale-x-discrete, \@scale-y-continuous
-#let scale-y-discrete(name: none, limits: none, labels: auto, expand: auto) = (
-  _discrete-scale(
-    "y",
-    name: name,
-    limits: limits,
-    labels: labels,
-    expand: expand,
-  )
+#let scale-y-discrete(
+  name: none,
+  limits: none,
+  oob: "drop",
+  labels: auto,
+  expand: auto,
+) = _discrete-scale(
+  "y",
+  name: name,
+  limits: limits,
+  oob: oob,
+  labels: labels,
+  expand: expand,
 )

@@ -62,13 +62,20 @@
 /// ```
 ///
 /// \@see \@scale-linetype-manual, \@geom-line
-#let scale-linetype(name: none, palette: auto, limits: none, labels: auto) = (
+#let scale-linetype(
+  name: none,
+  palette: auto,
+  limits: none,
+  oob: "drop",
+  labels: auto,
+) = (
   kind: "scale",
   aesthetic: "linetype",
   type: "discrete",
   name: name,
   palette: if palette == auto { default-linetypes } else { palette },
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -134,6 +141,7 @@
   values: (),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -142,6 +150,7 @@
   name: name,
   palette: values,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -224,6 +233,7 @@
   palette: auto,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -232,6 +242,7 @@
   name: name,
   palette: if palette == auto { default-linetypes } else { palette },
   limits: limits,
+  oob: oob,
   labels: labels,
   binned: true,
   n-breaks: n-breaks,
@@ -272,12 +283,14 @@
   name: none,
   palette: auto,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = scale-linetype-binned(
   n-breaks: 4,
   palette: palette,
   name: name,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -320,10 +333,12 @@
   name: none,
   palette: auto,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = scale-linetype(
   name: name,
   palette: palette,
   limits: limits,
+  oob: oob,
   labels: labels,
 )

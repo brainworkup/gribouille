@@ -18,6 +18,7 @@
   name: none,
   palette: auto,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -27,6 +28,7 @@
   name: name,
   palette: palette,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -36,6 +38,7 @@
   name: none,
   palette: auto,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -44,6 +47,7 @@
   name: name,
   palette: palette,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -52,6 +56,7 @@
   values: (),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -60,6 +65,7 @@
   name: name,
   palette: values,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -75,6 +81,7 @@
   option: "viridis",
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -83,6 +90,7 @@
   name: name,
   palette: viridis-mod.palette(option),
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -91,6 +99,7 @@
   option: "viridis",
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -100,6 +109,7 @@
   name: name,
   palette: viridis-mod.palette(option),
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -110,6 +120,7 @@
   n-breaks: 5,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -118,6 +129,7 @@
   name: name,
   palette: viridis-mod.palette(option),
   limits: limits,
+  oob: oob,
   labels: labels,
   binned: true,
   n-breaks: n-breaks,
@@ -128,6 +140,7 @@
   palette: "Set1",
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -136,6 +149,7 @@
   name: name,
   palette: brewer-palette(palette),
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -143,12 +157,14 @@
   aesthetic,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = _scale-discrete(
   aesthetic,
   palette: okabe-ito,
   name: name,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -158,6 +174,7 @@
   high: rgb("#56B1F7"),
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -167,6 +184,7 @@
   name: name,
   palette: (low, high),
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -179,6 +197,7 @@
   midpoint: 0,
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -189,6 +208,7 @@
   palette: (low, mid, high),
   midpoint: midpoint,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -198,6 +218,7 @@
   colours: (),
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -207,6 +228,7 @@
   name: name,
   palette: colours,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -217,6 +239,7 @@
   end: 0.8,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -225,6 +248,7 @@
   name: name,
   palette: grey-palette(10, start: start, end: end),
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -235,6 +259,7 @@
   luminance: 65,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -243,6 +268,7 @@
   name: name,
   palette: hue-palette(12, h: hue, c: chroma, l: luminance),
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -252,6 +278,7 @@
   direction: 1,
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = {
@@ -264,6 +291,7 @@
     name: name,
     palette: stops,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
@@ -276,6 +304,7 @@
   n-breaks: 5,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -284,6 +313,7 @@
   name: name,
   palette: (low, high),
   limits: limits,
+  oob: oob,
   labels: labels,
   binned: true,
   n-breaks: n-breaks,
@@ -298,6 +328,7 @@
   n-breaks: 5,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -307,6 +338,7 @@
   palette: (low, mid, high),
   midpoint: midpoint,
   limits: limits,
+  oob: oob,
   labels: labels,
   binned: true,
   n-breaks: n-breaks,
@@ -318,6 +350,7 @@
   n-breaks: 5,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -326,6 +359,7 @@
   name: name,
   palette: colours,
   limits: limits,
+  oob: oob,
   labels: labels,
   binned: true,
   n-breaks: n-breaks,
@@ -338,6 +372,7 @@
   direction: 1,
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = {
   let stops = brewer-palette(palette)
@@ -349,6 +384,7 @@
     name: name,
     palette: stops,
     limits: limits,
+    oob: oob,
     labels: labels,
     binned: true,
     n-breaks: n-breaks,
@@ -1897,6 +1933,7 @@
   name: none,
   range: (0.1, 1),
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
 ) = (
@@ -1906,6 +1943,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
 )
@@ -1950,6 +1988,7 @@
   values: (),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -1958,6 +1997,7 @@
   name: name,
   palette: values,
   limits: limits,
+  oob: oob,
   labels: labels,
 )
 
@@ -2000,6 +2040,7 @@
   range: (0.1, 1),
   name: none,
   limits: none,
+  oob: "drop",
   labels: auto,
 ) = (
   kind: "scale",
@@ -2008,6 +2049,7 @@
   name: name,
   range: range,
   limits: limits,
+  oob: oob,
   breaks: auto,
   labels: labels,
   binned: true,
