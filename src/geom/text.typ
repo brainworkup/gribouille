@@ -66,6 +66,7 @@
 ///     geom-point(size: 2pt),
 ///     geom-text(dy: 0.2),
 ///   ),
+///   scales: (scale-y-continuous(expand: 15%),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
