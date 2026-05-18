@@ -12,6 +12,13 @@ function M.die(msg)
   error("typstdoc: " .. msg, 0)
 end
 
+function M.ensure_parent(path)
+  local dir = path:match("^(.*)/[^/]+$")
+  if dir and dir ~= "" then
+    os.execute(string.format("mkdir -p %q", dir))
+  end
+end
+
 function M.read_file(path)
   local f, err = io.open(path, "rb")
   if not f then return nil, err end
@@ -20,11 +27,22 @@ function M.read_file(path)
   return content
 end
 
+function M.copy_file(src, dst)
+  local content, err = M.read_file(src)
+  if not content then return nil, err end
+  return M.write_file(dst, content)
+end
+
+function M.popen_capture(cmd)
+  local handle = io.popen(cmd)
+  if not handle then return nil, "popen failed" end
+  local out = handle:read("*a")
+  local _, _, code = handle:close()
+  return code or 0, out
+end
+
 function M.write_file(path, content)
-  local dir = path:match("^(.*)/[^/]+$")
-  if dir and dir ~= "" then
-    os.execute(string.format("mkdir -p %q", dir))
-  end
+  M.ensure_parent(path)
   local f, err = io.open(path, "wb")
   if not f then return nil, err end
   f:write(content)
