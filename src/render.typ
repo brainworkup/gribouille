@@ -1872,6 +1872,18 @@
   let y = trained.at("y", default: none)
   trained.insert("x", y)
   trained.insert("y", x)
+  if x == none { return trained }
+
+  let policy = coord.at("reverse", default: auto)
+  let do-reverse = if policy == auto { x.type == "discrete" } else { policy }
+  if not do-reverse { return trained }
+  let new-y = x
+  if x.type == "discrete" {
+    new-y.insert("reverse", true)
+  } else if x.type == "continuous" {
+    new-y.insert("transform", "reverse")
+  }
+  trained.insert("y", new-y)
   trained
 }
 

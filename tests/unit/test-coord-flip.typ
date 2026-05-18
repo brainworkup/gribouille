@@ -6,11 +6,16 @@
 #let c1 = coord-flip()
 #assert.eq(c1.kind, "coord")
 #assert.eq(c1.coord, "flip")
+#assert.eq(c1.reverse, auto)
 
 // The dict shape must stay stable so the renderer can route the spec into
 // the flip swap without touching positional or fixed-aspect coords.
 #let keys-c1 = c1.keys().sorted()
-#assert.eq(keys-c1, ("coord", "kind"))
+#assert.eq(keys-c1, ("coord", "kind", "reverse"))
+
+// Explicit reverse values carry through the spec.
+#assert.eq(coord-flip(reverse: true).reverse, true)
+#assert.eq(coord-flip(reverse: false).reverse, false)
 
 // `_is-flipped` recognises the flip coord and rejects everything else.
 #assert.eq(_is-flipped(c1), true)
@@ -29,6 +34,25 @@
 #assert.eq(flipped.x.domain, (0, 10))
 #assert.eq(flipped.y.type, "discrete")
 #assert.eq(flipped.y.domain, ("a", "b", "c"))
+// Default `auto` policy reverses a discrete post-flip y.
+#assert.eq(flipped.y.reverse, true)
+
+// `reverse: false` opts out even when post-flip y is discrete.
+#let opt-out = _apply-flip(trained, coord-flip(reverse: false))
+#assert.eq(opt-out.y.at("reverse", default: false), false)
+
+// Continuous x flipped to continuous y under default `auto` stays put.
+#let cc = (
+  x: (type: "continuous", domain: (0, 10)),
+  y: (type: "continuous", domain: (0, 1)),
+)
+#let cc-flipped = _apply-flip(cc, c1)
+#assert.eq(cc-flipped.y.at("transform", default: "identity"), "identity")
+
+// Explicit `reverse: true` reverses a continuous post-flip y via the
+// existing transform path.
+#let cc-rev = _apply-flip(cc, coord-flip(reverse: true))
+#assert.eq(cc-rev.y.transform, "reverse")
 
 #let untouched = _apply-flip(trained, (kind: "coord", coord: "cartesian"))
 #assert.eq(untouched.x.type, "discrete")

@@ -2,7 +2,9 @@
 ///!
 ///! Scale training is unchanged; only the rendered axes and any direction-
 ///! sensitive geoms are swapped so vertical bars become horizontal bars,
-///! horizontal reference lines become vertical, and so on.
+///! horizontal reference lines become vertical, and so on. When the
+///! post-flip y axis is discrete its direction is reversed by default so
+///! the first level sits at the top, matching reading order top-to-bottom.
 
 /// Cartesian coordinate system with the x and y axes swapped at render time.
 ///
@@ -57,8 +59,14 @@
 /// )
 /// ```
 ///
+/// \@param reverse Whether to reverse the post-flip y axis. `auto` (the
+/// default) reverses only when the post-flip y axis is discrete so the
+/// first level sits at the top. `true` always reverses; `false` keeps the
+/// bottom-to-top direction.
+///
 /// \@see \@plot, \@coord-cartesian, \@geom-col
-#let coord-flip() = (
+#let coord-flip(reverse: auto) = (
   kind: "coord",
   coord: "flip",
+  reverse: reverse,
 )

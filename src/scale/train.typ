@@ -443,7 +443,14 @@
 // Used by positional discrete scales after expansion is applied. The default
 // viewport `(-0.5, n - 0.5)` reproduces the midpoint-of-equal-slots layout
 // used by non-positional discrete scales (colour, fill, shape, ...).
-#let map-discrete(value, domain, range, view-index: none, level-index: none) = {
+#let map-discrete(
+  value,
+  domain,
+  range,
+  view-index: none,
+  level-index: none,
+  reverse: false,
+) = {
   let n = domain.len()
   if n == 0 { return none }
   let s = str(value)
@@ -459,7 +466,9 @@
     idx = value - 1
   }
   if idx == none { return none }
-  let (r-lo, r-hi) = range
+  let (r-lo, r-hi) = if reverse {
+    (range.last(), range.first())
+  } else { range }
   let (v-lo, v-hi) = if view-index == none {
     (-0.5, n - 0.5)
   } else { view-index }
@@ -516,6 +525,7 @@
       range,
       view-index: trained.at("view-index", default: none),
       level-index: trained.at("level-index", default: none),
+      reverse: trained.at("reverse", default: false),
     )
   }
 }
