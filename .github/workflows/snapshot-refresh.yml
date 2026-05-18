@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          # Drop the default GITHUB_TOKEN credentials so the push step
+          # authenticates with the GitHub App token resolved below.
+          persist-credentials: false
 
       - name: Set up Git user
         id: setup-git
@@ -60,6 +64,8 @@ jobs:
             exit 0
           fi
           git commit -m "chore(tests): refresh visual snapshots"
+          git remote set-url origin \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push origin "HEAD:${GITHUB_REF_NAME}"
           {
             echo "## Visual snapshots refreshed"
