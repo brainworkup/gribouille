@@ -35,6 +35,7 @@
 /// Normalise a position spec (string or position dict) to its name.
 ///
 /// \@internal
+/// \@param spec Position spec: `none`, a name string, or a position dict from a `position-*()` constructor.
 #let position-name-of(spec) = if spec == none {
   "identity"
 } else if type(spec) == str { spec } else {
@@ -44,6 +45,7 @@
 /// Read a layer's `position` field and normalise to its name.
 ///
 /// \@internal
+/// \@param layer Layer dictionary as produced by `make-layer`.
 #let layer-position-name(layer) = position-name-of(
   layer.at("position", default: "identity"),
 )

@@ -77,6 +77,9 @@
 /// `bucket` is the canvas span of the dodge bucket the row belongs to (the
 /// total width the dodged slots fill collectively).
 /// \@internal
+/// \@param row Data row carrying `_dodge-offset` written by `apply`.
+/// \@param c Original centre coordinate on the canvas.
+/// \@param bucket Canvas span of the dodge bucket for this row.
 #let dodge-centre(row, c, bucket) = (
   c + row.at("_dodge-offset", default: 0) * bucket
 )
@@ -84,6 +87,8 @@
 /// Shrink a half-width by this row's dodge slot count.
 ///
 /// \@internal
+/// \@param row Data row carrying `_dodge-n` written by `apply`.
+/// \@param half Undodged half-width on the canvas.
 #let dodge-half(row, half) = half / row.at("_dodge-n", default: 1)
 
 #let _row-width(row, default-width) = {
