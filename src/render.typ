@@ -3148,16 +3148,16 @@
 
   let x-guide = _read-axis-guide(spec, "x")
   let y-guide = _read-axis-guide(spec, "y")
-  let x-label-depth = _x-label-depth-stack(
-    x-guide,
-    x-extents.width,
-    x-extents.height,
-  )
-  let y-label-width = _y-label-width-stack(
-    y-guide,
-    y-extents.width,
-    y-extents.height,
-  )
+  // Themes that disable tick labels (`theme-void`) reserve no perpendicular
+  // depth for them; otherwise the auto-margin reserves space for ink that
+  // never draws, inverting the panel rect on small plot sizes.
+  let labels-on = theme.at("tick-labels", default: true)
+  let x-label-depth = if labels-on {
+    _x-label-depth-stack(x-guide, x-extents.width, x-extents.height)
+  } else { 0.0 }
+  let y-label-width = if labels-on {
+    _y-label-width-stack(y-guide, y-extents.width, y-extents.height)
+  } else { 0.0 }
   let bottom-gap = _text-margin-cm(ax-title.xb, "top", 0.25em)
   let left-gap = _text-margin-cm(ax-title.yl, "right", 0.25em)
   let x-title-cm = _ax-text-cm(ax-title.xb.size)
@@ -3179,12 +3179,18 @@
   // `tight-sides` lets `compose()` skip the conservative floors (1.5 cm /
   // 1.1 cm) on the side it hoists the shared legend to, so the panel butts
   // against the legend instead of carrying ~0.5 cm of unused axis-title slack.
+  // Themes that strip axis decoration (e.g., `theme-void`) leave the
+  // computed extent at ~0.15 cm; the floor would then exceed small plot
+  // heights/widths and invert the panel rect. Drop the floor when the
+  // computed extent is below ~0.3 cm (no meaningful axis content to clear).
+  let bottom-floor = if bottom-extent > 0.3 { 1.1 } else { 0.0 }
+  let left-floor = if left-extent > 0.3 { 1.5 } else { 0.0 }
   let _floor(side, floor, computed) = if tight-sides.contains(side) {
     computed
   } else { calc.max(floor, computed) }
   let auto-margin = (
-    left: _floor("left", 1.5, left-extent + _side-gap("left")),
-    bottom: _floor("bottom", 1.1, bottom-extent + _side-gap("bottom")),
+    left: _floor("left", left-floor, left-extent + _side-gap("left")),
+    bottom: _floor("bottom", bottom-floor, bottom-extent + _side-gap("bottom")),
     top: 0.3 + sec-x-extent + _side-gap("top"),
     right: calc.min(0.3 + sec-y-extent + _side-gap("right"), max-right-margin),
   )
