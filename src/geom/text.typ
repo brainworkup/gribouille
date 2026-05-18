@@ -88,6 +88,7 @@
 ///     geom-point(size: 2pt),
 ///     geom-text(segment: true),
 ///   ),
+///   scales: (scale-x-continuous(expand: 40%),scale-y-continuous(expand: 40%),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
