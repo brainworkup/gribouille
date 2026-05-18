@@ -2,6 +2,10 @@
 # Compiles every Typst example and unit test from the project root.
 # Mirrors the .github/actions/typst-compile composite action so local runs
 # match CI exactly. Exits non-zero on the first failure across all targets.
+#
+# Flags:
+#   --snapshot       Also run the visual snapshot harness in --check mode.
+#   --snapshot=ARGS  Pass ARGS through to tools/snapshot/run.lua (e.g. `--only geom-bar`).
 
 set -euo pipefail
 
@@ -12,6 +16,22 @@ OUT_DIR="${OUT_DIR:-/tmp/gribouille-check}"
 mkdir -p "${OUT_DIR}"
 
 shopt -s nullglob
+
+snapshot_mode=""
+snapshot_args=""
+for arg in "$@"; do
+  case "${arg}" in
+  --snapshot) snapshot_mode="check" ;;
+  --snapshot=*)
+    snapshot_mode="check"
+    snapshot_args="${arg#--snapshot=}"
+    ;;
+  *)
+    printf 'unknown arg: %s\n' "${arg}" >&2
+    exit 2
+    ;;
+  esac
+done
 
 failures=0
 total=0
@@ -47,6 +67,16 @@ fi
 
 compile_glob "unit"     "tests/unit/*.typ"
 compile_glob "examples" "examples/*.typ"
+
+if [[ -n "${snapshot_mode}" ]]; then
+  printf '\nsnapshots:\n'
+  # shellcheck disable=SC2086  # snapshot_args is intentionally word-split
+  if lua tools/snapshot/run.lua --check ${snapshot_args}; then
+    :
+  else
+    failures=$((failures + 1))
+  fi
+fi
 
 if [[ ${failures} -gt 0 ]]; then
   printf '\n%d failure(s) out of %d compile(s).\n' "${failures}" "${total}" >&2
