@@ -18,11 +18,19 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
-/// \@examples Linewidth grows with `w`, with one segment per row driven by
-/// the `group` mapping.
+/// \@examples Linewidth grows with `w`, one line per group.
 /// ```
-/// //| alt: "Line chart of ten diagonal segments where each segment's stroke thickness scales continuously with w from a thin to a thick stroke."
-/// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
+/// //| alt: "Line chart of four diagonal lines whose stroke thickness scales continuously with w from thin to thick."
+/// #let d = (
+///   (x: 1, y: 1, w: 1, g: "a"), (x: 2, y: 2, w: 1, g: "a"),
+///   (x: 3, y: 3, w: 1, g: "a"), (x: 4, y: 4, w: 1, g: "a"),
+///   (x: 1, y: 2, w: 4, g: "b"), (x: 2, y: 3, w: 4, g: "b"),
+///   (x: 3, y: 4, w: 4, g: "b"), (x: 4, y: 5, w: 4, g: "b"),
+///   (x: 1, y: 3, w: 7, g: "c"), (x: 2, y: 4, w: 7, g: "c"),
+///   (x: 3, y: 5, w: 7, g: "c"), (x: 4, y: 6, w: 7, g: "c"),
+///   (x: 1, y: 4, w: 10, g: "d"), (x: 2, y: 5, w: 10, g: "d"),
+///   (x: 3, y: 6, w: 10, g: "d"), (x: 4, y: 7, w: 10, g: "d"),
+/// )
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
@@ -36,8 +44,17 @@
 /// \@examples Pair `colour` and `linewidth` with the same column to encode
 /// magnitude through both channels.
 /// ```
-/// //| alt: "Line chart of ten diagonal segments where w encodes both stroke thickness and colour so magnitude grows redundantly through both channels."
-/// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
+/// //| alt: "Line chart of four diagonal lines where w encodes both stroke thickness and colour so magnitude grows redundantly through both channels."
+/// #let d = (
+///   (x: 1, y: 1, w: 1, g: "a"), (x: 2, y: 2, w: 1, g: "a"),
+///   (x: 3, y: 3, w: 1, g: "a"), (x: 4, y: 4, w: 1, g: "a"),
+///   (x: 1, y: 2, w: 4, g: "b"), (x: 2, y: 3, w: 4, g: "b"),
+///   (x: 3, y: 4, w: 4, g: "b"), (x: 4, y: 5, w: 4, g: "b"),
+///   (x: 1, y: 3, w: 7, g: "c"), (x: 2, y: 4, w: 7, g: "c"),
+///   (x: 3, y: 5, w: 7, g: "c"), (x: 4, y: 6, w: 7, g: "c"),
+///   (x: 1, y: 4, w: 10, g: "d"), (x: 2, y: 5, w: 10, g: "d"),
+///   (x: 3, y: 6, w: 10, g: "d"), (x: 4, y: 7, w: 10, g: "d"),
+/// )
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", colour: "w", linewidth: "w", group: "g"),
@@ -139,8 +156,17 @@
 ///
 /// \@examples Linewidth grows with `w`, with the legend grouped into four bins.
 /// ```
-/// //| alt: "Line chart of ten diagonal segments whose strokes thicken with w while the legend collapses into four stepped thickness bins."
-/// #let d = range(0, 10).map(i => (x: i, y: i, w: i + 1, g: str(i)))
+/// //| alt: "Line chart of four diagonal lines whose strokes thicken with w while the legend collapses into four stepped thickness bins."
+/// #let d = (
+///   (x: 1, y: 1, w: 1, g: "a"), (x: 2, y: 2, w: 1, g: "a"),
+///   (x: 3, y: 3, w: 1, g: "a"), (x: 4, y: 4, w: 1, g: "a"),
+///   (x: 1, y: 2, w: 4, g: "b"), (x: 2, y: 3, w: 4, g: "b"),
+///   (x: 3, y: 4, w: 4, g: "b"), (x: 4, y: 5, w: 4, g: "b"),
+///   (x: 1, y: 3, w: 7, g: "c"), (x: 2, y: 4, w: 7, g: "c"),
+///   (x: 3, y: 5, w: 7, g: "c"), (x: 4, y: 6, w: 7, g: "c"),
+///   (x: 1, y: 4, w: 10, g: "d"), (x: 2, y: 5, w: 10, g: "d"),
+///   (x: 3, y: 6, w: 10, g: "d"), (x: 4, y: 7, w: 10, g: "d"),
+/// )
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", linewidth: "w", group: "g"),
