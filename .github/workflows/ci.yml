@@ -42,12 +42,7 @@ jobs:
 
       - name: Read Typst version from typst.toml
         id: typst-version
-        shell: bash
-        run: |
-          set -euo pipefail
-          version=$(awk -F'"' '/^compiler[[:space:]]*=/ { print $2; exit }' typst.toml)
-          [[ -n "$version" ]] || { echo "::error::compiler not found in typst.toml"; exit 1; }
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+        uses: ./.github/actions/typst-version
 
       - name: Set up Typst
         uses: typst-community/setup-typst@v5
@@ -104,12 +99,7 @@ jobs:
 
       - name: Read Typst version from typst.toml
         id: typst-version
-        shell: bash
-        run: |
-          set -euo pipefail
-          version=$(awk -F'"' '/^compiler[[:space:]]*=/ { print $2; exit }' typst.toml)
-          [[ -n "$version" ]] || { echo "::error::compiler not found in typst.toml"; exit 1; }
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+        uses: ./.github/actions/typst-version
 
       - name: Set up Typst
         uses: typst-community/setup-typst@v5
