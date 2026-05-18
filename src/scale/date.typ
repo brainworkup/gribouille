@@ -47,6 +47,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain (in days), or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
@@ -121,6 +122,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain (in days), or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values (in days), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
@@ -183,6 +185,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
@@ -241,6 +244,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
@@ -303,6 +307,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.
@@ -363,6 +368,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain (in seconds), or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values (in seconds), or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param date-format Typst `datetime.display` pattern used for break labels.

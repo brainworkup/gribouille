@@ -30,6 +30,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none` for first-seen order.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose level is not in `limits`; `"squish"` behaves like `"drop"` for discrete scales.
 /// \@param labels Array of tick labels aligned with `limits`, or `auto`.
 /// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps a 60%-of-slot default on each side; `false` collapses to zero.
 ///
@@ -101,6 +102,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none` for first-seen order.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose level is not in `limits`; `"squish"` behaves like `"drop"` for discrete scales.
 /// \@param labels Array of tick labels aligned with `limits`, or `auto`.
 /// \@param expand Padding around the domain. Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding. `auto` keeps a 60%-of-slot default on each side; `false` collapses to zero.
 ///

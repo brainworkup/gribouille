@@ -13,6 +13,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -82,6 +83,7 @@
 /// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -152,6 +154,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -227,6 +230,7 @@
 /// \@param range Pair of Typst lengths `(min, max)` bounding the output size.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -339,6 +343,7 @@
 /// \@param values Array of Typst lengths, one per level (in `limits` order when set, otherwise in first-seen order).
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -393,6 +398,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param range Pair of Typst lengths `(min, max)` bounding the output radius.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///

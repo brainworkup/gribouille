@@ -401,6 +401,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param palette Colour source: a gradient, an array of colours, or `auto`.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -449,6 +450,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param palette Colour source: an array of colours, or `auto`.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -524,6 +526,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param palette Colour source: a gradient, an array of colours, or `auto`.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -579,6 +582,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param palette Colour source: an array of colours, or `auto`.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -638,6 +642,7 @@
 /// \@param values Array of colours, one per level.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -700,6 +705,7 @@
 /// \@param values Array of colours, one per level.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -759,6 +765,7 @@
 /// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -818,6 +825,7 @@
 /// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -868,6 +876,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -917,6 +926,7 @@
 /// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -975,6 +985,7 @@
 /// \@param option Palette name: `"viridis"`, `"magma"`, `"plasma"`, `"inferno"`, or `"cividis"`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1103,6 +1114,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1156,6 +1168,7 @@
 /// \@param palette ColorBrewer palette name (qualitative, sequential, or diverging).
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1216,6 +1229,7 @@
 /// \@param palette ColorBrewer palette name (qualitative, sequential, or diverging).
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1275,6 +1289,7 @@
 ///
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1312,6 +1327,7 @@
 ///
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1351,6 +1367,7 @@
 /// \@param high Colour for the high end of the domain.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1406,6 +1423,7 @@
 /// \@param midpoint Value at which the palette transitions through `mid`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1462,6 +1480,7 @@
 /// \@param colours Array of two or more colours.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1516,6 +1535,7 @@
 /// \@param high Colour for the high end of the domain.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1560,6 +1580,7 @@
 /// \@param midpoint Value at which the palette transitions through `mid`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1599,6 +1620,7 @@
 /// \@param colours Array of two or more colours.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1641,6 +1663,7 @@
 /// \@param end Luminance for the last level, in `[0, 1]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1698,6 +1721,7 @@
 /// \@param end Luminance for the last level, in `[0, 1]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1746,6 +1770,7 @@
 /// \@param luminance Luminance in `[0, 100]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1805,6 +1830,7 @@
 /// \@param luminance Luminance in `[0, 100]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -1846,6 +1872,7 @@
 /// \@param direction `1` for canonical order, `-1` for reversed.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1893,6 +1920,7 @@
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param range Pair `(lo, hi)` bounding the output opacity, each in `[0, 1]`.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -1961,6 +1989,7 @@
 /// \@param values Array of opacities in `[0, 1]`, one per level (in `limits` order when set, otherwise in first-seen order).
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Array of level names controlling order and inclusion, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `limits`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2016,6 +2045,7 @@
 /// \@param range Pair `(min, max)` bounding the output opacity in `[0, 1]`.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2110,6 +2140,7 @@
 /// \@param direction `1` for canonical order, `-1` for reversed.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param breaks Array of break values for the legend, or `auto`.
 /// \@param labels Array of legend labels aligned with `breaks`, or `auto`.
 ///
@@ -2153,6 +2184,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2209,6 +2241,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2265,6 +2298,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2322,6 +2356,7 @@
 /// \@param direction `1` for canonical order, `-1` for reversed.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2376,6 +2411,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2417,6 +2453,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2455,6 +2492,7 @@
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -2497,6 +2535,7 @@
 /// \@param direction `1` for canonical order, `-1` for reversed.
 /// \@param name Legend title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps continuous values to the nearest endpoint.
 /// \@param labels Array of legend labels aligned with the bins, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.

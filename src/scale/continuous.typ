@@ -82,6 +82,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param transform Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
@@ -143,6 +144,7 @@
 #let scale-x-continuous(
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
   transform: "identity",
@@ -152,6 +154,7 @@
   "x",
   name: name,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
   transform: transform,
@@ -170,6 +173,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 /// \@param transform Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
@@ -214,6 +218,7 @@
 #let scale-y-continuous(
   name: none,
   limits: none,
+  oob: "drop",
   breaks: auto,
   labels: auto,
   transform: "identity",
@@ -223,6 +228,7 @@
   "y",
   name: name,
   limits: limits,
+  oob: oob,
   breaks: breaks,
   labels: labels,
   transform: transform,
@@ -242,6 +248,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
@@ -280,12 +287,19 @@
 /// ```
 ///
 /// \@see \@scale-x-continuous, \@scale-y-log10
-#let scale-x-log10(name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-x-log10(
+  name: none,
+  limits: none,
+  oob: "drop",
+  breaks: auto,
+  labels: auto,
+) = (
   _transform-scale(
     "x",
     "log10",
     name: name,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
@@ -303,6 +317,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
@@ -342,12 +357,19 @@
 /// ```
 ///
 /// \@see \@scale-y-continuous, \@scale-x-log10
-#let scale-y-log10(name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-y-log10(
+  name: none,
+  limits: none,
+  oob: "drop",
+  breaks: auto,
+  labels: auto,
+) = (
   _transform-scale(
     "y",
     "log10",
     name: name,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
@@ -365,6 +387,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
@@ -404,12 +427,19 @@
 /// ```
 ///
 /// \@see \@scale-x-continuous, \@scale-y-sqrt
-#let scale-x-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-x-sqrt(
+  name: none,
+  limits: none,
+  oob: "drop",
+  breaks: auto,
+  labels: auto,
+) = (
   _transform-scale(
     "x",
     "sqrt",
     name: name,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
@@ -427,6 +457,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
@@ -462,12 +493,19 @@
 /// ```
 ///
 /// \@see \@scale-y-continuous, \@scale-x-sqrt
-#let scale-y-sqrt(name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-y-sqrt(
+  name: none,
+  limits: none,
+  oob: "drop",
+  breaks: auto,
+  labels: auto,
+) = (
   _transform-scale(
     "y",
     "sqrt",
     name: name,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
@@ -485,6 +523,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
@@ -520,12 +559,19 @@
 /// ```
 ///
 /// \@see \@scale-x-continuous, \@scale-y-reverse
-#let scale-x-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-x-reverse(
+  name: none,
+  limits: none,
+  oob: "drop",
+  breaks: auto,
+  labels: auto,
+) = (
   _transform-scale(
     "x",
     "reverse",
     name: name,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
@@ -544,6 +590,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param labels Array of tick labels aligned with the bin midpoints, or `auto`.
 ///
@@ -582,12 +629,14 @@
 #let scale-x-binned(
   name: none,
   limits: none,
+  oob: "drop",
   n-breaks: 10,
   labels: auto,
 ) = _binned-scale(
   "x",
   name: name,
   limits: limits,
+  oob: oob,
   n-breaks: n-breaks,
   labels: labels,
 )
@@ -603,6 +652,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param n-breaks Number of bins to partition the domain into.
 /// \@param labels Array of tick labels aligned with the bin midpoints, or `auto`.
 ///
@@ -641,12 +691,14 @@
 #let scale-y-binned(
   name: none,
   limits: none,
+  oob: "drop",
   n-breaks: 10,
   labels: auto,
 ) = _binned-scale(
   "y",
   name: name,
   limits: limits,
+  oob: oob,
   n-breaks: n-breaks,
   labels: labels,
 )
@@ -663,6 +715,7 @@
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+/// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
@@ -702,12 +755,19 @@
 /// ```
 ///
 /// \@see \@scale-y-continuous, \@scale-x-reverse
-#let scale-y-reverse(name: none, limits: none, breaks: auto, labels: auto) = (
+#let scale-y-reverse(
+  name: none,
+  limits: none,
+  oob: "drop",
+  breaks: auto,
+  labels: auto,
+) = (
   _transform-scale(
     "y",
     "reverse",
     name: name,
     limits: limits,
+    oob: oob,
     breaks: breaks,
     labels: labels,
   )
