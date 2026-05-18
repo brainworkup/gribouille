@@ -357,7 +357,13 @@
   (layer: new-layer, mapping: new-mapping)
 }
 
-#let _prepare-layer(layer, plot-mapping, plot-data, theme: none) = {
+#let _prepare-layer(
+  layer,
+  plot-mapping,
+  plot-data,
+  theme: none,
+  coord: none,
+) = {
   // Keep mapping-ref annotations intact on the layer so scale training can
   // read forced types; only strip them when the renderer hands a mapping to
   // a geom's draw function.
@@ -485,6 +491,7 @@
       rewritten.data,
       pos-in,
       params: position-params,
+      coord: coord,
     )
     pos-data = r.data
     // Merge position's additions (e.g., ymin/ymax) into the annotated mapping
@@ -2308,6 +2315,7 @@
 #let _render-prepare(spec, theme) = {
   let facet-wrap-mode = spec.facet != none and spec.facet.facet == "wrap"
   let facet-grid-mode = spec.facet != none and spec.facet.facet == "grid"
+  let coord = spec.at("coord", default: none)
 
   let wrap-levels = if facet-wrap-mode {
     _raw-levels-for(spec, spec.facet.variable)
@@ -2337,7 +2345,13 @@
           let with-subset = l
           with-subset.data = layer-groups.at(i).at(level, default: ())
           with-subset.insert("data-trusted", true)
-          _prepare-layer(with-subset, spec.mapping, spec.data, theme: theme)
+          _prepare-layer(
+            with-subset,
+            spec.mapping,
+            spec.data,
+            theme: theme,
+            coord: coord,
+          )
         }),
     ))
   } else if facet-grid-mode {
@@ -2360,7 +2374,13 @@
               let with-subset = l
               with-subset.data = layer-groups.at(i).at(key, default: ())
               with-subset.insert("data-trusted", true)
-              _prepare-layer(with-subset, spec.mapping, spec.data, theme: theme)
+              _prepare-layer(
+                with-subset,
+                spec.mapping,
+                spec.data,
+                theme: theme,
+                coord: coord,
+              )
             }),
         ))
       }
@@ -2378,6 +2398,7 @@
       spec.mapping,
       spec.data,
       theme: theme,
+      coord: coord,
     ))
   }
 

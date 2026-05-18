@@ -3,12 +3,15 @@
 #import "../scale/train.typ": discrete-slot-width, map-axis, map-position
 #import "types.typ": parse-number
 
+// True when the coord is any flavour of `coord-radial`.
+#let is-radial(coord) = (
+  coord != none and coord.at("coord", default: none) == "radial"
+)
+
 // "y" when theta is "x" (rose/radar) and "x" when theta is "y" (pie).
 // Returns `none` for non-radial coords. Used during scale expansion, which
 // runs before trained scales exist and so cannot route through `radial-ctx`.
-#let radial-axis-of(coord) = if (
-  coord != none and coord.at("coord", default: none) == "radial"
-) {
+#let radial-axis-of(coord) = if is-radial(coord) {
   if coord.at("theta", default: "x") == "x" { "y" } else { "x" }
 } else { none }
 
@@ -17,9 +20,7 @@
 // sweep as a `(theta-lo, theta-hi)` pair lets `map-position` produce angles
 // directly through the existing scale-mapping routines.
 #let radial-ctx(coord, x-trained, y-trained, px-range, py-range) = {
-  if coord == none or coord.at("coord", default: none) != "radial" {
-    return none
-  }
+  if not is-radial(coord) { return none }
   let (px-lo, px-hi) = px-range
   let (py-lo, py-hi) = py-range
   let centre = ((px-lo + px-hi) / 2, (py-lo + py-hi) / 2)

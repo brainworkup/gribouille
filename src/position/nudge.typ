@@ -65,7 +65,7 @@
   params: (x: x, y: y),
 )
 
-#let apply(data, mapping, params: (:)) = {
+#let apply(data, mapping, params: (:), coord: none) = {
   let dx = params.at("x", default: 0)
   let dy = params.at("y", default: 0)
   if dx == 0 and dy == 0 { return (data: data, mapping: mapping) }

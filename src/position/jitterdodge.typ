@@ -85,7 +85,7 @@
   ),
 )
 
-#let apply(data, mapping, params: (:)) = {
+#let apply(data, mapping, params: (:), coord: none) = {
   let dodge-width = params.at("dodge-width", default: 0.75)
   let jitter-width = params.at("width", default: 0.4)
   let jitter-height = params.at("height", default: 0)

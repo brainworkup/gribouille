@@ -19,11 +19,11 @@
   nudge: nudge-pos.apply,
 )
 
-#let apply-position(name, data, mapping, params: (:)) = {
+#let apply-position(name, data, mapping, params: (:), coord: none) = {
   let resolved = if name == none { "identity" } else { name }
   let apply = _POSITIONS.at(resolved, default: none)
   if apply == none {
     panic("position: unknown adjustment \"" + str(resolved) + "\"")
   }
-  apply(data, mapping, params: params)
+  apply(data, mapping, params: params, coord: coord)
 }

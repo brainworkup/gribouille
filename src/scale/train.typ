@@ -189,7 +189,9 @@
       seen.push(s)
     }
   }
-  seen
+  // Alphabetic so palette index, geom draw order, and legend agree.
+  // User `limits` override in `_train-entry`.
+  seen.sorted()
 }
 
 // Build a `(level: index)` dict from a discrete domain. O(1) level lookup

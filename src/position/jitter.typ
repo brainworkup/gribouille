@@ -78,7 +78,7 @@
   r * 2 - 1
 }
 
-#let apply(data, mapping, params: (:)) = {
+#let apply(data, mapping, params: (:), coord: none) = {
   let width = params.at("width", default: 0.4)
   let height = params.at("height", default: 0.4)
   let seed = params.at("seed", default: 0)

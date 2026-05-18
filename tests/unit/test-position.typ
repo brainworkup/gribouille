@@ -1,6 +1,7 @@
 // Position adjustments: stack, dodge, fill.
 
 #import "../../src/position/apply.typ": apply-position
+#import "../../src/coord/radial.typ": coord-radial
 
 #let assert-close(a, b, tol: 1e-9) = {
   assert(
@@ -17,8 +18,9 @@
 )
 #let mapping = (x: "q", y: "y", fill: "g")
 
-// stack: first data row sits at the top of each x bucket so the visual
-// order matches the legend.
+// stack (cartesian): first alphabetic group sits at the top of each x
+// bucket so the legend top entry matches the top band. Output preserves
+// the input row order; only ymin/ymax are reassigned per row.
 #let stacked = apply-position("stack", df, mapping)
 #assert.eq(stacked.data.at(0).ymin, 20)
 #assert.eq(stacked.data.at(0).ymax, 30)
@@ -31,7 +33,24 @@
 #assert.eq(stacked.mapping.ymin, "ymin")
 #assert.eq(stacked.mapping.ymax, "ymax")
 
-// fill: same top-down order, normalised per x.
+// stack (radial): cumulation flips to bottom-up so the first alphabetic
+// level is the first slice clockwise from 12 o'clock.
+#let stacked-radial = apply-position(
+  "stack",
+  df,
+  mapping,
+  coord: coord-radial(theta: "y"),
+)
+#assert.eq(stacked-radial.data.at(0).ymin, 0)
+#assert.eq(stacked-radial.data.at(0).ymax, 10)
+#assert.eq(stacked-radial.data.at(1).ymin, 10)
+#assert.eq(stacked-radial.data.at(1).ymax, 30)
+#assert.eq(stacked-radial.data.at(2).ymin, 0)
+#assert.eq(stacked-radial.data.at(2).ymax, 30)
+#assert.eq(stacked-radial.data.at(3).ymin, 30)
+#assert.eq(stacked-radial.data.at(3).ymax, 40)
+
+// fill (cartesian): same top-down order, normalised per x.
 #let filled = apply-position("fill", df, mapping)
 #assert.eq(filled.data.at(0).ymin, 20.0 / 30.0)
 #assert.eq(filled.data.at(0).ymax, 1.0)
@@ -39,6 +58,19 @@
 #assert.eq(filled.data.at(1).ymax, 20.0 / 30.0)
 #assert.eq(filled.data.at(2).ymax, 1.0)
 #assert.eq(filled.data.at(3).ymax, 10.0 / 40.0)
+
+// fill (radial): flipped to bottom-up.
+#let filled-radial = apply-position(
+  "fill",
+  df,
+  mapping,
+  coord: coord-radial(theta: "y"),
+)
+#assert.eq(filled-radial.data.at(0).ymin, 0.0)
+#assert.eq(filled-radial.data.at(0).ymax, 10.0 / 30.0)
+#assert.eq(filled-radial.data.at(1).ymax, 1.0)
+#assert.eq(filled-radial.data.at(2).ymax, 30.0 / 40.0)
+#assert.eq(filled-radial.data.at(3).ymax, 1.0)
 
 // dodge: uniform widths match the legacy slot layout exactly.
 #let dodged = apply-position("dodge", df, mapping)

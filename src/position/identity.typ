@@ -54,4 +54,7 @@
 /// \@see \@position-stack, \@position-dodge, \@position-fill
 #let position-identity() = (kind: "position", name: "identity")
 
-#let apply(data, mapping, params: (:)) = (data: data, mapping: mapping)
+#let apply(data, mapping, params: (:), coord: none) = (
+  data: data,
+  mapping: mapping,
+)

@@ -1,17 +1,15 @@
 ///! Stack position adjustment.
-///!
-///! Cumulates y per x bucket, writing `ymin` and `ymax` per row so geoms
-///! that honour them (like \@geom-col) can draw the stacked segment. The
-///! first row for each x sits at the top of the stack so the visual order
-///! matches the legend (top entry = top band).
 
-#import "../utils/types.typ": parse-number
+#import "_cumulate.typ": cumulate-by-x
+#import "../utils/radial.typ": is-radial
 
 /// Stack position adjustment: cumulate y per x bucket.
 ///
-/// Stacking is per x bucket across all groups. The first row for each x
-/// sits at the top of the stack, so the visual order matches the legend
-/// (top entry = top band) when data rows follow the legend order.
+/// Stacking is per x bucket across all groups. Rows are sorted by the
+/// grouping aesthetic so the first alphabetic level sits at the top of the
+/// bar in cartesian coords (legend top entry = top band). Under any
+/// `coord-radial` the cumulation flips so the first alphabetic level
+/// becomes the first slice clockwise from 12 o'clock.
 ///
 /// Typically set on a layer as `position: "stack"` rather than constructed
 /// directly; the constructor exists for symmetry with the other positions.
@@ -65,43 +63,11 @@
 /// \@see \@position-dodge, \@position-fill, \@position-identity
 #let position-stack() = (kind: "position", name: "stack")
 
-#let apply(data, mapping, params: (:)) = {
-  let x-col = mapping.at("x", default: none)
-  let y-col = mapping.at("y", default: none)
-  if x-col == none or y-col == none { return (data: data, mapping: mapping) }
-
-  let totals = (:)
-  for row in data {
-    let xv = row.at(x-col, default: none)
-    let yv = parse-number(row.at(y-col, default: none))
-    if xv == none or yv == none { continue }
-    let k = str(xv)
-    totals.insert(k, totals.at(k, default: 0.0) + yv)
+#let apply(data, mapping, params: (:), coord: none) = {
+  let slice = if is-radial(coord) {
+    (cum, yv, tot) => (cum, cum + yv)
+  } else {
+    (cum, yv, tot) => (tot - cum - yv, tot - cum)
   }
-
-  let running = (:)
-  let out = ()
-  for row in data {
-    let xv = row.at(x-col, default: none)
-    let yv = parse-number(row.at(y-col, default: none))
-    if xv == none or yv == none {
-      out.push(row)
-      continue
-    }
-    let k = str(xv)
-    let cum = running.at(k, default: 0.0)
-    let ymax = totals.at(k) - cum
-    let ymin = ymax - yv
-    running.insert(k, cum + yv)
-    let new-row = row
-    new-row.insert("ymin", ymin)
-    new-row.insert("ymax", ymax)
-    new-row.insert(y-col, ymax)
-    out.push(new-row)
-  }
-
-  let new-mapping = mapping
-  new-mapping.insert("ymin", "ymin")
-  new-mapping.insert("ymax", "ymax")
-  (data: out, mapping: new-mapping)
+  cumulate-by-x(data, mapping, slice)
 }

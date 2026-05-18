@@ -303,11 +303,6 @@
 
   if t.type == "discrete" {
     let levels = t.domain
-    let user-limits = (
-      t.at("spec", default: none) != none
-        and t.spec.at("limits", default: none) != none
-    )
-    if not user-limits { levels = levels.sorted() }
     let labels = if (
       t.at("spec", default: none) != none
     ) { t.spec.at("labels", default: auto) } else { auto }

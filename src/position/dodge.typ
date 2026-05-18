@@ -77,47 +77,53 @@
   if w == none { default-width } else { w }
 }
 
-#let apply(data, mapping, params: (:)) = {
+#let apply(data, mapping, params: (:), coord: none) = {
   let x-col = mapping.at("x", default: none)
   if x-col == none { return (data: data, mapping: mapping) }
 
   let bar-frac = params.at("width", default: 0.9)
   let padding = params.at("padding", default: 0.1)
 
-  let keys = data.map(row => group-key(row, mapping))
-  let levels = ()
-  let level-index = (:)
-  for k in keys {
-    if level-index.at(k, default: none) != none { continue }
-    level-index.insert(k, levels.len())
-    levels.push(k)
-  }
-  let n-levels = levels.len()
-  if n-levels <= 1 { return (data: data, mapping: mapping) }
-
+  // Alphabetic levels so slot order matches the trained discrete domain
+  // and the legend. Dedup is dict-keyed for O(n) instead of array-scan
+  // O(n^2).
   let buckets = (:)
   let bucket-order = ()
-  let bucket-seen = (:)
+  let level-set = (:)
   for (i, row) in data.enumerate() {
+    let key = group-key(row, mapping)
+    if key not in level-set { level-set.insert(key, true) }
     let xv = row.at(x-col, default: none)
     let bk = if xv == none { "" } else { str(xv) }
-    let bucket = buckets.at(bk, default: ())
-    bucket.push((i: i, row: row, key: keys.at(i)))
-    buckets.insert(bk, bucket)
-    if not bucket-seen.at(bk, default: false) {
-      bucket-seen.insert(bk, true)
+    if bk not in buckets {
+      buckets.insert(bk, ())
       bucket-order.push(bk)
     }
+    let bucket = buckets.at(bk)
+    bucket.push((i: i, row: row, key: key))
+    buckets.insert(bk, bucket)
   }
+  let levels = level-set.keys().sorted()
+  let level-index = (:)
+  for (idx, k) in levels.enumerate() { level-index.insert(k, idx) }
+  let n-levels = levels.len()
+  if n-levels <= 1 { return (data: data, mapping: mapping) }
 
   let n-data = data.len()
   let offsets = range(n-data).map(_ => 0.0)
   let n-slots = range(n-data).map(_ => 1)
 
   for bk in bucket-order {
-    let entries = buckets.at(bk)
-    let widths = entries.map(e => _row-width(e.row, bar-frac))
-    let uniform = widths.dedup().len() <= 1
+    let entries = buckets
+      .at(bk)
+      .map(e => (
+        i: e.i,
+        row: e.row,
+        key: e.key,
+        w: _row-width(e.row, bar-frac),
+      ))
+    let first-w = entries.first().w
+    let uniform = entries.all(e => e.w == first-w)
 
     if uniform {
       for entry in entries {
@@ -128,14 +134,18 @@
         n-slots.at(entry.i) = n-levels
       }
     } else {
-      let n = entries.len()
-      let total = widths.sum() + if n > 1 { (n - 1) * padding } else { 0 }
+      // Mixed-width path walks slots left-to-right via cursor, so entries
+      // must be sorted by group key to match the uniform path's slot order.
+      let sorted-entries = entries.sorted(key: e => e.key)
+      let n = sorted-entries.len()
+      let widths-sum = sorted-entries.fold(0.0, (acc, e) => acc + e.w)
+      let padding-sum = if n > 1 { (n - 1) * padding } else { 0 }
+      let total = widths-sum + padding-sum
       let scale = if total > 1 { 1.0 / total } else { 1.0 }
-      let eff-widths = widths.map(w => w * scale)
       let eff-pad = padding * scale
       let cursor = -0.5
-      for (k, entry) in entries.enumerate() {
-        let w = eff-widths.at(k)
+      for entry in sorted-entries {
+        let w = entry.w * scale
         let centre = cursor + w / 2
         cursor = cursor + w + eff-pad
         let half = w / 2
