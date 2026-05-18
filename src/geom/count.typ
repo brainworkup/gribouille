@@ -15,10 +15,10 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
-/// \@param size Marker size (a Typst length). Used as the fixed size when no size scale is active.
-/// \@param stroke Marker stroke; `none` means no outline.
-/// \@param fill Marker fill colour. `auto` resolves via the colour scale or a neutral default.
-/// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink`. Only takes effect when `stroke` is non-zero.
+/// \@param size Marker size (a Typst length). `auto` honours the size scale, which \@stat-sum wires to the per-cell count.
+/// \@param stroke Marker outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
+/// \@param fill Marker body fill. `auto` resolves via the fill scale or a neutral default.
+/// \@param colour Fixed marker outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 /// \@param alpha Marker opacity in `[0, 1]`.
 /// \@param shape Marker shape keyword. `auto` honours the shape scale.
 /// \@param stat Statistical transform name. Defaults to `"sum"`.
@@ -73,8 +73,8 @@
 #let geom-count(
   mapping: none,
   data: none,
-  size: 3pt,
-  stroke: none,
+  size: auto,
+  stroke: auto,
   fill: auto,
   colour: auto,
   alpha: auto,
