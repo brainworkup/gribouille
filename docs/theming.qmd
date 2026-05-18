@@ -1,0 +1,342 @@
+---
+title: "Theming"
+subtitle: "Map every visible region of a plot to the `theme()` key that styles it."
+toc: true
+toc-depth: 2
+engine: markdown
+---
+
+A _Gribouille_ plot is a stack of named regions: an outer canvas, an inner panel (or grid of panels), a strip band for facets, a legend column, a title block on top, a caption underneath, and axes around the edges.
+Each region is one entry in the [`theme()`](reference/themes/theme.qmd) dictionary, set with an [`element-text`](reference/themes/element-text.qmd), [`element-line`](reference/themes/element-line.qmd), [`element-rect`](reference/themes/element-rect.qmd), [`element-blank`](reference/themes/element-blank.qmd), or [`margin`](reference/themes/margin.qmd) value.
+This page is a map: it shows where each region sits on a real plot, names the [`theme()`](reference/themes/theme.qmd) key that controls it, and links worked examples for the common overrides.
+
+## Anatomy of a plot
+
+The diagram below is a real plot.
+Each region carries a deliberate fill so you can see where it sits, and a callout names the [`theme()`](reference/themes/theme.qmd) key that styles it.
+Compose your own overrides by replacing any of those keys.
+
+```{typst}
+//| echo: false
+//| label: fig-theme-anatomy
+//| output-filename: "/assets/typst-render/theming/theme-anatomy.svg"
+//| alt: "A faceted scatter plot annotated with callouts naming every styled region: plot-background and plot-margin around the outside, plot-title and plot-subtitle on top, plot-caption at the bottom, panel-background and panel-grid inside each facet, strip-background and strip-text on the facet header band, axis-line, axis-ticks, axis-text, and axis-title on each side, and legend-background, legend-title, and legend-text on the right."
+#import "@preview/cetz:0.5.0": canvas, draw
+
+#let ink = if _typst_render_foreground != none {
+  _typst_render_foreground
+} else {
+  rgb("#1f2328")
+}
+#let muted = rgb("#666666")
+
+#let demo-data = (
+  (g: "A", x: 1, y: 2.4),
+  (g: "A", x: 2, y: 3.1),
+  (g: "A", x: 3, y: 3.8),
+  (g: "A", x: 4, y: 4.2),
+  (g: "B", x: 1, y: 1.6),
+  (g: "B", x: 2, y: 2.0),
+  (g: "B", x: 3, y: 2.7),
+  (g: "B", x: 4, y: 3.1),
+)
+
+#let demo-plot = plot(
+  data: demo-data,
+  mapping: aes(x: "x", y: "y", colour: "g"),
+  layers: (geom-point(size: 3pt),),
+  facet: facet-wrap("g"),
+  labs: labs(
+    title: "Anatomy of a plot",
+    subtitle: "Each region is one theme() key",
+    caption: "Caption text lives in plot-caption",
+    x: "x (axis-title)",
+    y: "y (axis-title)",
+    colour: "Group",
+  ),
+  theme: theme(
+    plot-background: element-rect(fill: rgb("#fffaf0")),
+    panel-background: element-rect(fill: rgb("#eef4ff")),
+    strip-background: element-rect(fill: rgb("#ffe2d6")),
+    legend-background: element-rect(fill: rgb("#e6f4ea"), stroke: 0.3pt + rgb("#bcd9c4")),
+    panel-grid: element-line(colour: rgb("#c0c8d4"), stroke: 0.4pt),
+    axis-line: element-line(stroke: 0.6pt),
+    axis-ticks: element-line(stroke: 0.6pt),
+    plot-margin: margin(top: 0.4cm, right: 0.4cm, bottom: 0.4cm, left: 0.4cm),
+  ),
+  width: 12cm,
+  height: 6.5cm,
+)
+
+#canvas(length: 1cm, {
+  import draw: *
+  set-style(content: (frame: none))
+
+  let px = 4.5
+  let py = 4.0
+  let pw = 12.0
+  let ph = 6.5
+
+  content(
+    (px, py),
+    anchor: "south-west",
+    demo-plot,
+  )
+
+  let cstroke = 0.5pt + muted
+
+  let callout(from, label-pos, label-anchor, body) = {
+    line(label-pos, from, stroke: cstroke, mark: (end: ">"))
+    content(label-pos, anchor: label-anchor, body)
+  }
+
+  let lab(name, keys) = text(size: 7.5pt, fill: ink)[
+    *#name* \
+    #text(size: 7pt, font: "DejaVu Sans Mono", fill: muted)[#keys]
+  ]
+
+  callout(
+    (px + 0.05, py + ph - 0.1),
+    (0.2, py + ph + 1.6),
+    "south-west",
+    lab("Outer canvas", [`plot-background`]),
+  )
+
+  callout(
+    (px + 0.55, py + ph - 0.55),
+    (0.2, py + ph + 0.4),
+    "south-west",
+    lab("Inset around content", [`plot-margin`]),
+  )
+
+  callout(
+    (px + 2.0, py + ph * 0.55),
+    (0.2, py + ph * 0.55 + 0.4),
+    "south-west",
+    lab(
+      "Left axis",
+      [
+        `axis-line-y-left` \
+        `axis-ticks-y-left` \
+        `axis-text-y-left` \
+        `axis-title-y-left`
+      ],
+    ),
+  )
+
+  callout(
+    (px + pw * 0.5, py + 0.8),
+    (0.2, py - 0.3),
+    "south-west",
+    lab(
+      "Bottom axis",
+      [
+        `axis-line-x-bottom` \
+        `axis-ticks-x-bottom` \
+        `axis-text-x-bottom` \
+        `axis-title-x-bottom`
+      ],
+    ),
+  )
+
+  callout(
+    (px + pw * 0.5, py + ph - 1.0),
+    (px + pw + 0.5, py + ph + 1.4),
+    "south-west",
+    lab(
+      "Title block",
+      [
+        `plot-title` \
+        `plot-subtitle`
+      ],
+    ),
+  )
+
+  callout(
+    (px + pw * 0.45, py + ph - 1.6),
+    (px + pw + 0.5, py + ph + 0.2),
+    "south-west",
+    lab(
+      "Facet strip",
+      [
+        `strip-background` \
+        `strip-text`
+      ],
+    ),
+  )
+
+  callout(
+    (px + pw * 0.4, py + ph * 0.55),
+    (px + pw + 0.5, py + ph * 0.55 + 0.4),
+    "south-west",
+    lab(
+      "Panel",
+      [
+        `panel-background` \
+        `panel-grid`
+      ],
+    ),
+  )
+
+  callout(
+    (px + pw - 0.6, py + ph * 0.5),
+    (px + pw + 0.5, py + ph * 0.5 - 1.6),
+    "south-west",
+    lab(
+      "Legend",
+      [
+        `legend-background` \
+        `legend-title` \
+        `legend-text` \
+        `legend-bar` \
+        `legend-ticks`
+      ],
+    ),
+  )
+
+  callout(
+    (px + pw * 0.5, py + 0.35),
+    (px + pw + 0.5, py - 0.5),
+    "south-west",
+    lab("Caption", [`plot-caption`]),
+  )
+})
+```
+
+## Region to theme key reference
+
+The table below names every region the renderer styles and the [`theme()`](reference/themes/theme.qmd) key that controls it.
+Per-side axis keys (`-x-bottom`, `-x-top`, `-y-left`, `-y-right`) cascade up to the unprefixed family, so setting `axis-text` alone styles all four sides at once.
+
+| Region | Key(s) | Element type |
+|---|---|---|
+| Outer plot rectangle. | `plot-background`. | [`element-rect`](reference/themes/element-rect.qmd). |
+| Inset between the outer rectangle and the content. | `plot-margin`. | [`margin`](reference/themes/margin.qmd). |
+| Title, subtitle, caption. | `plot-title`, `plot-subtitle`, `plot-caption`. | [`element-text`](reference/themes/element-text.qmd). |
+| Drawing area inside a facet. | `panel-background`. | [`element-rect`](reference/themes/element-rect.qmd). |
+| Gridlines inside the panel. | `panel-grid`. | [`element-line`](reference/themes/element-line.qmd). |
+| Facet header band. | `strip-background`, `strip-text`. | [`element-rect`](reference/themes/element-rect.qmd), [`element-text`](reference/themes/element-text.qmd). |
+| Axis line, per side. | `axis-line`, `axis-line-x-bottom`, `axis-line-x-top`, `axis-line-y-left`, `axis-line-y-right`. | [`element-line`](reference/themes/element-line.qmd). |
+| Axis ticks, per side. | `axis-ticks`, `axis-ticks-x-bottom`, `axis-ticks-x-top`, `axis-ticks-y-left`, `axis-ticks-y-right`. | [`element-line`](reference/themes/element-line.qmd). |
+| Tick mark length, per side. | `tick-length`, `tick-length-x-bottom`, `tick-length-x-top`, `tick-length-y-left`, `tick-length-y-right`. | Typst length. |
+| Axis tick labels, per side. | `axis-text`, `axis-text-x-bottom`, `axis-text-x-top`, `axis-text-y-left`, `axis-text-y-right`. | [`element-text`](reference/themes/element-text.qmd). |
+| Axis title, per side. | `axis-title`, `axis-title-x-bottom`, `axis-title-x-top`, `axis-title-y-left`, `axis-title-y-right`. | [`element-text`](reference/themes/element-text.qmd). |
+| Discrete legend box. | `legend-background`, `legend-title`, `legend-text`. | [`element-rect`](reference/themes/element-rect.qmd), [`element-text`](reference/themes/element-text.qmd). |
+| Continuous colour bar. | `legend-bar`, `legend-ticks`. | [`element-rect`](reference/themes/element-rect.qmd), [`element-line`](reference/themes/element-line.qmd). |
+| Shared cascade parents. | `text`, `line`, `rect`. | Element constructors. |
+| Layer aesthetic defaults. | `geom`. | [`element-geom`](reference/themes/element-geom.qmd). |
+
+Any key can be hidden with [`element-blank`](reference/themes/element-blank.qmd) in place of its normal element.
+That is how [`theme-minimal`](reference/themes/theme-minimal.qmd) drops the axis line and the panel background, for example.
+
+## Override one region
+
+The lightest possible change is to pass a single record into [`theme()`](reference/themes/theme.qmd) for the region you care about.
+The example below lifts the [`axis-title`](reference/themes/element-text.qmd) and [`axis-text`](reference/themes/element-text.qmd) sizes, paints the [`panel-background`](reference/themes/element-rect.qmd) cream, and softens the [`panel-grid`](reference/themes/element-line.qmd).
+Every other surface keeps its default.
+
+```{typst}
+//| echo: true
+//| output-filename: "/assets/typst-render/theming/override.svg"
+//| alt: "Scatter plot with cream panel background, soft gridlines, and enlarged axis titles."
+#let df = range(0, 12).map(i => (x: i, y: i * i * 0.1))
+
+#plot(
+  data: df,
+  mapping: aes(x: "x", y: "y"),
+  layers: (
+    geom-line(stroke: 1.2pt, colour: rgb("#d6604d")),
+    geom-point(size: 3pt, fill: rgb("#d6604d")),
+  ),
+  theme: theme(
+    axis-title: element-text(size: 12pt),
+    axis-text: element-text(size: 10pt),
+    panel-background: element-rect(fill: rgb("#f7f0e7")),
+    panel-grid: element-line(colour: rgb("#d9cfbf")),
+  ),
+  labs: labs(
+    title: "theme() overrides",
+    subtitle: "Larger axis titles, a cream panel fill, and a soft grid",
+    x: "Step",
+    y: "y = 0.1 × x²",
+  ),
+  width: 12cm,
+  height: 7cm,
+)
+```
+
+Each line maps directly to one row in the [region table](#region-to-theme-key-reference): change a single key, the matching region updates, nothing else moves.
+
+## Tune the outer canvas
+
+The gap between the [`plot-background`](reference/themes/element-rect.qmd) rectangle and the title block is [`plot-margin`](reference/themes/margin.qmd).
+Pass [`margin`](reference/themes/margin.qmd) with any subset of `top`, `right`, `bottom`, `left`; sides left at `auto` fall through to the renderer's defaults.
+
+```{typst}
+//| echo: true
+//| output-filename: "/assets/typst-render/theming/margin.svg"
+//| alt: "Two stacked scatter plots; the lower one has wider left and bottom plot-margins than the upper one."
+#let accent = rgb("#1f77b4")
+#let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+
+#let panel(title, theme-arg) = plot(
+  data: d,
+  mapping: aes(x: "x", y: "y"),
+  layers: (
+    geom-line(stroke: 1pt, colour: accent),
+    geom-point(size: 2pt, fill: accent),
+  ),
+  labs: labs(title: title, x: "X", y: "Y"),
+  theme: theme-arg,
+  width: 12cm,
+  height: 6cm,
+)
+
+#grid(
+  columns: 1,
+  row-gutter: 0.4cm,
+  panel("Default plot-margin", theme-minimal()),
+  panel(
+    "margin(top: 0.6cm, right: 0.6cm, bottom: 0.9cm, left: 1.6cm)",
+    theme-minimal(plot-margin: margin(
+      top: 0.6cm,
+      right: 0.6cm,
+      bottom: 0.9cm,
+      left: 1.6cm,
+    )),
+  ),
+)
+```
+
+`plot-margin` shifts only the outer inset; column gutters between facet panels and the gap between the panel and the axis labels are controlled by the surrounding `axis-title.margin` and per-element `margin` fields on each [`element-text`](reference/themes/element-text.qmd).
+
+## Complete vs partial themes
+
+[`theme()`](reference/themes/theme.qmd) is the full base: every surface listed in the [reference table](#region-to-theme-key-reference) is populated.
+Use it when you want to start from scratch and define each region yourself.
+
+The library ships eight curated overrides on top of that base.
+Each one is a thin function that returns a theme with a handful of fields replaced; everything else cascades from [`theme()`](reference/themes/theme.qmd).
+
+| Function | Effect |
+|---|---|
+| [`theme-minimal`](reference/themes/theme-minimal.qmd). | Drops the axis line, the panel background, and the tick marks. The library default. |
+| [`theme-bw`](reference/themes/theme-bw.qmd). | Black-and-white frame, white panel, light grid. |
+| [`theme-classic`](reference/themes/theme-classic.qmd). | Axis lines only, no grid, no panel background. |
+| [`theme-grey`](reference/themes/theme-grey.qmd). | Grey panel background with a white grid. |
+| [`theme-light`](reference/themes/theme-light.qmd). | Light frame and grid on a white panel. |
+| [`theme-dark`](reference/themes/theme-dark.qmd). | Dark frame and grid on a dark panel. |
+| [`theme-linedraw`](reference/themes/theme-linedraw.qmd). | Black frame, dark grid, white panel. |
+| [`theme-void`](reference/themes/theme-void.qmd). | Everything removable removed; useful for inset thumbnails. |
+
+The `theme-sub-*` helpers go one level finer: they bundle the keys that move together for a single region.
+For example, [`theme-sub-axis`](reference/themes/theme-sub-axis.qmd) accepts `line`, `ticks`, `text`, `title`, and rewrites the four corresponding [`theme()`](reference/themes/theme.qmd) keys for you.
+The full set is [`theme-sub-axis`](reference/themes/theme-sub-axis.qmd), [`theme-sub-axis-x`](reference/themes/theme-sub-axis-x.qmd), [`theme-sub-axis-y`](reference/themes/theme-sub-axis-y.qmd), [`theme-sub-axis-bottom`](reference/themes/theme-sub-axis-bottom.qmd), [`theme-sub-axis-top`](reference/themes/theme-sub-axis-top.qmd), [`theme-sub-axis-left`](reference/themes/theme-sub-axis-left.qmd), [`theme-sub-axis-right`](reference/themes/theme-sub-axis-right.qmd), [`theme-sub-legend`](reference/themes/theme-sub-legend.qmd), [`theme-sub-panel`](reference/themes/theme-sub-panel.qmd), [`theme-sub-plot`](reference/themes/theme-sub-plot.qmd), and [`theme-sub-strip`](reference/themes/theme-sub-strip.qmd).
+
+Finally, [`theme-set`](reference/themes/theme-set.qmd) installs a theme as the document-wide default so subsequent `plot()` calls pick it up without an explicit `theme:` argument.
+
+## Where to go next
+
+- Browse the [themes gallery](examples/index.qmd#themes-gallery) for side-by-side renders of every built-in theme, alongside the other [theme examples](examples/index.qmd#themes).
+- See [`theme-sub-*` in action](examples/index.qmd#theme-sub) for compact ways to retouch one region at a time.
+- The full [themes reference](reference/themes/index.qmd) lists every element constructor and every cascade rule.
