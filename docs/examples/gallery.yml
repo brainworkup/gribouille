@@ -495,12 +495,6 @@
   description: 'Side-by-side gallery of [`theme-bw`](../reference/themes/theme-bw.qmd), [`theme-linedraw`](../reference/themes/theme-linedraw.qmd), [`theme-light`](../reference/themes/theme-light.qmd), [`theme-dark`](../reference/themes/theme-dark.qmd), and [`theme-minimal`](../reference/themes/theme-minimal.qmd).'
   alt: "Grid of the same two-group scatter rendered with theme-minimal, theme-bw, theme-linedraw, theme-light, and theme-dark."
 
-- slug: margin
-  section: themes
-  title: "Plot margins"
-  description: '[`margin`](../reference/themes/margin.qmd) defaults every side to `auto`; pass explicit lengths to pin individual sides while the others fall through to the renderer''s dynamic default.'
-  alt: "Three stacked panels of the same scatter, the first with default margins, the second with all four margins pinned via margin(), and the third with only top and left pinned via margin() (other sides auto)."
-
 - slug: dodge-mixed
   section: bars
   title: "Mixed-width dodge"

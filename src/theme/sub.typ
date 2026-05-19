@@ -386,7 +386,6 @@
 /// \@param title \@element-text or \@element-typst for `plot-title`.
 /// \@param subtitle Same for `plot-subtitle`.
 /// \@param caption Same for `plot-caption`.
-/// \@param margin \@margin record for `plot-margin`.
 ///
 /// \@returns Theme dictionary with the named plot overrides applied.
 ///
@@ -413,12 +412,10 @@
   title: none,
   subtitle: none,
   caption: none,
-  margin: none,
 ) = theme(
   plot-title: title,
   plot-subtitle: subtitle,
   plot-caption: caption,
-  plot-margin: margin,
 )
 
 /// Shortcut for facet strip text and background.

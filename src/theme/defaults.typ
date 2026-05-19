@@ -6,7 +6,7 @@
 
 #import "../utils/colour.typ": col-mix
 #import "elements.typ": (
-  element-blank, element-geom, element-line, element-rect, element-text, margin,
+  element-blank, element-geom, element-line, element-rect, element-text,
 )
 #import "theme.typ": default-stroke-thickness
 
@@ -64,10 +64,6 @@
   // entries leave the per-geom hardcoded fallback in place; users override
   // selectively via `theme(geom: element-geom(fill: ..., linewidth: ...))`.
   geom: element-geom(),
-
-  // Plot canvas margin (each side: a Typst length or `auto` for the
-  // renderer's dynamic default).
-  plot-margin: margin(),
 
   tick-length: 0.1cm,
   tick-labels: true,

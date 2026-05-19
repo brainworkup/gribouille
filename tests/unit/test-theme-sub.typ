@@ -4,7 +4,7 @@
   theme-sub-legend, theme-sub-panel, theme-sub-plot, theme-sub-strip,
 )
 #import "../../src/theme/elements.typ": (
-  element-blank, element-line, element-rect, element-text, margin,
+  element-blank, element-line, element-rect, element-text,
 )
 
 #let red-text = element-text(colour: red)
@@ -53,12 +53,10 @@
   title: red-text,
   subtitle: red-text,
   caption: red-text,
-  margin: margin(left: 2cm),
 )
 #assert.eq(tpl.at("plot-title"), red-text)
 #assert.eq(tpl.at("plot-subtitle"), red-text)
 #assert.eq(tpl.at("plot-caption"), red-text)
-#assert.eq(tpl.at("plot-margin").left, 2cm)
 
 #let ts = theme-sub-strip(text: red-text, background: red-rect)
 #assert.eq(ts.at("strip-text"), red-text)
