@@ -49,12 +49,15 @@
     mono: false,
   ))
 
+  // Root box width: 4-char label ("text"/"line"/"rect") at 7pt bold +
+  // 4pt x-padding on each side. Lines start past the right edge of the box.
+  let root-right = ox + 0.85
   let step = 0.55
   let cx = ox + 2.4
   let top = oy - 0.4
   for (i, child) in children.enumerate() {
     let cy = top - step * i
-    line((ox + 0.55, oy), (cx - 0.1, cy), stroke: 0.3pt + accent)
+    line((root-right, oy), (cx - 0.1, cy), stroke: 0.3pt + accent)
     content(
       (cx, cy),
       anchor: "west",
