@@ -62,7 +62,7 @@ Compose your own overrides by replacing any of those keys.
     panel-grid: element-line(colour: rgb("#c0c8d4"), stroke: 0.4pt),
     axis-line: element-line(stroke: 0.6pt),
     axis-ticks: element-line(stroke: 0.6pt),
-    plot-margin: margin(top: 0.3cm, right: 0.3cm, bottom: 0.3cm, left: 0.3cm),
+    plot-margin: margin(top: 1cm, right: 1cm, bottom: 1cm, left: 1cm),
   ),
   width: 12cm,
   height: 6.5cm,
@@ -187,6 +187,27 @@ Compose your own overrides by replacing any of those keys.
     line(c.label, c.from, stroke: cstroke, mark: (end: ">"))
     content(c.label, anchor: c.anchor, lab(c.name, c.keys))
   }
+
+  // Double-arrow indicators showing the extent of plot-margin on each rim.
+  let mstroke = 0.5pt + rgb("#bf8b00")
+  let mtag(pos, anchor) = content(
+    pos,
+    anchor: anchor,
+    text(size: 6.5pt, font: "DejaVu Sans Mono", fill: rgb("#bf8b00"))[plot-margin],
+  )
+  let dbl = (start: ">", end: ">")
+  // Top rim (vertical), between strip top and canvas top.
+  line((10.5, 9.55), (10.5, 10.8), stroke: mstroke, mark: dbl)
+  mtag((10.65, 10.18), "west")
+  // Left rim (horizontal), in clear cream above strip.
+  line((5.7, 10.3), (6.85, 10.3), stroke: mstroke, mark: dbl)
+  mtag((6.275, 10.45), "south")
+  // Right rim (horizontal), between legend right and cream right.
+  line((15.5, 8.0), (15.85, 8.0), stroke: mstroke, mark: dbl)
+  mtag((15.675, 7.85), "north")
+  // Bottom rim (vertical), between x-axis title and canvas bottom.
+  line((10.5, 4.85), (10.5, 6.05), stroke: mstroke, mark: dbl)
+  mtag((10.65, 5.45), "west")
 })
 ```
 
