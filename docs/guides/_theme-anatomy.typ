@@ -2,10 +2,10 @@
 //
 // Compile from the project root for debugging:
 //
-//   typst compile --root . docs/guides/theme-anatomy.typ docs/guides/theme-anatomy.pdf
+//   typst compile --root . docs/guides/_theme-anatomy.typ docs/guides/_theme-anatomy.pdf
 //
-// The .qmd page reuses this file via `#include "/docs/guides/theme-anatomy.typ"`
-// inside its {typst} chunk; do not move it without updating that path.
+// The .qmd page reuses this file via the `file: _theme-anatomy.typ` chunk
+// option; do not move or rename it without updating that reference.
 
 #import "/lib.typ": *
 #import "@preview/cetz:0.5.2": canvas, draw
