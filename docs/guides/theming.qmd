@@ -58,19 +58,26 @@ That is how [`theme-minimal`](../reference/themes/theme-minimal.qmd) drops the a
 ## Inheritance cascade
 
 Every styled surface walks a parent chain root-to-leaf at render time.
-The base records `text`, `line`, and `rect` feed each family root; each axis family then fans out by axis (`-x`, `-y`) and by side (`-x-bottom`, `-x-top`, `-y-left`, `-y-right`).
 The most specific record wins; unset fields inherit from the parent.
+Two patterns repeat: base records (`text`, `line`, `rect`) feed every descendant surface, and each axis family fans out by axis then by side.
 
 ```{typst}
 //| echo: false
-//| label: fig-theme-cascade
-//| fig-cap: "Theme cascade: each axis family branches by axis then by side; base records `text`, `line`, `rect` feed every descendant; the most specific record wins."
-//| output-filename: "theme-cascade.svg"
-//| file: _theme-cascade.typ
-//| alt: "Tree diagram of the theme inheritance cascade. Three base records (text, line, rect) fan out to every descendant surface. Below them, a single template tree shows how each axis family root splits into per-axis (-x, -y) and per-side (-x-bottom, -x-top, -y-left, -y-right) leaves, with <family> standing in for axis-line, axis-ticks, axis-text, or axis-title."
+//| label: fig-theme-cascade-base
+//| fig-cap: "Base records feed every descendant. Setting `text`, `line`, or `rect` cascades to every surface in its column; fields unset on the child inherit from the parent."
+//| output-filename: "theme-cascade-base.svg"
+//| file: _theme-cascade-base.typ
+//| alt: "Three columns of trees. Each base record (text, line, rect) sits on the left of its column, with edges fanning out to every descendant surface stacked vertically on the right: text feeds axis-text, axis-title, legend-text, legend-title, strip-text, plot-title, plot-subtitle, plot-caption; line feeds panel-grid, axis-line, axis-ticks, legend-ticks; rect feeds panel-background, plot-background, strip-background, legend-background, legend-bar."
 ```
 
-The `tick-length` scalar follows the same three-step cascade (`tick-length-<side>` → `tick-length-<axis>` → `tick-length`) even though it carries a Typst length, not an element record.
+```{typst}
+//| echo: false
+//| label: fig-theme-cascade-axis
+//| fig-cap: "Axis family cascade (one template, four families). Replace `<family>` with `axis-line`, `axis-ticks`, `axis-text`, or `axis-title`. Per-side leaves cascade up to per-axis, then to the family root. `tick-length` follows the same three-step cascade with a Typst length value."
+//| output-filename: "theme-cascade-axis.svg"
+//| file: _theme-cascade-axis.typ
+//| alt: "Tree diagram of the axis family cascade. A single root node labelled <family> splits into <family>-x and <family>-y, each of which then splits into two per-side leaves: <family>-x-bottom and <family>-x-top under the x branch, <family>-y-left and <family>-y-right under the y branch."
+```
 
 ## Override one region
 
