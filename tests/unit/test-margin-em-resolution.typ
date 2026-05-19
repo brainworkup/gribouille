@@ -35,8 +35,11 @@
 // none also falls through.
 #approx-eq(resolve-margin-side-cm(none, 0.4cm, size-pt: 9), 0.4)
 
-// resolve-margin-side keeps non-em behaviour for the plot-margin pathway.
+// resolve-margin-side is additive over the cm-as-float fallback chrome.
+// auto adds nothing; an explicit length is summed with the fallback.
 #assert.eq(resolve-margin-side(auto, 0.5), 0.5)
-#approx-eq(resolve-margin-side(2cm, 0.5), 2.0)
+#approx-eq(resolve-margin-side(2cm, 0.5), 2.5)
+#approx-eq(resolve-margin-side(0cm, 0.5), 0.5)
+#approx-eq(resolve-margin-side(0.4cm, 1.1), 1.5)
 
 length-to-cm and resolve-margin-side-cm smoke test passed.
