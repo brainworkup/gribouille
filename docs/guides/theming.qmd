@@ -18,9 +18,10 @@ Compose your own overrides by replacing any of those keys.
 
 ```{typst}
 //| echo: false
-//| label: theme-anatomy
+//| label: fig-theme-anatomy
+//| fig-cap: "Anatomy of a Gribouille plot: each region keyed to its `theme()` entry, with numbered markers tied to a left/right legend table."
 //| output-filename: "theme-anatomy.svg"
-//| file: theme-anatomy.typ
+//| file: _theme-anatomy.typ
 //| alt: "A faceted scatter plot annotated with callouts naming every styled region: plot-background around the outside, plot-title and plot-subtitle on top, plot-caption at the bottom, panel-background and panel-grid inside each facet, strip-background and strip-text on the facet header band, axis-line, axis-ticks, axis-text, and axis-title on each side, and legend-background, legend-title, and legend-text on the right."
 ```
 
@@ -29,24 +30,24 @@ Compose your own overrides by replacing any of those keys.
 The table below names every region the renderer styles and the [`theme()`](../reference/themes/theme.qmd) key that controls it.
 Per-side axis keys (`-x-bottom`, `-x-top`, `-y-left`, `-y-right`) cascade up to the unprefixed family, so setting `axis-text` alone styles all four sides at once.
 
-| Region | Key(s) | Element type |
-|---|---|---|
-| Outer plot rectangle. | `plot-background`. | [`element-rect`](../reference/themes/element-rect.qmd). |
-| Inner padding (grows the rectangle outward, surrounding its content). | `*-background.inset` on every rect surface. | [`margin`](../reference/themes/margin.qmd). |
-| Outer margin (reserves outer whitespace; panel canvas absorbs the diff). | `*-background.outset` on every rect surface. | [`margin`](../reference/themes/margin.qmd). |
-| Title, subtitle, caption. | `plot-title`, `plot-subtitle`, `plot-caption`. | [`element-text`](../reference/themes/element-text.qmd). |
-| Drawing area inside a facet. | `panel-background`. | [`element-rect`](../reference/themes/element-rect.qmd). |
-| Gridlines inside the panel. | `panel-grid`. | [`element-line`](../reference/themes/element-line.qmd). |
-| Facet header band. | `strip-background`, `strip-text`. | [`element-rect`](../reference/themes/element-rect.qmd), [`element-text`](../reference/themes/element-text.qmd). |
-| Axis line, per side. | `axis-line`, `axis-line-x-bottom`, `axis-line-x-top`, `axis-line-y-left`, `axis-line-y-right`. | [`element-line`](../reference/themes/element-line.qmd). |
-| Axis ticks, per side. | `axis-ticks`, `axis-ticks-x-bottom`, `axis-ticks-x-top`, `axis-ticks-y-left`, `axis-ticks-y-right`. | [`element-line`](../reference/themes/element-line.qmd). |
-| Tick mark length, per side. | `tick-length`, `tick-length-x-bottom`, `tick-length-x-top`, `tick-length-y-left`, `tick-length-y-right`. | Typst length. |
-| Axis tick labels, per side. | `axis-text`, `axis-text-x-bottom`, `axis-text-x-top`, `axis-text-y-left`, `axis-text-y-right`. | [`element-text`](../reference/themes/element-text.qmd). |
-| Axis title, per side. | `axis-title`, `axis-title-x-bottom`, `axis-title-x-top`, `axis-title-y-left`, `axis-title-y-right`. | [`element-text`](../reference/themes/element-text.qmd). |
-| Discrete legend box. | `legend-background`, `legend-title`, `legend-text`. | [`element-rect`](../reference/themes/element-rect.qmd), [`element-text`](../reference/themes/element-text.qmd). |
-| Continuous colour bar. | `legend-bar`, `legend-ticks`. | [`element-rect`](../reference/themes/element-rect.qmd), [`element-line`](../reference/themes/element-line.qmd). |
-| Shared cascade parents. | `text`, `line`, `rect`. | Element constructors. |
-| Layer aesthetic defaults. | `geom`. | [`element-geom`](../reference/themes/element-geom.qmd). |
+| Region                                                                   | Key(s)                                                                                                   | Element type                                                                                                    |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Outer plot rectangle.                                                    | `plot-background`.                                                                                       | [`element-rect`](../reference/themes/element-rect.qmd).                                                         |
+| Inner padding (grows the rectangle outward, surrounding its content).    | `*-background.inset` on every rect surface.                                                              | [`margin`](../reference/themes/margin.qmd).                                                                     |
+| Outer margin (reserves outer whitespace; panel canvas absorbs the diff). | `*-background.outset` on every rect surface.                                                             | [`margin`](../reference/themes/margin.qmd).                                                                     |
+| Title, subtitle, caption.                                                | `plot-title`, `plot-subtitle`, `plot-caption`.                                                           | [`element-text`](../reference/themes/element-text.qmd).                                                         |
+| Drawing area inside a facet.                                             | `panel-background`.                                                                                      | [`element-rect`](../reference/themes/element-rect.qmd).                                                         |
+| Gridlines inside the panel.                                              | `panel-grid`.                                                                                            | [`element-line`](../reference/themes/element-line.qmd).                                                         |
+| Facet header band.                                                       | `strip-background`, `strip-text`.                                                                        | [`element-rect`](../reference/themes/element-rect.qmd), [`element-text`](../reference/themes/element-text.qmd). |
+| Axis line, per side.                                                     | `axis-line`, `axis-line-x-bottom`, `axis-line-x-top`, `axis-line-y-left`, `axis-line-y-right`.           | [`element-line`](../reference/themes/element-line.qmd).                                                         |
+| Axis ticks, per side.                                                    | `axis-ticks`, `axis-ticks-x-bottom`, `axis-ticks-x-top`, `axis-ticks-y-left`, `axis-ticks-y-right`.      | [`element-line`](../reference/themes/element-line.qmd).                                                         |
+| Tick mark length, per side.                                              | `tick-length`, `tick-length-x-bottom`, `tick-length-x-top`, `tick-length-y-left`, `tick-length-y-right`. | Typst length.                                                                                                   |
+| Axis tick labels, per side.                                              | `axis-text`, `axis-text-x-bottom`, `axis-text-x-top`, `axis-text-y-left`, `axis-text-y-right`.           | [`element-text`](../reference/themes/element-text.qmd).                                                         |
+| Axis title, per side.                                                    | `axis-title`, `axis-title-x-bottom`, `axis-title-x-top`, `axis-title-y-left`, `axis-title-y-right`.      | [`element-text`](../reference/themes/element-text.qmd).                                                         |
+| Discrete legend box.                                                     | `legend-background`, `legend-title`, `legend-text`.                                                      | [`element-rect`](../reference/themes/element-rect.qmd), [`element-text`](../reference/themes/element-text.qmd). |
+| Continuous colour bar.                                                   | `legend-bar`, `legend-ticks`.                                                                            | [`element-rect`](../reference/themes/element-rect.qmd), [`element-line`](../reference/themes/element-line.qmd). |
+| Shared cascade parents.                                                  | `text`, `line`, `rect`.                                                                                  | Element constructors.                                                                                           |
+| Layer aesthetic defaults.                                                | `geom`.                                                                                                  | [`element-geom`](../reference/themes/element-geom.qmd).                                                         |
 
 Any key can be hidden with [`element-blank`](../reference/themes/element-blank.qmd) in place of its normal element.
 That is how [`theme-minimal`](../reference/themes/theme-minimal.qmd) drops the axis line and the panel background, for example.
@@ -143,16 +144,16 @@ Use it when you want to start from scratch and define each region yourself.
 The library ships eight curated overrides on top of that base.
 Each one is a thin function that returns a theme with a handful of fields replaced; everything else cascades from [`theme()`](../reference/themes/theme.qmd).
 
-| Function | Effect |
-|---|---|
-| [`theme-minimal`](../reference/themes/theme-minimal.qmd). | Drops the axis line, the panel background, and the tick marks. The library default. |
-| [`theme-bw`](../reference/themes/theme-bw.qmd). | Black-and-white frame, white panel, light grid. |
-| [`theme-classic`](../reference/themes/theme-classic.qmd). | Axis lines only, no grid, no panel background. |
-| [`theme-grey`](../reference/themes/theme-grey.qmd). | Grey panel background with a white grid. |
-| [`theme-light`](../reference/themes/theme-light.qmd). | Light frame and grid on a white panel. |
-| [`theme-dark`](../reference/themes/theme-dark.qmd). | Dark frame and grid on a dark panel. |
-| [`theme-linedraw`](../reference/themes/theme-linedraw.qmd). | Black frame, dark grid, white panel. |
-| [`theme-void`](../reference/themes/theme-void.qmd). | Everything removable removed; useful for inset thumbnails. |
+| Function                                                    | Effect                                                                              |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [`theme-minimal`](../reference/themes/theme-minimal.qmd).   | Drops the axis line, the panel background, and the tick marks. The library default. |
+| [`theme-bw`](../reference/themes/theme-bw.qmd).             | Black-and-white frame, white panel, light grid.                                     |
+| [`theme-classic`](../reference/themes/theme-classic.qmd).   | Axis lines only, no grid, no panel background.                                      |
+| [`theme-grey`](../reference/themes/theme-grey.qmd).         | Grey panel background with a white grid.                                            |
+| [`theme-light`](../reference/themes/theme-light.qmd).       | Light frame and grid on a white panel.                                              |
+| [`theme-dark`](../reference/themes/theme-dark.qmd).         | Dark frame and grid on a dark panel.                                                |
+| [`theme-linedraw`](../reference/themes/theme-linedraw.qmd). | Black frame, dark grid, white panel.                                                |
+| [`theme-void`](../reference/themes/theme-void.qmd).         | Everything removable removed; useful for inset thumbnails.                          |
 
 The `theme-sub-*` helpers go one level finer: they bundle the keys that move together for a single region.
 For example, [`theme-sub-axis`](../reference/themes/theme-sub-axis.qmd) accepts `line`, `ticks`, `text`, `title`, and rewrites the four corresponding [`theme()`](../reference/themes/theme.qmd) keys for you.
