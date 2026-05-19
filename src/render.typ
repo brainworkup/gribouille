@@ -1044,6 +1044,11 @@
 #let _X-LABEL-ROW-GAP = 0.35
 #let _Y-LABEL-COL-GAP = 0.5
 
+// Default gap between axis tick labels and axis title (all sides). Used as
+// the fallback for `axis-title-*` margin sides left at `auto`. Absolute pt so
+// the gap stays stable when users tune the axis-title font size.
+#let _AX-TITLE-LABEL-GAP = 5pt
+
 // One-element tuple for stand-alone guides, so callers can iterate uniformly
 // across stacks and singletons. Shared between x and y; placement on either
 // axis flows through the same rendering path.
@@ -1431,7 +1436,11 @@
         _x-sec-ext.width,
         _x-sec-ext.height,
       )
-      let x-sec-gap = _text-margin-cm(_ax-title.xt, "bottom", 0.25em)
+      let x-sec-gap = _text-margin-cm(
+        _ax-title.xt,
+        "bottom",
+        _AX-TITLE-LABEL-GAP,
+      )
       content(
         (
           (px-lo + px-hi) / 2,
@@ -1487,7 +1496,7 @@
         _y-sec-ext.height,
       )
       let title-text-cm = _ax-text-cm(_ax-title.yr.size)
-      let y-sec-gap = _text-margin-cm(_ax-title.yr, "left", 0.25em)
+      let y-sec-gap = _text-margin-cm(_ax-title.yr, "left", _AX-TITLE-LABEL-GAP)
       content(
         (
           px-hi
@@ -1765,8 +1774,8 @@
   let y-label-width = _y-label-width-stack(y-guide, _y-ext.width, _y-ext.height)
   let x-title-cm = _ax-text-cm(_ax-title.xb.size)
   let y-title-cm = _ax-text-cm(_ax-title.yl.size)
-  let x-title-gap = _text-margin-cm(_ax-title.xb, "top", 0.25em)
-  let y-title-gap = _text-margin-cm(_ax-title.yl, "right", 0.25em)
+  let x-title-gap = _text-margin-cm(_ax-title.xb, "top", _AX-TITLE-LABEL-GAP)
+  let y-title-gap = _text-margin-cm(_ax-title.yl, "right", _AX-TITLE-LABEL-GAP)
   let x-edge-offset = _tick-len.xb + 0.1 + x-label-depth + x-title-gap
   let y-edge-offset = _tick-len.yl + 0.1 + y-label-width + y-title-gap
   if show-x-title and x-title != none and _ax-title.xb.size > 0pt {
@@ -2245,7 +2254,7 @@
     _ax-text-cm(ax-title.size)
   } else { 0.0 }
   let gap-side = if axis == "y" { "left" } else { "bottom" }
-  let gap = _text-margin-cm(ax-title, gap-side, 0.25em)
+  let gap = _text-margin-cm(ax-title, gap-side, _AX-TITLE-LABEL-GAP)
   tick-len + 0.1 + label-extent + gap + title-cm + 0.05
 }
 
@@ -2645,9 +2654,20 @@
     }
     let x-title = _axis-title(x-trained, _map-name("x"))
     let y-title = _axis-title(y-trained, _map-name("y"))
+    let _len-side = (p, s, a) => _scalar-cascade(theme, p, s, a) / 1cm
+    let _tick-len = _per-side(_len-side, "tick-length")
+    let _xlbl-depth = _x-label-depth(0, 1, x-extents.width, x-extents.height)
+    let _ylbl-width = _y-label-width(0, 1, y-extents.width, y-extents.height)
+    let _xt-gap = _text-margin-cm(_ax-title.xb, "top", _AX-TITLE-LABEL-GAP)
+    let _yt-gap = _text-margin-cm(_ax-title.yl, "right", _AX-TITLE-LABEL-GAP)
+    let _xt-cm = _ax-text-cm(_ax-title.xb.size)
+    let _yt-cm = _ax-text-cm(_ax-title.yl.size)
     if x-title != none and _ax-title.xb.size > 0pt {
       content(
-        (margin.left + grid-w / 2, 0.1),
+        (
+          margin.left + grid-w / 2,
+          margin.bottom - _tick-len.xb - 0.1 - _xlbl-depth - _xt-gap - _xt-cm,
+        ),
         text(
           size: _ax-title.xb.size,
           fill: _ax-title.xb.fill,
@@ -2658,7 +2678,10 @@
     }
     if y-title != none and _ax-title.yl.size > 0pt {
       content(
-        (0.2, margin.bottom + grid-h / 2),
+        (
+          margin.left - _tick-len.yl - 0.1 - _ylbl-width - _yt-gap - _yt-cm / 2,
+          margin.bottom + grid-h / 2,
+        ),
         text(
           size: _ax-title.yl.size,
           fill: _ax-title.yl.fill,
@@ -2835,9 +2858,20 @@
     }
     let x-title = _axis-title(x-trained, _map-name("x"))
     let y-title = _axis-title(y-trained, _map-name("y"))
+    let _len-side = (p, s, a) => _scalar-cascade(theme, p, s, a) / 1cm
+    let _tick-len = _per-side(_len-side, "tick-length")
+    let _xlbl-depth = _x-label-depth(0, 1, x-extents.width, x-extents.height)
+    let _ylbl-width = _y-label-width(0, 1, y-extents.width, y-extents.height)
+    let _xt-gap = _text-margin-cm(_ax-title.xb, "top", _AX-TITLE-LABEL-GAP)
+    let _yt-gap = _text-margin-cm(_ax-title.yl, "right", _AX-TITLE-LABEL-GAP)
+    let _xt-cm = _ax-text-cm(_ax-title.xb.size)
+    let _yt-cm = _ax-text-cm(_ax-title.yl.size)
     if x-title != none and _ax-title.xb.size > 0pt {
       content(
-        (margin.left + grid-w / 2, 0.1),
+        (
+          margin.left + grid-w / 2,
+          margin.bottom - _tick-len.xb - 0.1 - _xlbl-depth - _xt-gap - _xt-cm,
+        ),
         text(
           size: _ax-title.xb.size,
           fill: _ax-title.xb.fill,
@@ -2848,7 +2882,10 @@
     }
     if y-title != none and _ax-title.yl.size > 0pt {
       content(
-        (0.2, margin.bottom + grid-h / 2),
+        (
+          margin.left - _tick-len.yl - 0.1 - _ylbl-width - _yt-gap - _yt-cm / 2,
+          margin.bottom + grid-h / 2,
+        ),
         text(
           size: _ax-title.yl.size,
           fill: _ax-title.yl.fill,
@@ -3249,15 +3286,15 @@
   let y-label-width = if labels-on {
     _y-label-width-stack(y-guide, y-extents.width, y-extents.height)
   } else { 0.0 }
-  let bottom-gap = _text-margin-cm(ax-title.xb, "top", 0.25em)
-  let left-gap = _text-margin-cm(ax-title.yl, "right", 0.25em)
+  let bottom-gap = _text-margin-cm(ax-title.xb, "top", _AX-TITLE-LABEL-GAP)
+  let left-gap = _text-margin-cm(ax-title.yl, "right", _AX-TITLE-LABEL-GAP)
   let x-title-cm = _ax-text-cm(ax-title.xb.size)
   let y-title-cm = _ax-text-cm(ax-title.yl.size)
   let bottom-extent = (
     tick-len.xb + 0.1 + x-label-depth + bottom-gap + x-title-cm + 0.05
   )
   let left-extent = (
-    tick-len.yl + 0.1 + y-label-width + left-gap + y-title-cm + 0.05
+    tick-len.yl + 0.1 + y-label-width + left-gap + y-title-cm
   )
 
   // Cap the right margin so the legend can never push panel width below the
@@ -3275,7 +3312,7 @@
   // heights/widths and invert the panel rect. Drop the floor when the
   // computed extent is below ~0.3 cm (no meaningful axis content to clear).
   let bottom-floor = if bottom-extent > 0.3 { 1.1 } else { 0.0 }
-  let left-floor = if left-extent > 0.3 { 1.5 } else { 0.0 }
+  let left-floor = 0.0
   let _floor(side, floor, computed) = if tight-sides.contains(side) {
     computed
   } else { calc.max(floor, computed) }
