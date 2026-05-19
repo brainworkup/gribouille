@@ -1044,6 +1044,21 @@
   panic("legend: unknown guide kind \"" + g.kind + "\"")
 }
 
+// Paint the legend-background rect when the theme sets a fill or a stroke;
+// otherwise stay silent so plots without a themed legend backdrop look the
+// same as before.
+#let _draw-bg(theme, x0, y0, x1, y1) = {
+  let bg = _rect-style(theme, "legend-background")
+  if bg.fill != none or bg.stroke != none {
+    cetz.draw.rect(
+      (x0, y0),
+      (x1, y1),
+      fill: bg.fill,
+      stroke: bg.stroke,
+    )
+  }
+}
+
 #let _draw-side(
   side,
   side-guides,
@@ -1070,16 +1085,33 @@
     } else {
       px - margin.left + 0.05
     }
-    let cursor = py + ph
+    let cursor-top = py + ph
+    let total-h = 0.0
+    let max-w = 0.0
+    for g in side-guides {
+      total-h += _guide-render-height(g, title-h)
+      if g.width > max-w { max-w = g.width }
+    }
+    if side-guides.len() > 1 {
+      total-h += stack-gap * (side-guides.len() - 1)
+    }
+    _draw-bg(theme, ox, cursor-top - total-h, ox + max-w, cursor-top)
+
+    let cursor = cursor-top
     for g in side-guides {
       _draw-guide-body(g, ctx, ox, cursor, theme, title-h)
       cursor -= _guide-render-height(g, title-h) + stack-gap
     }
   } else {
     let max-h = 0.0
+    let total-w = 0.0
     for g in side-guides {
       let h = _guide-render-height(g, title-h)
       if h > max-h { max-h = h }
+      total-w += g.width
+    }
+    if side-guides.len() > 1 {
+      total-w += stack-gap * (side-guides.len() - 1)
     }
     let cursor-y = if side == "top" {
       py + ph + sec-x-extent + legend-gap + max-h
@@ -1087,6 +1119,7 @@
       py - margin.bottom + 0.4 + max-h
     }
     let cursor-x = px
+    _draw-bg(theme, cursor-x, cursor-y - max-h, cursor-x + total-w, cursor-y)
     for g in side-guides {
       _draw-guide-body(g, ctx, cursor-x, cursor-y, theme, title-h)
       cursor-x += g.width + stack-gap
@@ -1134,16 +1167,7 @@
   ox += _resolve-offset(g.placement.dx, panel-rect.w)
   oy-top -= _resolve-offset(g.placement.dy, panel-rect.h)
 
-  let bg = _rect-style(theme, "legend-background")
-  if bg.fill != none or bg.stroke != none {
-    cetz.draw.rect(
-      (ox, oy-top - g.height),
-      (ox + g.width, oy-top),
-      fill: bg.fill,
-      stroke: bg.stroke,
-    )
-  }
-
+  _draw-bg(theme, ox, oy-top - g.height, ox + g.width, oy-top)
   _draw-guide-body(g, ctx, ox, oy-top, theme, title-h)
 }
 
