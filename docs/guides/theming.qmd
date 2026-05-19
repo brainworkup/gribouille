@@ -21,7 +21,7 @@ Compose your own overrides by replacing any of those keys.
 //| label: fig-theme-anatomy
 //| output-filename: "theme-anatomy.svg"
 //| alt: "A faceted scatter plot annotated with callouts naming every styled region: plot-background and plot-margin around the outside, plot-title and plot-subtitle on top, plot-caption at the bottom, panel-background and panel-grid inside each facet, strip-background and strip-text on the facet header band, axis-line, axis-ticks, axis-text, and axis-title on each side, and legend-background, legend-title, and legend-text on the right."
-#import "@preview/cetz:{{< var dependencies.cetz.version >}}": canvas, draw
+#import "@preview/cetz:0.5.2": canvas, draw
 
 #let ink = if _typst_render_foreground != none {
   _typst_render_foreground
