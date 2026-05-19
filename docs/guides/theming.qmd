@@ -256,8 +256,8 @@ Each line maps directly to one row in the [region table](#region-to-theme-key-re
 
 ## Tune the outer canvas
 
-The gap between the [`plot-background`](../reference/themes/element-rect.qmd) rectangle and the title block is [`plot-margin`](../reference/themes/margin.qmd).
-Pass [`margin`](../reference/themes/margin.qmd) with any subset of `top`, `right`, `bottom`, `left`; sides left at `auto` fall through to the renderer's defaults.
+[`plot-margin`](../reference/themes/margin.qmd) is the extra outer padding added beyond the dynamic chrome slot that the renderer always reserves for the axis title, tick labels, and any side legend.
+Pass [`margin`](../reference/themes/margin.qmd) with any subset of `top`, `right`, `bottom`, `left`; sides left at `auto` add nothing, so the canvas hugs the chrome.
 
 ```{typst}
 //| echo: true
@@ -295,7 +295,7 @@ Pass [`margin`](../reference/themes/margin.qmd) with any subset of `top`, `right
 )
 ```
 
-`plot-margin` shifts only the outer inset; column gutters between facet panels and the gap between the panel and the axis labels are controlled by the surrounding `axis-title.margin` and per-element `margin` fields on each [`element-text`](../reference/themes/element-text.qmd).
+`plot-margin` only adds outer padding; column gutters between facet panels and the gap between the panel and the axis labels are controlled by the surrounding `axis-title.margin` and per-element `margin` fields on each [`element-text`](../reference/themes/element-text.qmd).
 
 ## Complete vs partial themes
 

@@ -448,10 +448,11 @@
 /// )
 /// ```
 ///
-/// \@examples Tweak the scalar fields: bigger ticks, no tick labels, and a
-/// wider left margin so a long axis title fits.
+/// \@examples Tweak the scalar fields: bigger ticks, no tick labels, and an
+/// extra 2 cm of left-hand outer padding on top of the y-axis-title chrome
+/// (the `plot-margin` value is additive over the dynamic chrome slot).
 /// ```
-/// //| alt: "Scatter plot of cumulative response against x with longer 0.25cm ticks, hidden tick labels and a widened left margin for the long y-axis title."
+/// //| alt: "Scatter plot of cumulative response against x with longer 0.25cm ticks, hidden tick labels and an additional 2cm of outer padding to the left of the y-axis-title chrome."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,

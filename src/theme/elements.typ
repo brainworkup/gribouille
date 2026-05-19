@@ -330,14 +330,16 @@
 /// \@see \@theme, \@element-text, \@element-line, \@element-rect
 #let element-blank() = (kind: "element-blank")
 
-/// Plot-margin specification: padding on each side of the plot canvas.
+/// Plot-margin specification: extra outer padding on each side of the plot canvas.
 ///
-/// Each side accepts a Typst length (e.g., `1cm`, `8pt`) or `auto` to fall
-/// through to the renderer's dynamic default (which leaves room for the
-/// axis title, tick labels, and any legend). Defaults to `auto` on every
-/// side so calling `margin()` with no arguments resets to the dynamic
-/// default, and `margin(left: 2cm)` overrides only the left side. Pass
-/// the result to \@theme under the `plot-margin` key.
+/// Each side accepts a Typst length (e.g., `1cm`, `8pt`) or `auto`. The
+/// renderer always reserves a dynamic inner chrome slot for the axis title,
+/// tick labels, and any side legend; this `margin()` adds further padding
+/// *outside* that slot. `auto` adds nothing on that side. Defaults to `auto`
+/// on every side, so calling `margin()` with no arguments yields a tight
+/// outer canvas, and `margin(left: 2cm)` reserves an extra 2 cm of left-hand
+/// padding beyond the chrome already required for the y-axis title and
+/// tick labels. Pass the result to \@theme under the `plot-margin` key.
 ///
 /// \@category Themes
 /// \@subcategory Theme elements
@@ -351,30 +353,16 @@
 ///
 /// \@returns Margin dictionary consumed by \@theme.
 ///
-/// \@examples Wide left margin to give a long axis title room to breathe;
-/// other sides keep the renderer's default.
+/// \@examples Reserve an extra 2 cm of left-hand padding beyond the
+/// y-axis-title chrome; other sides stay tight against the chrome.
 /// ```
-/// //| alt: "Scatter plot of y against x with a widened 2cm left plot margin and a slightly taller top margin via the margin record."
+/// //| alt: "Scatter plot of y against x with an extra 2cm of left-hand outer padding beyond the y-axis chrome and a 0.5cm extra top margin via the margin record."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
 ///   theme: theme(plot-margin: margin(left: 2cm, top: 0.5cm)),
-///   width: 10cm,
-///   height: 6cm,
-/// )
-/// ```
-///
-/// \@examples Pin every side to zero for an edge-to-edge canvas.
-/// ```
-/// //| alt: "Scatter plot of y against x with all four plot margins pinned to zero so the chart fills the canvas edge to edge."
-/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
-/// #plot(
-///   data: d,
-///   mapping: aes(x: "x", y: "y"),
-///   layers: (geom-point(size: 2pt),),
-///   theme: theme(plot-margin: margin(top: 0pt, right: 0pt, bottom: 0pt, left: 0pt)),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
