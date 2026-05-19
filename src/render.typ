@@ -2879,6 +2879,7 @@
         legend-gap: legend-gap,
         sec-y-extent: sec-y-extent,
         right-strip: right-strip,
+        top-strip: top-strip,
         theme: theme,
       )
     }

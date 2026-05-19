@@ -1120,6 +1120,7 @@
   sec-y-extent,
   sec-x-extent,
   right-strip,
+  top-strip,
   theme,
 ) = {
   if side-guides.len() == 0 { return }
@@ -1147,7 +1148,6 @@
     } else {
       px - margin.left + 0.05
     }
-    let cursor-top = py + ph
     let total-h = 0.0
     let max-w = 0.0
     for g in side-guides {
@@ -1157,6 +1157,12 @@
     if side-guides.len() > 1 {
       total-h += stack-gap * (side-guides.len() - 1)
     }
+    // Centre the stack vertically over the panel + col-strip chrome.
+    // `top-strip` (facet-grid only) extends the chrome upward; wrap
+    // folds the strip into `ph`, single plot leaves both at panel
+    // height.
+    let chrome-h = ph + top-strip
+    let cursor-top = py + (chrome-h + total-h) / 2
     _draw-bg(theme, ctx, ox, cursor-top - total-h, ox + max-w, cursor-top)
 
     let cursor = cursor-top
@@ -1180,7 +1186,11 @@
     } else {
       py - margin.bottom + 0.4 + max-h
     }
-    let cursor-x = px
+    // Centre the row of guides horizontally over the panel + row-strip
+    // chrome. `right-strip` (facet-grid row facets) extends the chrome
+    // rightward; otherwise it's zero and the legend centres over `pw`.
+    let chrome-w = pw + right-strip
+    let cursor-x = px + (chrome-w - total-w) / 2
     _draw-bg(
       theme,
       ctx,
@@ -1249,6 +1259,7 @@
   sec-y-extent: 0.0,
   sec-x-extent: 0.0,
   right-strip: 0.0,
+  top-strip: 0.0,
   theme: none,
 ) = {
   if guides.len() == 0 { return }
@@ -1267,6 +1278,7 @@
       sec-y-extent,
       sec-x-extent,
       right-strip,
+      top-strip,
       theme,
     )
   }
