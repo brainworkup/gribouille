@@ -37,16 +37,23 @@
   first != none
 }
 
-#let _coerce-placement(g, side) = legend-mod.recompute-extent((
-  ..g,
-  placement: (
-    ..g.placement,
-    side: side,
-    direction: if side == "top" or side == "bottom" {
-      "horizontal"
-    } else { "vertical" },
+// Compose's heuristic sizing pass uses the default 9pt body. The visible
+// legend is re-rendered via `standalone()` later with the actual theme.
+#let _COMPOSE-SIZE-PT = 9
+
+#let _coerce-placement(g, side) = legend-mod.recompute-extent(
+  (
+    ..g,
+    placement: (
+      ..g.placement,
+      side: side,
+      direction: if side == "top" or side == "bottom" {
+        "horizontal"
+      } else { "vertical" },
+    ),
   ),
-))
+  _COMPOSE-SIZE-PT,
+)
 
 #let _legend-canvas-size(guides, side) = {
   let extents = legend-mod.estimate-extents(guides)

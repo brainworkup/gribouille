@@ -15,7 +15,7 @@
 #import "theme/current.typ": _theme-state
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": (
-  _line-stroke, _rect-style, _scalar-cascade, _text-style,
+  _line-stroke, _rect-outset-cm, _rect-style, _scalar-cascade, _text-style,
 )
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
@@ -33,7 +33,8 @@
   group-theta-breaks, polar-canvas, radial-arc, radial-axis-of, radial-ctx,
 )
 #import "utils/margin.typ": (
-  length-to-cm, resolve-margin-side, resolve-margin-side-cm,
+  length-to-cm, opposite-side, perpendicular-sides, resolve-margin-side-cm,
+  resolve-margin-side-rel-cm,
 )
 #import "utils/label-draw.typ" as label-draw
 #import "utils/measure.typ": measure-labels-cm, measure-text-cm
@@ -1086,6 +1087,8 @@
   y-extents: none,
   x-sec-extents: none,
   y-sec-extents: none,
+  canvas-w: 0,
+  canvas-h: 0,
 ) = {
   import cetz.draw: *
   let (ox, oy) = origin
@@ -1133,6 +1136,8 @@
     resolve-colour: _make-resolve-colour(_ink),
     theme: theme,
     flipped: flipped,
+    canvas-w: canvas-w,
+    canvas-h: canvas-h,
   )
 
   let x-trained = trained.at("x", default: none)
@@ -1146,7 +1151,12 @@
     theme,
     "panel-background",
     fallback-fill: theme.paper,
+    outset-ref-w: canvas-w,
+    outset-ref-h: canvas-h,
   )
+  // Panel rect stays glued to the natural panel canvas so a themed `inset`
+  // cannot bleed past adjacent facets or chrome. Visible breathing room
+  // around a panel is the job of `outset` (chrome reservation upstream).
   if _panel.fill != none or _panel.stroke != none {
     if is-radial {
       cetz.draw.circle(
@@ -2146,7 +2156,6 @@
 }
 
 #let _render-style(theme) = (
-  strip: _rect-style(theme, "strip-background", fallback-fill: theme.paper),
   strip-text: _text-style(theme, "strip-text"),
   ax-title: _per-side(
     (p, s, _) => _text-style(theme, p + "-" + s),
@@ -2156,13 +2165,29 @@
 
 // Draw one facet strip: a filled rectangle with the labeller text centred
 // inside. Shared between facet-wrap (top strip) and facet-grid (top + side
-// strips). `angle` is `-90deg` for the rotated row-strip, else `0deg`.
-#let _draw-strip(corner-lo, corner-hi, label-text, style, angle: 0deg) = {
+// strips). `angle` is `-90deg` for the rotated row-strip, else `0deg`. Text
+// stays centred on the natural band so themed inset offsets paint past
+// the band without dragging the label with them. `%` on inset resolves
+// against the band's own dims (band-w x band-h) so a 5% inset paints
+// inside the band rather than overflowing onto neighbouring panels.
+#let _draw-strip(
+  corner-lo,
+  corner-hi,
+  label-text,
+  style,
+  theme,
+  angle: 0deg,
+) = {
+  let strip = _rect-style(
+    theme,
+    "strip-background",
+    fallback-fill: theme.paper,
+  )
   cetz.draw.rect(
     corner-lo,
     corner-hi,
-    fill: style.strip.fill,
-    stroke: style.strip.stroke,
+    fill: strip.fill,
+    stroke: strip.stroke,
   )
   let (cx, cy) = (
     (corner-lo.at(0) + corner-hi.at(0)) / 2,
@@ -2224,25 +2249,6 @@
   tick-len + 0.1 + label-extent + gap + title-cm + 0.05
 }
 
-
-// Build the four-sided margin used by the canvas layout. `theme-margin` may
-// be `none` or a non-margin value (use the dynamic default verbatim) or a
-// `margin(...)` dict whose per-side values override the dynamic default.
-#let _resolve-margin(theme-margin, auto-margin) = {
-  if (
-    theme-margin == none
-      or type(theme-margin) != dictionary
-      or theme-margin.at("kind", default: none) != "margin"
-  ) {
-    return auto-margin
-  }
-  (
-    top: resolve-margin-side(theme-margin.top, auto-margin.top),
-    right: resolve-margin-side(theme-margin.right, auto-margin.right),
-    bottom: resolve-margin-side(theme-margin.bottom, auto-margin.bottom),
-    left: resolve-margin-side(theme-margin.left, auto-margin.left),
-  )
-}
 
 // ASCII Unit Separator joins the two grid-facet level strings into a single
 // dict key. Assumed absent from any user-facing facet level.
@@ -2583,6 +2589,7 @@
         (x0 + panel-w, y0 + panel-h + strip-h),
         strip-text,
         style,
+        theme,
       )
       let panel-trained = if panel-trained-list.len() == 0 {
         trained
@@ -2626,6 +2633,8 @@
         y-extents: _pe.y,
         x-sec-extents: _pe.x-sec,
         y-sec-extents: _pe.y-sec,
+        canvas-w: width-units,
+        canvas-h: height-units,
       )
     }
 
@@ -2664,6 +2673,8 @@
         trained: trained,
         palette: default-discrete,
         theme: theme,
+        canvas-w: width-units,
+        canvas-h: height-units,
       )
       legend-mod.draw(
         guides,
@@ -2782,6 +2793,8 @@
           y-extents: y-extents,
           x-sec-extents: x-sec-extents,
           y-sec-extents: y-sec-extents,
+          canvas-w: width-units,
+          canvas-h: height-units,
         )
       }
     }
@@ -2795,6 +2808,7 @@
           (x0 + panel-w, strip-y + top-strip),
           col-strip-texts.at(c),
           style,
+          theme,
         )
       }
     }
@@ -2808,6 +2822,7 @@
           (strip-x + right-strip, y0 + panel-h),
           row-strip-texts.at(r),
           style,
+          theme,
           angle: -90deg,
         )
       }
@@ -2848,6 +2863,8 @@
         trained: trained,
         palette: default-discrete,
         theme: theme,
+        canvas-w: width-units,
+        canvas-h: height-units,
       )
       legend-mod.draw(
         guides,
@@ -2861,7 +2878,6 @@
         margin: margin,
         legend-gap: legend-gap,
         sec-y-extent: sec-y-extent,
-        sec-x-extent: sec-x-extent,
         right-strip: right-strip,
         theme: theme,
       )
@@ -2920,18 +2936,56 @@
       y-extents: y-extents,
       x-sec-extents: x-sec-extents,
       y-sec-extents: y-sec-extents,
+      canvas-w: width-units,
+      canvas-h: height-units,
     )
   })
 }
 
-#let _render-decorate(canvas, labs, theme) = {
-  let plot-bg = _rect-style(theme, "plot-background")
+// Resolve a `margin(...)` record into a four-side dict of absolute Typst
+// cm lengths. Per-side `%` / `relative` values are resolved against the
+// canvas dims (`ref-w` for horizontal sides, `ref-h` for vertical), so
+// plot-background's `pad()` / `block(inset:)` agree with the cetz rect
+// surfaces on what `100%` means (the plot canvas, not the surrounding
+// Typst block).
+#let _margin-lengths(rec, ref-w, ref-h, size-pt) = (
+  top: resolve-margin-side-rel-cm(rec.top, ref-h, size-pt: size-pt) * 1cm,
+  right: resolve-margin-side-rel-cm(rec.right, ref-w, size-pt: size-pt) * 1cm,
+  bottom: resolve-margin-side-rel-cm(rec.bottom, ref-h, size-pt: size-pt) * 1cm,
+  left: resolve-margin-side-rel-cm(rec.left, ref-w, size-pt: size-pt) * 1cm,
+)
+
+#let _render-decorate(canvas, labs, theme, canvas-w, canvas-h) = {
+  let plot-bg = _rect-style(
+    theme,
+    "plot-background",
+    inset-ref-w: canvas-w,
+    inset-ref-h: canvas-h,
+    outset-ref-w: canvas-w,
+    outset-ref-h: canvas-h,
+  )
+  // `inset` grows the fill past the content via Typst `block(inset: ...)`
+  // (inner padding); `outset` reserves whitespace around the block by
+  // wrapping it in an outer `pad(...)` (outer margin).
+  let _size-pt = if (
+    type(theme.at("text", default: none)) == dictionary
+      and theme.text.at("size", default: none) != none
+  ) { theme.text.size / 1pt } else { 9 }
+  let outer-pad = _margin-lengths(plot-bg.outset, canvas-w, canvas-h, _size-pt)
+  let inner-inset = _margin-lengths(plot-bg.inset, canvas-w, canvas-h, _size-pt)
   let _wrap(content) = if plot-bg.fill != none or plot-bg.stroke != none {
-    block(
-      fill: plot-bg.fill,
-      stroke: plot-bg.stroke,
-      breakable: false,
-      content,
+    pad(
+      top: outer-pad.top,
+      right: outer-pad.right,
+      bottom: outer-pad.bottom,
+      left: outer-pad.left,
+      block(
+        fill: plot-bg.fill,
+        stroke: plot-bg.stroke,
+        breakable: false,
+        inset: inner-inset,
+        content,
+      ),
     )
   } else { content }
   if labs == none { return _wrap(canvas) }
@@ -2994,6 +3048,11 @@
   let theme = merge-theme(user-theme)
   let labs = spec.at("labs", default: none)
 
+  // Canvas dims known up-front from `spec.width` / `spec.height`; cetz
+  // draw sites resolve their own rect `%` insets against per-rect natural
+  // dims, but layout-time `outset` reservation references the canvas.
+  let width-units-early = spec.width / 1cm
+  let height-units-early = spec.height / 1cm
   let style = _render-style(theme)
 
   let spec = _preprocess-data(spec)
@@ -3103,12 +3162,15 @@
     free-y,
   )
 
-  let width-units = spec.width / 1cm
-  let height-units = spec.height / 1cm
+  let width-units = width-units-early
+  let height-units = height-units-early
 
+  // Legend-text font size drives every label-width / line-height
+  // measurement done inside `guides-for`.
+  let _legend-size-pt = _text-style(theme, "legend-text").size / 1pt
   // Custom guides lack `aesthetics`; default keeps them unsuppressed.
   let guides = legend-mod
-    .guides-for(spec, trained)
+    .guides-for(spec, trained, size-pt: _legend-size-pt)
     .filter(g => {
       let aes = g.at("aesthetics", default: ())
       not aes.any(a => suppress-aesthetics.contains(a))
@@ -3177,7 +3239,7 @@
   let x-guide = _read-axis-guide(spec, "x")
   let y-guide = _read-axis-guide(spec, "y")
   // Themes that disable tick labels (`theme-void`) reserve no perpendicular
-  // depth for them; otherwise the auto-margin reserves space for ink that
+  // depth for them; otherwise the chrome margin reserves space for ink that
   // never draws, inverting the panel rect on small plot sizes.
   let labels-on = theme.at("tick-labels", default: true)
   let x-label-depth = if labels-on {
@@ -3216,15 +3278,71 @@
   let _floor(side, floor, computed) = if tight-sides.contains(side) {
     computed
   } else { calc.max(floor, computed) }
-  let auto-margin = (
-    left: _floor("left", left-floor, left-extent + _side-gap("left")),
-    bottom: _floor("bottom", bottom-floor, bottom-extent + _side-gap("bottom")),
-    top: 0.3 + sec-x-extent + _side-gap("top"),
-    right: calc.min(0.3 + sec-y-extent + _side-gap("right"), max-right-margin),
+  // Themed `outset` on rect surfaces reserves outer whitespace by widening
+  // the chrome slot on each side; the panel canvas absorbs the diff.
+  // `strip-background` is the facet decoration band itself, so its `inset`
+  // and `outset` are ignored (no chrome reservation, no rect growth).
+  // For every legend on side S, all four `outset` sides feed chrome
+  // reservation: slot-axis sides (S and its opposite) inflate `margin.S`
+  // -- the opposite side (panel-facing) is also mirrored into
+  // `legend-gap` so the visible gap between panel and legend grows;
+  // perpendicular sides inflate the matching `margin.{perpendicular}`.
+  let any-bar = guides.any(g => g.kind == "colourbar")
+  let panel-out = _rect-outset-cm(
+    theme,
+    "panel-background",
+    ref-w: width-units,
+    ref-h: height-units,
   )
-  let margin = _resolve-margin(
-    theme.at("plot-margin", default: none),
-    auto-margin,
+  let legend-out = _rect-outset-cm(
+    theme,
+    "legend-background",
+    ref-w: width-units,
+    ref-h: height-units,
+  )
+  let bar-out = if any-bar {
+    _rect-outset-cm(
+      theme,
+      "legend-bar",
+      ref-w: width-units,
+      ref-h: height-units,
+    )
+  } else { (top: 0.0, right: 0.0, bottom: 0.0, left: 0.0) }
+  // For every active legend on side `leg-side`, the slot-axis outset
+  // sides (leg-side + its opposite) sum into `margin.{leg-side}`; the
+  // perpendicular sides feed `margin.{perpendicular}`. Fold once into a
+  // four-side dict so `_surface-out` is a flat read.
+  let _by-margin-side(out) = {
+    let acc = (top: 0.0, right: 0.0, bottom: 0.0, left: 0.0)
+    for leg-side in ("top", "right", "bottom", "left") {
+      if extents.at(leg-side) <= 0 { continue }
+      acc.insert(
+        leg-side,
+        acc.at(leg-side)
+          + out.at(leg-side)
+          + out.at(opposite-side.at(leg-side)),
+      )
+      for perp in perpendicular-sides.at(leg-side) {
+        acc.insert(perp, acc.at(perp) + out.at(perp))
+      }
+    }
+    acc
+  }
+  let legend-by-side = _by-margin-side(legend-out)
+  let bar-by-side = _by-margin-side(bar-out)
+  let _surface-out(side) = (
+    panel-out.at(side) + legend-by-side.at(side) + bar-by-side.at(side)
+  )
+  let margin = (
+    left: _floor("left", left-floor, left-extent + _side-gap("left"))
+      + _surface-out("left"),
+    bottom: _floor("bottom", bottom-floor, bottom-extent + _side-gap("bottom"))
+      + _surface-out("bottom"),
+    top: 0.3 + sec-x-extent + _side-gap("top") + _surface-out("top"),
+    right: calc.min(
+      0.3 + sec-y-extent + _side-gap("right") + _surface-out("right"),
+      max-right-margin,
+    ),
   )
 
   let canvas = if facet-wrap-mode {
@@ -3296,7 +3414,7 @@
   }
 
   (
-    content: _render-decorate(canvas, labs, theme),
+    content: _render-decorate(canvas, labs, theme, width-units, height-units),
     guides: guides,
     trained: trained,
   )

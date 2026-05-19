@@ -10,6 +10,9 @@
 
 #import "elements.typ": element-geom
 #import "../utils/colour.typ": col-mix
+#import "../utils/margin.typ": (
+  resolve-margin-side-cm, resolve-margin-side-rel-cm,
+)
 
 #let _surface-parent = {
   let out = (
@@ -237,8 +240,8 @@
   panic("geom-fill-default: unknown role " + role)
 }
 
-// Default per-side text margin: every side `auto` so each consumption site
-// supplies its own renderer fallback.
+// Sentinel shared by text and rect element normalisation; every side `auto`
+// so the consumption site supplies its own fallback.
 #let _empty-margin = (
   kind: "margin",
   top: auto,
@@ -247,10 +250,32 @@
   left: auto,
 )
 
-// Normalise a `margin` field on a text element to the four-side dict shape
-// the renderer expects. Accepts `none`, a `margin(...)` record, or any other
-// value (treated as `none`). Missing sides default to `auto`.
-#let _normalise-text-margin(value) = {
+#let _zero-margin-cm = (top: 0.0, right: 0.0, bottom: 0.0, left: 0.0)
+
+// Resolve a normalised margin record to per-side cm floats. Top / bottom
+// reference `ref-h`; left / right reference `ref-w`; both are cm floats
+// used as the `100%` denominator for `ratio` / `relative` sides. Absolute
+// and em values ignore the references and resolve against `size-pt`.
+#let _margin-to-cm(margin, ref-w, ref-h, size-pt) = (
+  top: resolve-margin-side-rel-cm(margin.top, ref-h, size-pt: size-pt),
+  right: resolve-margin-side-rel-cm(margin.right, ref-w, size-pt: size-pt),
+  bottom: resolve-margin-side-rel-cm(margin.bottom, ref-h, size-pt: size-pt),
+  left: resolve-margin-side-rel-cm(margin.left, ref-w, size-pt: size-pt),
+)
+
+// Look up the theme's base text size in pt; falls back to 9 when the
+// `text` surface is absent (partial user theme).
+#let _theme-size-pt(theme) = {
+  let text-el = theme.at("text", default: none)
+  if (
+    type(text-el) == dictionary and text-el.at("size", default: none) != none
+  ) { text-el.size / 1pt } else { 9 }
+}
+
+// Normalise a `margin` field to the four-side dict shape the renderer
+// expects. Accepts `none`, a `margin(...)` record, or any other value
+// (treated as `none`). Missing sides default to `auto`.
+#let _normalise-margin(value) = {
   if (
     value == none
       or type(value) != dictionary
@@ -282,7 +307,7 @@
     fill: if colour != none { colour } else { theme.ink },
     weight: if weight != none { weight } else { "regular" },
     typst: el.at("kind", default: none) == "element-typst",
-    margin: _normalise-text-margin(el.at("margin", default: none)),
+    margin: _normalise-margin(el.at("margin", default: none)),
   )
 }
 
@@ -312,18 +337,63 @@
   )
 }
 
-/// Resolve a rect surface into a fill colour and outline stroke.
+/// Resolve a rect surface into a fill colour, outline stroke, and per-side
+/// cm margins. `inset-cm` is consumed by cetz draw sites (positive values
+/// grow the painted rectangle outward from its natural bound as inner
+/// padding); `%` / `relative` sides reference the rect's own natural
+/// dimension (`inset-ref-w` / `inset-ref-h`), so a 5% inset on a 5cm-wide
+/// panel paints 0.25cm of breathing room and never overflows onto a
+/// neighbour. `outset-cm` is consumed by layout reservation upstream of
+/// the cetz canvas (positive values reserve outer whitespace eaten from
+/// the panel canvas); `%` / `relative` sides reference the plot canvas
+/// (`outset-ref-w` / `outset-ref-h`). Raw `inset` / `outset` \@margin
+/// records are also exposed for plot-background, which maps them onto
+/// Typst `block(inset:)` / `pad()`.
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
 /// \@param surface Rect surface key, e.g., `"panel-background"`.
 /// \@param fallback-fill Fill used when neither surface nor parent sets one.
 /// \@param fallback-colour Outline paint used when only a thickness is set.
-/// \@returns Dict `(fill, stroke)` where each entry is a Typst value or `none`.
-#let _rect-style(theme, surface, fallback-fill: none, fallback-colour: none) = {
+/// \@param inset-ref-w Horizontal reference for `inset` `%` sides; should be the rect's own natural width in cm. Defaults to `0`.
+/// \@param inset-ref-h Vertical reference for `inset` `%` sides; should be the rect's own natural height in cm. Defaults to `0`.
+/// \@param outset-ref-w Horizontal reference for `outset` `%` sides; should be the plot canvas width in cm. Defaults to `0`.
+/// \@param outset-ref-h Vertical reference for `outset` `%` sides; should be the plot canvas height in cm. Defaults to `0`.
+/// \@returns Dict `(fill, stroke, inset-cm, outset-cm, inset, outset)`.
+#let _rect-style(
+  theme,
+  surface,
+  fallback-fill: none,
+  fallback-colour: none,
+  inset-ref-w: 0,
+  inset-ref-h: 0,
+  outset-ref-w: 0,
+  outset-ref-h: 0,
+) = {
   let el = resolve-element(theme, surface)
+  let inset = _normalise-margin(el.at("inset", default: none))
+  let outset = _normalise-margin(el.at("outset", default: none))
+  // Default cascade leaves both records empty; skip cm resolution and the
+  // `theme.text.size` lookup in that hot path.
+  let inset-cm = if inset == _empty-margin {
+    _zero-margin-cm
+  } else {
+    _margin-to-cm(inset, inset-ref-w, inset-ref-h, _theme-size-pt(theme))
+  }
+  let outset-cm = if outset == _empty-margin {
+    _zero-margin-cm
+  } else {
+    _margin-to-cm(outset, outset-ref-w, outset-ref-h, _theme-size-pt(theme))
+  }
   if el.at("kind", default: none) == "element-blank" {
-    return (fill: none, stroke: none)
+    return (
+      fill: none,
+      stroke: none,
+      inset-cm: inset-cm,
+      outset-cm: outset-cm,
+      inset: inset,
+      outset: outset,
+    )
   }
   let fill = el.at("fill", default: none)
   let colour = el.at("colour", default: none)
@@ -346,7 +416,29 @@
   (
     fill: if fill != none { fill } else { fallback-fill },
     stroke: stroke,
+    inset-cm: inset-cm,
+    outset-cm: outset-cm,
+    inset: inset,
+    outset: outset,
   )
+}
+
+/// Resolve a rect surface's `outset` to per-side cm floats only. Leaner
+/// than `_rect-style` for layout-reservation sites that only need the
+/// reserved outer-margin slot, not the fill/stroke or inset. `%` sides
+/// reference the plot canvas (`ref-w` / `ref-h`).
+///
+/// \@internal
+/// \@param theme Merged theme dictionary.
+/// \@param surface Rect surface key.
+/// \@param ref-w Horizontal canvas reference (cm float) used as `100%` for ratio / relative sides.
+/// \@param ref-h Vertical canvas reference (cm float).
+/// \@returns Dict `(top, right, bottom, left)` of cm floats, zero on every side when no outset is set.
+#let _rect-outset-cm(theme, surface, ref-w: 0, ref-h: 0) = {
+  let el = resolve-element(theme, surface)
+  let outset = _normalise-margin(el.at("outset", default: none))
+  if outset == _empty-margin { return _zero-margin-cm }
+  _margin-to-cm(outset, ref-w, ref-h, _theme-size-pt(theme))
 }
 
 #let _apply-element(out, key, value) = {
@@ -448,11 +540,10 @@
 /// )
 /// ```
 ///
-/// \@examples Tweak the scalar fields: bigger ticks, no tick labels, and an
-/// extra 2 cm of left-hand outer padding on top of the y-axis-title chrome
-/// (the `plot-margin` value is additive over the dynamic chrome slot).
+/// \@examples Tweak the scalar fields: bigger ticks, hidden tick labels, and a
+/// tinted panel background padded via `element-rect`'s `inset` (inner padding).
 /// ```
-/// //| alt: "Scatter plot of cumulative response against x with longer 0.25cm ticks, hidden tick labels and an additional 2cm of outer padding to the left of the y-axis-title chrome."
+/// //| alt: "Scatter plot of cumulative response against x with longer 0.25cm ticks, hidden tick labels and a panel-background rect grown 0.4cm on every side via element-rect inset (inner padding)."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
@@ -462,7 +553,10 @@
 ///   theme: theme(
 ///     tick-length: 0.25cm,
 ///     tick-labels: false,
-///     plot-margin: margin(left: 2cm),
+///     panel-background: element-rect(
+///       fill: rgb("#f7f0e7"),
+///       inset: margin(top: 0.4cm, right: 0.4cm, bottom: 0.4cm, left: 0.4cm),
+///     ),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

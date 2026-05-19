@@ -2,7 +2,7 @@
 // cm, resolving em components against the surface font size in pt.
 
 #import "../../src/utils/margin.typ": (
-  length-to-cm, resolve-margin-side, resolve-margin-side-cm,
+  length-to-cm, resolve-margin-side-cm, resolve-margin-side-rel-cm,
 )
 
 #let approx-eq(a, b, tol: 1e-9) = {
@@ -35,11 +35,12 @@
 // none also falls through.
 #approx-eq(resolve-margin-side-cm(none, 0.4cm, size-pt: 9), 0.4)
 
-// resolve-margin-side is additive over the cm-as-float fallback chrome.
-// auto adds nothing; an explicit length is summed with the fallback.
-#assert.eq(resolve-margin-side(auto, 0.5), 0.5)
-#approx-eq(resolve-margin-side(2cm, 0.5), 2.5)
-#approx-eq(resolve-margin-side(0cm, 0.5), 0.5)
-#approx-eq(resolve-margin-side(0.4cm, 1.1), 1.5)
+// resolve-margin-side-rel-cm honours the full Typst `relative` shape.
+#assert.eq(resolve-margin-side-rel-cm(auto, 10), 0.0)
+#assert.eq(resolve-margin-side-rel-cm(none, 10), 0.0)
+#approx-eq(resolve-margin-side-rel-cm(1cm, 10), 1.0)
+#approx-eq(resolve-margin-side-rel-cm(5%, 10), 0.5)
+#approx-eq(resolve-margin-side-rel-cm(5% + 1cm, 10), 1.5)
+#approx-eq(resolve-margin-side-rel-cm(1em, 10, size-pt: 9), pt-cm(9))
 
 length-to-cm and resolve-margin-side-cm smoke test passed.

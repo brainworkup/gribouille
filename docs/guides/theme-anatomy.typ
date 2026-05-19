@@ -43,18 +43,26 @@
     colour: "Group",
   ),
   theme: theme(
-    plot-background: element-rect(fill: rgb("#fffaf0")),
-    panel-background: element-rect(fill: rgb("#eef4ff")),
-    strip-background: element-rect(fill: rgb("#ffe2d6")),
+    plot-background: element-rect(
+      fill: rgb("#fffaf0"),
+      stroke: 1pt,
+    ),
+    panel-background: element-rect(
+      fill: rgb("#eef4ff"),
+      colour: rgb("#b22222"),
+    ),
+    strip-background: element-rect(
+      fill: rgb("#ffe2d6"),
+      colour: rgb("#22b222"),
+    ),
     legend-background: element-rect(
       fill: rgb("#e6f4ea"),
-      colour: rgb("#bcd9c4"),
+      colour: rgb("#2222b2"),
       stroke: 0.3pt,
     ),
     panel-grid: element-line(colour: rgb("#c0c8d4"), stroke: 0.4pt),
-    axis-line: element-line(stroke: 0.6pt),
+    axis-line: element-blank(),
     axis-ticks: element-line(stroke: 0.6pt),
-    plot-margin: margin(top: 1cm, right: 1cm, bottom: 1cm, left: 1cm),
   ),
   width: 12cm,
   height: 6.5cm,
@@ -91,13 +99,6 @@
       anchor: "south-east",
       name: "Outer canvas",
       keys: [`plot-background`],
-    ),
-    (
-      from: (6.0, 11.7),
-      label: (left-x, 11.4),
-      anchor: "south-east",
-      name: "Inset around content",
-      keys: [`plot-margin`],
     ),
     (
       from: (6.65, 8.05),
@@ -179,25 +180,4 @@
     line(c.label, c.from, stroke: cstroke, mark: (end: ">"))
     content(c.label, anchor: c.anchor, lab(c.name, c.keys))
   }
-
-  // Double-arrow indicators showing the extent of plot-margin on each rim.
-  let mstroke = 0.5pt + rgb("#bf8b00")
-  let mtag(pos, anchor) = content(
-    pos,
-    anchor: anchor,
-    text(
-      size: 6.5pt,
-      font: "DejaVu Sans Mono",
-      fill: rgb("#bf8b00"),
-    )[plot-margin],
-  )
-  let dbl = (start: ">", end: ">")
-  line((10.5, 9.55), (10.5, 10.8), stroke: mstroke, mark: dbl)
-  mtag((10.65, 10.18), "west")
-  line((5.7, 10.3), (6.85, 10.3), stroke: mstroke, mark: dbl)
-  mtag((6.275, 10.45), "south")
-  line((15.5, 8.0), (15.85, 8.0), stroke: mstroke, mark: dbl)
-  mtag((15.675, 7.85), "north")
-  line((10.5, 4.85), (10.5, 6.05), stroke: mstroke, mark: dbl)
-  mtag((10.65, 5.45), "west")
 })

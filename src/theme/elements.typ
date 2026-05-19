@@ -228,7 +228,19 @@
   stroke: stroke,
 )
 
-/// Rectangle element: fill, outline colour, and stroke thickness.
+/// Rectangle element: fill, outline colour, stroke thickness, and per-side
+/// margins. `inset` is honoured on `plot-background` (grows the painted
+/// fill outward past the content via Typst `block(inset:)`) and on
+/// `legend-background` (grows the legend rect outward from the guide-stack
+/// bbox so the rectangle frames the legend with extra inner padding).
+/// `panel-background` and `legend-bar` ignore `inset` so the rect cannot
+/// bleed onto neighbours. `outset` reserves outer whitespace by widening
+/// the chrome slot on `panel-background`, `legend-background`, and
+/// `legend-bar`; on `plot-background` it wraps the rendered block in
+/// `pad(...)`. On `legend-background`, the panel-facing outset side also
+/// widens the visible gap between panel and legend. `strip-background`
+/// ignores both fields -- the facet band has no surrounding slot to grow
+/// or reserve into.
 ///
 /// Pass the result to \@theme under keys like `panel-background`.
 ///
@@ -240,6 +252,8 @@
 /// \@param fill Rectangle fill colour, or `none` to inherit.
 /// \@param colour Outline colour, or `none` to inherit.
 /// \@param stroke Outline thickness (a Typst length), or `none` for no outline.
+/// \@param inset Inner padding \@margin honoured by `plot-background` and `legend-background` (grows the painted rect outward), or `none`. Ignored on `panel-background`, `strip-background`, and `legend-bar`.
+/// \@param outset Outer margin \@margin reserving outer whitespace (panel canvas shrinks on cetz surfaces; the rendered block is wrapped in `pad(...)` on `plot-background`), or `none`. Ignored on `strip-background`.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -275,12 +289,38 @@
 /// )
 /// ```
 ///
-/// \@see \@theme, \@element-text, \@element-line, \@element-blank
-#let element-rect(fill: none, colour: none, stroke: none) = (
+/// \@examples Pad a legend background so its tinted rectangle frames the
+/// guide content with breathing room (inner padding).
+/// ```
+/// //| alt: "Scatter plot of y against x with a tinted legend backdrop padded via inner inset margins so the rectangle frames the guide with breathing room."
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5, k: if calc.rem(i, 2) == 0 { "a" } else { "b" }))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", colour: "k"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(legend-background: element-rect(
+///     fill: rgb("#f7f0e7"),
+///     inset: margin(top: 0.3em, right: 0.4em, bottom: 0.3em, left: 0.4em),
+///   )),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@theme, \@margin, \@element-text, \@element-line, \@element-blank
+#let element-rect(
+  fill: none,
+  colour: none,
+  stroke: none,
+  inset: (kind: "margin", top: 5pt, right: 5pt, bottom: 5pt, left: 5pt),
+  outset: none,
+) = (
   kind: "element-rect",
   fill: fill,
   colour: colour,
   stroke: stroke,
+  inset: inset,
+  outset: outset,
 )
 
 /// Blank element: hides the corresponding theme element.
@@ -330,16 +370,18 @@
 /// \@see \@theme, \@element-text, \@element-line, \@element-rect
 #let element-blank() = (kind: "element-blank")
 
-/// Plot-margin specification: extra outer padding on each side of the plot canvas.
+/// Per-side spacing record consumed by \@element-text / \@element-typst
+/// (text margin to neighbours) and \@element-rect (`inset` / `outset`
+/// offsets around the painted rectangle).
 ///
-/// Each side accepts a Typst length (e.g., `1cm`, `8pt`) or `auto`. The
-/// renderer always reserves a dynamic inner chrome slot for the axis title,
-/// tick labels, and any side legend; this `margin()` adds further padding
-/// *outside* that slot. `auto` adds nothing on that side. Defaults to `auto`
-/// on every side, so calling `margin()` with no arguments yields a tight
-/// outer canvas, and `margin(left: 2cm)` reserves an extra 2 cm of left-hand
-/// padding beyond the chrome already required for the y-axis title and
-/// tick labels. Pass the result to \@theme under the `plot-margin` key.
+/// Each side accepts a Typst length (e.g., `1cm`, `8pt`, `0.3em`), a
+/// ratio (e.g., `5%`), a relative (e.g., `5% + 1cm`), or `auto`. On rect
+/// surfaces, `%` / `relative` sides resolve against the plot canvas
+/// dimensions (`width-units` for horizontal sides, `height-units` for
+/// vertical) at both draw time (`inset`) and layout time (`outset`).
+/// `auto` falls through to the consuming surface's renderer default (text
+/// gap) or to a zero offset (rect inset / outset). Bare `margin()` leaves
+/// every side at `auto`.
 ///
 /// \@category Themes
 /// \@subcategory Theme elements
@@ -351,24 +393,61 @@
 /// \@param bottom Bottom margin.
 /// \@param left Left margin.
 ///
-/// \@returns Margin dictionary consumed by \@theme.
+/// \@returns Margin dictionary consumed by \@element-text, \@element-typst, and \@element-rect.
 ///
-/// \@examples Reserve an extra 2 cm of left-hand padding beyond the
-/// y-axis-title chrome; other sides stay tight against the chrome.
+/// \@examples Loosen the gap between the y-axis tick labels and the
+/// axis-title via `element-text`'s `margin`.
 /// ```
-/// //| alt: "Scatter plot of y against x with an extra 2cm of left-hand outer padding beyond the y-axis chrome and a 0.5cm extra top margin via the margin record."
+/// //| alt: "Scatter plot of y against x with a wider 0.6em right-hand gap between the y-axis-title text and the axis labels via element-text margin."
 /// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y"),
 ///   layers: (geom-point(size: 2pt),),
-///   theme: theme(plot-margin: margin(left: 2cm, top: 0.5cm)),
+///   labs: labs(y: "Cumulative Response"),
+///   theme: theme(axis-title-y-left: element-text(margin: margin(right: 0.6em))),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
 /// ```
 ///
-/// \@see \@theme
+/// \@examples Pad a panel background so its rectangle frames the data
+/// region with extra breathing room (inner padding via `inset`).
+/// ```
+/// //| alt: "Scatter plot of y against x with the panel background tinted cream and grown outward 0.4cm on every side via element-rect inset (inner padding)."
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(panel-background: element-rect(
+///     fill: rgb("#f7f0e7"),
+///     inset: margin(top: 0.4cm, right: 0.4cm, bottom: 0.4cm, left: 0.4cm),
+///   )),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples Reserve outer whitespace around a tinted panel background;
+/// the panel canvas shrinks but the rectangle still surrounds the data.
+/// ```
+/// //| alt: "Scatter plot of y against x with a tinted panel background and 0.4cm of reserved outer whitespace on every side via element-rect outset; the panel canvas shrinks accordingly."
+/// #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt),),
+///   theme: theme(panel-background: element-rect(
+///     fill: rgb("#f7f0e7"),
+///     outset: margin(top: 0.4cm, right: 0.4cm, bottom: 0.4cm, left: 0.4cm),
+///   )),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@see \@element-text, \@element-typst, \@element-rect, \@theme
 #let margin(top: auto, right: auto, bottom: auto, left: auto) = (
   kind: "margin",
   top: top,

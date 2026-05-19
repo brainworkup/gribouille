@@ -21,7 +21,7 @@ Compose your own overrides by replacing any of those keys.
 //| label: fig-theme-anatomy
 //| output-filename: "theme-anatomy.svg"
 //| file: theme-anatomy.typ
-//| alt: "A faceted scatter plot annotated with callouts naming every styled region: plot-background and plot-margin around the outside, plot-title and plot-subtitle on top, plot-caption at the bottom, panel-background and panel-grid inside each facet, strip-background and strip-text on the facet header band, axis-line, axis-ticks, axis-text, and axis-title on each side, and legend-background, legend-title, and legend-text on the right."
+//| alt: "A faceted scatter plot annotated with callouts naming every styled region: plot-background around the outside, plot-title and plot-subtitle on top, plot-caption at the bottom, panel-background and panel-grid inside each facet, strip-background and strip-text on the facet header band, axis-line, axis-ticks, axis-text, and axis-title on each side, and legend-background, legend-title, and legend-text on the right."
 ```
 
 ## Region to theme key reference
@@ -32,7 +32,8 @@ Per-side axis keys (`-x-bottom`, `-x-top`, `-y-left`, `-y-right`) cascade up to 
 | Region | Key(s) | Element type |
 |---|---|---|
 | Outer plot rectangle. | `plot-background`. | [`element-rect`](../reference/themes/element-rect.qmd). |
-| Inset between the outer rectangle and the content. | `plot-margin`. | [`margin`](../reference/themes/margin.qmd). |
+| Inner padding (grows the rectangle outward, surrounding its content). | `*-background.inset` on every rect surface. | [`margin`](../reference/themes/margin.qmd). |
+| Outer margin (reserves outer whitespace; panel canvas absorbs the diff). | `*-background.outset` on every rect surface. | [`margin`](../reference/themes/margin.qmd). |
 | Title, subtitle, caption. | `plot-title`, `plot-subtitle`, `plot-caption`. | [`element-text`](../reference/themes/element-text.qmd). |
 | Drawing area inside a facet. | `panel-background`. | [`element-rect`](../reference/themes/element-rect.qmd). |
 | Gridlines inside the panel. | `panel-grid`. | [`element-line`](../reference/themes/element-line.qmd). |
@@ -90,13 +91,13 @@ Each line maps directly to one row in the [region table](#region-to-theme-key-re
 
 ## Tune the outer canvas
 
-[`plot-margin`](../reference/themes/margin.qmd) is the extra outer padding added beyond the dynamic chrome slot that the renderer always reserves for the axis title, tick labels, and any side legend.
-Pass [`margin`](../reference/themes/margin.qmd) with any subset of `top`, `right`, `bottom`, `left`; sides left at `auto` add nothing, so the canvas hugs the chrome.
+Grow the outer plot rectangle past its content with [`element-rect`](../reference/themes/element-rect.qmd)'s `inset` field (inner padding); reserve whitespace around the rectangle with the `outset` field (outer margin).
+Each takes a [`margin`](../reference/themes/margin.qmd) with any subset of `top`, `right`, `bottom`, `left`; sides left at `auto` add nothing.
 
 ```{typst}
 //| echo: true
 //| output-filename: "theming-margin.svg"
-//| alt: "Two stacked scatter plots; the lower one has wider left and bottom plot-margins than the upper one."
+//| alt: "Two stacked scatter plots; the lower one has a tinted plot-background grown via element-rect inset on every side."
 #let accent = rgb("#1f77b4")
 #let d = range(0, 10).map(i => (x: i, y: i * 0.5))
 
@@ -116,20 +117,23 @@ Pass [`margin`](../reference/themes/margin.qmd) with any subset of `top`, `right
 #grid(
   columns: 1,
   row-gutter: 0.4cm,
-  panel("Default plot-margin", theme-minimal()),
+  panel("Default plot-background", theme-minimal()),
   panel(
-    "margin(top: 0.6cm, right: 0.6cm, bottom: 0.9cm, left: 1.6cm)",
-    theme-minimal(plot-margin: margin(
-      top: 0.6cm,
-      right: 0.6cm,
-      bottom: 0.9cm,
-      left: 1.6cm,
+    "plot-background: element-rect(inset: margin(top: 0.6cm, right: 0.6cm, bottom: 0.9cm, left: 1.6cm))",
+    theme-minimal(plot-background: element-rect(
+      fill: rgb("#f7f0e7"),
+      inset: margin(
+        top: 0.6cm,
+        right: 0.6cm,
+        bottom: 0.9cm,
+        left: 1.6cm,
+      ),
     )),
   ),
 )
 ```
 
-`plot-margin` only adds outer padding; column gutters between facet panels and the gap between the panel and the axis labels are controlled by the surrounding `axis-title.margin` and per-element `margin` fields on each [`element-text`](../reference/themes/element-text.qmd).
+`inset` grows the painted rectangle outward to wrap its content (inner padding). `outset` reserves outer whitespace on each side; for cetz-drawn rects (panel, strip, legend, legend-bar) the reservation is eaten by the chrome margin, shrinking the panel canvas; for `plot-background` it wraps the rendered block in `pad()`. The rectangle itself always surrounds its content. Column gutters between facet panels and the gap between the panel and the axis labels are controlled by the surrounding `axis-title.margin` and per-element `margin` fields on each [`element-text`](../reference/themes/element-text.qmd).
 
 ## Complete vs partial themes
 
