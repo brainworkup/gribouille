@@ -35,10 +35,15 @@
 }
 
 // Resolve a margin-side input without em awareness. `value` is `auto` or an
-// absolute length; `fallback` is a cm-as-float. Used by plot-margin where the
-// dynamic default is already computed in cm.
+// absolute length; `fallback` is a cm-as-float dynamic default that already
+// covers the chrome (axis title, tick labels, legend, caption, etc.). User
+// values are additive: they extend the dynamic default outward. `auto` keeps
+// the dynamic default unchanged (no extra padding).
 #let resolve-margin-side(value, fallback) = {
-  if value == auto { return fallback }
-  if type(value) == length { return value / 1cm }
-  fallback
+  let base = if type(fallback) == int or type(fallback) == float {
+    float(fallback)
+  } else { 0.0 }
+  if value == auto { return base }
+  if type(value) == length { return base + value / 1cm }
+  base
 }
