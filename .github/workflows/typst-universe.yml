@@ -15,6 +15,11 @@ on:
         type: string
         required: false
         default: ""
+      dry_run:
+        description: "Push the branch to the fork but skip opening the PR against typst/packages."
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -30,12 +35,19 @@ jobs:
       FORK: ${{ vars.TYPST_PACKAGES_FORK }}
 
     steps:
+      - name: Resolve token scope
+        id: scope
+        shell: bash
+        run: echo "repos=${GITHUB_REPOSITORY##*/},${FORK##*/}" >> "${GITHUB_OUTPUT}"
+
       - name: Create GitHub App token
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ steps.scope.outputs.repos }}
 
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -135,6 +147,7 @@ jobs:
 
       - name: Open PR against typst/packages
         id: open-pr
+        if: ${{ !inputs.dry_run }}
         env:
           GH_TOKEN: ${{ steps.git-user.outputs.token }}
           VERSION: ${{ steps.resolve-version.outputs.version }}
