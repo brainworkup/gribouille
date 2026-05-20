@@ -73,6 +73,7 @@ jobs:
         id: resolve-version
         env:
           VERSION_INPUT: ${{ inputs.version }}
+          DRY_RUN: ${{ inputs.dry_run }}
         shell: bash
         run: |
           if [ -n "${VERSION_INPUT}" ]; then
@@ -81,8 +82,11 @@ jobs:
             VERSION=$(git tag -l --sort=-v:refname '[0-9]*' | head -n1)
             [ -n "${VERSION}" ] || { echo "::error::No release tag found."; exit 1; }
           fi
+          BRANCH="gribouille-${VERSION}"
+          [ "${DRY_RUN}" = "true" ] && BRANCH="dry-run-${BRANCH}"
           echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
           echo "ref=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
 
       - name: Checkout release ref
         shell: bash
@@ -107,7 +111,7 @@ jobs:
       - name: Clone fork of typst/packages
         env:
           GH_TOKEN: ${{ steps.git-user.outputs.token }}
-          VERSION: ${{ steps.resolve-version.outputs.version }}
+          BRANCH: ${{ steps.resolve-version.outputs.branch }}
         shell: bash
         run: |
           if [ -z "${FORK}" ]; then
@@ -119,7 +123,7 @@ jobs:
           git remote get-url upstream >/dev/null 2>&1 \
             || git remote add upstream https://github.com/typst/packages.git
           git fetch upstream main --depth 1
-          git checkout -B "gribouille-${VERSION}" upstream/main
+          git checkout -B "${BRANCH}" upstream/main
 
       - name: Copy payload into packages/preview
         env:
@@ -138,12 +142,13 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.git-user.outputs.token }}
           VERSION: ${{ steps.resolve-version.outputs.version }}
+          BRANCH: ${{ steps.resolve-version.outputs.branch }}
         shell: bash
         working-directory: typst-packages
         run: |
           git add "packages/preview/gribouille/${VERSION}"
           git commit -m "Add gribouille:${VERSION}"
-          git push --force origin "gribouille-${VERSION}"
+          git push --force origin "${BRANCH}"
 
       - name: Open PR against typst/packages
         id: open-pr
@@ -151,6 +156,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.git-user.outputs.token }}
           VERSION: ${{ steps.resolve-version.outputs.version }}
+          BRANCH: ${{ steps.resolve-version.outputs.branch }}
         shell: bash
         working-directory: typst-packages
         run: |
@@ -158,7 +164,7 @@ jobs:
 
           PR_URL=$(gh pr list \
             --repo typst/packages \
-            --head "${FORK_OWNER}:gribouille-${VERSION}" \
+            --head "${FORK_OWNER}:${BRANCH}" \
             --state open \
             --json url --jq '.[0].url // empty')
 
@@ -193,7 +199,7 @@ jobs:
             PR_URL=$(gh pr create \
               --repo typst/packages \
               --base main \
-              --head "${FORK_OWNER}:gribouille-${VERSION}" \
+              --head "${FORK_OWNER}:${BRANCH}" \
               --title "gribouille:${VERSION}" \
               --body-file "${BODY_FILE}")
           fi
@@ -203,12 +209,13 @@ jobs:
         shell: bash
         env:
           VERSION: ${{ steps.resolve-version.outputs.version }}
+          BRANCH: ${{ steps.resolve-version.outputs.branch }}
           PR_URL: ${{ steps.open-pr.outputs.pr_url }}
         run: |
           {
             echo "## Typst Universe submission"
             echo ""
             echo "- Package: \`gribouille:${VERSION}\`"
-            echo "- Fork branch: \`${FORK}:gribouille-${VERSION}\`"
+            echo "- Fork branch: \`${FORK}:${BRANCH}\`"
             echo "- PR: ${PR_URL}"
           } >> "${GITHUB_STEP_SUMMARY}"
