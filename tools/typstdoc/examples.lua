@@ -1,6 +1,8 @@
 -- Example/gallery consistency: every `examples/*.typ` must have a `gallery.yml`
 -- slug or be explicitly excluded, otherwise it never renders (the gallery
 -- listing is slug-driven). Pure helpers; I/O lives in main.lua.
+local util = require("util")
+
 local M = {}
 
 -- Hero/landing art embedded directly by `docs/index.qmd` and site assets,
@@ -10,7 +12,7 @@ M.EXCLUDE = { gribouille = true, showcase = true }
 -- Collect `slug:` values from a `gallery.yml` document body.
 function M.parse_slugs(content)
   local slugs = {}
-  for line in (content .. "\n"):gmatch("([^\n]*)\n") do
+  for _, line in ipairs(util.split_lines(content)) do
     local slug = line:match('^%s*%-%s*slug:%s*"?([%w%-]+)"?')
     if slug then slugs[slug] = true end
   end
