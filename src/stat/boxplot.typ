@@ -26,11 +26,12 @@
 ///
 /// \@examples Default 1.5 × IQR whisker rule on grouped raw observations.
 /// ```
-/// //| alt: "Boxplot per group on the x-axis with values on the y-axis, showing median, quartiles, and 1.5 times IQR whiskers for groups a, b, c."
+/// //| alt: "Boxplot per group on the x-axis with values on the y-axis, where the 1.5 times IQR whisker reaches the high value so no outlier is drawn for groups a, b, c."
+/// #let ys = (1, 2, 3, 4, 5, 6, 7, 8, 9, 13)
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
-///   for i in range(20) {
-///     d.push((grp: grp, y: calc.sin(i) + i / 10))
+///   for y in ys {
+///     d.push((grp: grp, y: y))
 ///   }
 /// }
 /// #plot(
@@ -47,11 +48,12 @@
 /// whisker length, e.g., `stat: stat-boxplot(coefficient: 1.0)` tightens
 /// the fence so more values surface as outliers.
 /// ```
-/// //| alt: "Boxplot per group on the x-axis with values on the y-axis, using a tighter 1.0 times IQR whisker rule that exposes additional outliers for groups a, b, c."
+/// //| alt: "Boxplot per group on the x-axis with values on the y-axis, where a tighter 1.0 times IQR whisker rule draws the high value as an outlier above a shorter whisker for groups a, b, c."
+/// #let ys = (1, 2, 3, 4, 5, 6, 7, 8, 9, 13)
 /// #let d = ()
 /// #for grp in ("a", "b", "c") {
-///   for i in range(20) {
-///     d.push((grp: grp, y: calc.sin(i) + i / 10))
+///   for y in ys {
+///     d.push((grp: grp, y: y))
 ///   }
 /// }
 /// #plot(
