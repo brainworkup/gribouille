@@ -304,6 +304,7 @@ jobs:
           mkdir -p "${STAGE}"
           cp typst.toml lib.typ LICENSE README.md CHANGELOG.md "${STAGE}/"
           cp -r src "${STAGE}/"
+          rm -f "${STAGE}/src/GLOSSARY.md"
 
           tar -czf "release_assets/gribouille-${VERSION}.tar.gz" \
             -C release_assets "gribouille-${VERSION}"
@@ -439,6 +440,7 @@ jobs:
           cp typst.toml lib.typ LICENSE "${STAGE}/"
           tools/stage-readme.sh README.md "${STAGE}"
           cp -r src "${STAGE}/"
+          rm -f "${STAGE}/src/GLOSSARY.md"
 
       - name: Clone fork of typst/packages
         env:
