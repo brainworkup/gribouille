@@ -28,6 +28,11 @@ jobs:
   deploy:
     name: Build and deploy docs
     runs-on: ubuntu-latest
+    # Skip the bump-version commit on main; the Release workflow deploys docs
+    # itself via its `pages` job (workflow_call), so this push would double-deploy.
+    if: >-
+      ${{ github.event_name != 'push'
+        || !startsWith(github.event.head_commit.message, 'ci: bump version to') }}
 
     environment:
       name: github-pages
