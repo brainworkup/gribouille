@@ -136,16 +136,6 @@ jobs:
           app-slug: ${{ steps.app-token.outputs.app-slug }}
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verify auto-merge is allowed
-        env:
-          GH_TOKEN: ${{ steps.setup-git.outputs.token }}
-        shell: bash
-        run: |
-          if [ "$(gh api "repos/${GITHUB_REPOSITORY}" --jq .allow_auto_merge)" != "true" ]; then
-            echo "::error::Auto-merge is disabled on this repository. Enable 'Allow auto-merge' in Settings → General before running this workflow."
-            exit 1
-          fi
-
       - name: Compute next version and update sources
         id: bump
         env:
@@ -179,7 +169,6 @@ jobs:
 
           git add typst.toml CITATION.cff CHANGELOG.md README.md
           git commit -m "ci: bump version to ${VERSION} :rocket:"
-          COMMIT_SHA=$(git rev-parse HEAD)
           git push --force origin "${BRANCH}"
 
           sleep 5
@@ -189,7 +178,31 @@ jobs:
             --head "${BRANCH}" \
             --label "Type: CI/CD :robot:")
           sleep 5
-          gh pr merge --auto --squash --delete-branch "${BRANCH}"
+          merged=false
+          for attempt in {1..10}; do
+            if gh pr merge --squash --delete-branch "${BRANCH}"; then
+              merged=true
+              break
+            fi
+            echo "Bump PR not mergeable yet (attempt ${attempt}/10); retrying in 6s..."
+            sleep 6
+          done
+          if [ "${merged}" != "true" ]; then
+            echo "::error::Failed to merge bump PR ${PR_URL}."
+            exit 1
+          fi
+
+          COMMIT_SHA=""
+          for attempt in {1..10}; do
+            COMMIT_SHA=$(gh pr view "${PR_URL}" --json mergeCommit --jq '.mergeCommit.oid // empty')
+            [ -n "${COMMIT_SHA}" ] && break
+            echo "Squash commit not available yet (attempt ${attempt}/10); retrying in 3s..."
+            sleep 3
+          done
+          if [ -z "${COMMIT_SHA}" ]; then
+            echo "::error::Could not resolve squash merge commit for ${PR_URL}."
+            exit 1
+          fi
 
           {
             echo "version=${VERSION}"
