@@ -82,8 +82,8 @@
 
 /// Manual discrete linetype scale: supply the dash-keyword array directly.
 ///
-/// Keywords cycle through `values` in the order levels appear, unless
-/// `limits` fixes the level order.
+/// Keywords cycle through `values` following the alphabetical level order,
+/// unless `limits` fixes a different order.
 ///
 /// \@category Scales
 /// \@subcategory Linetype scales
@@ -98,14 +98,13 @@
 ///
 /// \@returns Scale object consumed by \@plot.
 ///
-/// \@examples Two-keyword cycle assigned in input order.
+/// \@examples Two-keyword cycle following the default alphabetical order:
+/// group a takes solid, group b takes dashed.
 /// ```
-/// //| alt: "Line chart of two groups along x against y where group a renders solid and group b renders dashed from the manual values cycle."
+/// //| alt: "Line chart of two groups along x against y where group a renders solid and group b renders dashed under the default alphabetical level order."
 /// #let d = (
-///   (x: 1, y: 2, grp: "a"),
-///   (x: 2, y: 4, grp: "a"),
-///   (x: 1, y: 1, grp: "b"),
-///   (x: 2, y: 2, grp: "b"),
+///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
+///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
 /// )
 /// #plot(
 ///   data: d,
@@ -117,13 +116,13 @@
 /// )
 /// ```
 ///
-/// \@examples `limits` fixes the level order so the same dash maps to the
-/// same group regardless of input order.
+/// \@examples `limits` reorders the levels: listing b first makes group b
+/// take solid and group a take dashed, reversing the default.
 /// ```
-/// //| alt: "Line chart of two groups along x against y where limits pins group a to solid and group b to dashed regardless of input order."
+/// //| alt: "Line chart of two groups along x against y where limits list b before a so group b renders solid and group a renders dashed, reversing the default alphabetical order."
 /// #let d = (
-///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
 ///   (x: 1, y: 2, grp: "a"), (x: 2, y: 4, grp: "a"),
+///   (x: 1, y: 1, grp: "b"), (x: 2, y: 2, grp: "b"),
 /// )
 /// #plot(
 ///   data: d,
@@ -131,7 +130,7 @@
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype-manual(
 ///     values: ("solid", "dashed"),
-///     limits: ("a", "b"),
+///     limits: ("b", "a"),
 ///   ),),
 ///   width: 10cm,
 ///   height: 6cm,
@@ -218,11 +217,20 @@
 ///
 /// \@examples Bin a continuous quality column into three linetype buckets.
 /// ```
-/// //| alt: "Line chart of twelve points along the diagonal where the continuous q column is cut into three stepped dash-pattern bands."
-/// #let d = range(1, 13).map(i => (x: i, y: i, q: i))
+/// //| alt: "Line chart of four diagonal lines where the continuous q column is cut into three stepped dash-pattern bands, with the two highest groups collapsing onto the same dash."
+/// #let d = (
+///   (x: 1, y: 1, q: 1, g: "a"), (x: 2, y: 2, q: 1, g: "a"),
+///   (x: 3, y: 3, q: 1, g: "a"), (x: 4, y: 4, q: 1, g: "a"),
+///   (x: 1, y: 2, q: 4, g: "b"), (x: 2, y: 3, q: 4, g: "b"),
+///   (x: 3, y: 4, q: 4, g: "b"), (x: 4, y: 5, q: 4, g: "b"),
+///   (x: 1, y: 3, q: 7, g: "c"), (x: 2, y: 4, q: 7, g: "c"),
+///   (x: 3, y: 5, q: 7, g: "c"), (x: 4, y: 6, q: 7, g: "c"),
+///   (x: 1, y: 4, q: 10, g: "d"), (x: 2, y: 5, q: 10, g: "d"),
+///   (x: 3, y: 6, q: 10, g: "d"), (x: 4, y: 7, q: 10, g: "d"),
+/// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", linetype: "q", group: "q"),
+///   mapping: aes(x: "x", y: "y", linetype: "q", group: "g"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype-binned(n-breaks: 3),),
 ///   width: 10cm,
@@ -270,11 +278,20 @@
 /// \@examples Map a numeric column onto a dash interpolation across four
 /// default bins.
 /// ```
-/// //| alt: "Line chart of twelve points along the diagonal where the continuous q column is mapped onto four stepped dash patterns via the default binned palette."
-/// #let d = range(1, 13).map(i => (x: i, y: i, q: i))
+/// //| alt: "Line chart of four diagonal lines where the continuous q column is mapped onto four stepped dash patterns via the default binned palette."
+/// #let d = (
+///   (x: 1, y: 1, q: 1, g: "a"), (x: 2, y: 2, q: 1, g: "a"),
+///   (x: 3, y: 3, q: 1, g: "a"), (x: 4, y: 4, q: 1, g: "a"),
+///   (x: 1, y: 2, q: 4, g: "b"), (x: 2, y: 3, q: 4, g: "b"),
+///   (x: 3, y: 4, q: 4, g: "b"), (x: 4, y: 5, q: 4, g: "b"),
+///   (x: 1, y: 3, q: 7, g: "c"), (x: 2, y: 4, q: 7, g: "c"),
+///   (x: 3, y: 5, q: 7, g: "c"), (x: 4, y: 6, q: 7, g: "c"),
+///   (x: 1, y: 4, q: 10, g: "d"), (x: 2, y: 5, q: 10, g: "d"),
+///   (x: 3, y: 6, q: 10, g: "d"), (x: 4, y: 7, q: 10, g: "d"),
+/// )
 /// #plot(
 ///   data: d,
-///   mapping: aes(x: "x", y: "y", linetype: "q", group: "q"),
+///   mapping: aes(x: "x", y: "y", linetype: "q", group: "g"),
 ///   layers: (geom-line(stroke: 1pt),),
 ///   scales: (scale-linetype-continuous(),),
 ///   width: 10cm,
