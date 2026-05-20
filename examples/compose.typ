@@ -1,5 +1,5 @@
 #import "../lib.typ": *
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let mtcars = (
   (mpg: 21.0, wt: 2.620, hp: 110, cyl: "6"),

@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let hours = range(0, 24).map(h => (
   hour: h,

@@ -1,6 +1,6 @@
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #set page(foreground: context {
   let bg = page.fill

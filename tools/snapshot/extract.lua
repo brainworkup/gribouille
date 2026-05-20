@@ -5,7 +5,7 @@ local M = {}
 
 -- Wraps a /// @examples fence in the same self-contained shell as `examples/*.typ`.
 -- `auto` page size keeps the diff focused on plot pixels rather than blank margins.
-local WRAPPER = '#import "/lib.typ": *\n#set page(width: auto, height: auto, margin: 0.5cm)\n\n%s\n'
+local WRAPPER = '#import "/lib.typ": *\n#set page(width: auto, height: auto, margin: 0cm)\n\n%s\n'
 
 local function make_matcher(only)
   if not only then return function() return true end end

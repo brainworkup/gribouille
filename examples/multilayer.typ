@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let trend = (
   (month: 1, sales: 12, region: "north"),

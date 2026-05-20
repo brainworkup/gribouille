@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let accent = rgb("#1f77b4")
 #let alert = rgb("#d62728")

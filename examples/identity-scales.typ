@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let signals = (
   (x: 1, y: 2.4, c: "#1b9e77", s: "circle"),

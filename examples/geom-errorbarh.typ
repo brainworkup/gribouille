@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let summary = (
   (class: "compact", mean: 28.7, lo: 26.4, hi: 31.0),

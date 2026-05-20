@@ -7,7 +7,7 @@
 
 #import "../../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let data = (
   (x: 1, y: 2, grp: "Northern Long-tailed Tit", side: "Upper Reaches"),

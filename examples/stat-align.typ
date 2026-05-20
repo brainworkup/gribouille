@@ -3,7 +3,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let d = (
   (x: 0, y: 1, k: "a"),

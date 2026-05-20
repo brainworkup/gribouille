@@ -2,7 +2,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let continuous-d = range(0, 24).map(i => (x: i, y: i, z: i * 1.0))
 #let area-d = range(1, 11).map(i => (x: i, y: i, w: i * i))

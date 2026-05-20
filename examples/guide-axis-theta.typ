@@ -4,7 +4,7 @@
 
 #import "../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let scores = (8, 6, 7, 9, 5, 8)
 #let car = range(scores.len()).map(i => (axis: i, score: scores.at(i)))

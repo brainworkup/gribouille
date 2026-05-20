@@ -14,7 +14,7 @@ extensions:
     foreground: auto
     width: auto
     height: auto
-    margin: 0.5cm
+    margin: 2pt
   modal:
     size: lg
     scrollable: true
