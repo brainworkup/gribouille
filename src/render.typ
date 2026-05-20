@@ -3286,8 +3286,16 @@
   let y-label-width = if labels-on {
     _y-label-width-stack(y-guide, y-extents.width, y-extents.height)
   } else { 0.0 }
-  let bottom-gap = _text-margin-cm(ax-title.xb, "top", _AX-TITLE-LABEL-GAP)
-  let left-gap = _text-margin-cm(ax-title.yl, "right", _AX-TITLE-LABEL-GAP)
+  // Only reserve the title-to-label gap when a title actually renders;
+  // a `0pt` axis title (e.g., `theme-void`) needs no gap, and the absolute
+  // `_AX-TITLE-LABEL-GAP` would otherwise tip `bottom-extent` over the floor
+  // threshold and invert the panel rect on short plots.
+  let bottom-gap = if ax-title.xb.size > 0pt {
+    _text-margin-cm(ax-title.xb, "top", _AX-TITLE-LABEL-GAP)
+  } else { 0.0 }
+  let left-gap = if ax-title.yl.size > 0pt {
+    _text-margin-cm(ax-title.yl, "right", _AX-TITLE-LABEL-GAP)
+  } else { 0.0 }
   let x-title-cm = _ax-text-cm(ax-title.xb.size)
   let y-title-cm = _ax-text-cm(ax-title.yl.size)
   let bottom-extent = (
