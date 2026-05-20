@@ -30,6 +30,7 @@
 /// \@param row Row dictionary providing aesthetic cell values.
 /// \@param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
 /// \@param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
+/// \@returns Group key string joining the qualifying discrete cell values, or `"_all"` when no aesthetic qualifies.
 /// \@internal
 #let group-key(row, mapping, trained: none) = {
   let keys = ()
@@ -65,6 +66,7 @@
 /// \@param data Array of row dictionaries to partition.
 /// \@param mapping Aesthetic mapping forwarded to `group-key`.
 /// \@param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
+/// \@returns Array of `(key: str, data: array)` pairs in first-appearance order.
 /// \@internal
 #let partition-by-group(data, mapping, trained: none) = {
   let groups = (:)
@@ -88,6 +90,7 @@
 /// Used by the per-group stat framework to know which columns to re-inject
 /// into stat output rows so group identity is preserved across the stat.
 /// \@param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
+/// \@returns Array of grouping-aesthetic column names, excluding the x and y columns.
 /// \@internal
 #let group-cols(mapping) = {
   let out = ()

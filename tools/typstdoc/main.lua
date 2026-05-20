@@ -16,6 +16,7 @@ local resolve = require("resolve")
 local deps = require("deps")
 local changelog = require("changelog")
 local stat_info = require("stat_info")
+local examples = require("examples")
 
 local USAGE = [[
 Usage: tools/typstdoc/main.lua [options]
@@ -119,6 +120,28 @@ end
 
 local EXAMPLE_SKIP_EXT = { pdf = true, png = true, jpg = true, jpeg = true, gif = true, svg = true }
 
+-- Every `examples/*.typ` must have a `gallery.yml` slug or be excluded
+-- (see examples.EXCLUDE), otherwise it never renders in the slug-driven gallery.
+local function enforce_examples_gallery(opts)
+  if not util.dir_exists(opts.examples) then return end
+  local gallery_path = opts.docs .. "/examples/gallery.yml"
+  if not util.file_exists(gallery_path) then
+    util.die("gallery file not found: " .. gallery_path)
+  end
+  local content, err = util.read_file(gallery_path)
+  if not content then util.die("could not read gallery: " .. gallery_path .. ": " .. tostring(err)) end
+  local orphans = examples.orphans(util.list_dir_files(opts.examples), examples.parse_slugs(content))
+  if #orphans == 0 then return end
+  local msg = string.format(
+    "%d example(s) missing a gallery.yml entry (add one, or extend examples.EXCLUDE): %s",
+    #orphans, table.concat(orphans, ", "))
+  if opts.check or opts.strict then
+    util.die(msg)
+  else
+    util.log_warn(msg)
+  end
+end
+
 local function copy_examples(opts)
   if not util.dir_exists(opts.examples) then return 0 end
 
@@ -196,6 +219,8 @@ local function main(argv)
   parser.set_root(opts.root)
   local lib_info = parser.parse_lib(opts.lib)
   local files, all_functions, modules = parse_sources(opts.src, lib_info)
+
+  enforce_examples_gallery(opts)
 
   if opts.check then
     report_check(files, all_functions, deps_info, changelog_result)

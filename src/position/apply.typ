@@ -36,6 +36,7 @@
 ///
 /// \@internal
 /// \@param spec Position spec: `none`, a name string, or a position dict from a `position-*()` constructor.
+/// \@returns Position name string, defaulting to `"identity"` when the spec is `none` or carries no name.
 #let position-name-of(spec) = if spec == none {
   "identity"
 } else if type(spec) == str { spec } else {
@@ -46,6 +47,7 @@
 ///
 /// \@internal
 /// \@param layer Layer dictionary as produced by `make-layer`.
+/// \@returns Position name string for the layer, defaulting to `"identity"`.
 #let layer-position-name(layer) = position-name-of(
   layer.at("position", default: "identity"),
 )

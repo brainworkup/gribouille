@@ -61,6 +61,7 @@ local parser = require("parser")
 local model = require("model")
 local resolve = require("resolve")
 local util = require("util")
+local examples = require("examples")
 
 local function tmpfile(name, body)
   local path = string.format("%s/_tmp_%s.typ", TEST_DIR, name)
@@ -1219,6 +1220,45 @@ describe("theme_keys: extractor + table render", function()
     assert_contains(out, "| --- | --- | --- | --- |")
     assert_contains(out, "| `text` | @element-text | `element-text(size: 9pt)` | (root) |")
     assert_contains(out, "| `axis-text-x` | @element-text or @element-typst | inherits | `axis-text` |")
+  end)
+end)
+
+-- -----------------------------------------------------------------------
+describe("examples: gallery consistency", function()
+  local gallery = [[
+# header comment
+- slug: minimal
+  section: basics
+- slug: scale-okabe-ito
+  section: scales
+]]
+
+  it("parses every slug from a gallery body", function()
+    local slugs = examples.parse_slugs(gallery)
+    assert_true(slugs["minimal"], "minimal slug parsed")
+    assert_true(slugs["scale-okabe-ito"], "kebab-case slug parsed")
+    assert_eq(slugs["header"], nil, "comment line is not a slug")
+  end)
+
+  it("reports an example with no slug as an orphan", function()
+    local slugs = examples.parse_slugs(gallery)
+    local orphans = examples.orphans({ "minimal.typ", "missing.typ" }, slugs, {})
+    assert_eq(#orphans, 1)
+    assert_eq(orphans[1], "missing")
+  end)
+
+  it("excludes hero assets even without a slug", function()
+    local slugs = examples.parse_slugs(gallery)
+    local orphans = examples.orphans({ "gribouille.typ", "showcase.typ" }, slugs)
+    assert_eq(#orphans, 0, "default EXCLUDE covers the hero assets")
+  end)
+
+  it("ignores non-typ files and sorts orphans", function()
+    local slugs = examples.parse_slugs(gallery)
+    local orphans = examples.orphans({ "zeta.typ", "alpha.typ", "notes.md" }, slugs, {})
+    assert_eq(#orphans, 2)
+    assert_eq(orphans[1], "alpha")
+    assert_eq(orphans[2], "zeta")
   end)
 end)
 

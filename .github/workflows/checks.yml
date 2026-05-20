@@ -35,6 +35,12 @@ jobs:
           set -euo pipefail
           lua tools/typstdoc/test/run.lua 2>&1 | tee "${RUNNER_TEMP}/typstdoc.log"
 
+      - name: Validate docstrings and example gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          lua tools/typstdoc/main.lua --check
+
       - name: Summary
         if: always()
         shell: bash

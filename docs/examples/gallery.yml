@@ -1,6 +1,8 @@
 # Examples gallery data, consumed by the listing in `index.qmd` and by
 # `assets/lua/examples-data.lua` (which injects the modal source blocks).
-# One entry per `.typ` file in `examples/` (project root).
+# One entry per `.typ` file in `examples/` (project root), except the hero/landing
+# assets `gribouille` and `showcase`, which are embedded directly in the site.
+# This invariant is enforced by `tools/typstdoc/main.lua` (see EXAMPLE_GALLERY_EXCLUDE).
 # `description` is Pandoc markdown.
 
 - slug: minimal
@@ -674,3 +676,33 @@
   title: "stat-align: shared x-grid"
   description: 'Resample groups onto a shared x-grid via `stat-align` so stacked [`geom-area`](../reference/geoms/geom-area.qmd) layers join cleanly even when the per-group x values are mismatched.'
   alt: "Two-group stacked area chart with mismatched input x values aligned onto a shared grid via stat-align."
+
+- slug: scale-okabe-ito
+  section: scales
+  title: "Okabe-Ito palette"
+  description: 'The colour-vision-deficiency-safe discrete palette applied through [`scale-colour-okabe-ito`](../reference/scales/scale-colour-okabe-ito.qmd) and [`scale-fill-okabe-ito`](../reference/scales/scale-fill-okabe-ito.qmd).'
+  alt: "Scatter plot of penguin body mass against flipper length with per-species linear fits, coloured and filled by species using the Okabe-Ito palette."
+
+- slug: scale-limits-oob
+  section: scales
+  title: "Out-of-range handling"
+  description: 'With a scale `limits` set, `oob: "drop"` removes out-of-range values while `oob: "squish"` clamps them to the nearest endpoint of [`scale-fill-viridis-c`](../reference/scales/scale-fill-viridis-c.qmd).'
+  alt: "Two scatter panels of highway mpg against displacement filled by city mpg, the first dropping out-of-range fills to grey and the second squishing them to the palette endpoints."
+
+- slug: guide-legend-order
+  section: guides
+  title: "Legend order and flow"
+  description: '[`guide-legend`](../reference/guides/guide-legend.qmd) `order` sets stacking priority across aesthetics, while `direction` and `byrow` control the swatch grid flow.'
+  alt: "Three scatter panels showing the colour and size legends in default order, then with size stacked before colour, then a horizontal two-column row-major colour legend."
+
+- slug: guide-legend-position
+  section: guides
+  title: "Legend placement"
+  description: 'Every [`guide-legend`](../reference/guides/guide-legend.qmd) `position` value: the four margin sides, an inside corner via a Typst alignment, and an arbitrary `(x:, y:)` canvas offset.'
+  alt: "Six small scatter panels placing the colour legend at right, top, bottom, left, inside the top-right corner, and at a custom canvas offset."
+
+- slug: compose
+  section: guides
+  title: "Composed panels with shared legends"
+  description: '[`compose`](../reference/core/compose.qmd) arranges several deferred plots and hoists legends shared across panels via `collect`, with `guides-placement` controlling where the merged legend sits.'
+  alt: "A grid of fuel-economy scatter panels sharing a single cylinder-count colour legend, shown under several legend collection modes and placement settings."
