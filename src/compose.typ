@@ -137,7 +137,7 @@
 /// //| alt: "Two mpg scatter panels sharing a single colour-by-cylinder legend on the right while each panel keeps its own size legend bound to a different column."
 /// #let panel(map) = plot(
 ///   data: mpg, mapping: map,
-///   layers: (geom-point(size: 3pt),),
+///   layers: (geom-point(),),
 ///   width: 6cm, height: 4cm, defer: true,
 /// )
 /// #compose(
