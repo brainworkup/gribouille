@@ -141,7 +141,7 @@ jobs:
           GH_TOKEN: ${{ steps.setup-git.outputs.token }}
         shell: bash
         run: |
-          if [ "$(gh repo view --json autoMergeAllowed --jq .autoMergeAllowed)" != "true" ]; then
+          if [ "$(gh api "repos/${GITHUB_REPOSITORY}" --jq .allow_auto_merge)" != "true" ]; then
             echo "::error::Auto-merge is disabled on this repository. Enable 'Allow auto-merge' in Settings → General before running this workflow."
             exit 1
           fi
@@ -350,10 +350,13 @@ jobs:
 
   pages:
     name: Deploy Pages
-    needs: [ validate, github-release ]
-    if: ${{ always() && needs.validate.result == 'success' && (inputs.deploy_pages
-      || inputs.publish_typst_universe) && (needs.github-release.result ==
-      'success' || needs.github-release.result == 'skipped') }}
+    needs: [ validate, bump-version, github-release ]
+    if: >-
+      ${{ always()
+        && needs.validate.result == 'success'
+        && needs.bump-version.result != 'failure' && needs.bump-version.result != 'cancelled'
+        && needs.github-release.result != 'failure' && needs.github-release.result != 'cancelled'
+        && (inputs.deploy_pages || inputs.publish_typst_universe) }}
     permissions:
       contents: read
       pages: write
@@ -363,11 +366,13 @@ jobs:
   typst-universe:
     name: Submit to Typst Universe
     needs: [ validate, bump-version, github-release, pages ]
-    if: ${{ always() && inputs.publish_typst_universe && needs.validate.result ==
-      'success' && needs.pages.result == 'success' &&
-      (needs.github-release.result == 'success' || needs.github-release.result
-      == 'skipped') && (needs.bump-version.result == 'success' ||
-      needs.bump-version.result == 'skipped') }}
+    if: >-
+      ${{ always()
+        && inputs.publish_typst_universe
+        && needs.validate.result == 'success'
+        && needs.pages.result == 'success'
+        && needs.bump-version.result != 'failure' && needs.bump-version.result != 'cancelled'
+        && needs.github-release.result != 'failure' && needs.github-release.result != 'cancelled' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
