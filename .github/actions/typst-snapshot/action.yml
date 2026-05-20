@@ -14,15 +14,15 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install ImageMagick and pinned fonts
+    - name: Install ImageMagick
       shell: bash
+      # The harness compiles with --ignore-system-fonts, so only Typst's
+      # embedded fonts are used; no system font packages are needed here.
       run: |
         set -euo pipefail
         sudo apt-get update
         sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-          imagemagick \
-          fonts-liberation \
-          fonts-noto-core
+          imagemagick
 
     - name: Run snapshot harness
       id: snapshot

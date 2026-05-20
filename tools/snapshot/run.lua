@@ -89,7 +89,7 @@ local function compile_batch(sources, opts)
       local s = sources[i]
       local png = string.format("%s/png/%s.png", opts.build_root, s.key)
       local cmd = string.format(
-        "typst compile %s --root %s --ppi %d %s 2>&1",
+        "typst compile %s --root %s --ignore-system-fonts --ppi %d %s 2>&1",
         shell_quote(s.src_typ), shell_quote(opts.root), opts.ppi, shell_quote(png)
       )
       batch[#batch + 1] = { idx = i, handle = io.popen(cmd, "r"), png = png }
