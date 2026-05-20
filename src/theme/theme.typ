@@ -67,6 +67,7 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param surface Surface key, e.g., `"axis-text-x-bottom"`, `"panel-grid"`.
 /// \@returns Element record with cascaded fields.
 #let resolve-element(theme, surface) = {
@@ -90,8 +91,11 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param base Scalar key root, e.g., `"tick-length"`.
+///
 /// \@param side Side suffix, e.g., `"x-bottom"`, `"y-right"`.
+///
 /// \@param axis Axis suffix, `"x"` or `"y"`.
 /// \@returns The most specific value set, falling back to base, then `0pt`.
 #let _scalar-cascade(theme, base, side, axis) = {
@@ -145,7 +149,9 @@
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
+///
 /// \@param field Field name to read (e.g., `"fill"`, `"colour"`, `"linewidth"`).
+///
 /// \@param fallback Value returned when the slot is unset.
 /// \@returns The slot value or the fallback.
 #let geom-default(defaults, field, fallback) = {
@@ -200,6 +206,7 @@
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
+///
 /// \@param role Colour role key: `"ink"`, `"accent"`, or `none`.
 /// \@returns A colour or `none`.
 #let geom-colour-default(defaults, role: "ink") = {
@@ -223,6 +230,7 @@
 ///
 /// \@internal
 /// \@param defaults Element-geom record from \@geom-defaults.
+///
 /// \@param role Fill role key: `"tint"`, `"paper"`, or `"ink"`.
 /// \@returns A colour.
 #let geom-fill-default(defaults, role: "tint") = {
@@ -296,6 +304,7 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param surface Text surface key, e.g., `"axis-text"`.
 /// \@returns Dict with `size`, `fill`, `weight`, `typst`, `margin`.
 #let _text-style(theme, surface) = {
@@ -315,7 +324,9 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param surface Line surface key, e.g., `"panel-grid"`.
+///
 /// \@param fallback-colour Colour used when neither surface nor parent set one.
 /// \@returns Stroke dict `(paint, thickness)`, or `none` to skip drawing.
 #let _line-stroke(theme, surface, fallback-colour: none) = {
@@ -352,12 +363,19 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param surface Rect surface key, e.g., `"panel-background"`.
+///
 /// \@param fallback-fill Fill used when neither surface nor parent sets one.
+///
 /// \@param fallback-colour Outline paint used when only a thickness is set.
+///
 /// \@param inset-ref-w Horizontal reference for `inset` `%` sides; should be the rect's own natural width in cm. Defaults to `0`.
+///
 /// \@param inset-ref-h Vertical reference for `inset` `%` sides; should be the rect's own natural height in cm. Defaults to `0`.
+///
 /// \@param outset-ref-w Horizontal reference for `outset` `%` sides; should be the plot canvas width in cm. Defaults to `0`.
+///
 /// \@param outset-ref-h Vertical reference for `outset` `%` sides; should be the plot canvas height in cm. Defaults to `0`.
 /// \@returns Dict `(fill, stroke, inset-cm, outset-cm, inset, outset)`.
 #let _rect-style(
@@ -430,8 +448,11 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param surface Rect surface key.
+///
 /// \@param ref-w Horizontal canvas reference (cm float) used as `100%` for ratio / relative sides.
+///
 /// \@param ref-h Vertical canvas reference (cm float).
 /// \@returns Dict `(top, right, bottom, left)` of cm floats, zero on every side when no outset is set.
 #let _rect-outset-cm(theme, surface, ref-w: 0, ref-h: 0) = {
@@ -466,10 +487,15 @@
 ///
 /// \@internal
 /// \@param name Preset display name (`"grey"`, `"bw"`, ...).
+///
 /// \@param ink Foreground colour.
+///
 /// \@param paper Background colour.
+///
 /// \@param accent Accent colour.
+///
 /// \@param surfaces Dict of surface keys to element records.
+///
 /// \@param fields Rest-binding capture forwarded from the preset constructor.
 /// \@returns A theme dict ready for the renderer.
 #let _preset(name, ink, paper, accent, surfaces, fields) = {

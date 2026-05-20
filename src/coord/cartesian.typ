@@ -14,8 +14,11 @@
 /// \@since 0.0.1
 ///
 /// \@param xlim Pair `(lo, hi)` clipping the drawn x range, or `none`.
+///
 /// \@param ylim Pair `(lo, hi)` clipping the drawn y range, or `none`.
+///
 /// \@param expand Whether to add a small margin around the data range.
+///
 /// \@param clip Set to `"off"` to let geoms (typically annotations) draw past the panel rectangle. Defaults to `"on"`.
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.

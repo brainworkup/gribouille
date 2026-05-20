@@ -19,6 +19,7 @@
 /// \@since 0.0.1
 ///
 /// \@param x Single value or array of values the x-axis must include, or `none`.
+///
 /// \@param y Single value or array of values the y-axis must include, or `none`.
 ///
 /// \@returns Array of scale specs ready to splat into `scales:` on \@plot.

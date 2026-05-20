@@ -23,7 +23,9 @@
 /// \@since 0.4.0
 ///
 /// \@param bins Target number of bins when `binwidth` is `none`.
+///
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
+///
 /// \@param stackratio Vertical spacing between stacked dots, in dot units. 1 means touching.
 ///
 /// \@returns Statistic object with `name: "bindot"`, consumed by \@geom-dotplot.

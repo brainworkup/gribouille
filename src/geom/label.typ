@@ -28,33 +28,61 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `label`. May map `nudge-x` and `nudge-y` for per-row offsets in data units.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param size Text size (a Typst length).
+///
 /// \@param colour Paint applied to both the box outline and the label text. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
+///
 /// \@param fill Box fill colour. `auto` resolves via the fill scale, falling back to the theme `paper` only when neither `colour` nor `fill` is set.
+///
 /// \@param stroke Box outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
+///
 /// \@param alpha Box and text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
+///
 /// \@param inset Padding between text and box border (a Typst length).
+///
 /// \@param radius Corner radius of the box (a Typst length).
+///
 /// \@param anchor CeTZ anchor (e.g., `"center"`, `"west"`) controlling placement.
+///
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g., `4pt`, `2mm`).
+///
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g., `4pt`, `2mm`).
+///
 /// \@param segment Draw a connector from each box back to its anchor point. When `true`, the connector is routed to avoid the AABBs of other boxes of the same layer; dropped when no L-bend clears the obstacles.
+///
 /// \@param segment-colour Connector paint. `auto` inherits the theme `ink`.
+///
 /// \@param segment-stroke Connector thickness (a Typst length).
+///
 /// \@param min-segment-length Connectors shorter than this distance (canvas units, 1 = 1cm) are suppressed.
+///
 /// \@param arrow Draw a small V-mark at the anchor end of the connector.
+///
 /// \@param arrow-length Arrow stroke length (a Typst length).
+///
 /// \@param box-padding Extra cm padding added around each measured box when routing connectors.
+///
 /// \@param repel Repel boxes off each other (and off their anchor points) via an iterative force-based layout, ggrepel-style. Pair with `segment: true` to keep the visual link to each anchor.
+///
 /// \@param point-padding Minimum clearance (cm) between a box and any anchor point when `repel` is on.
+///
 /// \@param max-iter Maximum number of repulsion iterations.
+///
 /// \@param force-pull Strength of the spring pull that keeps each box near its anchor.
+///
 /// \@param force-push Strength of the repulsion between overlapping boxes.
+///
 /// \@param force-segment Strength of the penalty that pushes a box off another label's connector path.
+///
 /// \@param seed Random seed for the small initial jitter applied to coincident anchors.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

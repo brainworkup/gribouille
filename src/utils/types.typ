@@ -27,6 +27,7 @@
 /// \@internal
 ///
 /// \@param value Raw cell value: numeric, string, or `none`.
+///
 /// \@param kind One of `"date"`, `"datetime"`, `"time"`.
 ///
 /// \@returns Numeric epoch value, or `none` if `value` cannot be parsed.

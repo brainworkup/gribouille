@@ -21,7 +21,9 @@
 /// \@since 0.0.1
 ///
 /// \@param width Maximum absolute jitter applied to the x position.
+///
 /// \@param height Maximum absolute jitter applied to the y position.
+///
 /// \@param seed Integer seed for the deterministic pseudo-random offsets.
 ///
 /// \@returns Position dictionary with `name: "jitter"`, consumed by \@plot.

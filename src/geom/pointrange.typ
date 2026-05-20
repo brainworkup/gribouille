@@ -18,15 +18,25 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `ymin`, `ymax`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param size Point radius (a Typst length).
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed range-line colour. `auto` resolves via the colour scale.
+///
 /// \@param fill Fixed point body fill. `auto` resolves via the fill scale, falling back to the resolved range-line colour.
+///
 /// \@param alpha Opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword for the range line. Defaults to `"solid"`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

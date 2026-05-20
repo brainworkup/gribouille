@@ -8,7 +8,9 @@
 /// \@since 0.1.0
 ///
 /// \@param col1 Base colour.
+///
 /// \@param col2 Colour to blend in.
+///
 /// \@param amount Fraction of `col2` in the result (0 to 1).
 /// \@returns Blended colour.
 ///

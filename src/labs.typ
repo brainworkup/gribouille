@@ -14,19 +14,33 @@
 /// \@since 0.0.1
 ///
 /// \@param title Plot title drawn above the panel.
+///
 /// \@param subtitle Smaller line drawn below the title.
+///
 /// \@param caption Caption line drawn below the panel.
+///
 /// \@param tag Optional tag (e.g., a figure number) drawn above the title.
+///
 /// \@param alt Alt text kept on the spec for accessibility tooling.
+///
 /// \@param x Title for the x axis.
+///
 /// \@param y Title for the y axis.
+///
 /// \@param colour Legend title for the colour aesthetic.
+///
 /// \@param fill Legend title for the fill aesthetic.
+///
 /// \@param size Legend title for the size aesthetic.
+///
 /// \@param alpha Legend title for the alpha aesthetic.
+///
 /// \@param linewidth Legend title for the linewidth aesthetic.
+///
 /// \@param shape Legend title for the shape aesthetic.
+///
 /// \@param linetype Legend title for the linetype aesthetic.
+///
 /// \@param stroke Legend title for the stroke aesthetic.
 ///
 /// \@returns Dictionary tagged `kind: "labs"`, consumed by \@plot.

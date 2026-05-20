@@ -122,6 +122,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param weights Optional array of non-negative weights (`none` for unit weights). Pairs are dropped when the weight is `none`, zero, or negative.
 ///
 /// \@returns Dict `(y, ymin, ymax)` with `ymin == ymax == y`; all-`none` if
@@ -184,6 +185,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param q Probability in the closed interval `[0, 1]`.
 ///
 /// \@returns Dict `(y, ymin, ymax)` with `ymin == ymax == y`; all-`none` if
@@ -215,6 +217,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param probs Three probabilities in `[0, 1]`, ordered low-mid-high.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -256,7 +259,9 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param multiplier Multiplier on the standard error.
+///
 /// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics; total weight stands in for `n` in the standard-error denominator.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -305,7 +310,9 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param conf Confidence level in the open interval `(0, 1)`.
+///
 /// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics; total weight stands in for `n` in the standard-error denominator.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -353,7 +360,9 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param multiplier Multiplier on the sample standard deviation.
+///
 /// \@param weights Optional array of non-negative weights (`none` for unit weights). Frequency-weight semantics for the weighted standard deviation.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -395,6 +404,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param conf Proportion of the data covered by the interval, in `(0, 1)`.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -446,8 +456,11 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param conf Confidence level in the open interval `(0, 1)`.
+///
 /// \@param n-boot Number of bootstrap resamples.
+///
 /// \@param seed Integer seed for the deterministic resampling sequence.
 ///
 /// \@returns Dict `(y, ymin, ymax)`; all-`none` if `values` has no numerics.
@@ -507,8 +520,11 @@
 /// \@since 0.0.1
 ///
 /// \@param name Summary helper name, or a callable returning `(y, ymin, ymax)`.
+///
 /// \@param values Array of numbers; non-numeric entries are dropped.
+///
 /// \@param fun-args Keyword arguments forwarded to the helper or callable.
+///
 /// \@param weights Optional array of non-negative weights aligned with `values` (`none` for unit weights). Forwarded to helpers that honour weights (`mean`, `mean-se`, `mean-sd`, `mean-cl-normal`); helpers without a weighted formulation ignore the parameter.
 ///
 /// \@returns Dict `(y, ymin, ymax)`.
@@ -602,6 +618,7 @@
 /// 1D bands.
 ///
 /// \@param name Reduction keyword or callable `values => scalar`.
+///
 /// \@param values Sequence of input values to reduce.
 ///
 /// \@internal

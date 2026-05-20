@@ -17,14 +17,23 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `z`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param bins Target band count.
+///
 /// \@param binwidth Fixed step between successive levels. Overrides `bins`.
+///
 /// \@param breaks Explicit array of level boundaries. Overrides the rest.
+///
 /// \@param colour Cell outline colour. Honoured only when `stroke` is set.
+///
 /// \@param fill Cell fill colour. `auto` lets the fill scale paint by `_level`.
+///
 /// \@param stroke Outline thickness or stroke dictionary. Defaults to `none`.
+///
 /// \@param alpha Cell opacity in `[0, 1]`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

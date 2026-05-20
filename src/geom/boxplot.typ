@@ -35,17 +35,29 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param width Box width in x data units. For discrete x this is also a data-unit width.
+///
 /// \@param colour Stroke colour for the box, median, and whiskers. `auto` falls back to the theme ink, since the outline carries the box's structure even when `fill` supplies the body colour.
+///
 /// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
+///
 /// \@param stroke Stroke thickness for the box outline and whiskers.
+///
 /// \@param alpha Box opacity in `[0, 1]`.
+///
 /// \@param outlier-size Marker size for outlier points.
+///
 /// \@param outlier-colour Marker colour for outlier points. `auto` follows the box stroke colour.
+///
 /// \@param whisker-cap Cap length at the whisker ends as a fraction of `width`.
+///
 /// \@param stat Statistical transform name. `"boxplot"` by default.
+///
 /// \@param position Position adjustment name. `"identity"` by default.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

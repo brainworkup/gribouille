@@ -28,7 +28,9 @@
 ///
 /// Returns `"_all"` when no aesthetics qualify.
 /// \@param row Row dictionary providing aesthetic cell values.
+///
 /// \@param mapping Aesthetic mapping (column names or `mapping-ref` dicts).
+///
 /// \@param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
 /// \@returns Group key string joining the qualifying discrete cell values, or `"_all"` when no aesthetic qualifies.
 /// \@internal
@@ -64,7 +66,9 @@
 /// `trained` is forwarded to `group-key`: pass `none` for data-type mode
 /// (stats and positions) or `ctx.trained` for scale-aware mode (geoms).
 /// \@param data Array of row dictionaries to partition.
+///
 /// \@param mapping Aesthetic mapping forwarded to `group-key`.
+///
 /// \@param trained Trained scales dict for scale-aware mode, or `none` for data-type mode.
 /// \@returns Array of `(key: str, data: array)` pairs in first-appearance order.
 /// \@internal

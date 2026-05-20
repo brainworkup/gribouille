@@ -24,8 +24,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title \@element-text or \@element-typst for `axis-title`.
+///
 /// \@param text \@element-text or \@element-typst for `axis-text`.
+///
 /// \@param line \@element-line or \@element-blank for `axis-line`.
+///
 /// \@param ticks \@element-line or \@element-blank for `axis-ticks`.
 ///
 /// \@returns Theme dictionary with the named overrides applied.
@@ -65,8 +68,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title \@element-text or \@element-typst for `axis-title-x`.
+///
 /// \@param text Same for `axis-text-x`.
+///
 /// \@param line \@element-line for `axis-line-x`.
+///
 /// \@param ticks \@element-line for `axis-ticks-x`.
 ///
 /// \@returns Theme dictionary with the named x-axis overrides applied.
@@ -105,8 +111,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title \@element-text or \@element-typst for `axis-title-y`.
+///
 /// \@param text Same for `axis-text-y`.
+///
 /// \@param line \@element-line for `axis-line-y`.
+///
 /// \@param ticks \@element-line for `axis-ticks-y`.
 ///
 /// \@returns Theme dictionary with the named y-axis overrides applied.
@@ -145,8 +154,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title Element override for the bottom x axis title.
+///
 /// \@param text Element override for the bottom x axis tick labels.
+///
 /// \@param line Element override for the bottom x axis line.
+///
 /// \@param ticks Element override for the bottom x axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the bottom x axis.
@@ -188,8 +200,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title Element override for the top x axis title.
+///
 /// \@param text Element override for the top x axis tick labels.
+///
 /// \@param line Element override for the top x axis line.
+///
 /// \@param ticks Element override for the top x axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the top x axis.
@@ -231,8 +246,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title Element override for the left y axis title.
+///
 /// \@param text Element override for the left y axis tick labels.
+///
 /// \@param line Element override for the left y axis line.
+///
 /// \@param ticks Element override for the left y axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the left y axis.
@@ -274,8 +292,11 @@
 /// \@since 0.6.0
 ///
 /// \@param title Element override for the right y axis title.
+///
 /// \@param text Element override for the right y axis tick labels.
+///
 /// \@param line Element override for the right y axis line.
+///
 /// \@param ticks Element override for the right y axis ticks.
 ///
 /// \@returns Theme dictionary scoped to the right y axis.
@@ -317,6 +338,7 @@
 /// \@since 0.6.0
 ///
 /// \@param text \@element-text or \@element-typst for `legend-text`.
+///
 /// \@param title Same for `legend-title`.
 ///
 /// \@returns Theme dictionary with the named legend overrides applied.
@@ -349,6 +371,7 @@
 /// \@since 0.6.0
 ///
 /// \@param grid \@element-line or \@element-blank for `panel-grid`.
+///
 /// \@param background \@element-rect or \@element-blank for `panel-background`.
 ///
 /// \@returns Theme dictionary with the named panel overrides applied.
@@ -384,7 +407,9 @@
 /// \@since 0.6.0
 ///
 /// \@param title \@element-text or \@element-typst for `plot-title`.
+///
 /// \@param subtitle Same for `plot-subtitle`.
+///
 /// \@param caption Same for `plot-caption`.
 ///
 /// \@returns Theme dictionary with the named plot overrides applied.
@@ -426,6 +451,7 @@
 /// \@since 0.6.0
 ///
 /// \@param text \@element-text or \@element-typst for `strip-text`.
+///
 /// \@param background \@element-rect or \@element-blank for `strip-background`.
 ///
 /// \@returns Theme dictionary with the named strip overrides applied.

@@ -132,6 +132,7 @@
 /// \@internal
 ///
 /// \@param p Probability in the open interval `(0, 1)`.
+///
 /// \@param distribution One of `"normal"`, `"uniform"`, or `"exponential"`.
 ///
 /// \@returns Theoretical quantile at probability `p`.

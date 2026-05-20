@@ -17,6 +17,7 @@
 /// \@since 0.5.0
 ///
 /// \@param guides Array of \@guide-axis or \@guide-axis-logticks specs to render in order from the axis outward.
+///
 /// \@param spacing Gap inserted between successive sub-guide rows.
 ///
 /// \@returns Guide dictionary tagged `kind: "guide"` with `stack: true`, consumed by \@guides.

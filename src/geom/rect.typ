@@ -24,13 +24,21 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `xmin`, `xmax`, `ymin`, `ymax`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param colour Fixed outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
+///
 /// \@param fill Fixed fill colour. `auto` resolves via the fill scale or a neutral default.
+///
 /// \@param stroke Outline thickness (a Typst length) or stroke dictionary; `none` disables the outline and the `colour` aesthetic.
+///
 /// \@param alpha Fill opacity in `[0, 1]`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

@@ -17,6 +17,7 @@
 /// \@since 0.0.1
 ///
 /// \@param bins Target number of bins when `binwidth` is `none`.
+///
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
 ///
 /// \@returns Statistic object with `name: "bin"`, consumed by geom layers.

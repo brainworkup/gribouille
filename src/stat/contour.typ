@@ -19,7 +19,9 @@
 /// \@since 0.4.0
 ///
 /// \@param bins Target contour-level count when `breaks` and `binwidth` are unset.
+///
 /// \@param binwidth Fixed step between levels. Overrides `bins`.
+///
 /// \@param breaks Explicit array of contour levels. Overrides `bins` and `binwidth`.
 ///
 /// \@returns Statistic object with `name: "contour"`.

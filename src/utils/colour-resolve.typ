@@ -11,10 +11,14 @@
 ///
 /// \@internal
 /// \@param channel Channel name (`"colour"`, `"fill"`).
+///
 /// \@param source-col Column to read from the row, or `none`.
+///
 /// \@param ctx Renderer context exposing `trained`, `resolve-colour`,
 ///   and `palette`.
+///
 /// \@param row The current row.
+///
 /// \@param default Fallback value.
 /// \@returns The scale-resolved colour, or `default`.
 #let _resolve-channel-source(channel, source-col, ctx, row, default) = {
@@ -33,6 +37,7 @@
 ///
 /// \@internal
 /// \@param colour A resolved colour value.
+///
 /// \@param alpha Opacity in `[0, 1]`.
 /// \@returns The colour with alpha applied.
 #let apply-alpha(colour, alpha) = {
@@ -55,9 +60,13 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.alpha`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`.
+///
 /// \@param sample-row The row used to read the alpha value.
+///
 /// \@param default-alpha Fallback opacity when no pin or mapping applies.
 /// \@returns A scalar alpha in `[0, 1]`.
 #let resolve-alpha(layer, mapping, ctx, sample-row, default-alpha: 1) = {
@@ -100,8 +109,11 @@
 ///
 /// \@internal
 /// \@param col Source column name or `none`.
+///
 /// \@param ctx Plot context exposing `trained`.
+///
 /// \@param sample-row The row to read.
+///
 /// \@param default-thickness Fallback length.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let _resolve-linewidth-natural(col, ctx, sample-row, default-thickness) = {
@@ -147,9 +159,13 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.linewidth`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained` and `theme`.
+///
 /// \@param sample-row The row used to read the linewidth value.
+///
 /// \@param default-thickness Per-geom default thickness when no pin or mapping resolves.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let resolve-linewidth(layer, mapping, ctx, sample-row, default-thickness) = {
@@ -186,8 +202,11 @@
 ///
 /// \@internal
 /// \@param col Source column name or `none`.
+///
 /// \@param ctx Plot context exposing `trained`.
+///
 /// \@param sample-row The row to read.
+///
 /// \@param default-thickness Fallback length.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let _resolve-stroke-width-natural(col, ctx, sample-row, default-thickness) = {
@@ -229,9 +248,13 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.stroke`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`.
+///
 /// \@param sample-row The row used to read the stroke value.
+///
 /// \@param default-thickness Fallback thickness when no mapping or pin applies.
 /// \@returns A Typst length suitable for `stroke.thickness`.
 #let resolve-stroke-width(
@@ -265,8 +288,11 @@
 ///
 /// \@internal
 /// \@param col Source column name or `none`.
+///
 /// \@param ctx Plot context exposing `trained`.
+///
 /// \@param sample-row The row to read.
+///
 /// \@param default-size Fallback length.
 /// \@returns A Typst length suitable for a marker radius.
 #let _resolve-size-natural(col, ctx, sample-row, default-size) = {
@@ -320,9 +346,13 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.size`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`.
+///
 /// \@param sample-row The row used to read the size value.
+///
 /// \@param default-size Fallback length when no mapping or pin applies.
 /// \@returns A Typst length suitable for a marker radius.
 #let resolve-size(layer, mapping, ctx, sample-row, default-size) = {
@@ -351,9 +381,13 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.colour`/`params.alpha`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
+///
 /// \@param sample-row The row used to read the colour value (group leader or per-row).
+///
 /// \@param default-colour The colour used when no scale resolution applies.
 /// \@returns A colour ready to use as a stroke paint.
 #let resolve-stroke-colour(layer, mapping, ctx, sample-row, default-colour) = {

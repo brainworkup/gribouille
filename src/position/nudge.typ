@@ -12,6 +12,7 @@
 /// \@since 0.0.1
 ///
 /// \@param x Offset added to the x value of each row.
+///
 /// \@param y Offset added to the y value of each row.
 ///
 /// \@returns Position dictionary with `name: "nudge"`, consumed by \@plot.

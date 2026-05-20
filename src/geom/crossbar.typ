@@ -29,15 +29,25 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `ymin`, `ymax`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param width Box width. In x data units for continuous x; a fraction of the slot width for discrete x.
+///
 /// \@param colour Stroke colour for the box and the median bar. `auto` falls back to the theme ink, since the outline and median carry the crossbar's structure even when `fill` supplies the body colour.
+///
 /// \@param fill Box fill colour. `auto` resolves via the fill scale or a neutral default.
+///
 /// \@param stroke Stroke thickness for the box outline.
+///
 /// \@param middle-stroke Stroke thickness for the median bar.
+///
 /// \@param alpha Box opacity in `[0, 1]`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Defaults to `"identity"`; use `"dodge"` to place groups side by side per fill level.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

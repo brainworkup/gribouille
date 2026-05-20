@@ -24,8 +24,11 @@
 /// \@since 0.0.1
 ///
 /// \@param fun Name of the summary helper to apply to each bin's y values.
+///
 /// \@param bins Target number of bins when `binwidth` is `none`.
+///
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
+///
 /// \@param fun-args Keyword arguments forwarded to the helper.
 ///
 /// \@returns Statistic object with `name: "summary-bin"`, consumed by geom

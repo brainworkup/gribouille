@@ -13,18 +13,31 @@
 /// \@since 0.0.1
 ///
 /// \@param data Either an array of row dictionaries (one row per observation, e.g., `((x: 1, y: 2), (x: 3, y: 4))`) or a dictionary of equal-length column arrays (e.g., `(x: (1, 3), y: (2, 4))`). Column-store input is normalised to row-store internally.
+///
 /// \@param mapping Aesthetic mapping built with\@aes. Maps column names to visual channels.
+///
 /// \@param layers Array of geom layers (e.g., \@geom-point,\@geom-line). Drawn in order.
+///
 /// \@param scales Array of scale objects overriding defaults \@scale-x-continuous,\@scale-colour-viridis-d, etc.).
+///
 /// \@param coord Coordinate system. Defaults to\@coord-cartesian when `none`.
+///
 /// \@param facet Faceting specification built with\@facet-wrap or\@facet-grid.
+///
 /// \@param theme Theme object (e.g., \@theme-grey,\@theme-minimal,\@theme-classic). Controls non-data ink.
+///
 /// \@param labs Labels dictionary built with\@labs (title, subtitle, caption, axis titles).
+///
 /// \@param guides Per-aesthetic guide overrides built with\@guides (e.g., `guides(colour: guide-legend(reverse: true))`).
+///
 /// \@param width Total plot width, including axes and legends.
+///
 /// \@param height Total plot height, including axes and legends.
+///
 /// \@param alt Alt text describing the figure. When set, the rendered plot is wrapped in a `figure` (kind `"gribouille-plot"`, no number, no caption) carrying this string as its PDF alternative text, so a screen reader on a tagged PDF announces the description instead of the raw axis and legend labels. When `none`, the plot renders without the figure wrapper. Quarto authors embedding plots through `typst-render` should set the block-level `alt` cell option for HTML output; this parameter only affects direct Typst compilation.
+///
 /// \@param strict When `true`, panic on the first row whose value falls outside any user-supplied scale `limits`. Default `false` drops such rows silently. Use in docs and CI to surface mismatched limits rather than producing thinned-out plots.
+///
 /// \@param defer When `true`, return the spec dict instead of rendering, so\@compose can probe guides and re-render with hoisted aesthetics suppressed. The dict carries the same keys the renderer would consume; do not feed it to anything other than\@compose.
 ///
 /// \@returns Typst content block containing the rendered figure, or the spec dict when `defer: true`.

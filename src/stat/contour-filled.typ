@@ -18,7 +18,9 @@
 /// \@since 0.4.0
 ///
 /// \@param bins Target band count when `breaks` and `binwidth` are unset.
+///
 /// \@param binwidth Fixed step between successive levels. Overrides `bins`.
+///
 /// \@param breaks Explicit array of level boundaries. Overrides the rest.
 ///
 /// \@returns Statistic object with `name: "contour-filled"`.

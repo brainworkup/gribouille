@@ -24,11 +24,17 @@
 /// \@since 0.0.1
 ///
 /// \@param slope Line slope.
+///
 /// \@param intercept Line y intercept.
+///
 /// \@param colour Line colour. `auto` inherits the theme `ink`.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. Defaults to `"solid"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

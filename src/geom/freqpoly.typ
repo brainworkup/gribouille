@@ -15,14 +15,23 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param bins Target number of bins when `binwidth` is `none`.
+///
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. `auto` honours the linetype scale.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

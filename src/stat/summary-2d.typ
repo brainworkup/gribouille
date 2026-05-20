@@ -17,7 +17,9 @@
 /// \@since 0.4.0
 ///
 /// \@param fun Reduction. String keyword or callable.
+///
 /// \@param bins Scalar or `(x, y)` pair — target bin counts.
+///
 /// \@param binwidth Scalar or `(x, y)` pair — fixed bin widths.
 ///
 /// \@returns Statistic object with `name: "summary-2d"`.

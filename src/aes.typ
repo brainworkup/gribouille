@@ -19,36 +19,67 @@
 /// \@since 0.0.1
 ///
 /// \@param x Column name for the x position.
+///
 /// \@param y Column name for the y position.
+///
 /// \@param colour Column name driving the stroke colour.
+///
 /// \@param fill Column name driving the fill colour.
+///
 /// \@param size Column name driving marker or line size.
+///
 /// \@param alpha Column name driving opacity.
+///
 /// \@param linewidth Column name driving line stroke thickness.
+///
 /// \@param group Column name used to partition layers that connect observations.
+///
 /// \@param shape Column name driving marker shape.
+///
 /// \@param linetype Column name driving line dash pattern.
+///
 /// \@param label Column name used by \@geom-text and \@geom-label.
+///
 /// \@param xmin Column name for the lower x bound (ribbons, error bars).
+///
 /// \@param xmax Column name for the upper x bound.
+///
 /// \@param ymin Column name for the lower y bound.
+///
 /// \@param ymax Column name for the upper y bound.
+///
 /// \@param xend Column name for the x end point of a segment.
+///
 /// \@param yend Column name for the y end point of a segment.
+///
 /// \@param xintercept Column name or scalar for vertical reference lines.
+///
 /// \@param yintercept Column name or scalar for horizontal reference lines.
+///
 /// \@param slope Slope for oblique reference lines (\@geom-abline).
+///
 /// \@param intercept Intercept for oblique reference lines.
+///
 /// \@param weight Column name carrying per-row statistical weights.
+///
 /// \@param stroke Column name driving marker outline thickness (\@geom-point).
+///
 /// \@param x0 Column name for the x centre of an ellipse (\@geom-ellipse).
+///
 /// \@param y0 Column name for the y centre of an ellipse.
+///
 /// \@param a Column name for the ellipse semi-major radius in data units.
+///
 /// \@param b Column name for the ellipse semi-minor radius in data units.
+///
 /// \@param angle Column name for the ellipse rotation in radians (\@geom-ellipse) or the spoke direction in radians (\@geom-spoke).
+///
 /// \@param radius Column name for the spoke length in data units (\@geom-spoke).
+///
 /// \@param z Column name for the value summarised over a 2D grid (\@stat-summary-2d, \@stat-summary-hex).
+///
 /// \@param nudge-x Column name or scalar for per-row x offsets applied to text/label/typst geoms, in data units. Combines with layer-level `dx`.
+///
 /// \@param nudge-y Column name or scalar for per-row y offsets applied to text/label/typst geoms, in data units. Combines with layer-level `dy`.
 ///
 /// \@returns Dictionary tagged `kind: "aes"`, consumed by \@plot and geom layers.

@@ -20,7 +20,9 @@
 /// \@since 0.0.1
 ///
 /// \@param fun Callable taking a numeric x and returning a numeric y.
+///
 /// \@param n Number of samples taken uniformly across the range.
+///
 /// \@param xlim Pair `(lo, hi)` bounding the sampling range, or `none` to derive from data.
 ///
 /// \@returns Statistic object with `name: "function"`, consumed by geom layers.

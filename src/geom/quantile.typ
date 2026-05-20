@@ -20,15 +20,25 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param quantiles Array of τ values in `(0, 1)` to fit.
+///
 /// \@param n-samples Number of evenly-spaced x positions sampled per fitted line.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale or a neutral default.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. `auto` honours the linetype scale.
+///
 /// \@param linewidth Multiplier on line thickness, mapped via the linewidth scale.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

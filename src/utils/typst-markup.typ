@@ -128,6 +128,7 @@
 ///
 /// \@internal
 /// \@param x A user-supplied prose value.
+///
 /// \@param eval-strings When `true`, plain strings are evaluated as
 ///   Typst markup; defaults to `false` so unmarked surfaces render
 ///   strings literally.

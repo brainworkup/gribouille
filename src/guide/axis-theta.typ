@@ -17,7 +17,9 @@
 /// \@since 0.5.0
 ///
 /// \@param angle Tick-label rotation in degrees: 0 horizontal, 45 readable diagonal, 90 vertical.
+///
 /// \@param minor-ticks Whether to draw short tick marks at half-step positions between major theta breaks.
+///
 /// \@param cap Where to trim the axis arc: `"none"` (full sweep), `"both"`, `"upper"`, or `"lower"`.
 ///
 /// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.

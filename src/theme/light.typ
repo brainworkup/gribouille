@@ -15,8 +15,11 @@
 /// \@since 0.0.1
 ///
 /// \@param ink Foreground colour (text). Default: `black`.
+///
 /// \@param paper Background colour. Default: `white`.
+///
 /// \@param accent Accent colour. Default: `rgb("#3366FF")`.
+///
 /// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.

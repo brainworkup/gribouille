@@ -15,14 +15,23 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `y`, `xmin`, `xmax`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param height Cap span. A Typst length sets the cap span directly in panel units; a number is interpreted as y data units for continuous y and a fraction of the slot height for discrete y.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. Defaults to `"solid"`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Defaults to `"identity"`; use `"dodge"` to offset groups within each y slot (no-op when `height` is a Typst length).
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

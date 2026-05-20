@@ -17,7 +17,9 @@
 /// \@since 0.0.1
 ///
 /// \@param method Smoother method. `"lm"` is the only supported value in v1.
+///
 /// \@param se Whether to compute the confidence band. When `false`, `ymin == ymax == y`.
+///
 /// \@param level Confidence level for the band (e.g., `0.95`).
 ///
 /// \@returns Statistic object with `name: "smooth"`, consumed by geom layers.

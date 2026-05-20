@@ -16,7 +16,9 @@
 /// \@since 0.0.1
 ///
 /// \@param name Title shown above or beside the secondary axis, or `none`.
+///
 /// \@param breaks Array of break values, or `auto` to mirror the primary axis.
+///
 /// \@param labels Array of labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Secondary axis dictionary consumed by \@scale-x-continuous and \@scale-y-continuous.
@@ -77,8 +79,11 @@
 /// \@since 0.0.1
 ///
 /// \@param transform Function or `"identity"` mapping primary values to secondary values.
+///
 /// \@param name Title shown above or beside the secondary axis, or `none`.
+///
 /// \@param breaks Array of break values in primary units, or `auto`.
+///
 /// \@param labels Array of labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Secondary axis dictionary consumed by \@scale-x-continuous and \@scale-y-continuous.

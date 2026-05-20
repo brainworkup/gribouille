@@ -23,15 +23,25 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`. `angle` and `radius` may be mapped or left to the layer-level fallbacks.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param angle Layer-level direction (a Typst angle, e.g., `45deg`) used when `aes(angle: ...)` is not mapped.
+///
 /// \@param radius Layer-level length in data units used when `aes(radius: ...)` is not mapped.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. Defaults to `"solid"`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

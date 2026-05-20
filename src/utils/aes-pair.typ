@@ -15,7 +15,9 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params`.
+///
 /// \@param mapping The resolved aesthetic mapping handed to a geom's `draw`.
+///
 /// \@param name Aesthetic name to query (e.g., `"colour"`, `"fill"`).
 /// \@returns A boolean indicating whether the user supplied this aesthetic.
 #let aes-set(layer, mapping, name) = {
@@ -41,8 +43,11 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params`.
+///
 /// \@param mapping The resolved aesthetic mapping handed to a geom's `draw`.
+///
 /// \@param default-colour The geom's stroke default when no aesthetic is set.
+///
 /// \@param default-fill The geom's fill default when no aesthetic is set.
 /// \@returns A `(colour-default, fill-default)` 2-tuple.
 #let resolve-pair-defaults(layer, mapping, default-colour, default-fill) = {

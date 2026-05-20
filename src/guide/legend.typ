@@ -78,12 +78,19 @@
 /// \@since 0.0.1
 ///
 /// \@param title Override the legend title; `none` keeps the default from labs or scale.
+///
 /// \@param nrow Number of rows when laying out levels in a grid; `none` for default.
+///
 /// \@param ncolumn Number of columns when laying out levels in a grid; `none` for default.
+///
 /// \@param reverse Reverse the order of levels.
+///
 /// \@param position Where the legend sits. One of `"top"`, `"right"`, `"bottom"`, `"left"`, `"none"`, a Typst alignment (e.g. `top + right`) for inside-panel placement, or a dict `(dx:, dy:)` / `(x:, y:)` for arbitrary offsets. Wide horizontal legends on `"top"` / `"bottom"` can overflow the panel edge.
+///
 /// \@param direction Flow direction of swatch entries: `"horizontal"` or `"vertical"`. `auto` infers from `position` (horizontal for top/bottom, vertical otherwise).
+///
 /// \@param order Integer priority among multiple guides; lower draws first. `none` defers to the default aesthetic order.
+///
 /// \@param byrow Fill the swatch grid row-major when `true`; column-major (default) when `false`.
 ///
 /// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.

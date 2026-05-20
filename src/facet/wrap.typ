@@ -15,8 +15,11 @@
 /// \@since 0.0.1
 ///
 /// \@param variable Name of the discrete column whose levels drive the panels.
+///
 /// \@param ncolumn Number of columns in the panel grid, or `none` for automatic.
+///
 /// \@param nrow Number of rows in the panel grid, or `none` for automatic.
+///
 /// \@param scales Scale policy. One of `"fixed"` (default, every panel
 ///   shares both axes), `"free"` (each panel trains x and y on its own
 ///   subset), `"free_x"` (only x is per-panel), or `"free_y"` (only y is
@@ -24,8 +27,10 @@
 ///   linetype) are always shared so legends stay consistent. An explicit
 ///   `coord-cartesian(xlim:, ylim:)` overrides the per-panel domain on
 ///   the corresponding axis, pinning every panel to the same range.
+///
 /// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
+///
 /// \@param axes Which panels draw their own positional axes. One of
 ///   `"margins"` (default; outer edge plus any panel whose neighbour slot
 ///   is empty), `"all_x"` (every panel draws bottom and top x axes),

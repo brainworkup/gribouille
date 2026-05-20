@@ -26,13 +26,21 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x` and `y`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param bins Scalar or `(x, y)` pair — target bin counts.
+///
 /// \@param binwidth Scalar or `(x, y)` pair — fixed pitches.
+///
 /// \@param colour Cell outline colour.
+///
 /// \@param fill Cell fill colour. `auto` lets the fill scale paint by `_count`.
+///
 /// \@param stroke Outline thickness or stroke dictionary.
+///
 /// \@param alpha Cell opacity in `[0, 1]`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

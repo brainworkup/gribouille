@@ -18,6 +18,7 @@
 /// \@since 0.0.1
 ///
 /// \@param angle Tick-label rotation in degrees: 0 horizontal, 45 readable diagonal, 90 vertical.
+///
 /// \@param n-dodge Number of rows (x-axis) or columns (y-axis) across which to stagger tick labels; 1 keeps them on a single row/column.
 ///
 /// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.
@@ -92,6 +93,7 @@
 /// \@since 0.4.0
 ///
 /// \@param angle Tick-label rotation in degrees.
+///
 /// \@param n-dodge Number of rows/columns across which to stagger labels.
 ///
 /// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.

@@ -25,6 +25,7 @@
 /// \@since 0.0.1
 ///
 /// \@param width Total width reserved for the dodged group, as a fraction of the category width.
+///
 /// \@param padding Gap between adjacent dodge slots in mixed-width mode, as a fraction of the bucket.
 ///
 /// \@returns Position dictionary with `name: "dodge"`, consumed by \@plot.
@@ -78,7 +79,9 @@
 /// total width the dodged slots fill collectively).
 /// \@internal
 /// \@param row Data row carrying `_dodge-offset` written by `apply`.
+///
 /// \@param c Original centre coordinate on the canvas.
+///
 /// \@param bucket Canvas span of the dodge bucket for this row.
 #let dodge-centre(row, c, bucket) = (
   c + row.at("_dodge-offset", default: 0) * bucket
@@ -88,6 +91,7 @@
 ///
 /// \@internal
 /// \@param row Data row carrying `_dodge-n` written by `apply`.
+///
 /// \@param half Undodged half-width on the canvas.
 #let dodge-half(row, half) = half / row.at("_dodge-n", default: 1)
 

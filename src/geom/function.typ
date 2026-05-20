@@ -23,12 +23,19 @@
 /// \@since 0.0.1
 ///
 /// \@param fun Callable taking a numeric x and returning a numeric y, or `none` to skip.
+///
 /// \@param n Number of samples taken uniformly across the x-range.
+///
 /// \@param xlim Optional `(lo, hi)` overriding the trained x-domain.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` falls back to the theme `ink`.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. Defaults to `"solid"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping. Defaults to `false`.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

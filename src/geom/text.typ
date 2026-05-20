@@ -24,29 +24,53 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `label`. May map `nudge-x` and `nudge-y` for per-row offsets in data units.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param size Text size (a Typst length).
+///
 /// \@param colour Fixed text colour. `auto` inherits the theme `ink`. Used when no colour mapping is active.
+///
 /// \@param alpha Text opacity in `[0, 1]`. `auto` honours any mapped alpha aesthetic.
+///
 /// \@param anchor CeTZ anchor (e.g., `"center"`, `"west"`) controlling placement.
+///
 /// \@param dx Horizontal offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g., `4pt`, `2mm`).
+///
 /// \@param dy Vertical offset, as a number (canvas units, 1 = 1cm) or a Typst length (e.g., `4pt`, `2mm`).
+///
 /// \@param segment Draw a connector from each label back to its anchor point. When `true`, the connector is routed to avoid the AABBs of other labels of the same layer; the connector is dropped when no L-bend clears the obstacles.
+///
 /// \@param segment-colour Connector paint. `auto` inherits the theme `ink`.
+///
 /// \@param segment-stroke Connector thickness (a Typst length).
+///
 /// \@param min-segment-length Connectors shorter than this distance (canvas units, 1 = 1cm) are suppressed to avoid tiny stubs.
+///
 /// \@param arrow Draw a small V-mark at the anchor end of the connector.
+///
 /// \@param arrow-length Arrow stroke length (a Typst length).
+///
 /// \@param box-padding Extra cm padding added around each measured label box when routing connectors and clipping to the label edge.
+///
 /// \@param repel Repel labels off each other (and off their anchor points) via an iterative force-based layout, ggrepel-style. Pair with `segment: true` to keep the visual link to each anchor.
+///
 /// \@param point-padding Minimum clearance (cm) between a label and any anchor point when `repel` is on.
+///
 /// \@param max-iter Maximum number of repulsion iterations.
+///
 /// \@param force-pull Strength of the spring pull that keeps each label near its anchor.
+///
 /// \@param force-push Strength of the repulsion between overlapping labels.
+///
 /// \@param force-segment Strength of the penalty that pushes a label off another label's connector path.
+///
 /// \@param seed Random seed for the small initial jitter applied to coincident anchors. Same seed produces the same layout.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`; pass `"nudge"` to shift labels off their points.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

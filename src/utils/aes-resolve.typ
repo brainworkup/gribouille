@@ -93,7 +93,9 @@
 /// \@internal
 /// \@param spec Aesthetic mapping value (string, `mapping-ref`, or
 ///   `typst-markup`).
+///
 /// \@param row The row dictionary to read from.
+///
 /// \@param mode `"raw"` or `"display"`.
 /// \@returns The resolved value, evaluated when in display mode and the
 ///   spec is typst-tagged.
@@ -116,6 +118,7 @@
 ///
 /// \@internal
 /// \@param spec The originating aesthetic mapping value.
+///
 /// \@param value The break value to display.
 /// \@returns The value, evaluated as markup when the spec is typst-tagged.
 #let resolve-break-display(spec, value) = {
@@ -133,6 +136,7 @@
 ///
 /// \@internal
 /// \@param input-mapping Aesthetic mapping or `none`.
+///
 /// \@param overrides Dictionary of `(aes-name, column-name)` pairs to apply on
 ///   top of the preserved mapping.
 /// \@returns Mapping dict suitable for a stat's `apply()` return.
@@ -158,12 +162,18 @@
 /// \@internal
 /// \@param channel Channel name (`"colour"`, `"fill"`, `"size"`,
 ///   `"alpha"`, `"linewidth"`, `"stroke"`, `"linetype"`).
+///
 /// \@param layer The layer dictionary providing `params.<channel>`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`, `resolve-colour`,
 ///   and `palette`.
+///
 /// \@param row The current row.
+///
 /// \@param default Channel-specific fallback (ignored for `linetype`).
+///
 /// \@param ..extra Extra named arguments forwarded to the resolver.
 /// \@returns The resolved channel value.
 #let resolve-channel(channel, layer, mapping, ctx, row, default, ..extra) = {
@@ -203,9 +213,13 @@
 ///
 /// \@internal
 /// \@param labels A function, array, `auto`, or `none`.
+///
 /// \@param value The break value (passed to a function callback).
+///
 /// \@param idx Zero-based index of the break in its enumeration.
+///
 /// \@param fallback Default label when neither callback nor array applies.
+///
 /// \@param typst-mark Whether the originating aesthetic is typst-tagged.
 /// \@returns The resolved label, possibly evaluated as Typst markup.
 #let resolve-label(labels, value, idx, fallback, typst-mark: false) = {
@@ -226,6 +240,7 @@
 ///
 /// \@internal
 /// \@param layer Layer dict.
+///
 /// \@param plot-mapping Plot-level mapping dict (or `none`).
 /// \@returns Merged mapping dict (or `none` when both layer and plot have no mapping).
 #let merge-mapping(layer, plot-mapping) = {

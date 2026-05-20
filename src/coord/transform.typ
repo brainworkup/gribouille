@@ -14,6 +14,7 @@
 /// \@since 0.4.0
 ///
 /// \@param x Transformation keyword for the x axis.
+///
 /// \@param y Transformation keyword for the y axis.
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.

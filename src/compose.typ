@@ -87,13 +87,18 @@
 /// \@param ..panels-positional Two or more deferred plots produced by\@plot with
 ///   `defer: true`. Order is preserved by the layout (left-to-right, top-to-bottom
 ///   for grids; per `dir` for stacks).
+///
 /// \@param layout `"grid"` (default) lays panels into a Typst `grid` with `columns`
 ///   columns; `"stack"` lays them into a Typst `stack` flowing in `dir`.
+///
 /// \@param columns Number of columns in `"grid"` layout. Ignored for `"stack"`.
+///
 /// \@param direction Stack direction (`ttb`, `btt`, `ltr`, `rtl`) used by
 ///   `"stack"` layout. Ignored for `"grid"`.
+///
 /// \@param gutter Spacing between panels and between the panel block and the
 ///   shared legend.
+///
 /// \@param collect Which aesthetics to hoist into the shared legend.
 ///   - `auto` (default) hoists every aesthetic whose guide is identical across
 ///     all panels (kind, title, levels/domain, breaks, labels, aesthetic mix).
@@ -107,6 +112,7 @@
 ///   The merge predicate ignores per-panel placement and grid shape (`nrow` /
 ///   `ncol`); compose forces a single shared side and grid layout for the
 ///   hoisted block. Custom guides (`guide-custom`) never hoist.
+///
 /// \@param guides-placement Side where the shared legend appears, relative to
 ///   the panel block. One of `"right"` (default), `"left"`, `"top"`, or
 ///   `"bottom"`. The hoisted guides' direction is set automatically:

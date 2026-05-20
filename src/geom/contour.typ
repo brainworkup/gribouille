@@ -15,14 +15,23 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, and `z`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param bins Target contour-level count.
+///
 /// \@param binwidth Fixed step between levels. Overrides `bins`.
+///
 /// \@param breaks Explicit array of contour levels. Overrides `bins` and `binwidth`.
+///
 /// \@param stroke Line thickness.
+///
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

@@ -14,12 +14,16 @@
 ///   axis (the other one) automatically drops its lo-side expansion to zero
 ///   so bars meet at radius 0; pass an explicit `expand:` on the radial scale
 ///   to override.
+///
 /// \@param start Offset in radians from 12 o'clock for the first slice.
+///
 /// \@param end Offset in radians from 12 o'clock for the sweep end. `none`
 ///   (default) means a full sweep in the requested `direction`. On a full
 ///   sweep where the angular domain endpoints land on the same canvas angle,
 ///   the two ticks merge into a single `"end/start"` label.
+///
 /// \@param direction `1` (default) advances clockwise; `-1` counter-clockwise.
+///
 /// \@param clip `"off"` (default) lets marks render past the panel rectangle; `"on"` clips.
 ///
 /// \@returns Coordinate dictionary consumed by \@plot.

@@ -203,7 +203,9 @@
 /// \@since 0.0.1
 ///
 /// \@param start Column name used for initial training, or `none`.
+///
 /// \@param after-stat Post-stat expression, or `none`.
+///
 /// \@param after-scale Post-scale closure, or `none`.
 /// \@returns Late-binding marker consumed by \@aes.
 ///
@@ -266,9 +268,12 @@
 ///
 /// \@internal
 /// \@param rows Post-stat row dictionaries.
+///
 /// \@param mapping Aesthetic mapping with stage markers already stashed
 ///   (positions of stage markers carry plain column refs).
+///
 /// \@param stages Dict keyed by channel, returned by `stash-stages`.
+///
 /// \@param ctx Closure context for after-stat closures.
 /// \@returns Dict with `rows` and `mapping` fields.
 #let apply-stages(rows, mapping, stages, ctx) = {
@@ -336,8 +341,11 @@
 ///
 /// \@internal
 /// \@param resolved The channel's scale-resolved value.
+///
 /// \@param spec The mapping value for the channel (may be a marker).
+///
 /// \@param ctx The renderer context (`theme`, `palette`, `trained`, ...).
+///
 /// \@param row The current data row.
 /// \@returns The transformed value, or `resolved` when no marker.
 #let apply-after-scale(resolved, spec, ctx, row) = {
@@ -356,7 +364,9 @@
 ///
 /// \@internal
 /// \@param rows Post-stat row dictionaries.
+///
 /// \@param mapping Aesthetic mapping (may carry `after-stat` markers).
+///
 /// \@param ctx Closure context (`theme`, `palette`, ...).
 /// \@returns Dict with `rows` and `mapping` fields.
 #let eval-after-stat(rows, mapping, ctx) = {
@@ -420,6 +430,7 @@
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
+///
 /// \@param path Dotted string or array of keys.
 /// \@returns The resolved scalar (often a colour or length).
 #let resolve-from-theme(theme, path) = {

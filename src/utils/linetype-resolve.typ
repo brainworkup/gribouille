@@ -12,8 +12,11 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.linetype`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`.
+///
 /// \@param sample-row The row used to read the linetype value.
 /// \@returns A dash keyword (e.g., `"solid"`, `"dashed"`).
 #let resolve-linetype(layer, mapping, ctx, sample-row) = {

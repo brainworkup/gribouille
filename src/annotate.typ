@@ -84,6 +84,7 @@
 ///
 /// \@param geom Geom name to dispatch to. One of `"text"`, `"point"`,
 ///   `"label"`, `"segment"`, `"rect"`, `"vline"`, `"hline"`, `"abline"`.
+///
 /// \@param ..fields Named arguments split between aesthetics and layer
 ///   parameters. Aesthetic names are `x`, `y`, `xend`, `yend`, `xmin`,
 ///   `xmax`, `ymin`, `ymax`, `colour`, `fill`, `size`, `alpha`, `shape`,

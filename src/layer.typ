@@ -8,12 +8,19 @@
 ///
 /// \@internal
 /// \@param geom Renderer dispatch key (e.g., `"point"`, `"col"`, `"line"`).
+///
 /// \@param mapping Layer-specific aesthetic mapping, or `none` to inherit.
+///
 /// \@param data Layer-specific data array, or `none` to inherit.
+///
 /// \@param params Geom-specific parameter dict (fixed aesthetics, knobs).
+///
 /// \@param stat Stat name or stat-object selecting the pre-render transform.
+///
 /// \@param position Position-adjustment name or position-object.
+///
 /// \@param key Legend-glyph override; `auto` falls back to the geom's default.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer.
 ///
 /// \@returns Layer dictionary consumed by `plot()`.

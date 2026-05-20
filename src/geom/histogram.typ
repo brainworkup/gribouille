@@ -17,15 +17,25 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param bins Target number of bins when `binwidth` is `none`.
+///
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
+///
 /// \@param width Bar width as a fraction of the bin width (0 to 1).
+///
 /// \@param colour Bar outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
+///
 /// \@param fill Bar fill colour. `auto` resolves via the fill scale or a neutral default.
+///
 /// \@param stroke Bar outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
+///
 /// \@param alpha Bar opacity in `[0, 1]`.
+///
 /// \@param position Position adjustment. Defaults to `"stack"` so a `fill`/`colour` mapping yields stacked contributions per group.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

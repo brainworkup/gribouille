@@ -26,15 +26,25 @@
 /// \@since 0.0.1
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param method Smoother method. `"lm"` is the only supported value in v1.
+///
 /// \@param se Whether to draw the confidence ribbon around the fit.
+///
 /// \@param level Confidence level for the ribbon (e.g., `0.95`).
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` picks a neutral default.
+///
 /// \@param fill Fixed ribbon fill. `auto` reuses the line colour.
+///
 /// \@param alpha Ribbon opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword for the fitted line. `auto` resolves via the linetype scale or defaults to `"solid"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

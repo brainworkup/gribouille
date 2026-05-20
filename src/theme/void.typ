@@ -15,8 +15,11 @@
 /// \@since 0.0.1
 ///
 /// \@param ink Foreground colour. Default: `black`.
+///
 /// \@param paper Plot canvas fill. Default: transparent (no canvas drawn). Pass an explicit colour to paint the canvas behind the otherwise-blank panel.
+///
 /// \@param accent Accent colour driving layer defaults like \@geom-smooth's stroke. Default: `rgb("#3366FF")`.
+///
 /// \@param ..fields Extra overrides forwarded to \@theme; see its docs for the full catalogue of structured and flat keys.
 ///
 /// \@returns Theme dictionary consumed by \@plot.

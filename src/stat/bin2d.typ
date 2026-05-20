@@ -15,6 +15,7 @@
 /// \@since 0.4.0
 ///
 /// \@param bins Scalar or `(x, y)` pair — target bin counts when binwidth is `none`.
+///
 /// \@param binwidth Scalar or `(x, y)` pair — fixed bin widths. Overrides `bins` per axis.
 ///
 /// \@returns Statistic object with `name: "bin-2d"`.

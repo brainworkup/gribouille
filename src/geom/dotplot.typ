@@ -30,16 +30,27 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param bins Target number of bins when `binwidth` is `none`.
+///
 /// \@param binwidth Fixed bin width. Overrides `bins` when set.
+///
 /// \@param dotsize Multiplier on the dot diameter (1 keeps dots equal to `binwidth`).
+///
 /// \@param stackratio Vertical spacing between dots, in dot diameters. 1 means touching.
+///
 /// \@param fill Dot fill colour. `auto` resolves via the fill scale.
+///
 /// \@param colour Dot outline colour. `auto` resolves via the colour scale; only honoured when `stroke` is non-zero.
+///
 /// \@param stroke Dot outline thickness; `none` means no outline.
+///
 /// \@param alpha Dot opacity in `[0, 1]`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

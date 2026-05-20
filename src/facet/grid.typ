@@ -15,8 +15,11 @@
 /// \@since 0.0.1
 ///
 /// \@param rows Name of the discrete column driving panel rows, or `none`.
+///
 /// \@param columns Name of the discrete column driving panel columns, or `none`.
+///
 /// \@param scales Scale policy. Only `"fixed"` is supported in v1.
+///
 /// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
 ///

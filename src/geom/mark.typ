@@ -140,16 +140,27 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`. Use `colour`, `fill`, or `group` to split rows into separate marks.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param method Shape to draw: `"rect"` (bounding box), `"circle"` (smallest enclosing circle), `"ellipse"` (axis-aligned ellipse over the bounding box), or `"hull"` (convex hull). Named `method` to avoid clash with the `shape` aesthetic on \@geom-point.
+///
 /// \@param expand Canvas-space padding around each shape, as a Typst length (e.g., `5pt`, `0.5cm`). `0pt` draws the shape flush with the cluster.
+///
 /// \@param n Polygon resolution for `"circle"` and `"ellipse"`.
+///
 /// \@param colour Fixed outline colour. `auto` resolves via the colour scale.
+///
 /// \@param fill Fixed fill colour. `auto` resolves via the fill scale.
+///
 /// \@param stroke Outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
+///
 /// \@param alpha Fill opacity in `[0, 1]`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

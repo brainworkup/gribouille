@@ -17,12 +17,19 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.fill` and `params.alpha`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
+///
 /// \@param sample-row The row used to read the fill or colour value.
+///
 /// \@param default-fill The colour used when no scale resolution applies.
+///
 /// \@param fill-mapping Whether to consult the fill mapping and scale.
+///
 /// \@param colour-fallback Whether to fall back to the colour scale when fill is unmapped.
+///
 /// \@param default-alpha Fallback opacity passed through to \@resolve-alpha when no pin or mapping applies.
 /// \@returns A fill colour with alpha applied.
 #let resolve-fill-colour(

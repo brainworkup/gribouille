@@ -25,17 +25,29 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x0`, `y0`. `a`, `b`, and `angle` may be mapped or left to the layer-level fallbacks.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param a Layer-level semi-major radius in data units used when `aes(a: ...)` is not mapped.
+///
 /// \@param b Layer-level semi-minor radius in data units used when `aes(b: ...)` is not mapped.
+///
 /// \@param angle Layer-level rotation in radians used when `aes(angle: ...)` is not mapped.
+///
 /// \@param n Number of polygon vertices sampled around the ellipse.
+///
 /// \@param colour Fixed outline colour. `auto` resolves via the colour scale.
+///
 /// \@param fill Fixed fill colour. `auto` resolves via the fill scale.
+///
 /// \@param stroke Outline thickness (a Typst length) or stroke dictionary; `none` disables the outline.
+///
 /// \@param alpha Fill opacity in `[0, 1]`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

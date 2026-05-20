@@ -143,6 +143,7 @@
 /// \@since 0.0.1
 ///
 /// \@param width Maximum number of characters per line.
+///
 /// \@param inner Labeller applied before wrapping, or `none` for the raw level.
 ///
 /// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.
@@ -203,6 +204,7 @@
 /// \@since 0.0.1
 ///
 /// \@param rules Dict mapping facet variable names to labellers.
+///
 /// \@param default Labeller used for variables absent from `rules`.
 ///
 /// \@returns Labeller dictionary consumed by \@facet-wrap and \@facet-grid.

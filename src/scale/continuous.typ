@@ -81,14 +81,21 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+///
 /// \@param transform Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
+///
 /// \@param expand Padding around the domain.
 ///   Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding.
 ///   `auto` keeps the per-scale default; `false` collapses to zero.
+///
 /// \@param secondary Secondary axis spec from \@dup-axis or \@sec-axis, or `none`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -172,14 +179,21 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
+///
 /// \@param transform Transformation keyword: `"identity"`, `"log10"`, `"sqrt"`, or `"reverse"`.
+///
 /// \@param expand Padding around the domain.
 ///   Accepts a `ratio` (`5%`) for proportional breathing room, a `length` (`5pt`) for canvas-space padding, a `relative` (`5pt + 5%`) for both, or a `(lo, hi)` 2-tuple for asymmetric padding.
 ///   `auto` keeps the per-scale default; `false` collapses to zero.
+///
 /// \@param secondary Secondary axis spec from \@dup-axis or \@sec-axis, or `none`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -247,9 +261,13 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -316,9 +334,13 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -386,9 +408,13 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -456,9 +482,13 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -522,9 +552,13 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -589,9 +623,13 @@
 /// \@since 0.3.0
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param n-breaks Number of bins to partition the domain into.
+///
 /// \@param labels Array of tick labels aligned with the bin midpoints, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -651,9 +689,13 @@
 /// \@since 0.3.0
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none`.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param n-breaks Number of bins to partition the domain into.
+///
 /// \@param labels Array of tick labels aligned with the bin midpoints, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.
@@ -714,9 +756,13 @@
 /// \@since 0.0.1
 ///
 /// \@param name Axis title. Overrides any name set via \@labs when both are present.
+///
 /// \@param limits Pair `(lo, hi)` clipping the trained domain, or `none` for automatic limits.
+///
 /// \@param oob Out-of-range policy: `"drop"` (default) removes rows whose value falls outside `limits`; `"squish"` clamps them to the nearest endpoint.
+///
 /// \@param breaks Array of break values, or `auto` for automatic tick selection.
+///
 /// \@param labels Array of tick labels aligned with `breaks`, or `auto`.
 ///
 /// \@returns Scale object consumed by \@plot.

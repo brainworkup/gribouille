@@ -10,6 +10,7 @@
 ///
 /// \@internal
 /// \@param stroke-param The layer's `params.stroke` value.
+///
 /// \@param stroke-paint The resolved stroke colour.
 /// \@returns A CeTZ stroke dictionary or `none`.
 #let build-stroke(stroke-param, stroke-paint) = {
@@ -35,10 +36,15 @@
 ///
 /// \@internal
 /// \@param layer The layer dictionary providing `params.stroke` and `params.colour`.
+///
 /// \@param mapping The resolved aesthetic mapping.
+///
 /// \@param ctx The plot context exposing `trained`, `resolve-colour`, and `palette`.
+///
 /// \@param sample-row The row used to read the colour value.
+///
 /// \@param default-colour The colour used when no scale resolution applies, or `none` to suppress the stroke entirely.
+///
 /// \@param default-thickness Fallback stroke thickness when `params.stroke == auto` and no `linewidth` mapping resolves; defaults to \@default-stroke-thickness.
 /// \@returns A CeTZ stroke dictionary or `none`.
 #let resolve-stroke-spec(

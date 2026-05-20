@@ -19,8 +19,11 @@
 /// \@since 0.0.1
 ///
 /// \@param width Maximum absolute jitter applied to the (already dodged) x position, in data units.
+///
 /// \@param height Maximum absolute jitter applied to the y position, in data units.
+///
 /// \@param dodge-width Total width reserved for the dodged group, as a fraction of the category width.
+///
 /// \@param seed Integer seed for the deterministic pseudo-random offsets.
 ///
 /// \@returns Position dictionary with `name: "jitterdodge"`, consumed by \@plot.

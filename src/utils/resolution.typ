@@ -23,6 +23,7 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric and `none` entries are dropped.
+///
 /// \@param zero Whether to include zero when computing the resolution.
 ///
 /// \@returns The smallest positive difference between consecutive unique

@@ -14,8 +14,11 @@
 /// \@internal
 ///
 /// \@param trained Trained scale dict for the axis the band runs along.
+///
 /// \@param raw Row value at the band centre.
+///
 /// \@param half-width Band half-width in data units (continuous) or as a fraction of the slot (discrete).
+///
 /// \@param range Pair `(lo, hi)` giving the panel extent on the same axis.
 ///
 /// \@returns Pair `(c-lo, c-hi)` of mapped band edges, or `none` when the centre cannot be mapped.

@@ -14,10 +14,15 @@
 /// \@since 0.0.1
 ///
 /// \@param size Text size (a Typst length), or `none` to inherit.
+///
 /// \@param weight Font weight (e.g., `"regular"`, `"bold"`), or `none` to inherit.
+///
 /// \@param colour Text colour, or `none` to inherit.
+///
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
+///
 /// \@param family Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
+///
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
 ///   with the surface font size. Sides left at `auto` fall through to the
@@ -112,10 +117,15 @@
 /// \@since 0.1.0
 ///
 /// \@param size Text size (a Typst length), or `none` to inherit.
+///
 /// \@param weight Font weight (e.g., `"regular"`, `"bold"`), or `none`.
+///
 /// \@param colour Text colour, or `none` to inherit.
+///
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
+///
 /// \@param family Font family, or `none` to inherit.
+///
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
 ///   with the surface font size. Sides left at `auto` fall through to the
@@ -185,6 +195,7 @@
 /// \@since 0.0.1
 ///
 /// \@param colour Line colour, or `none` to inherit.
+///
 /// \@param stroke Line thickness (a Typst length), or `none`.
 ///
 /// \@returns Element dictionary consumed by \@theme.
@@ -250,9 +261,13 @@
 /// \@since 0.0.1
 ///
 /// \@param fill Rectangle fill colour, or `none` to inherit.
+///
 /// \@param colour Outline colour, or `none` to inherit.
+///
 /// \@param stroke Outline thickness (a Typst length), or `none` for no outline.
+///
 /// \@param inset Inner padding \@margin honoured by `plot-background` and `legend-background` (grows the painted rect outward), or `none`. Ignored on `panel-background`, `strip-background`, and `legend-bar`.
+///
 /// \@param outset Outer margin \@margin reserving outer whitespace (panel canvas shrinks on cetz surfaces; the rendered block is wrapped in `pad(...)` on `plot-background`), or `none`. Ignored on `strip-background`.
 ///
 /// \@returns Element dictionary consumed by \@theme.
@@ -389,8 +404,11 @@
 /// \@since 0.4.0
 ///
 /// \@param top Top margin (Typst length or `auto`).
+///
 /// \@param right Right margin.
+///
 /// \@param bottom Bottom margin.
+///
 /// \@param left Left margin.
 ///
 /// \@returns Margin dictionary consumed by \@element-text, \@element-typst, and \@element-rect.
@@ -474,10 +492,15 @@
 /// \@since 0.5.0
 ///
 /// \@param fill Global override for every filled geom's default fill colour.
+///
 /// \@param colour Global override for every geom's default stroke or text colour, including \@geom-smooth.
+///
 /// \@param linewidth Default stroke thickness for line and outline geoms (Typst length).
+///
 /// \@param ink Geom `ink` role: default stroke/text colour for almost every geom and the dark stop of the bar/area body-fill tint. Falls back to `theme.ink`.
+///
 /// \@param paper Geom `paper` role: default fill for \@geom-boxplot, \@geom-crossbar, \@geom-point, \@geom-label, and the light stop of the bar/area body-fill tint. Falls back to `theme.paper`.
+///
 /// \@param accent Geom `accent` role: default colour for \@geom-smooth (when `colour` is unset). Falls back to `theme.accent`.
 ///
 /// \@returns Element dictionary consumed by \@theme.

@@ -29,16 +29,27 @@
 /// \@since 0.4.0
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `xend`, `yend`.
+///
 /// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+///
 /// \@param curvature Bezier-control offset as a fraction of the chord length. `0` draws a straight segment; sign flips the side of the bow.
+///
 /// \@param angle Apex angle in `(0deg, 180deg)`. `90deg` is symmetric.
+///
 /// \@param n Number of polyline samples along the curve.
+///
 /// \@param stroke Line thickness (a Typst length).
+///
 /// \@param colour Fixed line colour. `auto` resolves via the colour scale.
+///
 /// \@param alpha Line opacity in `[0, 1]`.
+///
 /// \@param linetype Dash keyword. Defaults to `"solid"`.
+///
 /// \@param stat Statistical transform name. Usually `"identity"`.
+///
 /// \@param position Position adjustment name. Usually `"identity"`.
+///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
 /// \@returns Layer dictionary consumed by \@plot.

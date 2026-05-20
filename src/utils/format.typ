@@ -68,9 +68,13 @@
 /// \@since 0.1.0
 ///
 /// \@param big-mark Thousands separator (e.g., `","` for English).
+///
 /// \@param decimal-mark Decimal separator (e.g., `"."` for English).
+///
 /// \@param digits Decimal digits to keep, or `auto` to drop trailing zeros.
+///
 /// \@param prefix String prepended to every formatted value.
+///
 /// \@param suffix String appended to every formatted value.
 ///
 /// \@returns A closure `value => string`.
@@ -112,7 +116,9 @@
 /// \@since 0.1.0
 ///
 /// \@param digits Decimal digits to keep, or `auto` to drop trailing zeros.
+///
 /// \@param prefix String prepended to every formatted value.
+///
 /// \@param suffix String appended to every formatted value.
 ///
 /// \@returns A closure `value => string`.
@@ -151,9 +157,13 @@
 /// \@since 0.1.0
 ///
 /// \@param scale Multiplier applied before formatting.
+///
 /// \@param suffix Trailing string (default `"%"`).
+///
 /// \@param big-mark Thousands separator.
+///
 /// \@param decimal-mark Decimal separator.
+///
 /// \@param digits Decimal digits to keep.
 ///
 /// \@returns A closure `value => string`.
@@ -203,8 +213,11 @@
 /// \@since 0.1.0
 ///
 /// \@param symbol Currency symbol prepended to the value.
+///
 /// \@param big-mark Thousands separator.
+///
 /// \@param decimal-mark Decimal separator.
+///
 /// \@param digits Decimal digits to keep.
 ///
 /// \@returns A closure `value => string`.

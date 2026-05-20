@@ -18,12 +18,19 @@
 /// \@since 0.5.0
 ///
 /// \@param content Typst content block (markup, image, table, ...).
+///
 /// \@param width Block width as a length, or `auto` for the default 3cm.
+///
 /// \@param height Block height as a length, or `auto` for the default 2cm.
+///
 /// \@param title Optional title rendered above the block using the legend-title surface.
+///
 /// \@param position Where the custom block sits. Same accepted values as `guide-legend.position` (`"top"`, `"right"`, `"bottom"`, `"left"`, `"none"`, a Typst alignment, or a `(dx:, dy:)` / `(x:, y:)` dict).
+///
 /// \@param direction `"horizontal"` or `"vertical"`; `auto` infers from `position`. Affects title placement only since custom content is opaque.
+///
 /// \@param order Integer priority among multiple guides; lower draws first. `none` defers to the default aesthetic order.
+///
 /// \@param byrow Accepted for API uniformity with `guide-legend`; ignored because custom content is opaque.
 ///
 /// \@returns Marker dictionary tagged `kind: "guide-custom"`, consumed by \@guides.

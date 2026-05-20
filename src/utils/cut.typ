@@ -97,7 +97,9 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric or `none` entries map to `none`.
+///
 /// \@param n Number of equal-width bins. Must be positive.
+///
 /// \@param labels Either `auto` for default boundary labels, or an array of
 ///   length `n` providing explicit labels.
 ///
@@ -154,7 +156,9 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric or `none` entries map to `none`.
+///
 /// \@param n Number of bins. Must be positive.
+///
 /// \@param labels Either `auto` for default boundary labels, or an array of
 ///   length `n` providing explicit labels.
 ///
@@ -211,8 +215,11 @@
 /// \@since 0.0.1
 ///
 /// \@param values Array of numbers; non-numeric or `none` entries map to `none`.
+///
 /// \@param width Positive bin width.
+///
 /// \@param center Optional number forcing a bin to be centred at this value.
+///
 /// \@param labels Either `auto` for default boundary labels, or an array of
 ///   length matching the number of bins.
 ///
