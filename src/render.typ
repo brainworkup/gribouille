@@ -3011,7 +3011,15 @@
   ) { theme.text.size / 1pt } else { 9 }
   let outer-pad = _margin-lengths(plot-bg.outset, canvas-w, canvas-h, _size-pt)
   let inner-inset = _margin-lengths(plot-bg.inset, canvas-w, canvas-h, _size-pt)
-  let _wrap(content) = if plot-bg.fill != none or plot-bg.stroke != none {
+  let _nonzero(d) = (
+    d.top != 0pt or d.right != 0pt or d.bottom != 0pt or d.left != 0pt
+  )
+  let _wrap(content) = if (
+    plot-bg.fill != none
+      or plot-bg.stroke != none
+      or _nonzero(inner-inset)
+      or _nonzero(outer-pad)
+  ) {
     pad(
       top: outer-pad.top,
       right: outer-pad.right,

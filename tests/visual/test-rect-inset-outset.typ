@@ -1,11 +1,13 @@
 // element-rect margin demos across each background slot.
 //
 // `inset` is honoured on `plot-background` only — Typst's `block(inset:)`
-// grows the painted fill past the content while keeping the rect bound at
-// the surrounding block edge. Cetz rect surfaces (panel, legend,
-// legend-bar) stay glued to their natural bound regardless of `inset`, so
-// the rect never bleeds onto neighbours. `strip-background` ignores both
-// fields entirely.
+// pads the content inward and grows the painted fill past it (when a fill
+// is set) while keeping the rect bound at the surrounding block edge. Both
+// `inset` and `outset` apply on `plot-background` even with no fill or
+// stroke, reserving plot padding on their own. Cetz rect surfaces (panel,
+// legend, legend-bar) stay glued to their natural bound regardless of
+// `inset`, so the rect never bleeds onto neighbours. `strip-background`
+// ignores both fields entirely.
 //
 // `outset` reserves outer whitespace by widening the chrome slot on the
 // requested side — the panel canvas shrinks, the rect stays at its
@@ -13,7 +15,7 @@
 
 #import "../../lib.typ": *
 
-#set page(width: auto, height: auto, margin: 0.5cm)
+#set page(width: auto, height: auto, margin: 0cm)
 
 #let d = (
   (x: 1, y: 1, g: "a", k: 0.10),
@@ -60,6 +62,10 @@
   outset: margin(top: 0.3cm, right: 0.3cm, bottom: 0.3cm, left: 0.3cm),
 ))
 
+#let plot-bg-nofill-theme = theme(plot-background: element-rect(
+  inset: margin(bottom: 0.5cm),
+))
+
 #let plot-bg-pct-theme = theme(plot-background: element-rect(
   fill: rgb("#f0f4ff"),
   colour: rgb("#3949ab"),
@@ -87,6 +93,8 @@
 
   common("plot-background inset 5% (canvas-relative)", plot-bg-pct-theme),
   common("legend-bg inset + outset all sides", legend-all-theme),
+
+  common("plot-background inset bottom, no fill", plot-bg-nofill-theme),
 
   plot(
     data: (

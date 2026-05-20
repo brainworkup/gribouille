@@ -240,18 +240,20 @@
 )
 
 /// Rectangle element: fill, outline colour, stroke thickness, and per-side
-/// margins. `inset` is honoured on `plot-background` (grows the painted
-/// fill outward past the content via Typst `block(inset:)`) and on
-/// `legend-background` (grows the legend rect outward from the guide-stack
-/// bbox so the rectangle frames the legend with extra inner padding).
-/// `panel-background` and `legend-bar` ignore `inset` so the rect cannot
-/// bleed onto neighbours. `outset` reserves outer whitespace by widening
-/// the chrome slot on `panel-background`, `legend-background`, and
-/// `legend-bar`; on `plot-background` it wraps the rendered block in
-/// `pad(...)`. On `legend-background`, the panel-facing outset side also
-/// widens the visible gap between panel and legend. `strip-background`
-/// ignores both fields -- the facet band has no surrounding slot to grow
-/// or reserve into.
+/// margins. `inset` is honoured on `plot-background` (Typst `block(inset:)`
+/// pads the content inward, and grows the painted fill outward past it when
+/// a fill or stroke is set) and on `legend-background` (grows the legend
+/// rect outward from the guide-stack bbox so the rectangle frames the legend
+/// with extra inner padding). `panel-background` and `legend-bar` ignore
+/// `inset` so the rect cannot bleed onto neighbours. `outset` reserves outer
+/// whitespace by widening the chrome slot on `panel-background`,
+/// `legend-background`, and `legend-bar`; on `plot-background` it wraps the
+/// rendered block in `pad(...)`. On `legend-background`, the panel-facing
+/// outset side also widens the visible gap between panel and legend.
+/// On `plot-background`, both `inset` and `outset` apply whether or not a
+/// fill or stroke is set, so they reserve plot padding on their own.
+/// `strip-background` ignores both fields -- the facet band has no
+/// surrounding slot to grow or reserve into.
 ///
 /// Pass the result to \@theme under keys like `panel-background`.
 ///
