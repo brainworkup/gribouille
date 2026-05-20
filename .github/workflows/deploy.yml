@@ -71,7 +71,7 @@ jobs:
         id: latest-tag
         shell: bash
         run: |
-          LATEST_TAG=$(git tag -l --sort=-v:refname 'v[0-9]*' | head -n 1)
+          LATEST_TAG=$(git tag -l --sort=-v:refname '[0-9]*' | head -n 1)
           echo "tag=${LATEST_TAG}" >> "${GITHUB_OUTPUT}"
           if [ -z "${LATEST_TAG}" ]; then
             echo "No release tag found; release site will be skipped."

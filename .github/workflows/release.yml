@@ -339,13 +339,13 @@ jobs:
           GH_TOKEN: ${{ steps.git-user.outputs.token }}
         shell: bash
         run: |
-          gh release create "v${VERSION}" \
+          gh release create "${VERSION}" \
             "./release_assets/gribouille-${VERSION}.tar.gz#gribouille ${VERSION} (tar.gz)" \
             "./release_assets/gribouille-${VERSION}.zip#gribouille ${VERSION} (zip)" \
-            --title "v${VERSION}" \
+            --title "${VERSION}" \
             --notes-file "${CHANGELOG_FILE}" \
             --generate-notes
-          RELEASE_URL=$(gh release view "v${VERSION}" --json url --jq .url)
+          RELEASE_URL=$(gh release view "${VERSION}" --json url --jq .url)
           echo "release_url=${RELEASE_URL}" >> "${GITHUB_OUTPUT}"
 
       - name: Summary
@@ -356,7 +356,7 @@ jobs:
           {
             echo "## GitHub Release"
             echo ""
-            echo "- Tag: \`v${VERSION}\`"
+            echo "- Tag: \`${VERSION}\`"
             echo "- Release: ${RELEASE_URL}"
             echo "- Assets: \`gribouille-${VERSION}.tar.gz\`, \`gribouille-${VERSION}.zip\`"
           } >> "${GITHUB_STEP_SUMMARY}"
@@ -386,173 +386,7 @@ jobs:
         && needs.pages.result == 'success'
         && needs.bump-version.result != 'failure' && needs.bump-version.result != 'cancelled'
         && needs.github-release.result != 'failure' && needs.github-release.result != 'cancelled' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    env:
-      FORK: ${{ vars.TYPST_PACKAGES_FORK }}
-
-    steps:
-      - name: Create GitHub App token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ vars.APP_ID }}
-          private-key: ${{ secrets.APP_KEY }}
-
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Set up Git user
-        id: git-user
-        uses: ./.github/actions/setup-git-user
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          app-slug: ${{ steps.app-token.outputs.app-slug }}
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure gh to back git operations
-        env:
-          GH_TOKEN: ${{ steps.git-user.outputs.token }}
-        shell: bash
-        run: gh auth setup-git
-
-      - name: Resolve package version
-        id: resolve-version
-        env:
-          BUMP_VERSION: ${{ needs.bump-version.outputs.version }}
-        shell: bash
-        run: |
-          if [ -n "${BUMP_VERSION}" ]; then
-            VERSION="${BUMP_VERSION}"
-            REF="v${VERSION}"
-          else
-            VERSION=$(grep -E '^version[[:space:]]*=' typst.toml | sed -E 's/.*"([^"]+)".*/\1/')
-            REF=$(git tag -l --sort=-v:refname "v${VERSION}" | head -n1)
-            if [ -z "${REF}" ]; then
-              REF=$(git rev-parse HEAD)
-            fi
-          fi
-          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
-          echo "ref=${REF}" >> "${GITHUB_OUTPUT}"
-
-      - name: Checkout release ref
-        shell: bash
-        env:
-          REF: ${{ steps.resolve-version.outputs.ref }}
-        run: |
-          git fetch --tags --force
-          git checkout "${REF}"
-
-      - name: Stage package payload
-        env:
-          VERSION: ${{ steps.resolve-version.outputs.version }}
-        shell: bash
-        run: |
-          STAGE="/tmp/stage/gribouille/${VERSION}"
-          mkdir -p "${STAGE}"
-          cp typst.toml lib.typ LICENSE "${STAGE}/"
-          tools/stage-readme.sh README.md "${STAGE}"
-          cp -r src "${STAGE}/"
-          rm -f "${STAGE}/src/GLOSSARY.md"
-
-      - name: Clone fork of typst/packages
-        env:
-          GH_TOKEN: ${{ steps.git-user.outputs.token }}
-          VERSION: ${{ steps.resolve-version.outputs.version }}
-        shell: bash
-        run: |
-          if [ -z "${FORK}" ]; then
-            echo "::error::Repository variable TYPST_PACKAGES_FORK is not set."
-            exit 1
-          fi
-          gh repo clone "${FORK}" typst-packages -- --depth 50
-          cd typst-packages
-          git remote add upstream https://github.com/typst/packages.git
-          git fetch upstream main --depth 1
-          git checkout -B "gribouille-${VERSION}" upstream/main
-
-      - name: Copy payload into packages/preview
-        env:
-          VERSION: ${{ steps.resolve-version.outputs.version }}
-        shell: bash
-        run: |
-          DEST="typst-packages/packages/preview/gribouille/${VERSION}"
-          if [ -d "${DEST}" ]; then
-            echo "::error::Destination ${DEST} already exists in fork."
-            exit 1
-          fi
-          mkdir -p "$(dirname "${DEST}")"
-          cp -r "/tmp/stage/gribouille/${VERSION}" "${DEST}"
-
-      - name: Commit and push to fork
-        env:
-          GH_TOKEN: ${{ steps.git-user.outputs.token }}
-          VERSION: ${{ steps.resolve-version.outputs.version }}
-        shell: bash
-        working-directory: typst-packages
-        run: |
-          git add "packages/preview/gribouille/${VERSION}"
-          git commit -m "Add gribouille:${VERSION}"
-          git push --force origin "gribouille-${VERSION}"
-
-      - name: Open PR against typst/packages
-        id: open-pr
-        env:
-          GH_TOKEN: ${{ steps.git-user.outputs.token }}
-          VERSION: ${{ steps.resolve-version.outputs.version }}
-        shell: bash
-        working-directory: typst-packages
-        run: |
-          FORK_OWNER="${FORK%%/*}"
-
-          if git ls-tree upstream/main:packages/preview/gribouille >/dev/null 2>&1; then
-            NEW_BOX="[ ]"; UPDATE_BOX="[x]"; IS_UPDATE=1
-          else
-            NEW_BOX="[x]"; UPDATE_BOX="[ ]"; IS_UPDATE=0
-          fi
-
-          BODY_FILE="$(mktemp)"
-          {
-            printf 'I am submitting\n- %s a new package\n- %s an update for a package\n\n' "${NEW_BOX}" "${UPDATE_BOX}"
-            printf 'Description: gribouille — create elegant graphics with the Grammar of Graphics for Typst, inspired by ggplot2 and plotnine. Declarative API: aesthetic mappings, geoms, stats, scales, coordinates, facets, themes.\n\n'
-            printf -- '- Upstream repository: https://github.com/mcanouil/gribouille\n'
-            printf -- '- Release: https://github.com/mcanouil/gribouille/releases/tag/v%s\n' "${VERSION}"
-            printf -- '- Homepage: https://m.canouil.dev/gribouille\n'
-
-            if [ "${IS_UPDATE}" -eq 0 ]; then
-              printf '\nI have read and followed the submission guidelines and, in particular, I\n'
-              printf -- '- [x] selected a name that isn'\''t the most obvious or canonical name for what the package does\n'
-              printf -- '- [x] added a `typst.toml` file with all required keys\n'
-              printf -- '- [x] added a `README.md` with documentation for my package\n'
-              printf -- '- [x] have chosen a license and added a `LICENSE` file or linked one in my `README.md`\n'
-              printf -- '- [x] tested my package locally on my system and it worked\n'
-              printf -- '- [x] excluded PDFs or README images, if any, but not the LICENSE\n'
-            fi
-          } > "${BODY_FILE}"
-
-          PR_URL=$(gh pr create \
-            --repo typst/packages \
-            --base main \
-            --head "${FORK_OWNER}:gribouille-${VERSION}" \
-            --title "gribouille:${VERSION}" \
-            --body-file "${BODY_FILE}")
-          echo "pr_url=${PR_URL}" >> "${GITHUB_OUTPUT}"
-
-      - name: Summary
-        shell: bash
-        env:
-          VERSION: ${{ steps.resolve-version.outputs.version }}
-          PR_URL: ${{ steps.open-pr.outputs.pr_url }}
-        run: |
-          {
-            echo "## Typst Universe submission"
-            echo ""
-            echo "- Package: \`gribouille:${VERSION}\`"
-            echo "- Fork branch: \`${FORK}:gribouille-${VERSION}\`"
-            echo "- PR: ${PR_URL}"
-          } >> "${GITHUB_STEP_SUMMARY}"
+    uses: ./.github/workflows/typst-universe.yml
+    with:
+      version: ${{ needs.bump-version.outputs.version }}
+    secrets: inherit
