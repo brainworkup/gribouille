@@ -75,7 +75,7 @@ jobs:
           set -euo pipefail
           # Navbar version-switch targets need absolute URLs: relative paths cannot
           # reach the stable root from deep dev pages. Derive them from the site URL.
-          SITE_URL=$(awk -F'"' '/^[[:space:]]*site-url:/ { print $2; exit }' docs/_quarto.yml)
+          SITE_URL=$(awk '/^[[:space:]]*site-url:/ { sub(/^[[:space:]]*site-url:[[:space:]]*/, ""); gsub(/["'\'']/, ""); print; exit }' docs/_quarto.yml)
           [[ -n "${SITE_URL}" ]] || { echo "::error::site-url not found in docs/_quarto.yml"; exit 1; }
           if [ -n "${LATEST_TAG}" ]; then
             # Release at root (tagged ref), dev at /dev/ (triggering ref, i.e. main).
