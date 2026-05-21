@@ -294,12 +294,14 @@
     if guides-placement == "right" {
       grid(
         columns: (auto, auto),
+        align: horizon,
         gutter: right-gap,
         panel-block, legend-canvas,
       )
     } else if guides-placement == "left" {
       grid(
         columns: (auto, auto),
+        align: horizon,
         legend-canvas, panel-block,
       )
     } else if guides-placement == "bottom" {
