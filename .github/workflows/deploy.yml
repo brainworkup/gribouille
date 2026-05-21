@@ -25,8 +25,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Build and deploy docs
+  resolve:
+    name: Resolve build matrix
     runs-on: ubuntu-latest
     # Skip the bump-version commit on main; the Release workflow deploys docs
     # itself via its `pages` job (workflow_call), so this push would double-deploy.
@@ -34,13 +34,10 @@ jobs:
       ${{ github.event_name != 'push'
         || !startsWith(github.event.head_commit.message, 'ci: bump version to') }}
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    env:
-      GH_TOKEN: ${{ github.token }}
-      QUARTO_TYPST: typst
+    outputs:
+      typst-version: ${{ steps.typst-version.outputs.version }}
+      tag: ${{ steps.latest-tag.outputs.tag }}
+      matrix: ${{ steps.matrix.outputs.matrix }}
 
     steps:
       - name: Checkout repository
@@ -57,16 +54,6 @@ jobs:
           [[ -n "$version" ]] || { echo "::error::compiler not found in typst.toml"; exit 1; }
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Set up Typst
-        uses: typst-community/setup-typst@v5
-        with:
-          typst-version: ${{ steps.typst-version.outputs.version }}
-
-      - name: Set up Quarto CLI
-        uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: release
-
       - name: Resolve latest release tag
         id: latest-tag
         shell: bash
@@ -79,36 +66,80 @@ jobs:
             echo "Latest release tag: ${LATEST_TAG}"
           fi
 
-      - name: Render release site at root
-        if: ${{ steps.latest-tag.outputs.tag != '' }}
+      - name: Build render matrix
+        id: matrix
         shell: bash
         env:
           LATEST_TAG: ${{ steps.latest-tag.outputs.tag }}
         run: |
-          git checkout "${LATEST_TAG}"
-          VERSION="${LATEST_TAG}" quarto render docs --profile release
+          set -euo pipefail
+          if [ -n "${LATEST_TAG}" ]; then
+            # Release at root (tagged ref), dev at /dev/ (triggering ref, i.e. main).
+            matrix='{"include":[{"profile":"release","ref":"'"${LATEST_TAG}"'","version":"'"${LATEST_TAG}"'"},{"profile":"dev","ref":"","version":"dev"}]}'
+          else
+            # No release yet: dev content at root.
+            matrix='{"include":[{"profile":"no-release","ref":"","version":"dev"}]}'
+          fi
+          echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
 
-      - name: Return to latest default branch
-        if: ${{ steps.latest-tag.outputs.tag != '' }}
-        shell: bash
-        env:
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: |
-          git checkout -B "${DEFAULT_BRANCH}" "origin/${DEFAULT_BRANCH}"
+  build:
+    name: Render ${{ matrix.profile }} site
+    needs: resolve
+    runs-on: ubuntu-latest
 
-      - name: Render dev site at /dev/
-        if: ${{ steps.latest-tag.outputs.tag != '' }}
-        shell: bash
-        run: |
-          printf 'VERSION=dev\n' > docs/_environment-dev
-          quarto render docs --profile dev
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.resolve.outputs.matrix) }}
 
-      - name: Render dev site at root (no release tag)
-        if: ${{ steps.latest-tag.outputs.tag == '' }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      QUARTO_TYPST: typst
+      VERSION: ${{ matrix.version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ matrix.ref }}
+
+      - name: Set up Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: ${{ needs.resolve.outputs.typst-version }}
+
+      - name: Set up Quarto CLI
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: release
+
+      - name: Render site
         shell: bash
-        run: |
-          printf 'VERSION=dev\n' > docs/_environment-no-release
-          quarto render docs --profile no-release
+        run: quarto render docs --profile "${{ matrix.profile }}"
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: site-${{ matrix.profile }}
+          path: docs/_site
+          retention-days: 1
+
+  deploy:
+    name: Deploy docs to GitHub Pages
+    needs: [ resolve, build ]
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download site artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: site-*
+          merge-multiple: true
+          path: docs/_site
 
       - name: Prepare site for deployment
         shell: bash
@@ -129,7 +160,7 @@ jobs:
       - name: Summary
         shell: bash
         env:
-          LATEST_TAG: ${{ steps.latest-tag.outputs.tag }}
+          LATEST_TAG: ${{ needs.resolve.outputs.tag }}
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           {
