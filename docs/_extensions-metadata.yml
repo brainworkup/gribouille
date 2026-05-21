@@ -4,6 +4,8 @@ filters:
   - assets/lua/examples-data.lua
   - typst-render
   - modal
+  - gitlink
+  - code-window
 
 extensions:
   typst-render:
