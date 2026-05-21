@@ -73,12 +73,17 @@ jobs:
           LATEST_TAG: ${{ steps.latest-tag.outputs.tag }}
         run: |
           set -euo pipefail
+          # Navbar version-switch targets need absolute URLs: relative paths cannot
+          # reach the stable root from deep dev pages. Derive them from the site URL.
+          SITE_URL=$(awk -F'"' '/^[[:space:]]*site-url:/ { print $2; exit }' docs/_quarto.yml)
+          [[ -n "${SITE_URL}" ]] || { echo "::error::site-url not found in docs/_quarto.yml"; exit 1; }
           if [ -n "${LATEST_TAG}" ]; then
             # Release at root (tagged ref), dev at /dev/ (triggering ref, i.e. main).
-            matrix='{"include":[{"profile":"release","ref":"'"${LATEST_TAG}"'","version":"'"${LATEST_TAG}"'"},{"profile":"dev","ref":"","version":"dev"}]}'
+            # Switch link: release points to dev, dev points back to the stable root.
+            matrix='{"include":[{"profile":"release","ref":"'"${LATEST_TAG}"'","version":"'"${LATEST_TAG}"'","switch_label":"Development version","switch_href":"'"${SITE_URL}/dev/"'"},{"profile":"dev","ref":"","version":"dev","switch_label":"Stable ('"${LATEST_TAG}"')","switch_href":"'"${SITE_URL}/"'"}]}'
           else
-            # No release yet: dev content at root.
-            matrix='{"include":[{"profile":"no-release","ref":"","version":"dev"}]}'
+            # No release yet: dev content at root, single site with nothing to switch to.
+            matrix='{"include":[{"profile":"no-release","ref":"","version":"dev","switch_label":"","switch_href":""}]}'
           fi
           echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
 
@@ -95,6 +100,8 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       QUARTO_TYPST: typst
       VERSION: ${{ matrix.version }}
+      VERSION_SWITCH: ${{ matrix.switch_label }}
+      VERSION_SWITCH_URL: ${{ matrix.switch_href }}
 
     steps:
       - name: Checkout repository

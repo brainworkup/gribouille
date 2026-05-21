@@ -356,6 +356,11 @@ a.navbar-brand {
   color: var(--gb-paper);
 }
 
+.navbar .dropdown-divider {
+  border-top-color: var(--gb-hairline);
+  margin: 0.35rem 0;
+}
+
 // --- Colour-scheme toggle (sun/moon). -----------------------------------
 // Quarto auto-injects the toggle when both light and dark themes are set, and
 // adds `.alternate` to the element when the non-default scheme is active.
