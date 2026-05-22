@@ -108,7 +108,15 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: ${{ matrix.ref }}
+
+      # Website framework, tooling, and content always come from main; only the
+      # Typst code is pinned to the release tag so stable and dev stay near-identical.
+      - name: Pin Typst code to release ref
+        if: ${{ matrix.ref != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout "${{ matrix.ref }}" -- examples src lib.typ
 
       - name: Set up Typst
         uses: typst-community/setup-typst@v5
