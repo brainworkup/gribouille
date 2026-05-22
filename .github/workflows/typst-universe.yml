@@ -122,8 +122,10 @@ jobs:
           cd typst-packages
           git remote get-url upstream >/dev/null 2>&1 \
             || git remote add upstream https://github.com/typst/packages.git
+          gh repo sync "${FORK}" --branch main
           git fetch upstream main --depth 1
-          git checkout -B "${BRANCH}" upstream/main
+          git fetch origin main --depth 1
+          git checkout -B "${BRANCH}" origin/main
 
       - name: Copy payload into packages/preview
         env:
