@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: `width`/`height` now bound the whole image, including title, subtitle, caption, and plot-background padding; the data panel shrinks to fit and long titles wrap. (b53fab2)
+
 ## 0.1.1 (2026-05-22)
 
 - fix: centre collected `compose` side legends against the panel grid. (994c9e8)
