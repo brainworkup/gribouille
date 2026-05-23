@@ -2993,14 +2993,23 @@
   left: resolve-margin-side-rel-cm(rec.left, ref-w, size-pt: size-pt) * 1cm,
 )
 
-#let _render-decorate(canvas, labs, theme, canvas-w, canvas-h) = {
+// Build the decoration blocks (title / subtitle / caption), the plot-background
+// `pad()` / `block(inset:)` padding, and the inter-block gaps once, against the
+// *requested* image dims (`ref-w` / `ref-h`). The same dict feeds both
+// `_decorate-extents` (reserve chrome before sizing the canvas) and
+// `_render-decorate` (compose the final stack), so measured and composed agree.
+//
+// Chrome text is boxed to the inner content width (requested width minus left
+// and right padding) so long titles wrap rather than widening the image past
+// the requested `width`.
+#let _decorate-parts(labs, theme, ref-w, ref-h) = {
   let plot-bg = _rect-style(
     theme,
     "plot-background",
-    inset-ref-w: canvas-w,
-    inset-ref-h: canvas-h,
-    outset-ref-w: canvas-w,
-    outset-ref-h: canvas-h,
+    inset-ref-w: ref-w,
+    inset-ref-h: ref-h,
+    outset-ref-w: ref-w,
+    outset-ref-h: ref-h,
   )
   // `inset` grows the fill past the content via Typst `block(inset: ...)`
   // (inner padding); `outset` reserves whitespace around the block by
@@ -3009,8 +3018,96 @@
     type(theme.at("text", default: none)) == dictionary
       and theme.text.at("size", default: none) != none
   ) { theme.text.size / 1pt } else { 9 }
-  let outer-pad = _margin-lengths(plot-bg.outset, canvas-w, canvas-h, _size-pt)
-  let inner-inset = _margin-lengths(plot-bg.inset, canvas-w, canvas-h, _size-pt)
+  let outer-pad = _margin-lengths(plot-bg.outset, ref-w, ref-h, _size-pt)
+  let inner-inset = _margin-lengths(plot-bg.inset, ref-w, ref-h, _size-pt)
+  // Inner content width the chrome (and canvas) occupy after padding both sides.
+  let inner-w = (
+    ref-w * 1cm
+      - outer-pad.left
+      - inner-inset.left
+      - outer-pad.right
+      - inner-inset.right
+  )
+  let title = _text-style(theme, "plot-title")
+  let subtitle = _text-style(theme, "plot-subtitle")
+  let caption = _text-style(theme, "plot-caption")
+  // Box each chrome label to the inner width so it wraps; `..text-args` carries
+  // the per-label `weight` / `style` that `text()` rejects when set to `none`.
+  let _chrome-block(value, style, ..text-args) = if value != none {
+    box(
+      width: inner-w,
+      text(
+        size: style.size,
+        fill: style.fill,
+        ..text-args,
+      )[#resolve-prose(value, eval-strings: style.typst)],
+    )
+  } else { none }
+  let title-block = if labs != none {
+    _chrome-block(labs.title, title, weight: title.weight)
+  } else { none }
+  let subtitle-block = if labs != none {
+    _chrome-block(labs.subtitle, subtitle)
+  } else { none }
+  let caption-block = if labs != none {
+    _chrome-block(labs.caption, caption, style: "italic")
+  } else { none }
+
+  // Multiplied by 1cm so the resolved em is baked in against the upstream
+  // text style, not re-resolved against the surrounding document font size.
+  let _gap-length(style, side) = {
+    _text-margin-cm(style, side, 0.6em) * 1cm
+  }
+
+  let above-canvas = if subtitle-block != none {
+    subtitle
+  } else if title-block != none { title } else { none }
+
+  (
+    plot-bg: plot-bg,
+    outer-pad: outer-pad,
+    inner-inset: inner-inset,
+    title-block: title-block,
+    subtitle-block: subtitle-block,
+    caption-block: caption-block,
+    inter-title-gap: _gap-length(title, "bottom"),
+    above-gap: if above-canvas != none {
+      _gap-length(above-canvas, "bottom")
+    } else { 0pt },
+    caption-gap: _gap-length(caption, "top"),
+  )
+}
+
+// Chrome reservation in cm for each side, measured from the `_decorate-parts`
+// blocks. Subtracted from the requested dims before the canvas is sized so the
+// composed stack totals back to the requested `width` x `height`.
+#let _decorate-extents(parts) = {
+  let _h(b) = if b == none { 0cm } else { measure(b).height }
+  let top = parts.outer-pad.top + parts.inner-inset.top
+  if parts.title-block != none { top += _h(parts.title-block) }
+  if parts.subtitle-block != none {
+    if parts.title-block != none { top += parts.inter-title-gap }
+    top += _h(parts.subtitle-block)
+  }
+  if parts.title-block != none or parts.subtitle-block != none {
+    top += parts.above-gap
+  }
+  let bottom = parts.outer-pad.bottom + parts.inner-inset.bottom
+  if parts.caption-block != none {
+    bottom += parts.caption-gap + _h(parts.caption-block)
+  }
+  (
+    top: top / 1cm,
+    bottom: bottom / 1cm,
+    left: (parts.outer-pad.left + parts.inner-inset.left) / 1cm,
+    right: (parts.outer-pad.right + parts.inner-inset.right) / 1cm,
+  )
+}
+
+#let _render-decorate(canvas, parts) = {
+  let plot-bg = parts.plot-bg
+  let outer-pad = parts.outer-pad
+  let inner-inset = parts.inner-inset
   let _nonzero(d) = (
     d.top != 0pt or d.right != 0pt or d.bottom != 0pt or d.left != 0pt
   )
@@ -3034,53 +3131,22 @@
       ),
     )
   } else { content }
-  if labs == none { return _wrap(canvas) }
-  let title = _text-style(theme, "plot-title")
-  let subtitle = _text-style(theme, "plot-subtitle")
-  let caption = _text-style(theme, "plot-caption")
-  let title-block = if labs.title != none {
-    text(
-      size: title.size,
-      weight: title.weight,
-      fill: title.fill,
-    )[#resolve-prose(labs.title, eval-strings: title.typst)]
-  } else { none }
-  let subtitle-block = if labs.subtitle != none {
-    text(
-      size: subtitle.size,
-      fill: subtitle.fill,
-    )[#resolve-prose(labs.subtitle, eval-strings: subtitle.typst)]
-  } else { none }
-  let caption-block = if labs.caption != none {
-    text(
-      size: caption.size,
-      fill: caption.fill,
-      style: "italic",
-    )[#resolve-prose(labs.caption, eval-strings: caption.typst)]
-  } else { none }
-
-  // Multiplied by 1cm so the resolved em is baked in against the upstream
-  // text style, not re-resolved against the surrounding document font size.
-  let _gap-length(style, side) = {
-    _text-margin-cm(style, side, 0.6em) * 1cm
-  }
-
-  let above-canvas = if subtitle-block != none {
-    subtitle
-  } else if title-block != none { title } else { none }
+  let title-block = parts.title-block
+  let subtitle-block = parts.subtitle-block
+  let caption-block = parts.caption-block
 
   let items = ()
   if title-block != none { items.push(title-block) }
   if subtitle-block != none {
-    if items.len() > 0 { items.push(v(_gap-length(title, "bottom"))) }
+    if items.len() > 0 { items.push(v(parts.inter-title-gap)) }
     items.push(subtitle-block)
   }
-  if above-canvas != none {
-    items.push(v(_gap-length(above-canvas, "bottom")))
+  if title-block != none or subtitle-block != none {
+    items.push(v(parts.above-gap))
   }
   items.push(canvas)
   if caption-block != none {
-    items.push(v(_gap-length(caption, "top")))
+    items.push(v(parts.caption-gap))
     items.push(caption-block)
   }
   if items.len() == 1 { return _wrap(canvas) }
@@ -3099,6 +3165,16 @@
   // dims, but layout-time `outset` reservation references the canvas.
   let width-units-early = spec.width / 1cm
   let height-units-early = spec.height / 1cm
+  // `width` / `height` bound the whole image: build the title/subtitle/caption
+  // chrome up front and reserve its extent so the canvas shrinks to leave room,
+  // making the composed stack total back to the requested dims.
+  let deco-parts = _decorate-parts(
+    labs,
+    theme,
+    width-units-early,
+    height-units-early,
+  )
+  let deco = _decorate-extents(deco-parts)
   let style = _render-style(theme)
 
   let spec = _preprocess-data(spec)
@@ -3208,8 +3284,21 @@
     free-y,
   )
 
-  let width-units = width-units-early
-  let height-units = height-units-early
+  let width-units = width-units-early - deco.left - deco.right
+  let height-units = height-units-early - deco.top - deco.bottom
+  // Floor matches the single-tick panel minimum used by `max-right-margin`.
+  let _min-canvas = 0.5
+  if width-units < _min-canvas or height-units < _min-canvas {
+    panic(
+      "plot: title/subtitle/caption and plot-background padding leave a "
+        + str(calc.round(width-units, digits: 2))
+        + " x "
+        + str(calc.round(height-units, digits: 2))
+        + " cm canvas, below the "
+        + str(_min-canvas)
+        + " cm minimum; increase width/height or reduce labels/padding.",
+    )
+  }
 
   // Legend-text font size drives every label-width / line-height
   // measurement done inside `guides-for`.
@@ -3468,7 +3557,7 @@
   }
 
   (
-    content: _render-decorate(canvas, labs, theme, width-units, height-units),
+    content: _render-decorate(canvas, deco-parts),
     guides: guides,
     trained: trained,
   )

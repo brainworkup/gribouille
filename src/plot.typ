@@ -30,9 +30,9 @@
 ///
 /// \@param guides Per-aesthetic guide overrides built with\@guides (e.g., `guides(colour: guide-legend(reverse: true))`).
 ///
-/// \@param width Total plot width, including axes and legends.
+/// \@param width Total image width, including axes, legends, title, subtitle, caption, and plot-background padding. The data panel shrinks to leave room for chrome; long titles wrap to fit. Chrome larger than `width` raises an error.
 ///
-/// \@param height Total plot height, including axes and legends.
+/// \@param height Total image height, including axes, legends, title, subtitle, caption, and plot-background padding. The data panel shrinks to leave room for chrome. Chrome larger than `height` raises an error.
 ///
 /// \@param alt Alt text describing the figure. When set, the rendered plot is wrapped in a `figure` (kind `"gribouille-plot"`, no number, no caption) carrying this string as its PDF alternative text, so a screen reader on a tagged PDF announces the description instead of the raw axis and legend labels. When `none`, the plot renders without the figure wrapper. Quarto authors embedding plots through `typst-render` should set the block-level `alt` cell option for HTML output; this parameter only affects direct Typst compilation.
 ///
