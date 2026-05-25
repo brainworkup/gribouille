@@ -434,6 +434,26 @@
   m.width / 1cm + 0.05
 }
 
+// Resolve the label a guide actually draws, for measurement. `_guide-width` /
+// `_guide-height` are theme-less, so `eval-strings: false`; a `typst-mark`
+// label is already converted to content by `resolve-label`. A plain string
+// label under a `legend-text` typst-eval theme is drawn as markup but measured
+// as a string, the one case where measurement can lag the drawn glyph.
+#let _display-label(labels, value, i, fallback, typst-mark) = resolve-prose(
+  resolve-label(labels, value, i, fallback, typst-mark: typst-mark),
+  eval-strings: false,
+)
+
+// The label a size-ladder / colourbar break draws (custom `labels:` resolved
+// against the break value, falling back to its formatted number).
+#let _break-label(g, value, i) = _display-label(
+  g.at("labels", default: auto),
+  value,
+  i,
+  format-break(value),
+  g.at("typst-mark", default: false),
+)
+
 #let _title-width(g, size-pt) = _label-width(
   g.at("title", default: none),
   size-pt,
@@ -455,18 +475,29 @@
   }
 }
 
+// The label a swatch cell draws (custom `labels:` resolved against the level,
+// falling back to the level itself), as measured for sizing.
+#let _swatch-label(guide, i) = _display-label(
+  guide.at("labels", default: auto),
+  guide.levels.at(i),
+  i,
+  guide.levels.at(i),
+  guide.at("typst-mark", default: false),
+)
+
 // Per-column widths, gap, cumulative left-offsets, and total grid width.
 // Each column sizes to its own widest label (measured at the supplied
 // font size) so a single oversized level doesn't pad every other column
-// unnecessarily.
-#let _swatch-layout(levels, shape, byrow, size-pt) = {
+// unnecessarily. Widths come from the resolved display labels, so a custom
+// `labels:` wider than its level still gets the column space it draws into.
+#let _swatch-layout(guide, shape, byrow, size-pt) = {
   let lead = _swatch-lead-cm(size-pt)
   let widths = range(shape.cols).map(col => {
     let max-w = 0.0
     for row in range(shape.rows) {
       let i = _swatch-index(row, col, shape, byrow)
-      if i >= levels.len() { continue }
-      let w = _label-width(levels.at(i), size-pt)
+      if i >= guide.levels.len() { continue }
+      let w = _label-width(_swatch-label(guide, i), size-pt)
       if w > max-w { max-w = w }
     }
     lead + max-w
@@ -501,6 +532,70 @@
 // half-em of breathing. Returned as a cm float at the supplied font size.
 #let _swatch-line-h-cm(size-pt) = _font-cm(size-pt) * 1.4
 #let _ladder-line-h-cm(size-pt) = _font-cm(size-pt) * 1.55
+
+// Number of rendered lines in a label. Strings stay on one line; content is
+// measured against a single-line sample and rounded, so a `\`-broken two-line
+// label reports two. At least one line so every item reserves a row.
+#let _label-lines(label, size-pt) = {
+  if label == none or label == "" or type(label) == str { return 1 }
+  let one = measure(text(size: size-pt * 1pt)[x]).height
+  if one == 0pt { return 1 }
+  let h = measure(text(size: size-pt * 1pt)[#label]).height
+  calc.max(1, calc.round(h / one))
+}
+
+// Extra vertical space a multi-line label needs beyond a single row: a full
+// row stride per extra line, so multi-line rows keep the same inter-row gap as
+// single-line ones. Zero for every string / single-line label, so single-line
+// legends keep their geometry.
+#let _label-overflow(label, line-h, size-pt) = (
+  (_label-lines(label, size-pt) - 1) * line-h
+)
+
+// Turn a per-row label-overflow list into stacking data: `extra` per row, the
+// cumulative overflow `before` each row (how far that row is pushed down), and
+// the `total` overflow added to the single-line stack height. Shared by the
+// vertical swatch grid and the vertical size-ladder.
+#let _stack-offsets(overflows) = {
+  let before = ()
+  let acc = 0.0
+  for e in overflows {
+    before.push(acc)
+    acc += e
+  }
+  (extra: overflows, before: before, total: acc)
+}
+
+// Tallest multi-line overflow across a break list, measured against a single
+// line. Grows a horizontal ladder / colourbar label band beyond its single-line
+// default; zero when every label fits one line.
+#let _breaks-overflow(g, breaks, size-pt) = {
+  let line-h = _swatch-line-h-cm(size-pt)
+  let max-e = 0.0
+  for (i, b) in breaks.enumerate() {
+    let e = _label-overflow(_break-label(g, b, i), line-h, size-pt)
+    if e > max-e { max-e = e }
+  }
+  max-e
+}
+
+// Per-row stacking offsets for a swatch grid: each row's overflow is the
+// tallest multi-line overflow across its columns.
+#let _swatch-rows(guide, shape, byrow, size-pt) = {
+  let line-h = _swatch-line-h-cm(size-pt)
+  let overflows = range(shape.rows).map(row => {
+    let max-e = 0.0
+    for col in range(shape.cols) {
+      let i = _swatch-index(row, col, shape, byrow)
+      if i >= guide.levels.len() { continue }
+      let e = _label-overflow(_swatch-label(guide, i), line-h, size-pt)
+      if e > max-e { max-e = e }
+    }
+    max-e
+  })
+  _stack-offsets(overflows)
+}
+
 #let _LADDER-H-COL-H = 0.32
 #let _LADDER-H-LABEL-H = 0.4
 #let _COLOURBAR-V-W = 0.35
@@ -522,13 +617,13 @@
       g.ncolumn,
       g.placement.direction,
     )
-    let layout = _swatch-layout(g.levels, shape, g.placement.byrow, size-pt)
+    let layout = _swatch-layout(g, shape, g.placement.byrow, size-pt)
     return calc.max(_title-width(g, size-pt), layout.total)
   }
   if g.kind == "size-ladder" {
     let label-w = 0.0
-    for b in g.breaks {
-      let w = _label-width(format-break(b), size-pt)
+    for (i, b) in g.breaks.enumerate() {
+      let w = _label-width(_break-label(g, b, i), size-pt)
       if w > label-w { label-w = w }
     }
     let lead = _ladder-lead-cm(size-pt)
@@ -546,8 +641,8 @@
       pretty(lo, hi, n: 5)
     }
     let label-w = 0.0
-    for b in breaks {
-      let w = _label-width(format-break(b), size-pt)
+    for (i, b) in breaks.enumerate() {
+      let w = _label-width(_break-label(g, b, i), size-pt)
       if w > label-w { label-w = w }
     }
     if g.placement.direction == "horizontal" {
@@ -597,23 +692,56 @@
         _swatch-line-h-cm(size-pt),
         size-pt,
       )
+      + _swatch-rows(guide, shape, guide.placement.byrow, size-pt).total
   )
 }
 
 #let _size-ladder-height(guide, title-h, size-pt) = {
   let prefix = _title-prefix(guide, title-h)
   if guide.placement.direction == "horizontal" {
-    prefix + _LADDER-H-COL-H + _LADDER-H-LABEL-H
+    (
+      prefix
+        + _LADDER-H-COL-H
+        + _LADDER-H-LABEL-H
+        + _breaks-overflow(
+          guide,
+          guide.breaks,
+          size-pt,
+        )
+    )
   } else {
     let line-h = _ladder-line-h-cm(size-pt)
-    prefix + _row-stack-height(guide.breaks.len(), line-h, size-pt)
+    let overflows = guide
+      .breaks
+      .enumerate()
+      .map(((i, b)) => _label-overflow(
+        _break-label(guide, b, i),
+        line-h,
+        size-pt,
+      ))
+    (
+      prefix
+        + _row-stack-height(guide.breaks.len(), line-h, size-pt)
+        + _stack-offsets(overflows).total
+    )
   }
 }
 
-#let _colourbar-height(guide, title-h) = {
+#let _colourbar-height(guide, title-h, size-pt) = {
   let prefix = _title-prefix(guide, title-h)
   if guide.placement.direction == "horizontal" {
-    prefix + _COLOURBAR-H-H + _COLOURBAR-H-LABEL-H
+    let breaks = if guide.at("breaks", default: none) != none {
+      guide.breaks
+    } else {
+      let (lo, hi) = guide.domain
+      pretty(lo, hi, n: 5)
+    }
+    (
+      prefix
+        + _COLOURBAR-H-H
+        + _COLOURBAR-H-LABEL-H
+        + _breaks-overflow(guide, breaks, size-pt)
+    )
   } else {
     prefix + _COLOURBAR-V-H + _COLOURBAR-PAD-V
   }
@@ -629,7 +757,7 @@
   if g.kind == "size-ladder" {
     return _size-ladder-height(g, title-h, size-pt)
   }
-  if g.kind == "colourbar" { return _colourbar-height(g, title-h) }
+  if g.kind == "colourbar" { return _colourbar-height(g, title-h, size-pt) }
   if g.kind == "custom" { return _custom-height(g, title-h) }
   panic("legend._guide-height: unknown guide kind \"" + g.kind + "\"")
 }
@@ -886,18 +1014,23 @@
     guide.ncolumn,
     guide.placement.direction,
   )
-  let layout = _swatch-layout(guide.levels, shape, byrow, size-pt)
+  let layout = _swatch-layout(guide, shape, byrow, size-pt)
+  let rows = _swatch-rows(guide, shape, byrow, size-pt)
   let key-kind = guide.at("key", default: "rect")
   let labels = guide.at("labels", default: auto)
   for (i, level) in guide.levels.enumerate() {
     let rc = _swatch-rc(i, shape, byrow)
     let cx = ox + layout.offsets.at(rc.col)
-    let cy = top - rc.row * line-h
+    // Push the row down by the overflow of every multi-line row above it, and
+    // centre this item on its own block (`anchor: "west"`) by dropping it half
+    // its overflow so the block grows downward and the glyph stays centred.
+    let cy = top - rc.row * line-h - rows.before.at(rc.row)
+    let cm = cy - glyph-size - rows.extra.at(rc.row) / 2
     let bundle = _bundle-for(level, guide.aesthetics, ctx, ink)
     draw-glyph(
       key-kind,
       cx + glyph-size,
-      cy - glyph-size,
+      cm,
       glyph-size,
       bundle,
       ink: ink,
@@ -913,7 +1046,7 @@
       eval-strings: _legend-text.typst,
     )
     cetz.draw.content(
-      (cx + glyph-size * 2 + 0.15, cy - glyph-size),
+      (cx + glyph-size * 2 + 0.15, cm),
       text(size: text-size, fill: text-colour)[#label-text],
       anchor: "west",
     )
@@ -939,8 +1072,8 @@
 
   if guide.placement.direction == "horizontal" {
     let label-w = 0.0
-    for b in guide.breaks {
-      let w = _label-width(format-break(b), size-pt)
+    for (i, b) in guide.breaks.enumerate() {
+      let w = _label-width(_break-label(guide, b, i), size-pt)
       if w > label-w { label-w = w }
     }
     let col-w = calc.max(_ladder-lead-cm(size-pt), label-w)
@@ -966,13 +1099,25 @@
       )
     }
   } else {
+    let overflows = guide
+      .breaks
+      .enumerate()
+      .map(((i, value)) => _label-overflow(
+        _break-label(guide, value, i),
+        line-h,
+        size-pt,
+      ))
+    let rows = _stack-offsets(overflows)
     for (i, value) in guide.breaks.enumerate() {
-      let cy = top - i * line-h
+      // Same row-stacking as the swatch: push down by overflow above, then
+      // centre this break on its block by dropping it half its own overflow.
+      let cy = top - i * line-h - rows.before.at(i)
+      let cm = cy - glyph-size - rows.extra.at(i) / 2
       let bundle = _bundle-for(value, guide.aesthetics, ctx, ink)
       draw-glyph(
         key-kind,
         ox + glyph-size,
-        cy - glyph-size,
+        cm,
         glyph-size,
         bundle,
         ink: ink,
@@ -988,7 +1133,7 @@
         eval-strings: _legend-text.typst,
       )
       cetz.draw.content(
-        (ox + glyph-size * 2 + 0.15, cy - glyph-size),
+        (ox + glyph-size * 2 + 0.15, cm),
         text(size: text-size, fill: text-colour)[#break-text],
         anchor: "west",
       )
@@ -1182,7 +1327,7 @@
   if g.kind == "size-ladder" {
     return _size-ladder-height(g, title-h, size-pt)
   }
-  if g.kind == "colourbar" { return _colourbar-height(g, title-h) }
+  if g.kind == "colourbar" { return _colourbar-height(g, title-h, size-pt) }
   if g.kind == "custom" { return _custom-height(g, title-h) }
   panic("legend: unknown guide kind \"" + g.kind + "\"")
 }
