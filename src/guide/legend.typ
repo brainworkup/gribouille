@@ -99,6 +99,8 @@
 ///
 /// \@param byrow Fill the swatch grid row-major when `true`; column-major (default) when `false`.
 ///
+/// \@param align Horizontal alignment (`left`, `center`, `right`) of the entry labels, or `none` to use the per-direction default (horizontal legends centre, vertical legends left). Overrides the `legend-text` theme alignment.
+///
 /// \@returns Guide dictionary tagged `kind: "guide"`, consumed by \@guides.
 ///
 /// \@examples Reverse the level order shown in the legend.
@@ -152,6 +154,25 @@
 /// )
 /// ```
 ///
+/// \@examples Right-align the entry labels so their right edges line up,
+/// regardless of label width.
+/// ```
+/// //| alt: "Scatter chart of three coloured points whose fill legend labels (a, bbbb, cc) are right-aligned so their right edges share a common edge."
+/// #let d = (
+///   (x: 1, y: 1, g: "a"),
+///   (x: 2, y: 2, g: "bbbb"),
+///   (x: 3, y: 3, g: "cc"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y", fill: "g"),
+///   layers: (geom-point(size: 3pt),),
+///   guides: guides(fill: guide-legend(align: right)),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@guides, \@guide-none, \@plot
 #let guide-legend(
   title: none,
@@ -162,12 +183,22 @@
   direction: auto,
   order: none,
   byrow: false,
-) = (
-  kind: "guide",
-  aesthetic: none,
-  title: title,
-  nrow: nrow,
-  ncolumn: ncolumn,
-  reverse: reverse,
-  placement: _normalise-position(position, direction, order, byrow),
-)
+  align: none,
+) = {
+  if align != none and type(align) != alignment {
+    panic(
+      "guide-legend align must be `left`, `center`, `right`, or `none`; got "
+        + repr(align),
+    )
+  }
+  (
+    kind: "guide",
+    aesthetic: none,
+    title: title,
+    nrow: nrow,
+    ncolumn: ncolumn,
+    reverse: reverse,
+    align: align,
+    placement: _normalise-position(position, direction, order, byrow),
+  )
+}

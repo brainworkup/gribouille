@@ -31,9 +31,10 @@
 /// \@param align Horizontal alignment (`left`, `center`, `right`) of the text
 ///   within its surface, or `none` to use the per-surface default (title and
 ///   subtitle left, caption right, axis titles and strip text centred, legend
-///   title left). Independent of the surrounding container's alignment. Tick
-///   labels (`axis-text`, `legend-text`) are positioned by anchor and ignore
-///   this field.
+///   title left, legend entry labels centred in horizontal legends and left in
+///   vertical legends). Independent of the surrounding container's alignment.
+///   Axis tick labels (`axis-text`) are positioned by anchor and ignore this
+///   field.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
@@ -143,9 +144,10 @@
 /// \@param align Horizontal alignment (`left`, `center`, `right`) of the text
 ///   within its surface, or `none` to use the per-surface default (title and
 ///   subtitle left, caption right, axis titles and strip text centred, legend
-///   title left). Independent of the surrounding container's alignment. Tick
-///   labels (`axis-text`, `legend-text`) are positioned by anchor and ignore
-///   this field.
+///   title left, legend entry labels centred in horizontal legends and left in
+///   vertical legends). Independent of the surrounding container's alignment.
+///   Axis tick labels (`axis-text`) are positioned by anchor and ignore this
+///   field.
 ///
 /// \@returns Element dictionary consumed by \@theme.
 ///
