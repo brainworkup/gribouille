@@ -185,6 +185,12 @@
   description: 'Layout knobs on [`guide-legend`](../reference/guides/guide-legend.qmd): `reverse` flips the key order, `ncol` wraps it onto multiple columns.'
   alt: "Three scatter plots of highway mpg against displacement coloured by vehicle class, contrasting the default legend with a reversed key order and a two-column legend layout."
 
+- slug: guide-legend-align
+  section: guides
+  title: "Aligning legend labels"
+  description: 'Justify legend entry labels with [`guide-legend(align:)`](../reference/guides/guide-legend.qmd) or `theme(legend-text: element-text(align: ...))`; horizontal legends centre labels and vertical legends keep them left by default.'
+  alt: "Three scatter plots of highway mpg against displacement coloured by vehicle class, contrasting the default left-aligned legend labels with right-aligned and centred labels."
+
 - slug: axis-lims
   section: guides
   title: "Axis limits and tick rotation"
