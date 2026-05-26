@@ -31,6 +31,12 @@
 #assert.eq(g2.ncolumn, 2)
 #assert.eq(g2.reverse, false)
 
+// `align` defaults to `none` (defer to theme / per-direction default) and
+// round-trips a supplied alignment.
+#assert.eq(g.align, none)
+#assert.eq(guide-legend(align: right).align, right)
+#assert.eq(guide-legend(align: center).align, center)
+
 #let g-top = guide-legend(position: "top")
 #assert.eq(g-top.placement.side, "top")
 #assert.eq(g-top.placement.direction, "horizontal")

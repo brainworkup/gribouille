@@ -221,6 +221,7 @@
   if a.column == none { return false }
   if a.t.type != b.t.type { return false }
   if a.title != b.title { return false }
+  if a.align != b.align { return false }
   if a.nrow != b.nrow { return false }
   if a.ncolumn != b.ncolumn { return false }
   if a.reverse != b.reverse { return false }
@@ -247,6 +248,9 @@
   if a.kind != b.kind { return false }
   if a.kind == "custom" { return false }
   if a.title != b.title { return false }
+  if a.at("align", default: none) != b.at("align", default: none) {
+    return false
+  }
   if a.aesthetics != b.aesthetics { return false }
   if a.kind == "swatch" {
     return a.levels == b.levels and a.labels == b.labels
@@ -359,6 +363,7 @@
   let nrow = _pick("nrow", none)
   let ncolumn = _pick("ncolumn", none)
   let reverse = _pick("reverse", false)
+  let align = _pick("align", none)
 
   let cand = (
     aes: aes-name,
@@ -367,6 +372,7 @@
     nrow: nrow,
     ncolumn: ncolumn,
     reverse: reverse,
+    align: align,
     placement: placement,
     contributors: contributors,
     column: _column-for(spec, aes-name),
@@ -453,6 +459,18 @@
   format-break(value),
   g.at("typst-mark", default: false),
 )
+
+// Widest break label (cm) across `breaks` at the supplied font size. Shared by
+// the ladder / colourbar width estimate and their draw passes so reserved and
+// drawn label slots agree.
+#let _max-break-label-width(g, breaks, size-pt) = {
+  let label-w = 0.0
+  for (i, b) in breaks.enumerate() {
+    let w = _label-width(_break-label(g, b, i), size-pt)
+    if w > label-w { label-w = w }
+  }
+  label-w
+}
 
 #let _title-width(g, size-pt) = _label-width(
   g.at("title", default: none),
@@ -621,11 +639,7 @@
     return calc.max(_title-width(g, size-pt), layout.total)
   }
   if g.kind == "size-ladder" {
-    let label-w = 0.0
-    for (i, b) in g.breaks.enumerate() {
-      let w = _label-width(_break-label(g, b, i), size-pt)
-      if w > label-w { label-w = w }
-    }
+    let label-w = _max-break-label-width(g, g.breaks, size-pt)
     let lead = _ladder-lead-cm(size-pt)
     if g.placement.direction == "horizontal" {
       let col-w = calc.max(lead, label-w)
@@ -640,11 +654,7 @@
       let (lo, hi) = g.domain
       pretty(lo, hi, n: 5)
     }
-    let label-w = 0.0
-    for (i, b) in breaks.enumerate() {
-      let w = _label-width(_break-label(g, b, i), size-pt)
-      if w > label-w { label-w = w }
-    }
+    let label-w = _max-break-label-width(g, breaks, size-pt)
     if g.placement.direction == "horizontal" {
       return calc.max(
         _title-width(g, size-pt),
@@ -871,6 +881,7 @@
       )
     }
     g.insert("placement", first.placement)
+    g.insert("align", first.align)
     g.insert("width", _guide-width(g, size-pt))
     g.insert("height", _guide-height(g, size-pt))
     guides.push(g)
@@ -972,6 +983,46 @@
   resolve-margin-side-cm(s.margin.left, 1.6em, size-pt: s.size / 1pt)
 }
 
+// Resolve the horizontal alignment for a guide's entry labels: a per-guide
+// `align` (from `guide-legend(align:)`) wins, then the `legend-text` theme
+// align, then the per-direction default (horizontal centres labels, vertical
+// keeps them left). Returns a Typst alignment (`left` / `center` / `right`).
+#let _label-align(guide, theme-align) = {
+  let a = guide.at("align", default: none)
+  if a == none { a = theme-align }
+  if a == none {
+    a = if guide.placement.direction == "horizontal" { center } else { left }
+  }
+  a
+}
+
+// Place a label drawn to the right of a mark, justified within a slot of width
+// `slot-w` whose left edge is `start`. `left` keeps the current west anchor at
+// `start`; `center` / `right` shift toward the slot's far edge. Returns
+// `(x, anchor)` for `cetz.draw.content`.
+#let _hjust-right-of(align, start, slot-w) = {
+  if align == right {
+    (start + slot-w, "east")
+  } else if align == center {
+    (start + slot-w / 2, "center")
+  } else {
+    (start, "west")
+  }
+}
+
+// Place a label drawn below a mark sitting at x `cx`. `center` keeps the label
+// centred on the mark (the current north anchor); `left` / `right` pin an edge
+// to `cx`. Returns `(x, anchor)` for `cetz.draw.content`.
+#let _hjust-below(align, cx) = {
+  if align == right {
+    (cx, "north-east")
+  } else if align == center {
+    (cx, "north")
+  } else {
+    (cx, "north-west")
+  }
+}
+
 #let _draw-title(ox, cursor, theme, title, width) = {
   let s = _text-style(theme, "legend-title")
   // Default left-aligned at the legend's left edge; `center`/`right` offset
@@ -1018,6 +1069,8 @@
   let rows = _swatch-rows(guide, shape, byrow, size-pt)
   let key-kind = guide.at("key", default: "rect")
   let labels = guide.at("labels", default: auto)
+  let align = _label-align(guide, _legend-text.align)
+  let lead = _swatch-lead-cm(size-pt)
   for (i, level) in guide.levels.enumerate() {
     let rc = _swatch-rc(i, shape, byrow)
     let cx = ox + layout.offsets.at(rc.col)
@@ -1045,10 +1098,13 @@
       ),
       eval-strings: _legend-text.typst,
     )
+    let label-start = cx + glyph-size * 2 + 0.15
+    let slot-w = layout.widths.at(rc.col) - lead
+    let (lx, l-anchor) = _hjust-right-of(align, label-start, slot-w)
     cetz.draw.content(
-      (cx + glyph-size * 2 + 0.15, cm),
+      (lx, cm),
       text(size: text-size, fill: text-colour)[#label-text],
-      anchor: "west",
+      anchor: l-anchor,
     )
   }
 }
@@ -1064,18 +1120,16 @@
   let labels = guide.at("labels", default: auto)
   let typst-mark = guide.at("typst-mark", default: false)
   let key-kind = guide.at("key", default: "point")
+  let align = _label-align(guide, _legend-text.align)
 
   if guide.title != none {
     _draw-title(ox, cursor, theme, guide.title, guide.width)
   }
   let top = cursor - _title-prefix(guide, title-h)
 
+  let label-w = _max-break-label-width(guide, guide.breaks, size-pt)
+
   if guide.placement.direction == "horizontal" {
-    let label-w = 0.0
-    for (i, b) in guide.breaks.enumerate() {
-      let w = _label-width(_break-label(guide, b, i), size-pt)
-      if w > label-w { label-w = w }
-    }
     let col-w = calc.max(_ladder-lead-cm(size-pt), label-w)
     let cy = top - glyph-size
     for (i, value) in guide.breaks.enumerate() {
@@ -1092,10 +1146,11 @@
         ),
         eval-strings: _legend-text.typst,
       )
+      let (lx, l-anchor) = _hjust-below(align, cx)
       cetz.draw.content(
-        (cx, cy - glyph-size * 2 - 0.1),
+        (lx, cy - glyph-size * 2 - 0.1),
         text(size: text-size, fill: text-colour)[#break-text],
-        anchor: "north",
+        anchor: l-anchor,
       )
     }
   } else {
@@ -1132,10 +1187,15 @@
         ),
         eval-strings: _legend-text.typst,
       )
+      let (lx, l-anchor) = _hjust-right-of(
+        align,
+        ox + glyph-size * 2 + 0.15,
+        label-w,
+      )
       cetz.draw.content(
-        (ox + glyph-size * 2 + 0.15, cm),
+        (lx, cm),
         text(size: text-size, fill: text-colour)[#break-text],
-        anchor: "west",
+        anchor: l-anchor,
       )
     }
   }
@@ -1174,6 +1234,7 @@
   let _legend-text = _text-style(theme, "legend-text")
   let text-colour = _legend-text.fill
   let text-size = _legend-text.size
+  let size-pt = text-size / 1pt
   let (lo, hi) = guide.domain
 
   if guide.title != none {
@@ -1248,6 +1309,8 @@
   let breaks = guide.at("breaks", default: pretty(lo, hi, n: 5))
   let labels = guide.at("labels", default: auto)
   let typst-mark = guide.at("typst-mark", default: false)
+  let align = _label-align(guide, _legend-text.align)
+  let label-w = _max-break-label-width(guide, breaks, size-pt)
   for (i, b) in breaks.enumerate() {
     if hi == lo { continue }
     let t = (b - lo) / (hi - lo)
@@ -1264,19 +1327,25 @@
     )
     let (tick-from, tick-to, label-pos, label-anchor) = if horizontal {
       let cx = bar-left + t * bar-w
+      let (lx, l-anchor) = _hjust-below(align, cx)
       (
         (cx, bar-bottom),
         (cx, bar-bottom - tick-len),
-        (cx, bar-bottom - tick-len - tick-gap),
-        "north",
+        (lx, bar-bottom - tick-len - tick-gap),
+        l-anchor,
       )
     } else {
       let cy = bar-bottom + t * bar-h
+      let (lx, l-anchor) = _hjust-right-of(
+        align,
+        bar-right + tick-len + tick-gap,
+        label-w,
+      )
       (
         (bar-right, cy),
         (bar-right + tick-len, cy),
-        (bar-right + tick-len + tick-gap, cy),
-        "west",
+        (lx, cy),
+        l-anchor,
       )
     }
     if tick-stroke != none {
