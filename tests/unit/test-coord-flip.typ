@@ -49,10 +49,21 @@
 #let cc-flipped = _apply-flip(cc, c1)
 #assert.eq(cc-flipped.y.at("transform", default: "identity"), "identity")
 
-// Explicit `reverse: true` reverses a continuous post-flip y via the
-// existing transform path.
+// Explicit `reverse: true` reverses a continuous post-flip y via a `reverse`
+// flag, leaving any numeric transform intact.
 #let cc-rev = _apply-flip(cc, coord-flip(reverse: true))
-#assert.eq(cc-rev.y.transform, "reverse")
+#assert.eq(cc-rev.y.reverse, true)
+#assert.eq(cc-rev.y.at("transform", default: "identity"), "identity")
+
+// A log10 x keeps its transform under flip + reverse (regression: the
+// reverse used to overwrite the numeric transform with "reverse").
+#let cc-log = (
+  x: (type: "continuous", domain: (0, 3), transform: "log10"),
+  y: (type: "continuous", domain: (0, 1)),
+)
+#let cc-log-rev = _apply-flip(cc-log, coord-flip(reverse: true))
+#assert.eq(cc-log-rev.y.transform, "log10")
+#assert.eq(cc-log-rev.y.reverse, true)
 
 #let untouched = _apply-flip(trained, (kind: "coord", coord: "cartesian"))
 #assert.eq(untouched.x.type, "discrete")
