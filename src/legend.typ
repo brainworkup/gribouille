@@ -838,11 +838,15 @@
       let info = _bin-info(first.t)
       let lo = first.domain.first()
       let hi = first.domain.last()
-      let breaks = if info.breaks != auto {
-        info.breaks.filter(b => b >= calc.min(lo, hi) and b <= calc.max(lo, hi))
-      } else if info.binned {
+      let computed = if info.binned {
         range(info.n-breaks + 1).map(i => lo + i * (hi - lo) / info.n-breaks)
       } else { pretty(lo, hi, n: 5) }
+      let breaks = if info.breaks != auto {
+        let kept = info.breaks.filter(b => (
+          b >= calc.min(lo, hi) and b <= calc.max(lo, hi)
+        ))
+        if kept.len() > 0 { kept } else { computed }
+      } else { computed }
       (
         kind: "colourbar",
         aesthetics: aesthetics,
@@ -860,13 +864,17 @@
       let info = _bin-info(first.t)
       let lo = first.domain.first()
       let hi = first.domain.last()
-      let breaks = if info.breaks != auto {
-        info.breaks.filter(b => b >= calc.min(lo, hi) and b <= calc.max(lo, hi))
-      } else if info.binned {
+      let computed = if info.binned {
         range(info.n-breaks).map(i => (
           lo + (i + 0.5) * (hi - lo) / info.n-breaks
         ))
       } else { pretty(lo, hi, n: 5) }
+      let breaks = if info.breaks != auto {
+        let kept = info.breaks.filter(b => (
+          b >= calc.min(lo, hi) and b <= calc.max(lo, hi)
+        ))
+        if kept.len() > 0 { kept } else { computed }
+      } else { computed }
       (
         kind: "size-ladder",
         aesthetics: aesthetics,
