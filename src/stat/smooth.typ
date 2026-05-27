@@ -5,6 +5,7 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": read-weight
+#import "../utils/normal.typ": qnorm
 
 /// Smoother statistic: closed-form linear fit with a pointwise confidence band.
 ///
@@ -126,7 +127,8 @@
 
   let weight-col = mapping.at("weight", default: none)
   let se-on = params.at("se", default: true)
-  let t-val = 1.96
+  let level = params.at("level", default: 0.95)
+  let t-val = qnorm(0.5 + level / 2)
   let steps = 80
 
   let out = ()
