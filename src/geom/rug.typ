@@ -119,12 +119,6 @@
   let x-trained = ctx.trained.at("x", default: none)
   let y-trained = ctx.trained.at("y", default: none)
 
-  let colour-pinned = layer.params.colour != auto
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
-  let resolve-colour = if colour-trained != none {
-    (ctx.resolve-colour)(colour-trained, ctx.palette)
-  } else { none }
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
 
   let (px-lo, px-hi) = ctx.px-range
@@ -137,11 +131,14 @@
   let want-right = sides.contains("r")
 
   for row in data {
-    let colour = if colour-pinned {
-      layer.params.colour
-    } else if colour-col != none and resolve-colour != none {
-      resolve-colour(row.at(colour-col, default: none))
-    } else { theme-colour }
+    let colour = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      row,
+      theme-colour,
+    )
     let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
     let thickness = resolve-channel(

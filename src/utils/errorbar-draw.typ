@@ -35,12 +35,6 @@
   let span-trained = ctx.trained.at(axis, default: none)
   if centre-trained == none or span-trained == none { return }
 
-  let colour-pinned = layer.params.colour != auto
-  let colour-col = mapping.at("colour", default: none)
-  let colour-trained = ctx.trained.at("colour", default: none)
-  let resolve-colour = if colour-trained != none {
-    (ctx.resolve-colour)(colour-trained, ctx.palette)
-  } else { none }
   let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
 
   let extent-is-length = type(cap-extent) == length
@@ -83,11 +77,14 @@
       cap-hi = centre-c + half
     }
 
-    let colour = if colour-pinned {
-      layer.params.colour
-    } else if colour-col != none and resolve-colour != none {
-      resolve-colour(row.at(colour-col, default: none))
-    } else { theme-colour }
+    let colour = resolve-channel(
+      "colour",
+      layer,
+      mapping,
+      ctx,
+      row,
+      theme-colour,
+    )
     let alpha = resolve-channel("alpha", layer, mapping, ctx, row, 1)
     let final-colour = apply-alpha(colour, alpha)
     let thickness = resolve-channel(
