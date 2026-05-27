@@ -338,6 +338,18 @@
   ) {
     // User-supplied limits come in data space; lift them to stat space.
     let (lo, hi) = domain
+    if transform == "log10" {
+      assert(
+        lo > 0 and hi > 0,
+        message: "log10 scale limits must be positive; got " + repr((lo, hi)),
+      )
+    } else if transform == "sqrt" {
+      assert(
+        lo >= 0 and hi >= 0,
+        message: "sqrt scale limits must be non-negative; got "
+          + repr((lo, hi)),
+      )
+    }
     domain = (transform-fwd(transform, lo), transform-fwd(transform, hi))
   }
   let level-index = if scale-type == "discrete" {
