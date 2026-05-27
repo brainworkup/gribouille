@@ -233,6 +233,25 @@ describe("parser: signature + @param matching", function()
     assert_eq(fn.signature_params[2].name, "layers")
   end)
 
+  it("ignores // comments inside a multi-line signature", function()
+    local f = tmpfile("comment-sig", [[
+/// Summary.
+///
+/// @category Core
+/// @param a A.
+/// @param b B.
+#let foo(
+  a,  // pairs like (x, y) leave a paren open: (
+  b,
+) = a + b
+]])
+    local parsed = parser.parse_file(f)
+    local fn = parsed.functions[1]
+    assert_eq(#fn.signature_params, 2)
+    assert_eq(fn.signature_params[1].name, "a")
+    assert_eq(fn.signature_params[2].name, "b")
+  end)
+
   it("ignores underscore-prefixed helpers", function()
     local f = tmpfile("underscore", [[
 #let _helper(x) = x

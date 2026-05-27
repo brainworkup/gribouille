@@ -61,6 +61,8 @@ local function parse_signature_params(raw, file, line)
       in_string = true
       string_char = c
       table.insert(buf, c)
+    elseif c == "/" and raw:sub(i + 1, i + 1) == "/" then
+      i = raw:find("\n", i, true) or len
     elseif c == "(" or c == "[" or c == "{" then
       depth = depth + 1
       table.insert(buf, c)
@@ -117,6 +119,8 @@ local function skip_value_binding(lines, start_idx, rhs)
         elseif c == string_char then in_string = false end
       elseif c == '"' or c == "'" then
         in_string = true; string_char = c
+      elseif c == "/" and s:sub(li + 1, li + 1) == "/" then
+        return
       elseif c == "(" or c == "[" or c == "{" then
         depth = depth + 1
       elseif c == ")" or c == "]" or c == "}" then
@@ -168,6 +172,8 @@ local function collect_signature(lines, start_idx, file)
       elseif c == string_char then in_string = false end
     elseif c == '"' or c == "'" then
       in_string = true; string_char = c
+    elseif c == "/" and after_paren:sub(i + 1, i + 1) == "/" then
+      break
     elseif c == "(" or c == "[" or c == "{" then
       depth = depth + 1
     elseif c == ")" or c == "]" or c == "}" then
@@ -192,6 +198,8 @@ local function collect_signature(lines, start_idx, file)
           elseif c == string_char then in_string = false end
         elseif c == '"' or c == "'" then
           in_string = true; string_char = c
+        elseif c == "/" and ln:sub(li + 1, li + 1) == "/" then
+          break
         elseif c == "(" or c == "[" or c == "{" then
           depth = depth + 1
         elseif c == ")" or c == "]" or c == "}" then
