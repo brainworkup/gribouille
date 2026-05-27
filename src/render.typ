@@ -1969,7 +1969,7 @@
   if x.type == "discrete" {
     new-y.insert("reverse", true)
   } else if x.type == "continuous" {
-    new-y.insert("transform", "reverse")
+    new-y.insert("reverse", not new-y.at("reverse", default: false))
   }
   trained.insert("y", new-y)
   trained

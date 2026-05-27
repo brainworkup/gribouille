@@ -521,7 +521,10 @@
     (_to-stat(trained, d-lo), _to-stat(trained, d-hi))
   }
   let (r-lo, r-hi) = range
-  let target = if transform == "reverse" {
+  // `reverse` rides alongside the numeric transform rather than replacing it,
+  // so a log10/sqrt axis can also be reversed (e.g. under coord-flip).
+  let reverse = transform == "reverse" or trained.at("reverse", default: false)
+  let target = if reverse {
     (r-hi, r-lo)
   } else { (r-lo, r-hi) }
   map-continuous(_to-stat(trained, value), (t-lo, t-hi), target)
