@@ -319,7 +319,14 @@
 )
 
 // Index a palette with modulo wrap so out-of-range indices cycle.
-#let palette-at(palette, idx) = palette.at(calc.rem(idx, palette.len()))
+#let palette-at(palette, idx) = {
+  if palette.len() == 0 {
+    panic(
+      "palette-at: palette is empty; scale-*-manual() needs at least one value",
+    )
+  }
+  palette.at(calc.rem(idx, palette.len()))
+}
 
 // Resolve the palette declared on a trained scale. When the scale carries no
 // explicit palette, continuous scales receive `default-continuous`; everything

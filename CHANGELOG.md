@@ -12,6 +12,7 @@
 - feat: `labs()` fields default to `auto`; pass `none` to suppress an axis or legend title and reclaim the space it reserved. (#12)
 - feat: `element-blank()` on a text surface (axis, plot, or legend title) collapses the space the text would reserve. (#12)
 - feat: `width`/`height` accept `auto` to fill the available space of a bounded container. (#10)
+- fix: `scale-*-manual()` with an empty `values` array reports a clear error instead of an opaque divide-by-zero. (#36)
 - fix: number formatters carry a fraction that rounds up to a whole unit (e.g., `0.9999995` no longer renders as `0.1`), and `format-scientific` keeps its mantissa in `[1, 10)`. (#35)
 - fix: legend guides reserve space for multi-line labels, measuring the resolved custom `labels:` for both width and line count across swatch, size-ladder, and colourbar guides, so two-line content no longer clips or overlaps. (#33)
 - fix: a column mapped to both a positional aesthetic (`x`/`y`) and a grouping aesthetic (`fill`/`colour`/`group`/...), e.g., `aes(x: "class", fill: "class")`, now resolves the grouping aesthetic across aggregating stats (`boxplot`, `summary`, `count`/`sum`, histograms) instead of drawing every mark in the ink colour with an empty guide. (#31)
