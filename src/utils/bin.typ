@@ -21,6 +21,10 @@
   let n-bins = if binwidth != none and binwidth > 0 {
     calc.max(1, int(calc.ceil((hi - lo) / binwidth)))
   } else {
+    assert(
+      bins != none and bins > 0,
+      message: "bins must be a positive integer; got " + repr(bins),
+    )
     bins
   }
   (n-bins: n-bins, width: (hi - lo) / n-bins)
