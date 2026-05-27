@@ -12,6 +12,7 @@
 - feat: `labs()` fields default to `auto`; pass `none` to suppress an axis or legend title and reclaim the space it reserved. (#12)
 - feat: `element-blank()` on a text surface (axis, plot, or legend title) collapses the space the text would reserve. (#12)
 - feat: `width`/`height` accept `auto` to fill the available space of a bounded container. (#10)
+- fix: `geom-col()` on a continuous x with a single distinct value no longer panics when inferring the bar width. (#41)
 - fix: `log10`/`sqrt` scales validate user `limits` and report a clear error for non-positive bounds. (#40)
 - fix: `geom-smooth()` honours the `level` argument when sizing the confidence band instead of always using 95%. (#39)
 - fix: binning geoms reject a non-positive `bins` with a clear error instead of dividing by zero. (#38)
