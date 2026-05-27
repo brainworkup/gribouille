@@ -12,6 +12,7 @@
 - feat: `labs()` fields default to `auto`; pass `none` to suppress an axis or legend title and reclaim the space it reserved. (#12)
 - feat: `element-blank()` on a text surface (axis, plot, or legend title) collapses the space the text would reserve. (#12)
 - feat: `width`/`height` accept `auto` to fill the available space of a bounded container. (#10)
+- fix: `geom-errorbar()`/`geom-errorbarh()`/`geom-rug()` resolve an `after-scale`/`stage` colour mapping instead of panicking. (#45)
 - fix: continuous legends fall back to computed breaks when every user-supplied break falls outside the domain. (#44)
 - fix: `coord-cartesian(xlim:/ylim:)` zooms continuous axes instead of being ignored. (#43)
 - fix: `coord-flip(reverse: true)` preserves a `log10`/`sqrt` axis transform instead of overwriting it. (#42)
