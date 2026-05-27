@@ -81,6 +81,8 @@
       let se = z.at(i + 1).at(j)
       let ne = z.at(i + 1).at(j + 1)
       let nw = z.at(i).at(j + 1)
+      // Sparse grids leave incomplete cells as `none`; skip them.
+      if sw == none or se == none or ne == none or nw == none { continue }
       let case = (
         (if nw >= level { 8 } else { 0 })
           + (if ne >= level { 4 } else { 0 })

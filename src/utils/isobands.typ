@@ -71,6 +71,8 @@
       let se = z.at(i + 1).at(j)
       let ne = z.at(i + 1).at(j + 1)
       let nw = z.at(i).at(j + 1)
+      // Sparse grids leave incomplete cells as `none`; skip them.
+      if sw == none or se == none or ne == none or nw == none { continue }
       let poly = isoband-cell(xw, xe, ys-bot, yn-top, nw, ne, se, sw, lo, hi)
       if poly.len() >= 3 { out.push(poly) }
     }
