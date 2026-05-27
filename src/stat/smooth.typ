@@ -5,6 +5,8 @@
 
 #import "../utils/types.typ": parse-number
 #import "../utils/summaries.typ": read-weight
+#import "../utils/late-binding.typ": after-scale-source
+#import "../scale/train.typ": mapping-ref-col
 #import "../utils/normal.typ": qnorm
 
 /// Smoother statistic: closed-form linear fit with a pointwise confidence band.
@@ -85,10 +87,15 @@
 // discrete aesthetic that would warrant a separate path.
 #let _grouping-columns(mapping, x-col, y-col) = {
   let cols = ()
-  let group-col = mapping.at("group", default: none)
+  let group-col = mapping-ref-col(
+    after-scale-source(mapping.at("group", default: none)),
+  )
   if group-col != none { cols.push(group-col) }
   for aes-name in ("colour", "fill", "linetype") {
-    let col = mapping.at(aes-name, default: none)
+    let col = mapping-ref-col(after-scale-source(mapping.at(
+      aes-name,
+      default: none,
+    )))
     if (
       col != none and col != x-col and col != y-col and not cols.contains(col)
     ) {

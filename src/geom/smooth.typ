@@ -14,6 +14,8 @@
 #import "../utils/colour-resolve.typ": apply-alpha
 #import "../utils/aes-pair.typ": aes-set
 #import "../utils/radial.typ": project-point
+#import "../utils/late-binding.typ": after-scale-source, apply-after-scale
+#import "../scale/train.typ": mapping-ref-col
 
 /// Fitted trend line with an optional confidence ribbon.
 ///
@@ -156,8 +158,10 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let colour-col = mapping.at("colour", default: none)
-  let fill-col = mapping.at("fill", default: none)
+  let colour-spec = mapping.at("colour", default: none)
+  let fill-spec = mapping.at("fill", default: none)
+  let colour-col = mapping-ref-col(after-scale-source(colour-spec))
+  let fill-col = mapping-ref-col(after-scale-source(fill-spec))
   let colour-trained = ctx.trained.at("colour", default: none)
   let fill-trained = ctx.trained.at("fill", default: none)
 
@@ -194,19 +198,24 @@
 
     if sorted.len() < 2 { continue }
 
-    let line-colour = if colour-pinned {
+    let leader = rows.first()
+    let line-base = if colour-pinned {
       layer.params.colour
     } else if colour-col != none and colour-trained != none {
-      let sample = rows.first().at(colour-col, default: none)
-      ((ctx.resolve-colour)(colour-trained, ctx.palette))(sample)
+      ((ctx.resolve-colour)(colour-trained, ctx.palette))(
+        leader.at(colour-col, default: none),
+      )
     } else { default-colour }
+    let line-colour = apply-after-scale(line-base, colour-spec, ctx, leader)
 
-    let ribbon-colour = if fill-pinned {
+    let fill-base = if fill-pinned {
       layer.params.fill
     } else if fill-col != none and fill-trained != none {
-      let sample = rows.first().at(fill-col, default: none)
-      ((ctx.resolve-colour)(fill-trained, ctx.palette))(sample)
+      ((ctx.resolve-colour)(fill-trained, ctx.palette))(
+        leader.at(fill-col, default: none),
+      )
     } else { line-colour }
+    let ribbon-colour = apply-after-scale(fill-base, fill-spec, ctx, leader)
 
     // Confidence ribbon first, so the line draws on top.
     let has-band = (

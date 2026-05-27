@@ -7,11 +7,18 @@
 
 #import "../utils/types.typ": is-numeric-value
 #import "../scale/train.typ": mapping-ref-col, mapping-ref-type
+#import "../utils/late-binding.typ": after-scale-source
 
 /// Canonical set of aesthetics that may create groups, in priority order.
 ///
 /// \@internal
 #let group-aesthetics = ("group", "colour", "fill", "linetype", "shape")
+
+// Grouping column for a mapping value: unwrap an `after-scale` marker to its
+// source column (a stage's `start`) and a mapping-ref/typst-markup to its
+// column. Returns `none` for a source-less marker (a pure `after-scale`
+// closure), which callers skip since it carries no grouping variable.
+#let _group-col(value) = mapping-ref-col(after-scale-source(value))
 
 /// Compute a canonical group key for a row.
 ///
@@ -36,13 +43,14 @@
 /// \@internal
 #let group-key(row, mapping, trained: none) = {
   let keys = ()
-  let x-col = mapping-ref-col(mapping.at("x", default: none))
-  let y-col = mapping-ref-col(mapping.at("y", default: none))
+  let x-col = _group-col(mapping.at("x", default: none))
+  let y-col = _group-col(mapping.at("y", default: none))
 
   for aes-name in group-aesthetics {
     let aes-val = mapping.at(aes-name, default: none)
     if aes-val == none { continue }
-    let col-name = mapping-ref-col(aes-val)
+    let col-name = _group-col(aes-val)
+    if col-name == none { continue }
     if col-name == x-col or col-name == y-col { continue }
 
     if trained != none and aes-name != "group" {
@@ -98,12 +106,13 @@
 /// \@internal
 #let group-cols(mapping) = {
   let out = ()
-  let x-col = mapping-ref-col(mapping.at("x", default: none))
-  let y-col = mapping-ref-col(mapping.at("y", default: none))
+  let x-col = _group-col(mapping.at("x", default: none))
+  let y-col = _group-col(mapping.at("y", default: none))
   for aes-name in group-aesthetics {
     let aes-val = mapping.at(aes-name, default: none)
     if aes-val == none { continue }
-    let col-name = mapping-ref-col(aes-val)
+    let col-name = _group-col(aes-val)
+    if col-name == none { continue }
     if col-name == x-col or col-name == y-col { continue }
     if not out.contains(col-name) { out.push(col-name) }
   }
@@ -131,12 +140,12 @@
   if input-mapping == none { return data }
   let new-data = data
   for axis in ("x", "y") {
-    let src = mapping-ref-col(input-mapping.at(axis, default: none))
+    let src = _group-col(input-mapping.at(axis, default: none))
     if src == none { continue }
     let out-col = output-mapping.at(axis, default: none)
     if out-col == none or out-col == src { continue }
     let reused = group-aesthetics.any(a => (
-      mapping-ref-col(input-mapping.at(a, default: none)) == src
+      _group-col(input-mapping.at(a, default: none)) == src
     ))
     if not reused { continue }
     new-data = new-data.map(row => {
