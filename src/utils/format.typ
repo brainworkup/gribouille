@@ -16,10 +16,10 @@
   let value = if type(n) == str { parse-number(n) } else { n }
   if value == none { return str(n) }
   let abs-val = if value < 0 { -value } else { value }
-  let rounded = if digits == auto { value } else {
-    calc.round(value, digits: int(digits))
-  }
-  let abs-rounded = if rounded < 0 { -rounded } else { rounded }
+  let d = if digits == auto { 6 } else { int(digits) }
+  // Round before splitting so a fraction that rounds up to a whole unit
+  // carries into the integer part instead of being dropped.
+  let abs-rounded = calc.round(abs-val, digits: d)
   let int-part = int(abs-rounded)
   let frac-part = abs-rounded - int-part
   let int-str = str(int-part)
@@ -40,7 +40,6 @@
   let frac-str = if (digits == auto and frac-part == 0) or digits == 0 {
     ""
   } else {
-    let d = if digits == auto { 6 } else { int(digits) }
     let scaled = calc.round(frac-part * calc.pow(10, d))
     let s = str(int(scaled))
     while s.len() < d { s = "0" + s }
@@ -295,6 +294,12 @@
   }
   let exp = int(calc.floor(calc.log(abs-v, base: 10)))
   let mantissa = v / calc.pow(10, exp)
+  // Rounding the mantissa can push it to 10 (e.g. 9.999 -> 10.00); carry the
+  // overflow into the exponent so the notation stays in [1, 10).
+  if calc.abs(calc.round(mantissa, digits: digits)) >= 10 {
+    exp += 1
+    mantissa = v / calc.pow(10, exp)
+  }
   let m-str = _format-number-impl(mantissa, digits: digits)
   typst("$" + m-str + " times 10^(" + str(exp) + ")$")
 }
