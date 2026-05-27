@@ -295,10 +295,10 @@
       .map(r => parse-number(r.at(cat-col, default: none)))
       .filter(v => v != none)
     let (d-lo, d-hi) = cat-trained.domain
-    if xs.len() < 2 or d-hi == d-lo {
+    let sorted = xs.dedup().sorted()
+    if sorted.len() < 2 or d-hi == d-lo {
       (cat-hi - cat-lo) / 10
     } else {
-      let sorted = xs.dedup().sorted()
       let panel-gaps = range(sorted.len() - 1).map(i => calc.abs(
         map-axis(cat-trained, sorted.at(i + 1), cat-range)
           - map-axis(cat-trained, sorted.at(i), cat-range),
