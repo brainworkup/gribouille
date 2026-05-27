@@ -25,7 +25,7 @@ Options:
   --root <dir>    Repository root (default: two levels above this script).
   --ppi <n>       Raster density (default: 144).
   --tolerance <n> Max AE pixel count per diff (default: 0).
-  --fuzz <pct>    ImageMagick `-fuzz` value (default: 1%).
+  --fuzz <pct>    ImageMagick `-fuzz` value (default: 2%).
   --only <key>    Only run sources whose key contains this substring.
   --jobs <n>      Parallel typst compiles (default: $JOBS or 1).
   --help          Show this help and exit.
@@ -46,7 +46,10 @@ local function parse_args(argv)
     root = ROOT,
     ppi = 144,
     tolerance = 0,
-    fuzz = "1%",
+    -- 2% absorbs sub-pixel anti-aliasing that differs between CPU
+    -- architectures (arm64 vs x86_64 floating-point rounding) while still
+    -- failing on structural changes; `tolerance` stays 0 (no stray pixels).
+    fuzz = "2%",
     only = nil,
     jobs = tonumber(os.getenv("JOBS")) or 1,
   }
