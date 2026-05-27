@@ -2530,8 +2530,8 @@
     pt = _apply-labs(pt, labs)
     pt = _post-train(pt, p.layers)
     pt = _apply-coord-transform(pt, coord)
-    pt = _apply-expand(pt, coord)
     pt = _apply-coord(pt, coord)
+    pt = _apply-expand(pt, coord)
     pt = _apply-flip(pt, coord)
     let merged = trained
     if free-x and pt.at("x", default: none) != none {
@@ -3320,8 +3320,8 @@
   // is preserved for stats and training but may render outside the panel.
   let coord = spec.at("coord", default: none)
   trained = _apply-coord-transform(trained, coord)
-  trained = _apply-expand(trained, coord)
   trained = _apply-coord(trained, coord)
+  trained = _apply-expand(trained, coord)
   // coord-flip swaps trained x and y so axis labels swap automatically;
   // direction-sensitive geoms branch on `ctx.flipped` inside their draw.
   trained = _apply-flip(trained, coord)
