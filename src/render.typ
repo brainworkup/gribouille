@@ -2986,6 +2986,7 @@
         margin: margin,
         legend-gap: legend-gap,
         sec-y-extent: sec-y-extent,
+        sec-x-extent: sec-x-extent,
         right-strip: right-strip,
         top-strip: top-strip,
         theme: theme,
