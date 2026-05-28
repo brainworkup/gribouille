@@ -9,7 +9,9 @@
 #import "../data.typ": column
 #import "../utils/types.typ": infer-column-type, parse-number
 #import "../utils/typst-markup.typ": is-typst-markup
-#import "../utils/late-binding.typ": is-late-binding, late-binding-name
+#import "../utils/late-binding.typ": (
+  after-scale-source, is-late-binding, late-binding-name,
+)
 
 #let _resolve-mapping(layer, plot-mapping) = {
   if layer.at("inherit-aes", default: true) and plot-mapping != none {
@@ -260,19 +262,25 @@
     for a in aes-list {
       let raw = layer-mapping.at(a, default: none)
       if raw == none { continue }
-      // Late-binding markers (`after-stat`, `from-theme`, ...) carry no
-      // column to train against; evaluation happens in `_prepare-layer`
-      // for `from-theme` and post-stat for `after-stat`.
-      if is-late-binding(raw) { continue }
-      let col-name = mapping-ref-col(raw)
+      // Late-binding markers that carry a `source` column (an `after-scale`
+      // derived from `stage(start: ...)`) train on that column so the per-row
+      // resolver hands the closure the channel's scale-resolved value, as
+      // documented on `@after-scale`. Source-less markers (`after-stat`,
+      // `from-theme`, and a pure `after-scale` closure) are evaluated
+      // elsewhere; skip them.
+      let train-ref = if is-late-binding(raw) { after-scale-source(raw) } else {
+        raw
+      }
+      if train-ref == none or is-late-binding(train-ref) { continue }
+      let col-name = mapping-ref-col(train-ref)
       let entry = cache.at(a)
       entry.cols.push((
         name: col-name,
         values: column(layer-data, col-name),
-        forced-type: _resolve-forced-type(raw, layer-data, col-name),
+        forced-type: _resolve-forced-type(train-ref, layer-data, col-name),
         levels: layer-factor-levels.at(col-name, default: none),
       ))
-      if is-typst-markup(raw) { entry.typst-mark = true }
+      if is-typst-markup(train-ref) { entry.typst-mark = true }
       cache.insert(a, entry)
     }
   }
