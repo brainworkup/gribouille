@@ -143,6 +143,12 @@
       g.insert(role, theme.at(role, default: none))
     }
   }
+  // Font role inherits the base `text` family when the geom slot is unset,
+  // so a theme-wide font reaches the text-drawing geoms; `none` stays `none`
+  // and the geom omits the `text(font: ...)` argument.
+  if g.at("font", default: none) == none {
+    g.insert("font", resolve-element(theme, "text").at("family", default: none))
+  }
   g
 }
 
@@ -307,7 +313,7 @@
 /// \@param theme Merged theme dictionary.
 ///
 /// \@param surface Text surface key, e.g., `"axis-text"`.
-/// \@returns Dict with `size`, `fill`, `weight`, `typst`, `margin`, `align`.
+/// \@returns Dict with `size`, `fill`, `weight`, `font`, `typst`, `margin`, `align`.
 #let _text-style(theme, surface) = {
   let el = resolve-element(theme, surface)
   let blank = el.at("kind", default: none) == "element-blank"
@@ -319,11 +325,27 @@
     size: if blank { 0pt } else { el.at("size", default: 9pt) },
     fill: if colour != none { colour } else { theme.ink },
     weight: if weight != none { weight } else { "regular" },
+    // `none` when unset; consumers omit the `text(font: ...)` argument so the
+    // document font is kept. Cascades up the surface chain like every field.
+    font: el.at("family", default: none),
     typst: el.at("kind", default: none) == "element-typst",
     margin: _normalise-margin(el.at("margin", default: none)),
     // `none` when unset; each draw site applies its per-surface default.
     align: el.at("align", default: none),
   )
+}
+
+/// Build the base `text(...)` argument dict for a resolved text style,
+/// threading the font only when a family is set (Typst's `font` rejects
+/// `none`). Spread into `text(..., body)` and merge with per-site extras.
+///
+/// \@internal
+/// \@param style Resolved text-style dict from \@_text-style.
+/// \@returns Dict with `size`, `fill`, `weight`, and `font` when set.
+#let _text-args(style) = {
+  let args = (size: style.size, fill: style.fill, weight: style.weight)
+  if style.font != none { args.insert("font", style.font) }
+  args
 }
 
 /// Resolve a line surface into a stroke dict, or `none` for `element-blank`.

@@ -537,6 +537,8 @@
 ///
 /// \@param linewidth Default stroke thickness for line and outline geoms (Typst length).
 ///
+/// \@param font Default font family for the text-drawing geoms (\@geom-text, \@geom-label, \@geom-typst). Falls back to the base `text` element family, then the document font.
+///
 /// \@param ink Geom `ink` role: default stroke/text colour for almost every geom and the dark stop of the bar/area body-fill tint. Falls back to `theme.ink`.
 ///
 /// \@param paper Geom `paper` role: default fill for \@geom-boxplot, \@geom-crossbar, \@geom-point, \@geom-label, and the light stop of the bar/area body-fill tint. Falls back to `theme.paper`.
@@ -589,6 +591,7 @@
   fill: none,
   colour: none,
   linewidth: none,
+  font: none,
   ink: none,
   paper: none,
   accent: none,
@@ -597,6 +600,7 @@
   fill: fill,
   colour: colour,
   linewidth: linewidth,
+  font: font,
   ink: ink,
   paper: paper,
   accent: accent,
