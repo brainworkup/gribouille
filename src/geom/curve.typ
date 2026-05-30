@@ -10,7 +10,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
-#import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 
 /// Curved segment layer: one quadratic bezier from `(x, y)` to `(xend, yend)` per row.
 ///
@@ -168,7 +168,7 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let theme-colour = resolve-geom-colour(resolve-geom-defaults(ctx.theme))
   let curvature = layer.params.curvature
   let cos-angle = calc.cos(layer.params.angle)
   let n = layer.params.n

@@ -6,7 +6,7 @@
 
 #import "../../lib.typ": element-geom, element-text, theme
 #import "../../src/theme/defaults.typ": default-theme, merge-theme
-#import "../../src/theme/theme.typ": _text-style, geom-defaults
+#import "../../src/theme/theme.typ": _text-style, resolve-geom-defaults
 
 // No override: font is none, so consumers omit `text(font: ...)` entirely.
 #let plain = merge-theme(none)
@@ -41,23 +41,23 @@
 #assert.eq(element-geom().font, none)
 #assert.eq(element-geom(font: "Geom Font").font, "Geom Font")
 
-// geom-defaults.font: element-geom.font wins; else inherits the base `text`
+// resolve-geom-defaults.font: element-geom.font wins; else inherits the base `text`
 // font. The text-drawing geoms read this field directly (no hard fallback,
 // `none` simply omits the `font:` argument).
-#assert.eq(geom-defaults(plain).font, none)
+#assert.eq(resolve-geom-defaults(plain).font, none)
 
 #let geom-themed = merge-theme(theme(geom: element-geom(font: "Geom Font")))
-#assert.eq(geom-defaults(geom-themed).font, "Geom Font")
+#assert.eq(resolve-geom-defaults(geom-themed).font, "Geom Font")
 
 // Unset element-geom.font inherits the base text font.
 #let base-themed = merge-theme(theme(text: element-text(font: "Base Font")))
-#assert.eq(geom-defaults(base-themed).font, "Base Font")
+#assert.eq(resolve-geom-defaults(base-themed).font, "Base Font")
 
 // element-geom.font overrides the inherited base text font.
 #let both-themed = merge-theme(theme(
   text: element-text(font: "Base Font"),
   geom: element-geom(font: "Geom Font"),
 ))
-#assert.eq(geom-defaults(both-themed).font, "Geom Font")
+#assert.eq(resolve-geom-defaults(both-themed).font, "Geom Font")
 
 text-style font cascade test passed.

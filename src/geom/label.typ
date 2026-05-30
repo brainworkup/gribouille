@@ -11,7 +11,7 @@
 #import "../utils/stroke.typ": build-stroke
 #import "../utils/typst-markup.typ": eval-as-markup
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-defaults, geom-fill-default,
+  resolve-geom-colour, resolve-geom-defaults, resolve-geom-fill,
 )
 
 /// Boxed text label layer reading strings from the `label` aesthetic.
@@ -213,8 +213,8 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let g-defaults = geom-defaults(ctx.theme)
-  let theme-colour = geom-colour-default(g-defaults)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
+  let theme-colour = resolve-geom-colour(g-defaults)
   // `none` font keeps the document font; only pass `text(font: ...)` when set.
   let font-args = if g-defaults.font != none { (font: g-defaults.font) } else {
     (:)
@@ -223,7 +223,7 @@
     layer,
     mapping,
     theme-colour,
-    geom-fill-default(g-defaults, role: "paper"),
+    resolve-geom-fill(g-defaults, role: "paper"),
   )
   let label-typst = layer
     .at("typst-marks", default: (:))

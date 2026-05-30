@@ -9,7 +9,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../scale/train.typ": map-axis-data
 #import "../utils/colour-resolve.typ": apply-alpha
-#import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 
 #let _draw-axis-lines(intercepts, user-axis, layer, ctx) = {
   let flipped = ctx.at("flipped", default: false)
@@ -25,7 +25,7 @@
   if values.len() == 0 { return }
 
   let colour = if layer.params.colour == auto {
-    geom-colour-default(geom-defaults(ctx.theme))
+    resolve-geom-colour(resolve-geom-defaults(ctx.theme))
   } else { layer.params.colour }
   let mapping = (ctx.resolve-mapping)(layer)
   let alpha = resolve-channel("alpha", layer, mapping, ctx, (:), 1)

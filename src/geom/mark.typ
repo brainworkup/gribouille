@@ -9,8 +9,8 @@
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
-  geom-linewidth,
+  resolve-geom-colour, resolve-geom-defaults, resolve-geom-fill,
+  resolve-geom-linewidth,
 )
 
 #let _METHODS = ("rect", "circle", "ellipse", "hull")
@@ -268,13 +268,13 @@
   let expand = layer.params.expand
   let n = layer.params.n
 
-  let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-linewidth(g-defaults)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
+  let default-thickness = resolve-geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-colour-default(g-defaults),
-    geom-fill-default(g-defaults, role: "tint"),
+    resolve-geom-colour(g-defaults),
+    resolve-geom-fill(g-defaults, role: "tint"),
   )
 
   let expand-cm = expand / 1cm

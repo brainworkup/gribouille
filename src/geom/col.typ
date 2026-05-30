@@ -17,8 +17,8 @@
 )
 #import "../utils/stroke.typ": resolve-stroke-spec
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
-  geom-linewidth,
+  resolve-geom-colour, resolve-geom-defaults, resolve-geom-fill,
+  resolve-geom-linewidth,
 )
 
 /// Bar layer with heights taken from the y aesthetic.
@@ -141,13 +141,13 @@
       and vmax-col != none
   )
 
-  let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-linewidth(g-defaults)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
+  let default-thickness = resolve-geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-colour-default(g-defaults, role: none),
-    geom-fill-default(g-defaults, role: "tint"),
+    resolve-geom-colour(g-defaults, role: none),
+    resolve-geom-fill(g-defaults, role: "tint"),
   )
 
   let baseline = calc.max(0.0, value-trained.domain.at(0))
@@ -269,13 +269,13 @@
       and vmax-col != none
   )
 
-  let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-linewidth(g-defaults)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
+  let default-thickness = resolve-geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-colour-default(g-defaults, role: none),
-    geom-fill-default(g-defaults, role: "tint"),
+    resolve-geom-colour(g-defaults, role: none),
+    resolve-geom-fill(g-defaults, role: "tint"),
   )
 
   let baseline-vc = map-axis(

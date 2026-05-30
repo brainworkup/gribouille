@@ -8,7 +8,7 @@
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/label-draw.typ": draw-segment, prepare-draw, row-centre
 #import "../utils/typst-markup.typ": eval-as-markup
-#import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 
 /// Text label layer reading strings from the `label` aesthetic.
 ///
@@ -189,8 +189,8 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let g-defaults = geom-defaults(ctx.theme)
-  let theme-colour = geom-colour-default(g-defaults)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
+  let theme-colour = resolve-geom-colour(g-defaults)
   // `none` font keeps the document font; only pass `text(font: ...)` when set.
   let font-args = if g-defaults.font != none { (font: g-defaults.font) } else {
     (:)

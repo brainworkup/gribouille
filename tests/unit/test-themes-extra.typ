@@ -12,7 +12,7 @@
   element-blank, element-geom, element-line, element-rect, element-text,
 )
 #import "../../src/theme/defaults.typ": default-theme, merge-theme
-#import "../../src/theme/theme.typ": geom-defaults
+#import "../../src/theme/theme.typ": resolve-geom-defaults
 
 // Keys that merge-theme consumes: every default-theme key must survive a merge.
 #let _expected-keys = default-theme.keys()
@@ -155,25 +155,27 @@
 
 // ── accent flows through element-geom ──────────────────────────────────────
 
-// Default theme-grey: theme.accent flows into geom-defaults.accent.
-#let g-default = geom-defaults(merge-theme(theme-grey()))
+// Default theme-grey: theme.accent flows into resolve-geom-defaults.accent.
+#let g-default = resolve-geom-defaults(merge-theme(theme-grey()))
 #assert.eq(g-default.accent, rgb("#3366FF"))
 #assert.eq(g-default.ink, black)
 #assert.eq(g-default.paper, white)
 
 // Theme-level accent override propagates.
-#let g-accent = geom-defaults(merge-theme(theme-grey(accent: rgb("#cc0000"))))
+#let g-accent = resolve-geom-defaults(merge-theme(theme-grey(
+  accent: rgb("#cc0000"),
+)))
 #assert.eq(g-accent.accent, rgb("#cc0000"))
 
 // element-geom accent wins over theme-level accent.
-#let g-elem = geom-defaults(merge-theme(theme-grey(
+#let g-elem = resolve-geom-defaults(merge-theme(theme-grey(
   accent: rgb("#cc0000"),
   geom: element-geom(accent: rgb("#00aa00")),
 )))
 #assert.eq(g-elem.accent, rgb("#00aa00"))
 
 // Theme without geom slot still surfaces theme.accent.
-#let g-empty = geom-defaults((kind: "theme", accent: rgb("#abcdef")))
+#let g-empty = resolve-geom-defaults((kind: "theme", accent: rgb("#abcdef")))
 #assert.eq(g-empty.accent, rgb("#abcdef"))
 
 Extra theme tests passed.
