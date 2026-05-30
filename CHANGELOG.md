@@ -12,6 +12,7 @@
 - feat: `labs()` fields default to `auto`; pass `none` to suppress an axis or legend title and reclaim the space it reserved. (#12)
 - feat: `element-blank()` on a text surface (axis, plot, or legend title) collapses the space the text would reserve. (#12)
 - feat: `width`/`height` accept `auto` to fill the available space of a bounded container. (#10)
+- fix: `element-text(angle:)`/`element-typst(angle:)` rotate axis tick labels (seeding the `guide-axis(angle:)` default) and the plot title, subtitle, and caption, instead of being ignored. (#59)
 - fix: `geom-qq()`/`geom-qq-line()` honour the `distribution` argument (`uniform`/`exponential`) instead of always plotting against the normal reference. (#56)
 - fix: the `font` set on `element-text`/`element-typst`/`element-geom` is applied to every text surface and to the text-drawing geoms, inheriting the base `text` font when unset. (#54)
 - fix: a `stage`/`after-scale` channel now trains its scale on the marker's source column, so the closure receives the channel's scale-resolved value as documented. (#52)
