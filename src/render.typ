@@ -3093,6 +3093,7 @@
       - outer-pad.right
       - inner-inset.right
   )
+  let tag = _text-style(theme, "plot-tag")
   let title = _text-style(theme, "plot-title")
   let subtitle = _text-style(theme, "plot-subtitle")
   let caption = _text-style(theme, "plot-caption")
@@ -3113,6 +3114,9 @@
     if style.angle != none { body = rotate(style.angle, reflow: true, body) }
     box(width: inner-w, align(a, body))
   } else { none }
+  let tag-block = if labs != none {
+    _chrome-block(labs.tag, tag, left, weight: tag.weight)
+  } else { none }
   let title-block = if labs != none {
     _chrome-block(labs.title, title, left, weight: title.weight)
   } else { none }
@@ -3129,17 +3133,22 @@
     _text-margin-cm(style, side, 0.6em) * 1cm
   }
 
+  // Bottom margin of the lowest header block sets the gap above the canvas.
   let above-canvas = if subtitle-block != none {
     subtitle
-  } else if title-block != none { title } else { none }
+  } else if title-block != none {
+    title
+  } else if tag-block != none { tag } else { none }
 
   (
     plot-bg: plot-bg,
     outer-pad: outer-pad,
     inner-inset: inner-inset,
+    tag-block: tag-block,
     title-block: title-block,
     subtitle-block: subtitle-block,
     caption-block: caption-block,
+    tag-gap: _gap-length(tag, "bottom"),
     inter-title-gap: _gap-length(title, "bottom"),
     above-gap: if above-canvas != none {
       _gap-length(above-canvas, "bottom")
@@ -3154,14 +3163,26 @@
 #let _decorate-extents(parts) = {
   let _h(b) = if b == none { 0cm } else { measure(b).height }
   let top = parts.outer-pad.top + parts.inner-inset.top
-  if parts.title-block != none { top += _h(parts.title-block) }
+  let headers = 0
+  if parts.tag-block != none {
+    top += _h(parts.tag-block)
+    headers += 1
+  }
+  if parts.title-block != none {
+    if headers > 0 { top += parts.tag-gap }
+    top += _h(parts.title-block)
+    headers += 1
+  }
   if parts.subtitle-block != none {
-    if parts.title-block != none { top += parts.inter-title-gap }
+    if headers > 0 {
+      top += if parts.title-block != none { parts.inter-title-gap } else {
+        parts.tag-gap
+      }
+    }
     top += _h(parts.subtitle-block)
+    headers += 1
   }
-  if parts.title-block != none or parts.subtitle-block != none {
-    top += parts.above-gap
-  }
+  if headers > 0 { top += parts.above-gap }
   let bottom = parts.outer-pad.bottom + parts.inner-inset.bottom
   if parts.caption-block != none {
     bottom += parts.caption-gap + _h(parts.caption-block)
@@ -3201,19 +3222,26 @@
       ),
     )
   } else { content }
+  let tag-block = parts.tag-block
   let title-block = parts.title-block
   let subtitle-block = parts.subtitle-block
   let caption-block = parts.caption-block
 
   let items = ()
-  if title-block != none { items.push(title-block) }
+  if tag-block != none { items.push(tag-block) }
+  if title-block != none {
+    if items.len() > 0 { items.push(v(parts.tag-gap)) }
+    items.push(title-block)
+  }
   if subtitle-block != none {
-    if items.len() > 0 { items.push(v(parts.inter-title-gap)) }
+    if items.len() > 0 {
+      items.push(v(if title-block != none { parts.inter-title-gap } else {
+        parts.tag-gap
+      }))
+    }
     items.push(subtitle-block)
   }
-  if title-block != none or subtitle-block != none {
-    items.push(v(parts.above-gap))
-  }
+  if items.len() > 0 { items.push(v(parts.above-gap)) }
   items.push(canvas)
   if caption-block != none {
     items.push(v(parts.caption-gap))
