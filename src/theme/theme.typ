@@ -303,6 +303,9 @@
     margin: _normalise-margin(el.at("margin", default: none)),
     // `none` when unset; each draw site applies its per-surface default.
     align: el.at("align", default: none),
+    // `none` when unset; text surfaces rotate their drawn content by this
+    // angle, and axis-text feeds it as the tick-label angle default.
+    angle: el.at("angle", default: none),
   )
 }
 
