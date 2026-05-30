@@ -617,6 +617,27 @@
 /// )
 /// ```
 ///
+/// \@examples Set fonts per surface: a base `text` family every text surface
+/// inherits, a distinct family for the plot title, and an `element-geom` `font`
+/// role for the text-drawing geoms.
+/// ```
+/// //| alt: "Scatter plot of y against x with point labels, the plot title set in DejaVu Sans Mono and every other text surface plus the geom-text labels in New Computer Modern via theme fonts."
+/// #let d = range(0, 6).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt), geom-text(mapping: aes(label: "x"))),
+///   labs: labs(title: "Fonts", x: "X", y: "Y"),
+///   theme: theme(
+///     text: element-text(family: "New Computer Modern"),
+///     plot-title: element-text(family: "DejaVu Sans Mono"),
+///     geom: element-geom(font: "New Computer Modern"),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme-grey, \@theme-minimal, \@theme-classic, \@theme-void, \@element-text, \@element-line, \@element-rect, \@element-blank, \@margin
 #let theme(..fields) = {
   let out = (kind: "theme", name: "custom")

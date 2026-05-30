@@ -586,6 +586,21 @@
 /// )
 /// ```
 ///
+/// \@examples Set the font for the text-drawing geoms (\@geom-text, \@geom-label,
+/// \@geom-typst) without touching the axis or title surfaces.
+/// ```
+/// //| alt: "Scatter plot of y against x with each point labelled by its x value in DejaVu Sans Mono via the element-geom font role, while the axes keep the default font."
+/// #let d = range(0, 6).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt), geom-text(mapping: aes(label: "x"))),
+///   theme: theme(geom: element-geom(font: "DejaVu Sans Mono")),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme, \@element-text, \@element-line, \@element-rect, \@element-blank
 #let element-geom(
   fill: none,
