@@ -153,6 +153,21 @@
   if ctor == none { (:) } else { ctor().params }
 }
 
+// Resolve a layer's `stat:` field into a `(name, params)` pair. A string name
+// inherits the geom's own params over the stat constructor defaults, mirroring
+// the `position:` string form, so geom params such as `distribution` reach the
+// stat. A `stat-*()` dict carries its own name and params instead.
+#let resolve-stat-spec(stat-spec, geom-params) = {
+  if type(stat-spec) == str {
+    (name: stat-spec, params: stat-default-params(stat-spec) + geom-params)
+  } else {
+    (
+      name: stat-spec.at("name", default: "identity"),
+      params: stat-spec.at("params", default: (:)),
+    )
+  }
+}
+
 #let setup-stat(name, data, mapping, params) = {
   let entry = _STATS.at(name, default: none)
   if entry == none { return params }

@@ -9,7 +9,7 @@
 )
 #import "scale/expansion.typ": DISCRETE-AUTO-DATA-PAD, normalise-expansion
 #import "scale/oob.typ": filter-oob
-#import "stat/apply.typ": apply-stat, setup-stat, stat-default-params
+#import "stat/apply.typ": apply-stat, resolve-stat-spec, setup-stat
 #import "stat/info.typ": stat-info
 #import "position/apply.typ": apply-position, position-name-of
 #import "theme/current.typ": _theme-state
@@ -400,14 +400,9 @@
   // its own name and params. Match the same pattern used for `position:` below.
   let stat-spec = layer.at("stat", default: "identity")
   let params = layer.at("params", default: (:))
-  let stat-name = if type(stat-spec) == str {
-    stat-spec
-  } else { stat-spec.at("name", default: "identity") }
-  let stat-params = if type(stat-spec) == str {
-    stat-default-params(stat-name)
-  } else {
-    stat-spec.at("params", default: (:))
-  }
+  let resolved-stat = resolve-stat-spec(stat-spec, params)
+  let stat-name = resolved-stat.name
+  let stat-params = resolved-stat.params
   let stripped = _strip-mapping-refs(mapping)
 
   let stat-identity = stat-name == none or stat-name == "identity"

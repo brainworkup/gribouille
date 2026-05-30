@@ -1,7 +1,9 @@
 // Q-Q statistic and helper tests.
 
 #import "../../src/utils/normal.typ": qnorm, theoretical-quantile
-#import "../../src/stat/apply.typ": apply-stat
+#import "../../src/stat/apply.typ": apply-stat, resolve-stat-spec
+#import "../../src/geom/qq.typ": geom-qq
+#import "../../src/geom/qq-line.typ": geom-qq-line
 
 // --- qnorm: classic 95 % quantile -----------------------------------------
 // Acklam's approximation matches the standard z to about 1.15e-9.
@@ -122,5 +124,32 @@
   )
     < 1e-9,
 )
+
+// --- resolve-stat-spec: string stat inherits the geom's own params --------
+// Regression: geom-qq stores `distribution` in its params and dispatches the
+// stat by string name, so the resolver must forward those params to the stat
+// rather than dropping them for the constructor defaults.
+
+#let qq-layer = geom-qq(distribution: "uniform")
+#let qq-resolved = resolve-stat-spec(qq-layer.stat, qq-layer.params)
+#assert.eq(qq-resolved.name, "qq")
+#assert.eq(qq-resolved.params.distribution, "uniform")
+
+#let qq-line-layer = geom-qq-line(distribution: "exponential")
+#let qq-line-resolved = resolve-stat-spec(
+  qq-line-layer.stat,
+  qq-line-layer.params,
+)
+#assert.eq(qq-line-resolved.name, "qq-line")
+#assert.eq(qq-line-resolved.params.distribution, "exponential")
+
+// --- resolve-stat-spec: stat-*() dict carries its own name and params ------
+
+#let dict-resolved = resolve-stat-spec(
+  (kind: "stat", name: "boxplot", params: (coefficient: 1.0)),
+  (width: 0.6),
+)
+#assert.eq(dict-resolved.name, "boxplot")
+#assert.eq(dict-resolved.params.coefficient, 1.0)
 
 QQ tests passed.
