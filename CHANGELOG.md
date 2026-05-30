@@ -12,6 +12,7 @@
 - feat: `labs()` fields default to `auto`; pass `none` to suppress an axis or legend title and reclaim the space it reserved. (#12)
 - feat: `element-blank()` on a text surface (axis, plot, or legend title) collapses the space the text would reserve. (#12)
 - feat: `width`/`height` accept `auto` to fill the available space of a bounded container. (#10)
+- fix: the theme font `family` is applied to every text surface and to the text-drawing geoms; `element-geom` gains a `font` role inheriting the base `text` family. (#54)
 - fix: a `stage`/`after-scale` channel now trains its scale on the marker's source column, so the closure receives the channel's scale-resolved value as documented. (#52)
 - fix: grouped geoms (e.g., `geom-smooth`) no longer panic when a grouping aesthetic is mapped via `after-scale` or `stage`. (#51)
 - fix: facet-grid legends reserve space for a secondary x-axis so a top legend no longer overlaps its ticks. (#46)
