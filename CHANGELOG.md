@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- feat: `facet-grid(scales:)` supports free scales (`"free_x"` frees x per column, `"free_y"` frees y per row, `"free"` both), matching ggplot2 facet_grid; non-positional scales stay shared and panels keep equal size. (#60)
 - feat: legend entry labels honour the `legend-text` text `align`, and `guide-legend()` gains an `align` argument; horizontal legends default to centred labels, vertical to left. (#34)
 - feat: `compose()` accepts `defer: true` to return a spec usable as a panel of another `compose`, enabling nested compositions; `tag-levels` accepts a per-depth array (with `tag-sep`) so nested panels continue the numbering (e.g., `B.1`, `B.2`). (#24)
 - feat: `compose()` can number panels with a tag pattern (`tag-levels` `"A"`/`"a"`/`"1"`/`"I"`/`"i"`, plus `tag-prefix`/`tag-suffix`/`tag-corner`), styled by the new `plot-tag` theme element. (#23)

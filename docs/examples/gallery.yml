@@ -149,6 +149,12 @@
   description: 'Panels laid out on a row × column grid with [`facet-grid`](../reference/facets/facet-grid.qmd).'
   alt: "Scatter plot arranged on a facet grid of two rows (female and male) and three columns (species A, B, and C)."
 
+- slug: facet-grid-free
+  section: facets
+  title: "Facet grid free scales"
+  description: 'Pass `scales: "free"` to [`facet-grid`](../reference/facets/facet-grid.qmd) so x is freed per column and y per row.'
+  alt: "Two-by-two facet grid where each column (species a, b) has its own x range and each row (sex F, M) its own y range, with tick labels only on the bottom row and left column."
+
 - slug: coord-clip
   section: facets
   title: "Cartesian zoom"
