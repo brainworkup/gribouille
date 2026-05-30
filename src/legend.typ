@@ -16,7 +16,7 @@
 #import "utils/level-resolve.typ": resolve-level
 #import "theme/defaults.typ": resolve-colour
 #import "theme/theme.typ": (
-  _line-stroke, _rect-outset-cm, _rect-style, _text-style,
+  _line-stroke, _rect-outset-cm, _rect-style, _text-args, _text-style,
 )
 #import "guide/draw-key.typ": default-key-for, draw-glyph
 #import "scale/train.typ": mapping-display-name
@@ -1044,11 +1044,7 @@
   }
   cetz.draw.content(
     (tx, cursor),
-    text(
-      size: s.size,
-      fill: s.fill,
-      weight: s.weight,
-    )[#resolve-prose(title, eval-strings: s.typst)],
+    text(.._text-args(s))[#resolve-prose(title, eval-strings: s.typst)],
     anchor: t-anchor,
   )
 }
@@ -1056,7 +1052,7 @@
 #let _draw-swatch(guide, ctx, ox, cursor, theme, title-h) = {
   let ink = resolve-colour(theme, "ink")
   let _legend-text = _text-style(theme, "legend-text")
-  let text-colour = _legend-text.fill
+  let legend-text-args = _text-args(_legend-text)
   let text-size = _legend-text.size
   let size-pt = text-size / 1pt
   let line-h = _swatch-line-h-cm(size-pt)
@@ -1111,7 +1107,7 @@
     let (lx, l-anchor) = _hjust-right-of(align, label-start, slot-w)
     cetz.draw.content(
       (lx, cm),
-      text(size: text-size, fill: text-colour)[#label-text],
+      text(..legend-text-args)[#label-text],
       anchor: l-anchor,
     )
   }
@@ -1120,7 +1116,7 @@
 #let _draw-size-ladder(guide, ctx, ox, cursor, theme, title-h) = {
   let ink = resolve-colour(theme, "ink")
   let _legend-text = _text-style(theme, "legend-text")
-  let text-colour = _legend-text.fill
+  let legend-text-args = _text-args(_legend-text)
   let text-size = _legend-text.size
   let size-pt = text-size / 1pt
   let line-h = _ladder-line-h-cm(size-pt)
@@ -1157,7 +1153,7 @@
       let (lx, l-anchor) = _hjust-below(align, cx)
       cetz.draw.content(
         (lx, cy - glyph-size * 2 - 0.1),
-        text(size: text-size, fill: text-colour)[#break-text],
+        text(..legend-text-args)[#break-text],
         anchor: l-anchor,
       )
     }
@@ -1202,7 +1198,7 @@
       )
       cetz.draw.content(
         (lx, cm),
-        text(size: text-size, fill: text-colour)[#break-text],
+        text(..legend-text-args)[#break-text],
         anchor: l-anchor,
       )
     }
@@ -1240,7 +1236,7 @@
   let trained = ctx.trained.at(bar-aes)
   let ink = resolve-colour(theme, "ink")
   let _legend-text = _text-style(theme, "legend-text")
-  let text-colour = _legend-text.fill
+  let legend-text-args = _text-args(_legend-text)
   let text-size = _legend-text.size
   let size-pt = text-size / 1pt
   let (lo, hi) = guide.domain
@@ -1361,7 +1357,7 @@
     }
     cetz.draw.content(
       label-pos,
-      text(size: text-size, fill: text-colour)[#tick-text],
+      text(..legend-text-args)[#tick-text],
       anchor: label-anchor,
     )
   }

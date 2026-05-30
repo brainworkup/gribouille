@@ -189,7 +189,12 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let g-defaults = geom-defaults(ctx.theme)
+  let theme-colour = geom-colour-default(g-defaults)
+  // `none` font keeps the document font; only pass `text(font: ...)` when set.
+  let font-args = if g-defaults.font != none { (font: g-defaults.font) } else {
+    (:)
+  }
   let label-typst = layer
     .at("typst-marks", default: (:))
     .at("label", default: false)
@@ -224,7 +229,7 @@
     }
     cetz.draw.content(
       centre,
-      text(size: text-size, fill: colour)[#label],
+      text(size: text-size, fill: colour, ..font-args)[#label],
       anchor: layer.params.anchor,
     )
   }
