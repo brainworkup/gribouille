@@ -863,22 +863,32 @@
 // Normalise a single `guide-axis*` spec to the flat shape consumers expect.
 // Always carries a `stack` flag so callers can branch on the same field
 // regardless of whether the guide originated from a stack or stand-alone.
-#let _normalise-axis-guide(g) = (
-  angle: g.at("angle", default: 0),
-  n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
-  logticks: g.at("logticks", default: false),
-  stack: false,
-)
+// `default-angle` (degrees, from the axis-text theme element) applies when the
+// guide leaves `angle` at its `0` default, so `guide-axis(angle:)` overrides
+// the theme but the theme still drives rotation on its own.
+#let _normalise-axis-guide(g, default-angle) = {
+  let angle = g.at("angle", default: 0)
+  (
+    angle: if angle != 0 { angle } else { default-angle },
+    n-dodge: calc.max(1, g.at("n-dodge", default: 1)),
+    logticks: g.at("logticks", default: false),
+    stack: false,
+  )
+}
 
 // Read a `guide-axis(...)` or `guide-axis-stack(...)` configuration off the
 // plot spec. Single guides flatten to `(angle, n-dodge, logticks, stack)`;
 // stacks add `(guides, spacing)` plus aggregate fields so flat (non-stack)
 // callers (label-anchor, log-minors) still see a sensible single-row view.
-#let _read-axis-guide(spec, aes) = {
+#let _read-axis-guide(spec, aes, default-angle: 0) = {
   let g = spec.at("guides", default: (:)).at(aes, default: none)
-  if g == none { return (angle: 0, n-dodge: 1, logticks: false, stack: false) }
-  if not g.at("stack", default: false) { return _normalise-axis-guide(g) }
-  let subs = g.guides.map(_normalise-axis-guide)
+  if g == none {
+    return (angle: default-angle, n-dodge: 1, logticks: false, stack: false)
+  }
+  if not g.at("stack", default: false) {
+    return _normalise-axis-guide(g, default-angle)
+  }
+  let subs = g.guides.map(s => _normalise-axis-guide(s, default-angle))
   if subs.len() == 0 {
     panic(
       "guide-axis-stack requires at least one sub-guide; got an empty list.",
@@ -892,6 +902,14 @@
     guides: subs,
     spacing: length-to-cm(g.at("spacing", default: 4pt), 0),
   )
+}
+
+// Tick-label rotation in degrees read off the `axis-text` theme element for
+// the given aesthetic, used as the `guide-axis(angle:)` default so a theme can
+// rotate tick labels on its own.
+#let _axis-text-angle(theme, aes) = {
+  let a = _text-style(theme, "axis-text-" + aes).angle
+  if a == none { 0 } else { a.deg() }
 }
 
 // Cap trim is a small wedge at the named axis-arc end, capped at 2° so it
@@ -1234,8 +1252,14 @@
   let _len-side = (p, s, a) => _scalar-cascade(theme, p, s, a) / 1cm
   let _tick-len = _per-side(_len-side, "tick-length")
 
-  let x-guide = _read-axis-guide(spec, "x")
-  let y-guide = _read-axis-guide(spec, "y")
+  let x-guide = _read-axis-guide(spec, "x", default-angle: _axis-text-angle(
+    theme,
+    "x",
+  ))
+  let y-guide = _read-axis-guide(spec, "y", default-angle: _axis-text-angle(
+    theme,
+    "y",
+  ))
   let _x-label-anchor(angle) = {
     if angle == 0 { "north" } else if angle > 0 { "north-east" } else {
       "north-west"
@@ -3086,13 +3110,9 @@
     let a = if style.align != none { style.align } else { default-align }
     let args = _text-args(style)
     for (k, v) in text-args.named() { args.insert(k, v) }
-    box(
-      width: inner-w,
-      align(
-        a,
-        text(..args)[#resolve-prose(value, eval-strings: style.typst)],
-      ),
-    )
+    let body = text(..args)[#resolve-prose(value, eval-strings: style.typst)]
+    if style.angle != none { body = rotate(style.angle, reflow: true, body) }
+    box(width: inner-w, align(a, body))
   } else { none }
   let tag-block = if labs != none {
     _chrome-block(labs.tag, tag, left, weight: tag.weight)
@@ -3453,8 +3473,16 @@
     "y",
   )
 
-  let x-guide = _read-axis-guide(spec, "x")
-  let y-guide = _read-axis-guide(spec, "y")
+  let x-guide = _read-axis-guide(
+    spec,
+    "x",
+    default-angle: _axis-text-angle(theme, "x"),
+  )
+  let y-guide = _read-axis-guide(
+    spec,
+    "y",
+    default-angle: _axis-text-angle(theme, "y"),
+  )
   // Themes that disable tick labels (`theme-void`) reserve no perpendicular
   // depth for them; otherwise the chrome margin reserves space for ink that
   // never draws, inverting the panel rect on small plot sizes.

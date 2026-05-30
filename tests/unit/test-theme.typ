@@ -121,4 +121,12 @@
 // A normal text element keeps its declared size.
 #assert.eq(_text-style(merge-theme(theme()), "axis-title").size, 9pt)
 
+// `angle` surfaces through `_text-style` and cascades to per-side surfaces,
+// so axis-text rotation reaches the tick-label angle default.
+#let angled = merge-theme(theme(axis-text: element-text(angle: 30deg)))
+#assert.eq(_text-style(angled, "axis-text").angle, 30deg)
+#assert.eq(_text-style(angled, "axis-text-x-bottom").angle, 30deg)
+// Unset stays `none` so existing themes keep upright text.
+#assert.eq(_text-style(merge-theme(theme()), "axis-text").angle, none)
+
 Theme tests passed.

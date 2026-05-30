@@ -19,7 +19,10 @@
 ///
 /// \@param colour Text colour, or `none` to inherit.
 ///
-/// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
+/// \@param angle Rotation angle (a Typst angle), or `none` to inherit. Honoured
+///   on axis tick labels (`axis-text`, seeding the \@guide-axis `angle`, which
+///   overrides it) and on the plot title, subtitle, and caption. Legend and
+///   strip text ignore this field.
 ///
 /// \@param font Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
 ///
@@ -132,7 +135,10 @@
 ///
 /// \@param colour Text colour, or `none` to inherit.
 ///
-/// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
+/// \@param angle Rotation angle (a Typst angle), or `none` to inherit. Honoured
+///   on axis tick labels (`axis-text`, seeding the \@guide-axis `angle`, which
+///   overrides it) and on the plot title, subtitle, and caption. Legend and
+///   strip text ignore this field.
 ///
 /// \@param font Font family, or `none` to inherit.
 ///
