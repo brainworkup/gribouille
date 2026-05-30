@@ -23,6 +23,12 @@
   description: 'Title, subtitle, caption, and axis labels set in a single [`labs`](../reference/labs/labs.qmd) call.'
   alt: "Scatter and line chart of count against month showing a rising trend, framed by a title, subtitle, caption, and axis labels."
 
+- slug: labs-tag
+  section: basics
+  title: "Figure tag"
+  description: 'A figure tag drawn above the title via [`labs`](../reference/labs/labs.qmd) `tag`, styled by the `plot-tag` theme element.'
+  alt: "Scatter plot of highway fuel economy against engine displacement, marked with a bold 'A' tag above the title and subtitle."
+
 - slug: factor-inline
   section: basics
   title: "Inline factor coercion"
