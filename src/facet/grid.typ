@@ -1,14 +1,15 @@
 ///! Grid faceting.
 ///!
 ///! Panels arranged on a `row x column` grid, driven by two discrete variables.
-///! v1 supports shared scales only.
+///! Scales may be shared (`"fixed"`) or freed per column (`x`) / row (`y`).
 
 #import "labellers.typ": label-value
 
 /// Grid facets: panels on a row x column grid from two discrete variables.
 ///
-/// Either `rows` or `columns` may be `none`, but not both. Only shared
-/// scales are supported in v1.
+/// Either `rows` or `columns` may be `none`, but not both. Free scales follow
+/// the grid structure: `"free_x"` frees x per column, `"free_y"` frees y per
+/// row, and `"free"` frees both; non-positional scales stay shared.
 ///
 /// \@category Facets
 /// \@stability stable
@@ -18,7 +19,8 @@
 ///
 /// \@param columns Name of the discrete column driving panel columns, or `none`.
 ///
-/// \@param scales Scale policy. Only `"fixed"` is supported in v1.
+/// \@param scales Scale policy: `"fixed"` (default, shared), `"free_x"` (x free
+///   per column), `"free_y"` (y free per row), or `"free"` (both).
 ///
 /// \@param labeller Labeller controlling strip text. Defaults to
 ///   `label-value()` which shows the level as-is.
@@ -73,8 +75,10 @@
   scales: "fixed",
   labeller: label-value(),
 ) = {
-  if scales != "fixed" {
-    panic("facet-grid currently supports scales: \"fixed\" only")
+  if not ("fixed", "free", "free_x", "free_y").contains(scales) {
+    panic(
+      "facet-grid: scales must be \"fixed\", \"free\", \"free_x\", or \"free_y\"",
+    )
   }
   if rows == none and columns == none {
     panic("facet-grid needs at least one of rows: or columns:")

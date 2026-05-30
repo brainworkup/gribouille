@@ -2541,6 +2541,78 @@
   })
 }
 
+// Grid analogue of `_train-panels`: free-x trains x once PER COLUMN (union over
+// the column's rows) and free-y trains y once PER ROW (union over the row's
+// columns), so every panel in a column shares one x domain and every panel in a
+// row shares one y domain (ggplot2 facet_grid semantics). Non-positional scales
+// stay shared. Returns one merged trained dict per panel, indexed
+// `r * n-cols + c`; `()` when neither axis is free.
+#let _train-grid-panels(
+  spec,
+  panels,
+  trained,
+  coord,
+  labs,
+  n-rows,
+  n-cols,
+  free-x,
+  free-y,
+) = {
+  if not (free-x or free-y) { return () }
+  let n-layers = panels.at(0).layers.len()
+  // Concatenate layer `li`'s data across a set of panel indices, preserving
+  // layer order so `train` folds the group exactly like a single panel would.
+  let union-layers = idxs => {
+    range(n-layers).map(li => {
+      let merged = panels.at(idxs.at(0)).layers.at(li)
+      let data = ()
+      for pi in idxs { data += panels.at(pi).layers.at(li).data }
+      merged.data = data
+      merged
+    })
+  }
+  // Same positional pipeline as `_train-panels`, run once per group.
+  let train-group = group-layers => {
+    let pt = train(
+      scales: spec.scales,
+      layers: group-layers,
+      mapping: spec.mapping,
+      data: spec.data,
+      aesthetics: positional-aesthetics,
+    )
+    pt = _apply-labs(pt, labs)
+    pt = _post-train(pt, group-layers)
+    pt = _apply-coord-transform(pt, coord)
+    pt = _apply-coord(pt, coord)
+    pt = _apply-expand(pt, coord)
+    pt = _apply-flip(pt, coord)
+    pt
+  }
+  // One trained x per column (union over its rows), one trained y per row.
+  let col-x = if free-x {
+    range(n-cols).map(c => {
+      let idxs = range(n-rows).map(r => r * n-cols + c)
+      train-group(union-layers(idxs)).at("x", default: none)
+    })
+  } else { none }
+  let row-y = if free-y {
+    range(n-rows).map(r => {
+      let idxs = range(n-cols).map(c => r * n-cols + c)
+      train-group(union-layers(idxs)).at("y", default: none)
+    })
+  } else { none }
+  let out = ()
+  for r in range(n-rows) {
+    for c in range(n-cols) {
+      let merged = trained
+      if free-x and col-x.at(c) != none { merged.insert("x", col-x.at(c)) }
+      if free-y and row-y.at(r) != none { merged.insert("y", row-y.at(r)) }
+      out.push(merged)
+    }
+  }
+  out
+}
+
 #let _render-canvas-wrap(ctx) = {
   let spec = ctx.spec
   let theme = ctx.theme
@@ -2806,6 +2878,9 @@
   let y-extents = ctx.y-extents
   let x-sec-extents = ctx.x-sec-extents
   let y-sec-extents = ctx.y-sec-extents
+  let panel-trained-list = ctx.panel-trained-list
+  let free-x = ctx.free-x
+  let free-y = ctx.free-y
 
   let row-var = spec.facet.rows
   let col-var = spec.facet.columns
@@ -2846,7 +2921,21 @@
   let panel-w = (grid-w - gutter-x * (n-cols - 1)) / n-cols
   let panel-h = (grid-h - gutter-y * (n-rows - 1)) / n-rows
 
-  let shared-breaks = _shared-axis-breaks(trained)
+  // Under free scales each column (x) / row (y) carries its own domain, so the
+  // shared break set no longer applies; `none` makes `_draw-cartesian-axis`
+  // recompute breaks from each panel's own trained scale.
+  let shared-breaks = {
+    let s = _shared-axis-breaks(trained)
+    if free-x {
+      s.insert("x", none)
+      s.insert("x-sec", none)
+    }
+    if free-y {
+      s.insert("y", none)
+      s.insert("y-sec", none)
+    }
+    s
+  }
 
   cetz.canvas(length: 1cm, {
     import cetz.draw: *
@@ -2856,16 +2945,19 @@
         let x0 = margin.left + c * (panel-w + gutter-x)
         let y0 = margin.bottom + (n-rows - 1 - r) * (panel-h + gutter-y)
         let panel-layers = panels.at(r * n-cols + c).layers
+        let panel-trained = if panel-trained-list.len() == 0 {
+          trained
+        } else { panel-trained-list.at(r * n-cols + c) }
         let (inner-w, inner-h) = _fixed-inner-size(
           coord,
-          trained,
+          panel-trained,
           panel-w,
           panel-h,
         )
         let inner-y0 = y0 + (panel-h - inner-h)
         _draw-axis-and-layers(
           panel-layers,
-          trained,
+          panel-trained,
           theme,
           spec,
           (x0, inner-y0),
@@ -3359,32 +3451,33 @@
     })
   }
 
-  // For facet-wrap with non-fixed scales, train each panel's positional axes
-  // on its own subset so x and/or y differ across panels. Non-positional
-  // scales (colour, fill, size, shape, linetype) stay shared so legends do
-  // not fragment.
-  let wrap-scales = if facet-wrap-mode { spec.facet.scales } else { "fixed" }
-  let free-x = (
-    facet-wrap-mode
-      and (
-        wrap-scales == "free" or wrap-scales == "free_x"
-      )
-  )
-  let free-y = (
-    facet-wrap-mode
-      and (
-        wrap-scales == "free" or wrap-scales == "free_y"
-      )
-  )
-  let panel-trained-list = _train-panels(
-    spec,
-    panels,
-    trained,
-    coord,
-    labs,
-    free-x,
-    free-y,
-  )
+  // For non-fixed facet scales, train each panel's positional axes on its own
+  // subset so x and/or y differ across panels. Non-positional scales (colour,
+  // fill, size, shape, linetype) stay shared so legends do not fragment.
+  // facet-wrap frees each panel independently; facet-grid frees x per column
+  // and y per row (see `_train-grid-panels`).
+  let facet-scales = if facet-wrap-mode or facet-grid-mode {
+    spec.facet.scales
+  } else { "fixed" }
+  let free-x = facet-scales == "free" or facet-scales == "free_x"
+  let free-y = facet-scales == "free" or facet-scales == "free_y"
+  let grid-n-rows = calc.max(1, grid-row-levels.len())
+  let grid-n-cols = calc.max(1, grid-col-levels.len())
+  let panel-trained-list = if facet-grid-mode {
+    _train-grid-panels(
+      spec,
+      panels,
+      trained,
+      coord,
+      labs,
+      grid-n-rows,
+      grid-n-cols,
+      free-x,
+      free-y,
+    )
+  } else {
+    _train-panels(spec, panels, trained, coord, labs, free-x, free-y)
+  }
 
   let width-units = width-units-early - deco.left - deco.right
   let height-units = height-units-early - deco.top - deco.bottom
@@ -3445,6 +3538,42 @@
     ax-text.yl.size,
     typst-eval: ax-text.yl.typst,
   )
+  // Under facet-grid free scales the bottom row shows a different x per column
+  // and the left column a different y per row, so the single bottom/left margin
+  // must reserve the widest group's labels. Take the per-group maxima from the
+  // panels that actually draw the edge axes (bottom row for x, left column for
+  // y) using the same trained entries the draw will use.
+  let x-extents = if (
+    facet-grid-mode and free-x and panel-trained-list.len() > 0
+  ) {
+    let exts = range(grid-n-cols).map(c => _axis-label-extents(
+      panel-trained-list
+        .at((grid-n-rows - 1) * grid-n-cols + c)
+        .at(
+          "x",
+          default: none,
+        ),
+      ax-text.xb.size,
+      typst-eval: ax-text.xb.typst,
+    ))
+    (
+      width: exts.fold(x-extents.width, (m, e) => calc.max(m, e.width)),
+      height: exts.fold(x-extents.height, (m, e) => calc.max(m, e.height)),
+    )
+  } else { x-extents }
+  let y-extents = if (
+    facet-grid-mode and free-y and panel-trained-list.len() > 0
+  ) {
+    let exts = range(grid-n-rows).map(r => _axis-label-extents(
+      panel-trained-list.at(r * grid-n-cols).at("y", default: none),
+      ax-text.yl.size,
+      typst-eval: ax-text.yl.typst,
+    ))
+    (
+      width: exts.fold(y-extents.width, (m, e) => calc.max(m, e.width)),
+      height: exts.fold(y-extents.height, (m, e) => calc.max(m, e.height)),
+    )
+  } else { y-extents }
   let x-sec-extents = _secondary-label-extents(
     x-trained-top,
     x-sec,
@@ -3651,6 +3780,9 @@
       panels: panels,
       grid-row-levels: grid-row-levels,
       grid-col-levels: grid-col-levels,
+      panel-trained-list: panel-trained-list,
+      free-x: free-x,
+      free-y: free-y,
       guides: guides,
       legend-gap: legend-gap,
       sec-y-extent: sec-y-extent,
