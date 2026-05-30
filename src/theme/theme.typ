@@ -143,11 +143,11 @@
       g.insert(role, theme.at(role, default: none))
     }
   }
-  // Font role inherits the base `text` family when the geom slot is unset,
+  // Font role inherits the base `text` font when the geom slot is unset,
   // so a theme-wide font reaches the text-drawing geoms; `none` stays `none`
   // and the geom omits the `text(font: ...)` argument.
   if g.at("font", default: none) == none {
-    g.insert("font", resolve-element(theme, "text").at("family", default: none))
+    g.insert("font", resolve-element(theme, "text").at("font", default: none))
   }
   g
 }
@@ -327,7 +327,7 @@
     weight: if weight != none { weight } else { "regular" },
     // `none` when unset; consumers omit the `text(font: ...)` argument so the
     // document font is kept. Cascades up the surface chain like every field.
-    font: el.at("family", default: none),
+    font: el.at("font", default: none),
     typst: el.at("kind", default: none) == "element-typst",
     margin: _normalise-margin(el.at("margin", default: none)),
     // `none` when unset; each draw site applies its per-surface default.
@@ -336,7 +336,7 @@
 }
 
 /// Build the base `text(...)` argument dict for a resolved text style,
-/// threading the font only when a family is set (Typst's `font` rejects
+/// threading the font only when one is set (Typst's `font` rejects
 /// `none`). Spread into `text(..., body)` and merge with per-site extras.
 ///
 /// \@internal
@@ -617,8 +617,8 @@
 /// )
 /// ```
 ///
-/// \@examples Set fonts per surface: a base `text` family every text surface
-/// inherits, a distinct family for the plot title, and an `element-geom` `font`
+/// \@examples Set fonts per surface: a base `text` font every text surface
+/// inherits, a distinct font for the plot title, and an `element-geom` `font`
 /// role for the text-drawing geoms.
 /// ```
 /// //| alt: "Scatter plot of y against x with point labels, the plot title set in DejaVu Sans Mono and every other text surface plus the geom-text labels in New Computer Modern via theme fonts."
@@ -629,8 +629,8 @@
 ///   layers: (geom-point(size: 2pt), geom-text(mapping: aes(label: "x"))),
 ///   labs: labs(title: "Fonts", x: "X", y: "Y"),
 ///   theme: theme(
-///     text: element-text(family: "New Computer Modern"),
-///     plot-title: element-text(family: "DejaVu Sans Mono"),
+///     text: element-text(font: "New Computer Modern"),
+///     plot-title: element-text(font: "DejaVu Sans Mono"),
 ///     geom: element-geom(font: "New Computer Modern"),
 ///   ),
 ///   width: 10cm,

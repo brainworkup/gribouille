@@ -21,7 +21,7 @@
 ///
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 ///
-/// \@param family Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
+/// \@param font Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
 ///
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
@@ -97,7 +97,7 @@
   weight: none,
   colour: none,
   angle: none,
-  family: none,
+  font: none,
   margin: none,
   align: none,
 ) = (
@@ -106,7 +106,7 @@
   weight: weight,
   colour: colour,
   angle: angle,
-  family: family,
+  font: font,
   margin: margin,
   align: align,
 )
@@ -134,7 +134,7 @@
 ///
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 ///
-/// \@param family Font family, or `none` to inherit.
+/// \@param font Font family, or `none` to inherit.
 ///
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
@@ -191,7 +191,7 @@
   weight: none,
   colour: none,
   angle: none,
-  family: none,
+  font: none,
   margin: none,
   align: none,
 ) = (
@@ -200,7 +200,7 @@
   weight: weight,
   colour: colour,
   angle: angle,
-  family: family,
+  font: font,
   margin: margin,
   align: align,
 )
