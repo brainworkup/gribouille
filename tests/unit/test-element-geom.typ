@@ -14,11 +14,13 @@
 #assert.eq(g.fill, none)
 #assert.eq(g.colour, none)
 #assert.eq(g.linewidth, none)
+#assert.eq(g.font, none)
 
-#let g2 = element-geom(fill: red, colour: blue, linewidth: 1pt)
+#let g2 = element-geom(fill: red, colour: blue, linewidth: 1pt, font: "Font A")
 #assert.eq(g2.fill, red)
 #assert.eq(g2.colour, blue)
 #assert.eq(g2.linewidth, 1pt)
+#assert.eq(g2.font, "Font A")
 
 // default-theme carries an empty element-geom under `geom`.
 #assert.eq(default-theme.geom.kind, "element-geom")

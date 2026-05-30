@@ -21,7 +21,7 @@
 ///
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 ///
-/// \@param family Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
+/// \@param font Font family (e.g., `"sans"`, `"serif"`), or `none` to inherit.
 ///
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
@@ -97,7 +97,7 @@
   weight: none,
   colour: none,
   angle: none,
-  family: none,
+  font: none,
   margin: none,
   align: none,
 ) = (
@@ -106,7 +106,7 @@
   weight: weight,
   colour: colour,
   angle: angle,
-  family: family,
+  font: font,
   margin: margin,
   align: align,
 )
@@ -134,7 +134,7 @@
 ///
 /// \@param angle Rotation angle (a Typst angle), or `none` to inherit.
 ///
-/// \@param family Font family, or `none` to inherit.
+/// \@param font Font family, or `none` to inherit.
 ///
 /// \@param margin Per-side spacing built with \@margin. Each side accepts
 ///   a Typst length (absolute or relative); `em` is preferred so spacing scales
@@ -191,7 +191,7 @@
   weight: none,
   colour: none,
   angle: none,
-  family: none,
+  font: none,
   margin: none,
   align: none,
 ) = (
@@ -200,7 +200,7 @@
   weight: weight,
   colour: colour,
   angle: angle,
-  family: family,
+  font: font,
   margin: margin,
   align: align,
 )
@@ -537,6 +537,8 @@
 ///
 /// \@param linewidth Default stroke thickness for line and outline geoms (Typst length).
 ///
+/// \@param font Default font family for the text-drawing geoms (\@geom-text, \@geom-label, \@geom-typst). Falls back to the base `text` element family, then the document font.
+///
 /// \@param ink Geom `ink` role: default stroke/text colour for almost every geom and the dark stop of the bar/area body-fill tint. Falls back to `theme.ink`.
 ///
 /// \@param paper Geom `paper` role: default fill for \@geom-boxplot, \@geom-crossbar, \@geom-point, \@geom-label, and the light stop of the bar/area body-fill tint. Falls back to `theme.paper`.
@@ -584,11 +586,27 @@
 /// )
 /// ```
 ///
+/// \@examples Set the font for the text-drawing geoms (\@geom-text, \@geom-label,
+/// \@geom-typst) without touching the axis or title surfaces.
+/// ```
+/// //| alt: "Scatter plot of y against x with each point labelled by its x value in DejaVu Sans Mono via the element-geom font role, while the axes keep the default font."
+/// #let d = range(0, 6).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt), geom-text(mapping: aes(label: "x"))),
+///   theme: theme(geom: element-geom(font: "DejaVu Sans Mono")),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@theme, \@element-text, \@element-line, \@element-rect, \@element-blank
 #let element-geom(
   fill: none,
   colour: none,
   linewidth: none,
+  font: none,
   ink: none,
   paper: none,
   accent: none,
@@ -597,6 +615,7 @@
   fill: fill,
   colour: colour,
   linewidth: linewidth,
+  font: font,
   ink: ink,
   paper: paper,
   accent: accent,

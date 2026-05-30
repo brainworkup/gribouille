@@ -143,6 +143,12 @@
       g.insert(role, theme.at(role, default: none))
     }
   }
+  // Font role inherits the base `text` font when the geom slot is unset,
+  // so a theme-wide font reaches the text-drawing geoms; `none` stays `none`
+  // and the geom omits the `text(font: ...)` argument.
+  if g.at("font", default: none) == none {
+    g.insert("font", resolve-element(theme, "text").at("font", default: none))
+  }
   g
 }
 
@@ -307,7 +313,7 @@
 /// \@param theme Merged theme dictionary.
 ///
 /// \@param surface Text surface key, e.g., `"axis-text"`.
-/// \@returns Dict with `size`, `fill`, `weight`, `typst`, `margin`, `align`.
+/// \@returns Dict with `size`, `fill`, `weight`, `font`, `typst`, `margin`, `align`.
 #let _text-style(theme, surface) = {
   let el = resolve-element(theme, surface)
   let blank = el.at("kind", default: none) == "element-blank"
@@ -319,11 +325,27 @@
     size: if blank { 0pt } else { el.at("size", default: 9pt) },
     fill: if colour != none { colour } else { theme.ink },
     weight: if weight != none { weight } else { "regular" },
+    // `none` when unset; consumers omit the `text(font: ...)` argument so the
+    // document font is kept. Cascades up the surface chain like every field.
+    font: el.at("font", default: none),
     typst: el.at("kind", default: none) == "element-typst",
     margin: _normalise-margin(el.at("margin", default: none)),
     // `none` when unset; each draw site applies its per-surface default.
     align: el.at("align", default: none),
   )
+}
+
+/// Build the base `text(...)` argument dict for a resolved text style,
+/// threading the font only when one is set (Typst's `font` rejects
+/// `none`). Spread into `text(..., body)` and merge with per-site extras.
+///
+/// \@internal
+/// \@param style Resolved text-style dict from \@_text-style.
+/// \@returns Dict with `size`, `fill`, `weight`, and `font` when set.
+#let _text-args(style) = {
+  let args = (size: style.size, fill: style.fill, weight: style.weight)
+  if style.font != none { args.insert("font", style.font) }
+  args
 }
 
 /// Resolve a line surface into a stroke dict, or `none` for `element-blank`.
@@ -589,6 +611,27 @@
 ///       fill: rgb("#f7f0e7"),
 ///       inset: margin(top: 0.4cm, right: 0.4cm, bottom: 0.4cm, left: 0.4cm),
 ///     ),
+///   ),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples Set fonts per surface: a base `text` font every text surface
+/// inherits, a distinct font for the plot title, and an `element-geom` `font`
+/// role for the text-drawing geoms.
+/// ```
+/// //| alt: "Scatter plot of y against x with point labels, the plot title set in DejaVu Sans Mono and every other text surface plus the geom-text labels in New Computer Modern via theme fonts."
+/// #let d = range(0, 6).map(i => (x: i, y: i * 0.5))
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "x", y: "y"),
+///   layers: (geom-point(size: 2pt), geom-text(mapping: aes(label: "x"))),
+///   labs: labs(title: "Fonts", x: "X", y: "Y"),
+///   theme: theme(
+///     text: element-text(font: "New Computer Modern"),
+///     plot-title: element-text(font: "DejaVu Sans Mono"),
+///     geom: element-geom(font: "New Computer Modern"),
 ///   ),
 ///   width: 10cm,
 ///   height: 6cm,

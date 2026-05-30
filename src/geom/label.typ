@@ -215,6 +215,10 @@
 
   let g-defaults = geom-defaults(ctx.theme)
   let theme-colour = geom-colour-default(g-defaults)
+  // `none` font keeps the document font; only pass `text(font: ...)` when set.
+  let font-args = if g-defaults.font != none { (font: g-defaults.font) } else {
+    (:)
+  }
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
@@ -270,7 +274,7 @@
       stroke: stroke-spec,
       inset: layer.params.inset,
       radius: layer.params.radius,
-      text(size: text-size, fill: text-paint)[#label],
+      text(size: text-size, fill: text-paint, ..font-args)[#label],
     )
     if state.segment-on {
       draw-segment(idx, state.placements.at(idx), state.aabbs, state.seg-cfg)

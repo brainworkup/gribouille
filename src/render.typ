@@ -15,7 +15,8 @@
 #import "theme/current.typ": _theme-state
 #import "theme/defaults.typ": merge-theme, resolve-colour
 #import "theme/theme.typ": (
-  _line-stroke, _rect-outset-cm, _rect-style, _scalar-cascade, _text-style,
+  _line-stroke, _rect-outset-cm, _rect-style, _scalar-cascade, _text-args,
+  _text-style,
 )
 #import "utils/pretty.typ": pretty, pretty-log10, pretty-sqrt
 #import "utils/types.typ": parse-number
@@ -1275,11 +1276,7 @@
       )
       content(
         (cx, cy),
-        text(
-          size: _ax-text.xb.size,
-          fill: _ax-text.xb.fill,
-          weight: _ax-text.xb.weight,
-        )[#label-text],
+        text(.._text-args(_ax-text.xb))[#label-text],
         anchor: _x-label-anchor(r.sub.angle),
         angle: r.sub.angle * 1deg,
       )
@@ -1298,11 +1295,7 @@
       )
       content(
         (cx, cy),
-        text(
-          size: _ax-text.yl.size,
-          fill: _ax-text.yl.fill,
-          weight: _ax-text.yl.weight,
-        )[#label-text],
+        text(.._text-args(_ax-text.yl))[#label-text],
         anchor: "east",
         angle: r.sub.angle * 1deg,
       )
@@ -1460,11 +1453,7 @@
         let mapped = secondary-mod.apply-transform(_x-sec, b)
         content(
           (cx, py-hi + _tick-len.xt + 0.1),
-          text(
-            size: _ax-text.xt.size,
-            fill: _ax-text.xt.fill,
-            weight: _ax-text.xt.weight,
-          )[#resolve-prose(
+          text(.._text-args(_ax-text.xt))[#resolve-prose(
             format-break(mapped),
             eval-strings: _ax-text.xt.typst,
           )],
@@ -1491,11 +1480,10 @@
       let (cx, x-anchor) = _x-title-place(_ax-title.xt.align, px-lo, px-hi)
       content(
         (cx, py-hi + _tick-len.xt + 0.1 + x-sec-depth + x-sec-gap),
-        text(
-          size: _ax-title.xt.size,
-          fill: _ax-title.xt.fill,
-          weight: _ax-title.xt.weight,
-        )[#resolve-prose(_x-sec.name, eval-strings: _ax-title.xt.typst)],
+        text(.._text-args(_ax-title.xt))[#resolve-prose(
+          _x-sec.name,
+          eval-strings: _ax-title.xt.typst,
+        )],
         anchor: x-anchor,
       )
     }
@@ -1517,11 +1505,7 @@
         let mapped = secondary-mod.apply-transform(_y-sec, b)
         content(
           (px-hi + _tick-len.yr + 0.1, cy),
-          text(
-            size: _ax-text.yr.size,
-            fill: _ax-text.yr.fill,
-            weight: _ax-text.yr.weight,
-          )[#resolve-prose(
+          text(.._text-args(_ax-text.yr))[#resolve-prose(
             format-break(mapped),
             eval-strings: _ax-text.yr.typst,
           )],
@@ -1553,11 +1537,10 @@
             + title-text-cm / 2,
           cy,
         ),
-        text(
-          size: _ax-title.yr.size,
-          fill: _ax-title.yr.fill,
-          weight: _ax-title.yr.weight,
-        )[#resolve-prose(_y-sec.name, eval-strings: _ax-title.yr.typst)],
+        text(.._text-args(_ax-title.yr))[#resolve-prose(
+          _y-sec.name,
+          eval-strings: _ax-title.yr.typst,
+        )],
         angle: 90deg,
         anchor: y-anchor,
       )
@@ -1690,11 +1673,10 @@
         let lr = r-max + pad
         content(
           (cx + lr * calc.cos(theta), cy + lr * calc.sin(theta)),
-          text(
-            size: theta-text.size,
-            fill: theta-text.fill,
-            weight: theta-text.weight,
-          )[#resolve-prose(label-text, eval-strings: theta-text.typst)],
+          text(.._text-args(theta-text))[#resolve-prose(
+            label-text,
+            eval-strings: theta-text.typst,
+          )],
           anchor: "center",
           angle: if theta-guide == none { 0deg } else {
             theta-guide.angle * 1deg
@@ -1792,11 +1774,10 @@
         )
         content(
           (cx + r * dx, cy + r * dy),
-          text(
-            size: r-text.size,
-            fill: r-text.fill,
-            weight: r-text.weight,
-          )[#resolve-prose(label-text, eval-strings: r-text.typst)],
+          text(.._text-args(r-text))[#resolve-prose(
+            label-text,
+            eval-strings: r-text.typst,
+          )],
           anchor: "center",
         )
       }
@@ -1829,11 +1810,10 @@
     let (cx, x-anchor) = _x-title-place(_ax-title.xb.align, px-lo, px-hi)
     content(
       (cx, oy - (x-edge-offset + x-title-cm)),
-      text(
-        size: _ax-title.xb.size,
-        fill: _ax-title.xb.fill,
-        weight: _ax-title.xb.weight,
-      )[#resolve-prose(x-title, eval-strings: _ax-title.xb.typst)],
+      text(.._text-args(_ax-title.xb))[#resolve-prose(
+        x-title,
+        eval-strings: _ax-title.xb.typst,
+      )],
       anchor: x-anchor,
     )
   }
@@ -1841,11 +1821,10 @@
     let (cy, y-anchor) = _y-title-place(_ax-title.yl.align, py-lo, py-hi)
     content(
       (px-lo - (y-edge-offset + y-title-cm / 2), cy),
-      text(
-        size: _ax-title.yl.size,
-        fill: _ax-title.yl.fill,
-        weight: _ax-title.yl.weight,
-      )[#resolve-prose(y-title, eval-strings: _ax-title.yl.typst)],
+      text(.._text-args(_ax-title.yl))[#resolve-prose(
+        y-title,
+        eval-strings: _ax-title.yl.typst,
+      )],
       angle: 90deg,
       anchor: y-anchor,
     )
@@ -2274,11 +2253,10 @@
   }
   cetz.draw.content(
     (sx, sy),
-    text(
-      size: style.strip-text.size,
-      fill: style.strip-text.fill,
-      weight: style.strip-text.weight,
-    )[#resolve-prose(label-text, eval-strings: style.strip-text.typst)],
+    text(.._text-args(style.strip-text))[#resolve-prose(
+      label-text,
+      eval-strings: style.strip-text.typst,
+    )],
     angle: angle,
     anchor: s-anchor,
   )
@@ -2739,11 +2717,10 @@
           margin.left + grid-w / 2,
           margin.bottom - _tick-len.xb - 0.1 - _xlbl-depth - _xt-gap - _xt-cm,
         ),
-        text(
-          size: _ax-title.xb.size,
-          fill: _ax-title.xb.fill,
-          weight: _ax-title.xb.weight,
-        )[#resolve-prose(x-title, eval-strings: _ax-title.xb.typst)],
+        text(.._text-args(_ax-title.xb))[#resolve-prose(
+          x-title,
+          eval-strings: _ax-title.xb.typst,
+        )],
         anchor: "south",
       )
     }
@@ -2753,11 +2730,10 @@
           margin.left - _tick-len.yl - 0.1 - _ylbl-width - _yt-gap - _yt-cm / 2,
           margin.bottom + grid-h / 2,
         ),
-        text(
-          size: _ax-title.yl.size,
-          fill: _ax-title.yl.fill,
-          weight: _ax-title.yl.weight,
-        )[#resolve-prose(y-title, eval-strings: _ax-title.yl.typst)],
+        text(.._text-args(_ax-title.yl))[#resolve-prose(
+          y-title,
+          eval-strings: _ax-title.yl.typst,
+        )],
         angle: 90deg,
       )
     }
@@ -2943,11 +2919,10 @@
           margin.left + grid-w / 2,
           margin.bottom - _tick-len.xb - 0.1 - _xlbl-depth - _xt-gap - _xt-cm,
         ),
-        text(
-          size: _ax-title.xb.size,
-          fill: _ax-title.xb.fill,
-          weight: _ax-title.xb.weight,
-        )[#resolve-prose(x-title, eval-strings: _ax-title.xb.typst)],
+        text(.._text-args(_ax-title.xb))[#resolve-prose(
+          x-title,
+          eval-strings: _ax-title.xb.typst,
+        )],
         anchor: "south",
       )
     }
@@ -2957,11 +2932,10 @@
           margin.left - _tick-len.yl - 0.1 - _ylbl-width - _yt-gap - _yt-cm / 2,
           margin.bottom + grid-h / 2,
         ),
-        text(
-          size: _ax-title.yl.size,
-          fill: _ax-title.yl.fill,
-          weight: _ax-title.yl.weight,
-        )[#resolve-prose(y-title, eval-strings: _ax-title.yl.typst)],
+        text(.._text-args(_ax-title.yl))[#resolve-prose(
+          y-title,
+          eval-strings: _ax-title.yl.typst,
+        )],
         angle: 90deg,
       )
     }
@@ -3103,25 +3077,24 @@
   let title = _text-style(theme, "plot-title")
   let subtitle = _text-style(theme, "plot-subtitle")
   let caption = _text-style(theme, "plot-caption")
-  // Box each chrome label to the inner width so it wraps; `..text-args` carries
-  // the per-label `weight` / `style` that `text()` rejects when set to `none`.
-  // `align(...)` inside the definite-width box makes each label's horizontal
-  // alignment explicit, so it no longer inherits the host document's ambient
-  // `set align(...)`. `default-align` is the per-surface ggplot2 default used
-  // when the theme element leaves `align` unset.
+  // Box each chrome label to the inner width so it wraps; the caller's
+  // `..text-args` carries per-label `weight` / `style` overrides and wins over
+  // the resolved base args from `_text-args`. `align(...)` inside the
+  // definite-width box makes each label's horizontal alignment explicit, so it
+  // no longer inherits the host document's ambient `set align(...)`.
+  // `default-align` is the per-surface ggplot2 default used when the theme
+  // element leaves `align` unset.
   let _chrome-block(value, style, default-align, ..text-args) = if (
     value != none and value != auto and style.size > 0pt
   ) {
     let a = if style.align != none { style.align } else { default-align }
+    let args = _text-args(style)
+    for (k, v) in text-args.named() { args.insert(k, v) }
     box(
       width: inner-w,
       align(
         a,
-        text(
-          size: style.size,
-          fill: style.fill,
-          ..text-args,
-        )[#resolve-prose(value, eval-strings: style.typst)],
+        text(..args)[#resolve-prose(value, eval-strings: style.typst)],
       ),
     )
   } else { none }
