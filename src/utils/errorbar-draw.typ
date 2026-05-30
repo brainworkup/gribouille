@@ -18,7 +18,7 @@
 )
 #import "../utils/types.typ": parse-number
 #import "../utils/colour-resolve.typ": apply-alpha
-#import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 
 #let _draw-errorbar-axis(layer, ctx, axis, cap-extent) = {
   let mapping = (ctx.resolve-mapping)(layer)
@@ -35,7 +35,7 @@
   let span-trained = ctx.trained.at(axis, default: none)
   if centre-trained == none or span-trained == none { return }
 
-  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let theme-colour = resolve-geom-colour(resolve-geom-defaults(ctx.theme))
 
   let extent-is-length = type(cap-extent) == length
   let half = if extent-is-length {

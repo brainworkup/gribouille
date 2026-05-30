@@ -16,8 +16,8 @@
 #import "../guide/draw-marker.typ": draw-marker
 #import "../utils/late-binding.typ": after-scale-source, apply-after-scale
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-default, geom-defaults, geom-fill-default,
-  geom-linewidth,
+  resolve-geom-colour, resolve-geom-defaults, resolve-geom-fill,
+  resolve-geom-linewidth,
 )
 
 /// Scatterplot layer drawing a marker for each row at `(x, y)`.
@@ -161,13 +161,13 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let g-defaults = geom-defaults(ctx.theme)
-  let default-thickness = geom-linewidth(g-defaults)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
+  let default-thickness = resolve-geom-linewidth(g-defaults)
   let (default-colour, default-fill) = resolve-pair-defaults(
     layer,
     mapping,
-    geom-colour-default(g-defaults),
-    geom-fill-default(g-defaults, role: "paper"),
+    resolve-geom-colour(g-defaults),
+    resolve-geom-fill(g-defaults, role: "paper"),
   )
 
   let shape-param = layer.params.shape

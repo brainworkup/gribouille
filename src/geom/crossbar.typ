@@ -14,7 +14,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/stroke.typ": build-stroke
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-defaults, geom-fill-default,
+  resolve-geom-colour, resolve-geom-defaults, resolve-geom-fill,
 )
 
 /// Crossbar layer: a box from `ymin` to `ymax` with a horizontal bar at `y`.
@@ -131,11 +131,11 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let g-defaults = geom-defaults(ctx.theme)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
   // Box outline and median bar carry the crossbar's structure, so the
   // stroke default always stands even when fill is mapped or pinned.
-  let default-colour = geom-colour-default(g-defaults)
-  let default-fill = geom-fill-default(g-defaults, role: "paper")
+  let default-colour = resolve-geom-colour(g-defaults)
+  let default-fill = resolve-geom-fill(g-defaults, role: "paper")
 
   let half-width = layer.params.width / 2
   let position-name = layer-position-name(layer)

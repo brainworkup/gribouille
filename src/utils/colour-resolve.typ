@@ -4,7 +4,7 @@
 #import "./palette.typ": spec-palette
 #import "./types.typ": parse-number
 #import "./late-binding.typ": after-scale-source, apply-after-scale
-#import "../theme/theme.typ": geom-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-defaults, resolve-geom-linewidth
 
 /// Resolve `source-col` for `channel` through the channel's trained
 /// scale, returning `default` when either is missing.
@@ -178,10 +178,9 @@
   let effective-default = if type(pinned-stroke) == length {
     pinned-stroke
   } else if pinned-stroke == auto {
-    geom-default(
-      geom-defaults(ctx.theme),
-      "linewidth",
-      layer.params.at("stroke-fallback", default: default-thickness),
+    resolve-geom-linewidth(
+      resolve-geom-defaults(ctx.theme),
+      fallback: layer.params.at("stroke-fallback", default: default-thickness),
     )
   } else { default-thickness }
   let spec = if mapping == none { none } else {

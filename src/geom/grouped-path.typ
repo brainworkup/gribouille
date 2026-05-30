@@ -7,7 +7,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/group.typ": partition-by-group
 #import "../utils/radial.typ": project-point
-#import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 
 // Sort rows by their x value: numeric for continuous scales, domain index
 // for discrete ones. Drops rows whose x value can't be resolved.
@@ -54,7 +54,7 @@
   // theme.geom.colour fills in for unmapped lines so a brand colour propagates;
   // resolve-channel("linewidth", ...) folds the auto/theme/per-geom-default
   // cascade for stroke thickness.
-  let theme-colour = geom-colour-default(geom-defaults(ctx.theme))
+  let theme-colour = resolve-geom-colour(resolve-geom-defaults(ctx.theme))
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data

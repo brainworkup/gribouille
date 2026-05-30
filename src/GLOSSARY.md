@@ -87,7 +87,7 @@ Run the survey command at the bottom before extending the table.
 | `ink`    | foreground colour  | theme primary text/line colour (defaults to `black`).                                                  |
 | `paper`  | background colour  | theme canvas / panel background (defaults to `white`).                                                 |
 | `accent` | highlight colour   | theme accent (used by some geom defaults).                                                             |
-| `tint`   | bar/area body fill | geom fill role: `col-mix(ink, paper, geom-fill-tint-amount)` (default `0.35`, equivalent to `grey35`). |
+| `tint`   | bar/area body fill | geom fill role: `col-mix(ink, paper, fill-tint-amount)` (default `0.35`, equivalent to `grey35`). |
 
 ## Geometry helpers / misc
 

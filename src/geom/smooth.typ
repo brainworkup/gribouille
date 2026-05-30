@@ -6,7 +6,7 @@
 
 #import "../deps.typ": cetz
 #import "../layer.typ": make-layer
-#import "../theme/theme.typ": geom-colour-default, geom-defaults
+#import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../stat/smooth.typ": stat-smooth
 #import "../utils/types.typ": parse-number
@@ -174,7 +174,7 @@
   let default-colour = if colour-pinned {
     layer.params.colour
   } else {
-    geom-colour-default(geom-defaults(ctx.theme), role: "accent")
+    resolve-geom-colour(resolve-geom-defaults(ctx.theme), role: "accent")
   }
 
   // Partition by group key (scale-aware: only discrete aesthetics group).

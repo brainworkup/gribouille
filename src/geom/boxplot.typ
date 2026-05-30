@@ -19,7 +19,7 @@
 #import "../utils/types.typ": parse-number
 #import "../utils/stroke.typ": build-stroke
 #import "../theme/theme.typ": (
-  geom-colour-default, geom-defaults, geom-fill-default,
+  resolve-geom-colour, resolve-geom-defaults, resolve-geom-fill,
 )
 
 /// Boxplot layer: draws a Tukey box, whiskers, and outlier points per group.
@@ -158,11 +158,11 @@
   let y-trained = ctx.trained.at("y", default: none)
   if x-trained == none or y-trained == none { return }
 
-  let g-defaults = geom-defaults(ctx.theme)
+  let g-defaults = resolve-geom-defaults(ctx.theme)
   // Box outline, median, and whiskers carry the boxplot's structure, so
   // the stroke default always stands even when fill is mapped or pinned.
-  let default-colour = geom-colour-default(g-defaults)
-  let default-fill = geom-fill-default(g-defaults, role: "paper")
+  let default-colour = resolve-geom-colour(g-defaults)
+  let default-fill = resolve-geom-fill(g-defaults, role: "paper")
   let outlier-colour-param = layer.params.outlier-colour
   let outlier-paint-of(resolved-stroke) = if outlier-colour-param != auto {
     outlier-colour-param

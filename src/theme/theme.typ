@@ -115,144 +115,115 @@
 // Tint amount for the bar/area/rect/tile-family body fill: a muted grey mix
 // of the resolved `ink` and `paper` roles (`0.35` matches `grey35`).
 // \@internal
-#let geom-fill-tint-amount = 0.35
+#let fill-tint-amount = 0.35
 
 // \@internal
 #let default-stroke-thickness = 0.5pt
 
-/// Resolve `theme.geom` to a flat layer-defaults dict.
+// Single source of truth for default inheritance. Per field, the element-geom
+// slot wins first (applied in resolve-geom-defaults); if unset, each source is
+// tried in order and the first non-`none` result is used.
+// Fields absent here carry NO inheritance by design: fill/colour are global
+// overrides (`none` = no default); linewidth inherits only its slot, the
+// terminal fallback being supplied per-consumer by resolve-geom-linewidth.
+// \@internal
+#let _geom-default-cascade = (
+  ink: (theme => theme.at("ink", default: none), theme => black),
+  paper: (theme => theme.at("paper", default: none), theme => white),
+  accent: (theme => theme.at("accent", default: none), theme => rgb("#3366FF")),
+  font: (theme => resolve-element(theme, "text").at("font", default: none),),
+)
+
+/// Resolve `theme.geom` to a fully-resolved layer-defaults dict.
 ///
-/// Returns the shape produced by \@element-geom; `none` slots leave per-geom
-/// fallbacks intact. The fall-through to an empty record is deliberate —
-/// keeps rendering robust when a partial user theme drops the `geom` key.
-/// `ink` / `paper` / `accent` slots inherit the theme-level scalars when
-/// `element-geom` left them unset, mirroring plotnine's role-oriented
-/// defaults; \@geom-colour-default and \@geom-fill-default consume them.
-/// Geoms resolve once at layer setup and consult the fields they support.
+/// Returns the shape produced by \@element-geom. Inheritance is declared once
+/// in \@_geom-default-cascade: for each listed field the `element-geom` slot
+/// wins first, then the theme-level scalar / document value, then a hard
+/// fallback. So `ink` / `paper` / `accent` are always concrete; `font` may be
+/// `none` (the geom then omits the `text(font: ...)` argument). The fall-through
+/// to an empty record keeps rendering robust when a partial user theme drops the
+/// `geom` key. `fill` / `colour` / `linewidth` are not in the cascade and stay
+/// as their slot value (or `none`); \@resolve-geom-colour, \@resolve-geom-fill
+/// and \@resolve-geom-linewidth consume the result.
 ///
 /// \@internal
 /// \@param theme Merged theme dictionary.
-/// \@returns Element-geom record (always present; defaults are all `none`).
-#let geom-defaults(theme) = {
+/// \@returns Element-geom record (always present; cascade fields resolved).
+#let resolve-geom-defaults(theme) = {
   let g = theme.at("geom", default: none)
   if g == none or g.at("kind", default: none) != "element-geom" {
     g = _EMPTY-GEOM-DEFAULTS
   }
-  for role in ("ink", "paper", "accent") {
-    if g.at(role, default: none) == none {
-      g.insert(role, theme.at(role, default: none))
+  for (field, sources) in _geom-default-cascade {
+    if g.at(field, default: none) != none { continue }
+    for src in sources {
+      let v = src(theme)
+      if v != none {
+        g.insert(field, v)
+        break
+      }
     }
-  }
-  // Font role inherits the base `text` font when the geom slot is unset,
-  // so a theme-wide font reaches the text-drawing geoms; `none` stays `none`
-  // and the geom omits the `text(font: ...)` argument.
-  if g.at("font", default: none) == none {
-    g.insert("font", resolve-element(theme, "text").at("font", default: none))
   }
   g
 }
 
-/// Pick a `theme.geom` field, falling back when the slot is `none`.
-///
-/// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
-///
-/// \@param field Field name to read (e.g., `"fill"`, `"colour"`, `"linewidth"`).
-///
-/// \@param fallback Value returned when the slot is unset.
-/// \@returns The slot value or the fallback.
-#let geom-default(defaults, field, fallback) = {
-  let v = defaults.at(field, default: none)
-  if v != none { v } else { fallback }
-}
-
-/// Resolve the geom `ink` role: `element-geom.ink` if set, else `black`.
-///
-/// `defaults.ink` already inherits `theme.ink` (see \@geom-defaults), so a
-/// `none` here means the theme carried no `ink` either.
-///
-/// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
-/// \@returns A colour.
-#let geom-ink(defaults) = geom-default(defaults, "ink", black)
-
-/// Resolve the geom `paper` role: `element-geom.paper` if set, else `white`.
-///
-/// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
-/// \@returns A colour.
-#let geom-paper(defaults) = geom-default(defaults, "paper", white)
-
-/// Resolve the geom `accent` role: `element-geom.accent` if set, else a
-/// defensive `rgb("#3366FF")`.
-///
-/// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
-/// \@returns A colour.
-#let geom-accent(defaults) = geom-default(defaults, "accent", rgb("#3366FF"))
-
-/// Resolve the geom `linewidth` default: `element-geom.linewidth` if set,
-/// else \@default-stroke-thickness.
-///
-/// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
-/// \@returns A length.
-#let geom-linewidth(defaults) = geom-default(
-  defaults,
-  "linewidth",
-  default-stroke-thickness,
-)
-
 /// Resolve a geom's default stroke/text colour.
 ///
 /// `element-geom.colour` always wins (the global colour override). Otherwise
-/// the geom's colour role applies: `"ink"` for almost every geom, `"accent"`
-/// for \@geom-smooth. Pass `role: none` for filled geoms that draw no outline
-/// by default (bar/area/ribbon/rect/tile/hex) so the absence of an outline
-/// survives until the user maps `colour` or pins `element-geom.colour`.
+/// the geom's colour role selects the resolved field: `"ink"` for almost every
+/// geom, `"accent"` for \@geom-smooth. Pass `role: none` for filled geoms that
+/// draw no outline by default (bar/area/ribbon/rect/tile/hex) so the absence of
+/// an outline survives until the user maps `colour` or pins `element-geom.colour`.
 ///
 /// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@param defaults Element-geom record from \@resolve-geom-defaults.
 ///
 /// \@param role Colour role key: `"ink"`, `"accent"`, or `none`.
 /// \@returns A colour or `none`.
-#let geom-colour-default(defaults, role: "ink") = {
+#let resolve-geom-colour(defaults, role: "ink") = {
   let v = defaults.at("colour", default: none)
   if v != none { return v }
   if role == none { return none }
-  if role == "ink" { return geom-ink(defaults) }
-  if role == "accent" { return geom-accent(defaults) }
-  panic("geom-colour-default: unknown role " + role)
+  if role == "ink" or role == "accent" { return defaults.at(role) }
+  panic("resolve-geom-colour: unknown role " + role)
 }
 
 /// Resolve a geom's default body fill.
 ///
 /// `element-geom.fill` always wins (the global fill override). Otherwise the
-/// geom's fill role applies:
-/// - `"tint"`: `col-mix(ink, paper, geom-fill-tint-amount)` for the bar /
-///   area / rect / tile family;
+/// geom's fill role selects from the resolved record:
+/// - `"tint"`: `col-mix(ink, paper, fill-tint-amount)` for the bar / area /
+///   rect / tile family;
 /// - `"paper"`: the paper role (\@geom-boxplot, \@geom-crossbar, \@geom-point,
 ///   \@geom-label);
 /// - `"ink"`: the ink role (\@geom-dotplot).
 ///
 /// \@internal
-/// \@param defaults Element-geom record from \@geom-defaults.
+/// \@param defaults Element-geom record from \@resolve-geom-defaults.
 ///
 /// \@param role Fill role key: `"tint"`, `"paper"`, or `"ink"`.
 /// \@returns A colour.
-#let geom-fill-default(defaults, role: "tint") = {
+#let resolve-geom-fill(defaults, role: "tint") = {
   let v = defaults.at("fill", default: none)
   if v != none { return v }
   if role == "tint" {
-    return col-mix(
-      geom-ink(defaults),
-      geom-paper(defaults),
-      geom-fill-tint-amount,
-    )
+    return col-mix(defaults.ink, defaults.paper, fill-tint-amount)
   }
-  if role == "paper" { return geom-paper(defaults) }
-  if role == "ink" { return geom-ink(defaults) }
-  panic("geom-fill-default: unknown role " + role)
+  if role == "paper" or role == "ink" { return defaults.at(role) }
+  panic("resolve-geom-fill: unknown role " + role)
+}
+
+/// Resolve the geom `linewidth` default: `element-geom.linewidth` if set,
+/// else the caller-supplied `fallback` (\@default-stroke-thickness by default).
+///
+/// \@internal
+/// \@param defaults Element-geom record from \@resolve-geom-defaults.
+///
+/// \@param fallback Length returned when the slot is unset.
+/// \@returns A length.
+#let resolve-geom-linewidth(defaults, fallback: default-stroke-thickness) = {
+  let v = defaults.at("linewidth", default: none)
+  if v != none { v } else { fallback }
 }
 
 // Sentinel shared by text and rect element normalisation; every side `auto`
