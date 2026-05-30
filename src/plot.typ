@@ -1,6 +1,18 @@
 #import "render.typ": render-plot
 #import "data.typ": _normalise-data
 
+// Effective alt text: an explicit `plot(alt:)` wins; otherwise a `labs(alt:)`
+// fills in (its `auto` default and `none` both count as unset), so the labs
+// field reaches `get-alt-text` instead of being dropped.
+#let _resolve-alt(alt, labs) = {
+  if alt != none { return alt }
+  if labs != none {
+    let labs-alt = labs.at("alt", default: auto)
+    if labs-alt != auto and labs-alt != none { return labs-alt }
+  }
+  none
+}
+
 /// Compose a layered plot from data, aesthetics, and geom layers.
 ///
 /// `plot` is the entry point of the grammar: it resolves the dataset, wires up
@@ -104,6 +116,7 @@
   strict: false,
   defer: false,
 ) = {
+  let alt = _resolve-alt(alt, labs)
   // Deferred plots skip the context block because `context` returns
   // content; compose() resolves the active theme from its own context
   // before handing the spec to the renderer.
