@@ -3725,9 +3725,9 @@
   let margin = (
     left: left-extent + _side-gap("left") + _surface-out("left"),
     bottom: bottom-extent + _side-gap("bottom") + _surface-out("bottom"),
-    top: 0.3 + sec-x-extent + _side-gap("top") + _surface-out("top"),
+    top: sec-x-extent + _side-gap("top") + _surface-out("top"),
     right: calc.min(
-      0.3 + sec-y-extent + _side-gap("right") + _surface-out("right"),
+      sec-y-extent + _side-gap("right") + _surface-out("right"),
       max-right-margin,
     ),
   )
