@@ -252,8 +252,6 @@
     )
   }
 
-  let tight-sides = if legend-side != none { (legend-side,) } else { () }
-
   // Tag descent: a nested compose inherits the ancestor's `tag-ctx` (levels,
   // separator, affixes, corner, and the accumulated prefix); a top-level
   // compose uses its own params, normalising `tag-levels` to an array.
@@ -309,7 +307,6 @@
       let content = render-plot-deferred(
         (..panel, width: target.w * 1cm, height: target.h * 1cm),
         suppress-aesthetics: hoisted,
-        tight-sides: tight-sides,
       ).content
       let label = if symbol == none {
         none

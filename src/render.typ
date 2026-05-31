@@ -3343,7 +3343,7 @@
   _wrap(block(stack(dir: ttb, spacing: 0pt, ..items)))
 }
 
-#let render-plot-deferred(spec, suppress-aesthetics: (), tight-sides: ()) = {
+#let render-plot-deferred(spec, suppress-aesthetics: ()) = {
   let user-theme = if spec.theme != none { spec.theme } else {
     _theme-state.get()
   }
@@ -3667,17 +3667,6 @@
   let _side-gap = side => (
     extents.at(side) + (if extents.at(side) > 0 { legend-gap } else { 0.0 })
   )
-  // Both margins equal their computed chrome extent: the bottom and left
-  // slots carry exactly tick + label + title-gap + title (plus the 0.05 cm
-  // bottom buffer), with no conservative floor that would leave unused slack
-  // below or beside the panel when the axis title is absent.
-  // `tight-sides` only matters for `compose()`, which hoists the shared
-  // legend to one side; the floors are already 0, so it is a no-op here.
-  let bottom-floor = 0.0
-  let left-floor = 0.0
-  let _floor(side, floor, computed) = if tight-sides.contains(side) {
-    computed
-  } else { calc.max(floor, computed) }
   // Themed `outset` on rect surfaces reserves outer whitespace by widening
   // the chrome slot on each side; the panel canvas absorbs the diff.
   // `strip-background` is the facet decoration band itself, so its `inset`
@@ -3734,10 +3723,8 @@
     panel-out.at(side) + legend-by-side.at(side) + bar-by-side.at(side)
   )
   let margin = (
-    left: _floor("left", left-floor, left-extent + _side-gap("left"))
-      + _surface-out("left"),
-    bottom: _floor("bottom", bottom-floor, bottom-extent + _side-gap("bottom"))
-      + _surface-out("bottom"),
+    left: left-extent + _side-gap("left") + _surface-out("left"),
+    bottom: bottom-extent + _side-gap("bottom") + _surface-out("bottom"),
     top: 0.3 + sec-x-extent + _side-gap("top") + _surface-out("top"),
     right: calc.min(
       0.3 + sec-y-extent + _side-gap("right") + _surface-out("right"),
