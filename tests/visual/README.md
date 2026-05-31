@@ -34,7 +34,7 @@ Goldens live under `golden/examples/<name>.png` and `golden/docstrings/<fn>-<idx
 
 ### Check mode (CI default)
 
-```
+```bash
 lua tools/snapshot/run.lua --check
 ```
 
@@ -43,7 +43,7 @@ Diff PNGs are written to `build/snapshot/diff/` (gitignored).
 
 ### Update mode
 
-```
+```bash
 lua tools/snapshot/run.lua --update
 ```
 
@@ -71,3 +71,26 @@ It runs `--update` and pushes the refreshed PNGs back to the dispatched branch.
 | `--tolerance <n>`| 0       | Max AE pixel count tolerated per image.                                       |
 | `--fuzz <pct>`   | 1%      | ImageMagick `-fuzz` value; absorbs sub-byte rasterisation noise per pixel.    |
 | `--only <key>`   | none    | Only run sources whose key contains the substring (e.g., `--only geom-bar`).  |
+
+## Reviewing diffs between commits
+
+`tools/snapshot/diff.lua` visualises how the committed goldens changed between two git refs, without recompiling anything (it diffs the golden PNGs straight out of git).
+It writes a self-contained interactive HTML report to `build/snapshot/diff-report/` (gitignored) with, per changed snapshot, the base and head images, a red-pixel overlay, a side-by-side composite, an onion-skin opacity slider, and a flicker toggle.
+A keyboard stepper walks only the changed snapshots and skips everything unchanged (`j`/`k` to step, `f` to flicker, `o` to cycle the onion-skin).
+
+```bash
+lua tools/snapshot/diff.lua --base main
+```
+
+Comparing against a branch resolves the merge-base, so the report shows only the snapshots the current branch changed.
+Omitting `--head` compares the base against the on-disk goldens, so uncommitted `--update` results can be reviewed before committing.
+
+| Flag            | Default                     | Purpose                                                                 |
+| --------------- | --------------------------- | ----------------------------------------------------------------------- |
+| `--base <ref>`  | `HEAD~1`                    | Base commit or branch; a branch resolves to its merge-base with head.   |
+| `--head <ref>`  | working tree                | Head commit; omitted compares against the on-disk goldens.              |
+| `--exact`       | off                         | Diff `<base>..<head>` literally, skipping merge-base resolution.        |
+| `--only <key>`  | none                        | Restrict to golden keys containing the substring.                       |
+| `--fuzz <pct>`  | 2%                          | ImageMagick `-fuzz` value for the overlay.                              |
+| `--out <dir>`   | `build/snapshot/diff-report`| Report directory.                                                       |
+| `--open`        | off                         | Open the report in the browser (macOS).                                 |
