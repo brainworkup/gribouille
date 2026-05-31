@@ -3667,14 +3667,13 @@
   let _side-gap = side => (
     extents.at(side) + (if extents.at(side) > 0 { legend-gap } else { 0.0 })
   )
-  // `tight-sides` lets `compose()` skip the conservative floors (1.5 cm /
-  // 1.1 cm) on the side it hoists the shared legend to, so the panel butts
-  // against the legend instead of carrying ~0.5 cm of unused axis-title slack.
-  // Themes that strip axis decoration (e.g., `theme-void`) leave the
-  // computed extent at ~0.15 cm; the floor would then exceed small plot
-  // heights/widths and invert the panel rect. Drop the floor when the
-  // computed extent is below ~0.3 cm (no meaningful axis content to clear).
-  let bottom-floor = if bottom-extent > 0.3 { 1.1 } else { 0.0 }
+  // Both margins equal their computed chrome extent: the bottom and left
+  // slots carry exactly tick + label + title-gap + title (plus the 0.05 cm
+  // bottom buffer), with no conservative floor that would leave unused slack
+  // below or beside the panel when the axis title is absent.
+  // `tight-sides` only matters for `compose()`, which hoists the shared
+  // legend to one side; the floors are already 0, so it is a no-op here.
+  let bottom-floor = 0.0
   let left-floor = 0.0
   let _floor(side, floor, computed) = if tight-sides.contains(side) {
     computed
