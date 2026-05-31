@@ -3343,7 +3343,7 @@
   _wrap(block(stack(dir: ttb, spacing: 0pt, ..items)))
 }
 
-#let render-plot-deferred(spec, suppress-aesthetics: (), tight-sides: ()) = {
+#let render-plot-deferred(spec, suppress-aesthetics: ()) = {
   let user-theme = if spec.theme != none { spec.theme } else {
     _theme-state.get()
   }
@@ -3667,18 +3667,6 @@
   let _side-gap = side => (
     extents.at(side) + (if extents.at(side) > 0 { legend-gap } else { 0.0 })
   )
-  // `tight-sides` lets `compose()` skip the conservative floors (1.5 cm /
-  // 1.1 cm) on the side it hoists the shared legend to, so the panel butts
-  // against the legend instead of carrying ~0.5 cm of unused axis-title slack.
-  // Themes that strip axis decoration (e.g., `theme-void`) leave the
-  // computed extent at ~0.15 cm; the floor would then exceed small plot
-  // heights/widths and invert the panel rect. Drop the floor when the
-  // computed extent is below ~0.3 cm (no meaningful axis content to clear).
-  let bottom-floor = if bottom-extent > 0.3 { 1.1 } else { 0.0 }
-  let left-floor = 0.0
-  let _floor(side, floor, computed) = if tight-sides.contains(side) {
-    computed
-  } else { calc.max(floor, computed) }
   // Themed `outset` on rect surfaces reserves outer whitespace by widening
   // the chrome slot on each side; the panel canvas absorbs the diff.
   // `strip-background` is the facet decoration band itself, so its `inset`
@@ -3735,10 +3723,8 @@
     panel-out.at(side) + legend-by-side.at(side) + bar-by-side.at(side)
   )
   let margin = (
-    left: _floor("left", left-floor, left-extent + _side-gap("left"))
-      + _surface-out("left"),
-    bottom: _floor("bottom", bottom-floor, bottom-extent + _side-gap("bottom"))
-      + _surface-out("bottom"),
+    left: left-extent + _side-gap("left") + _surface-out("left"),
+    bottom: bottom-extent + _side-gap("bottom") + _surface-out("bottom"),
     top: 0.3 + sec-x-extent + _side-gap("top") + _surface-out("top"),
     right: calc.min(
       0.3 + sec-y-extent + _side-gap("right") + _surface-out("right"),

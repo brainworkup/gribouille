@@ -13,6 +13,7 @@
 - feat: `labs()` fields default to `auto`; pass `none` to suppress an axis or legend title and reclaim the space it reserved. (#12)
 - feat: `element-blank()` on a text surface (axis, plot, or legend title) collapses the space the text would reserve. (#12)
 - feat: `width`/`height` accept `auto` to fill the available space of a bounded container. (#10)
+- fix: a plot with no x-axis title reclaims the empty space the title would have reserved below the panel, matching the y-axis side. (#61)
 - fix: `element-text(angle:)`/`element-typst(angle:)` rotate axis tick labels (seeding the `guide-axis(angle:)` default) and the plot title, subtitle, and caption, instead of being ignored. (#59)
 - fix: `labs(tag:)` draws the figure tag above the title on a standalone plot, styled by the `plot-tag` theme element, instead of being ignored. (#58)
 - fix: `labs(alt:)` fills in the figure's accessibility alt text when `plot(alt:)` is unset, instead of being stored and ignored. (#57)
