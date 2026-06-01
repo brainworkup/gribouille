@@ -30,7 +30,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`, `xend`, `yend`.
 ///
-/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param data Layer-specific dataset, or a function applied to the plot data returning the layer frame. Falls back to the plot data when `none`.
 ///
 /// \@param curvature Bezier-control offset as a fraction of the chord length. `0` draws a straight segment; sign flips the side of the bow.
 ///

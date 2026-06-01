@@ -34,7 +34,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 ///
-/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param data Layer-specific dataset, or a function applied to the plot data returning the layer frame. Falls back to the plot data when `none`.
 ///
 /// \@param size Marker size (a Typst length).
 ///
@@ -115,6 +115,30 @@
 ///     fill: "Species",
 ///     shape: "Species",
 ///   ),
+///   width: 11cm,
+///   height: 6cm,
+/// )
+/// ```
+///
+/// \@examples A second layer passes a function as `data`; it receives the plot
+/// data and returns the subset to emphasise, here the heaviest penguins.
+/// ```
+/// //| alt: "Penguin scatter with the heaviest individuals re-drawn as larger highlighted markers."
+/// #plot(
+///   data: penguins,
+///   mapping: aes(x: "flipper-len", y: "body-mass"),
+///   layers: (
+///     geom-point(alpha: 0.4),
+///     geom-point(
+///       data: rows => rows.filter(r => {
+///         let mass = r.at("body-mass", default: none)
+///         mass != none and mass >= 5500
+///       }),
+///       size: 3pt,
+///       colour: orange,
+///     ),
+///   ),
+///   labs: labs(x: "Flipper Length (mm)", y: "Body Mass (g)"),
 ///   width: 11cm,
 ///   height: 6cm,
 /// )

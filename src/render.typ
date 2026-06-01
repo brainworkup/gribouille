@@ -210,6 +210,9 @@
 // pass over the same rows.
 #let _resolve-data(layer, plot-data) = {
   if layer.data == none { return plot-data }
+  if type(layer.data) == function {
+    return _normalise-data((layer.data)(plot-data))
+  }
   if layer.at("data-trusted", default: false) { return layer.data }
   _normalise-data(layer.data)
 }

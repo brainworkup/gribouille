@@ -24,7 +24,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`. `angle` and `radius` may be mapped or left to the layer-level fallbacks.
 ///
-/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param data Layer-specific dataset, or a function applied to the plot data returning the layer frame. Falls back to the plot data when `none`.
 ///
 /// \@param angle Layer-level direction (a Typst angle, e.g., `45deg`) used when `aes(angle: ...)` is not mapped.
 ///

@@ -30,7 +30,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Falls back to the plot mapping when `none`.
 ///
-/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param data Layer-specific dataset, or a function applied to the plot data returning the layer frame. Falls back to the plot data when `none`.
 ///
 /// \@param colour Fixed outline colour. `auto` resolves via the colour scale, falling back to the theme `ink` only when neither `colour` nor `fill` is set.
 ///

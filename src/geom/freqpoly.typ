@@ -16,7 +16,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`.
 ///
-/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param data Layer-specific dataset, or a function applied to the plot data returning the layer frame. Falls back to the plot data when `none`.
 ///
 /// \@param bins Target number of bins when `binwidth` is `none`.
 ///
