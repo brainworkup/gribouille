@@ -54,4 +54,18 @@
 )
 #assert.eq(empty, ())
 
+// A closure may ignore its argument and return a literal frame, generating the
+// layer's data even when the plot itself carries none.
+#let generated = _resolve-data(
+  (data: _ => (a: (1, 2), b: (3, 4))),
+  none,
+)
+#assert.eq(generated, ((a: 1, b: 3), (a: 2, b: 4)))
+
+// The closure result is validated like any other layer data: returning a
+// non-frame panics via `_normalise-data`. Uncomment to verify locally:
+//
+//   #let _ = _resolve-data((data: _ => 42), plot-rows)
+//     panics with: data: must be an array of dicts or a dict of arrays; got integer
+
 layer data function tests passed.
