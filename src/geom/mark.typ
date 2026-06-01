@@ -141,7 +141,7 @@
 ///
 /// \@param mapping Layer-specific aesthetic mapping built with \@aes. Must map `x`, `y`. Use `colour`, `fill`, or `group` to split rows into separate marks.
 ///
-/// \@param data Layer-specific dataset. Falls back to the plot data when `none`.
+/// \@param data Layer-specific dataset, or a function applied to the plot data returning the layer frame. Falls back to the plot data when `none`.
 ///
 /// \@param method Shape to draw: `"rect"` (bounding box), `"circle"` (smallest enclosing circle), `"ellipse"` (axis-aligned ellipse over the bounding box), or `"hull"` (convex hull). Named `method` to avoid clash with the `shape` aesthetic on \@geom-point.
 ///

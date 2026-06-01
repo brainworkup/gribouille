@@ -6,7 +6,7 @@
 //
 // Mapping turns a trained domain plus a target range into a scalar position.
 
-#import "../data.typ": column
+#import "../data.typ": _normalise-data, column
 #import "../utils/types.typ": infer-column-type, parse-number
 #import "../utils/typst-markup.typ": is-typst-markup
 #import "../utils/late-binding.typ": (
@@ -30,7 +30,11 @@
 }
 
 #let _resolve-data(layer, plot-data) = {
-  if layer.data != none { layer.data } else { plot-data }
+  if layer.data == none { return plot-data }
+  if type(layer.data) == function {
+    return _normalise-data((layer.data)(plot-data))
+  }
+  layer.data
 }
 
 // A mapping value is either a plain string (column name), a `mapping-ref`
