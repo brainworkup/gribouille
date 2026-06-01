@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: `geom-segment`/`geom-curve`/`geom-ribbon`/`geom-area` render on discrete scales instead of silently drawing nothing. (#69)
+
 ## 0.2.0 (2026-06-01)
 
 - feat: a layer's `data` accepts a function applied to the plot data, returning that layer's frame (e.g., `geom-point(data: rows => rows.filter(...))`), for subsetting or per-layer transforms without a separate dataset. (#62)
