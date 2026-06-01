@@ -18,10 +18,13 @@ local GOLDEN_REL = "tests/visual/golden"
 local USAGE = [[
 Usage: tools/snapshot/diff.lua [options]
 
-Visualise how the committed golden snapshots changed between two git refs.
-Builds side-by-side and red-pixel overlay composites per changed snapshot and
-emits a self-contained interactive HTML report (onion-skin slider, flicker,
-keyboard stepper that walks the diffs and skips everything unchanged).
+Visualise how the committed golden snapshots changed between two git refs, then
+serve a single-snapshot review tool: one diff at a time (no page scroll), a
+Side/Onion/Diff/Flicker view switch, a keyboard stepper that walks only the
+diffs, and a `validate` button that stages each golden with `git add`.
+
+Builds composites, then runs a localhost-only server in the foreground until
+Ctrl-C (opens a browser unless --no-open).
 
 Options:
   --base <ref>    Base commit or branch (default: HEAD~1). For a branch like
@@ -29,11 +32,13 @@ Options:
                   report shows only the snapshots this branch/PR changed.
   --head <ref>    Head commit. Omitted compares the base against the on-disk
                   goldens (working tree), so uncommitted `--update` results show.
+                  Validate is enabled only in this working-tree mode.
   --exact         Skip merge-base resolution; diff <base>..<head> literally.
   --only <substr> Restrict to golden keys containing this substring.
   --fuzz <pct>    ImageMagick `-fuzz` for the overlay (default: 2%).
   --out <dir>     Report directory (default: build/snapshot/diff-report).
-  --open          Open the report in the browser (macOS).
+  --port <n>      Server port (default: 0, OS picks a free port).
+  --no-open       Build and serve without opening a browser.
   --help          Show this help and exit.
 ]]
 
@@ -63,7 +68,8 @@ local function parse_args(argv)
     only = nil,
     fuzz = "2%",
     out = "build/snapshot/diff-report",
-    open = false,
+    port = 0,
+    no_open = false,
   }
   local i = 1
   local function take_value(flag)
@@ -79,7 +85,8 @@ local function parse_args(argv)
     elseif a == "--only" then opts.only = take_value(a)
     elseif a == "--fuzz" then opts.fuzz = take_value(a)
     elseif a == "--out" then opts.out = take_value(a)
-    elseif a == "--open" then opts.open = true
+    elseif a == "--port" then opts.port = tonumber(take_value(a)) or 0
+    elseif a == "--no-open" then opts.no_open = true
     elseif a == "--help" or a == "-h" then io.write(USAGE); os.exit(0)
     else die("unknown arg: " .. a) end
     i = i + 1
@@ -183,137 +190,254 @@ end
 local STYLE = [[
 :root { color-scheme: light dark; }
 * { box-sizing: border-box; }
-body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
-header.bar {
-  position: sticky; top: 0; z-index: 5; padding: 10px 16px;
-  background: Canvas; border-bottom: 1px solid #8884; display: flex;
-  gap: 16px; align-items: center; flex-wrap: wrap;
-}
-header.bar .pos { font-variant-numeric: tabular-nums; font-weight: 600; }
-header.bar button { font: inherit; padding: 4px 10px; cursor: pointer; }
-header.bar .hint { color: #8888; margin-left: auto; }
-main { padding: 16px; display: flex; flex-direction: column; gap: 28px; }
-.card { scroll-margin-top: 64px; border: 1px solid #8884; border-radius: 8px; padding: 12px; }
-.card.active { border-color: #3b82f6; box-shadow: 0 0 0 2px #3b82f655; }
-.hd { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin-bottom: 10px; }
-.hd .key { font-weight: 600; }
-.hd .meta { color: #8888; font-variant-numeric: tabular-nums; }
-.badge { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding: 2px 7px; border-radius: 99px; color: #fff; }
-.badge.m { background: #d97706; }
-.badge.a { background: #16a34a; }
-.badge.d { background: #dc2626; }
-.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
-figure { margin: 0; }
-figcaption { font-size: 12px; color: #8888; margin-bottom: 4px; }
-.cols img, .stack img { max-width: 100%; display: block; background:
-  repeating-conic-gradient(#0001 0 25%, transparent 0 50%) 0 0 / 16px 16px; }
-.overlay { margin-top: 12px; }
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { font: 14px/1.5 system-ui, sans-serif; display: grid; grid-template-rows: auto 1fr; }
+.bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 8px 14px; border-bottom: 1px solid #8884; background: Canvas; }
+.bar button { font: inherit; padding: 4px 10px; cursor: pointer; }
+.bar .pos { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 5.5em; text-align: center; }
+.bar .key { font-weight: 600; }
+.bar .meta { color: #888; font-variant-numeric: tabular-nums; }
+.bar .summary, .bar .hint { color: #888; }
+.bar .hint { margin-left: auto; }
+.badge { font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
+  padding: 2px 7px; border-radius: 99px; color: #fff; }
+.badge.m { background: #d97706; } .badge.a { background: #16a34a; } .badge.d { background: #dc2626; }
+.seg { display: inline-flex; border: 1px solid #8886; border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; background: transparent; padding: 4px 10px; }
+.seg button.on { background: #3b82f6; color: #fff; }
+.seg button:disabled { opacity: .35; cursor: not-allowed; }
+#opa { width: 200px; }
+#validate.staged { background: #16a34a; color: #fff; border-color: #16a34a; }
+.stage-wrap { display: inline-flex; gap: 8px; align-items: center; }
+.staged-count { color: #888; font-variant-numeric: tabular-nums; }
+.viewer { min-height: 0; overflow: hidden; display: grid; place-items: center; padding: 12px; }
+.card { display: none; width: 100%; height: 100%; place-items: center; }
+.card.active { display: grid; }
+.v { display: none; }
+.viewer img, .stack { max-width: 100%; max-height: 100%; object-fit: contain;
+  background: repeating-conic-gradient(#0001 0 25%, transparent 0 50%) 0 0 / 16px 16px; }
 .stack { position: relative; display: inline-block; }
+.stack img { display: block; max-width: 100%; max-height: 100%; }
 .stack .oh { position: absolute; inset: 0; }
-.controls { display: flex; gap: 12px; align-items: center; margin-top: 6px; }
-.controls input[type=range] { width: 240px; }
-.controls button { font: inherit; padding: 3px 9px; cursor: pointer; }
 ]]
 
 local SCRIPT = [[
 const cards = Array.from(document.querySelectorAll('.card'));
-const posEl = document.getElementById('pos');
-let idx = 0;
+const M = cards.length;
+const el = id => document.getElementById(id);
+const posEl = el('pos'), keyEl = el('key'), badgeEl = el('badge'), metaEl = el('meta'),
+      opa = el('opa'), valBtn = el('validate'), stagedCountEl = el('stagedcount'),
+      stageWrap = el('stagewrap');
+const VIEW = { side: '.v-side', diff: '.v-diff', onion: '.v-stack', flicker: '.v-stack' };
+const staged = new Set();
+let idx = 0, mode = 'diff', flick = null;
 
-function focus(i) {
-  if (!cards.length) return;
-  idx = (i + cards.length) % cards.length;
-  cards.forEach((c, n) => c.classList.toggle('active', n === idx));
-  cards[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-  posEl.textContent = (idx + 1) + ' / ' + cards.length;
+function active() { return cards[idx]; }
+function stopFlicker() { if (flick) { clearInterval(flick); flick = null; } }
+
+function applyView() {
+  stopFlicker();
+  const c = active();
+  c.querySelectorAll('.v').forEach(v => { v.style.display = 'none'; });
+  const both = c.dataset.both === '1';
+  let eff = mode;
+  if (!both && eff !== 'side') eff = 'side';
+  const sel = c.querySelector(VIEW[eff]) || c.querySelector('.v-side');
+  if (sel) sel.style.display = sel.classList.contains('v-stack') ? 'inline-block' : 'block';
+  document.querySelectorAll('#seg button').forEach(b => {
+    b.classList.toggle('on', b.dataset.mode === mode);
+    b.disabled = b.dataset.mode !== 'side' && !both;
+  });
+  opa.hidden = eff !== 'onion';
+  const oh = c.querySelector('.oh');
+  if (oh && eff === 'onion') oh.style.opacity = opa.value / 100;
+  if (oh && eff === 'flicker') {
+    let on = true;
+    flick = setInterval(() => { oh.style.opacity = on ? 1 : 0; on = !on; }, 500);
+  }
 }
 
-function activeCard() { return cards[idx]; }
+function refreshStage() {
+  if (!window.CFG.stageable) return;
+  const isStaged = staged.has(active().dataset.path);
+  valBtn.textContent = isStaged ? 'staged ✓' : 'validate';
+  valBtn.classList.toggle('staged', isStaged);
+  stagedCountEl.textContent = 'staged ' + staged.size + ' / ' + M;
+}
 
-document.querySelectorAll('.stack').forEach(stack => {
-  const head = stack.querySelector('.oh');
-  const card = stack.closest('.card');
-  const range = card.querySelector('.opa');
-  range.addEventListener('input', () => { head.style.opacity = range.value / 100; });
-  head.style.opacity = range.value / 100;
+function show(i) {
+  if (!M) return;
+  idx = (i + M) % M;
+  cards.forEach((c, n) => c.classList.toggle('active', n === idx));
+  const c = active();
+  posEl.textContent = (idx + 1) + ' / ' + M;
+  keyEl.textContent = c.dataset.key;
+  badgeEl.textContent = c.dataset.label;
+  badgeEl.className = 'badge ' + c.dataset.badge;
+  metaEl.textContent = c.dataset.meta || '';
+  applyView();
+  refreshStage();
+}
+
+function setMode(m) { mode = m; applyView(); }
+
+document.querySelectorAll('#seg button').forEach(b =>
+  b.addEventListener('click', () => { if (!b.disabled) setMode(b.dataset.mode); }));
+el('next').addEventListener('click', () => show(idx + 1));
+el('prev').addEventListener('click', () => show(idx - 1));
+opa.addEventListener('input', () => {
+  const oh = active().querySelector('.oh');
+  if (oh) oh.style.opacity = opa.value / 100;
 });
 
-const flickTimers = new Map();
-function toggleFlicker(card) {
-  const head = card.querySelector('.oh');
-  if (!head) return;
-  if (flickTimers.has(card)) {
-    clearInterval(flickTimers.get(card));
-    flickTimers.delete(card);
-    const range = card.querySelector('.opa');
-    head.style.opacity = range.value / 100;
-    return;
-  }
-  let on = true;
-  flickTimers.set(card, setInterval(() => {
-    head.style.opacity = on ? 1 : 0; on = !on;
-  }, 500));
+async function toggleStage() {
+  if (!window.CFG.stageable) return;
+  const path = active().dataset.path;
+  const isStaged = staged.has(path);
+  try {
+    const r = await fetch(isStaged ? '/api/unstage' : '/api/stage', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path })
+    });
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      alert('stage failed: ' + (e.error || r.status));
+      return;
+    }
+    if (isStaged) staged.delete(path); else staged.add(path);
+    refreshStage();
+  } catch (err) { alert('stage failed: ' + err); }
 }
-
-function cycleOnion(card) {
-  const range = card.querySelector('.opa');
-  if (!range) return;
-  const steps = [0, 50, 100];
-  const cur = Number(range.value);
-  range.value = steps[(steps.findIndex(s => s >= cur) + 1) % steps.length];
-  range.dispatchEvent(new Event('input'));
-}
-
-document.querySelectorAll('.flick').forEach(b =>
-  b.addEventListener('click', () => toggleFlicker(b.closest('.card'))));
-document.getElementById('next').addEventListener('click', () => focus(idx + 1));
-document.getElementById('prev').addEventListener('click', () => focus(idx - 1));
+valBtn.addEventListener('click', toggleStage);
 
 document.addEventListener('keydown', e => {
-  if (e.target.matches('input')) return;
-  if (e.key === 'j' || e.key === 'ArrowRight') { focus(idx + 1); e.preventDefault(); }
-  else if (e.key === 'k' || e.key === 'ArrowLeft') { focus(idx - 1); e.preventDefault(); }
-  else if (e.key === 'f') { toggleFlicker(activeCard()); }
-  else if (e.key === 'o' || e.key === 'Enter') { cycleOnion(activeCard()); e.preventDefault(); }
+  if (e.target.matches('input, textarea')) return;
+  switch (e.key) {
+    case 'j': case 'ArrowRight': show(idx + 1); e.preventDefault(); break;
+    case 'k': case 'ArrowLeft': show(idx - 1); e.preventDefault(); break;
+    case 'd': setMode('diff'); break;
+    case 'o': setMode('onion'); break;
+    case 's': setMode('side'); break;
+    case 'f': setMode('flicker'); break;
+    case 'v': toggleStage(); break;
+  }
 });
 
-if (cards.length) focus(0);
+async function init() {
+  if (window.CFG.stageable) {
+    try {
+      const r = await fetch('/api/status');
+      if (r.ok) { const j = await r.json(); (j.staged || []).forEach(p => staged.add(p)); }
+    } catch (e) { /* server-less view; leave validate disabled */ }
+  } else {
+    stageWrap.style.display = 'none';
+  }
+  show(0);
+}
+init();
 ]]
 
-local function figure(caption, src)
-  return string.format(
-    '      <figure><figcaption>%s</figcaption><img src="%s" loading="lazy"></figure>\n',
-    caption, src)
-end
+-- Localhost-only review server: serves the report and runs `git add`/`reset`
+-- on validate. Stdlib only (http.server + subprocess); git is invoked with an
+-- argument list (never a shell) and every path is re-validated against the
+-- golden directory before it reaches git. Written into the report dir at run
+-- time and launched in the foreground.
+local SERVER_PY = [[
+import sys, os, json, re, subprocess, http.server, socketserver, webbrowser
 
-local function render_card(entry)
-  local parts = { string.format('    <section class="card" tabindex="-1">\n') }
-  local badge = ({ M = "m", A = "a", D = "d" })[entry.status]
-  local label = ({ M = "modified", A = "added", D = "removed" })[entry.status]
-  local meta = entry.meta or ""
-  parts[#parts + 1] = string.format(
-    '      <div class="hd"><span class="key">%s</span><span class="badge %s">%s</span>' ..
-    '<span class="meta">%s</span></div>\n',
-    html_escape(entry.key), badge, label, html_escape(meta))
+ROOT = os.path.abspath(sys.argv[1])
+OUT = os.path.abspath(sys.argv[2])
+PORT = int(sys.argv[3])
+OPEN = sys.argv[4] == '1'
+SAFE = re.compile(r'^tests/visual/golden/[A-Za-z0-9._/-]+\.png$')
 
-  parts[#parts + 1] = '      <div class="cols">\n'
-  if entry.base_rel then parts[#parts + 1] = figure("base", entry.base_rel) end
-  if entry.head_rel then parts[#parts + 1] = figure("head", entry.head_rel) end
-  if entry.diff_rel then parts[#parts + 1] = figure("overlay", entry.diff_rel) end
-  if entry.side_rel then parts[#parts + 1] = figure("side by side", entry.side_rel) end
-  parts[#parts + 1] = '      </div>\n'
+def safe(p):
+    return bool(SAFE.match(p)) and '..' not in p.split('/')
 
-  if entry.base_rel and entry.head_rel then
+def git(args):
+    return subprocess.run(['git', '-C', ROOT] + args, capture_output=True, text=True)
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *a, **k):
+        super().__init__(*a, directory=OUT, **k)
+
+    def log_message(self, *a):
+        pass
+
+    def _json(self, code, obj):
+        body = json.dumps(obj).encode()
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        if self.path == '/api/status':
+            r = git(['diff', '--cached', '--name-only', '--', 'tests/visual/golden'])
+            return self._json(200, {'staged': [l for l in r.stdout.splitlines() if l]})
+        return super().do_GET()
+
+    def do_POST(self):
+        if self.path not in ('/api/stage', '/api/unstage'):
+            return self._json(404, {'error': 'not found'})
+        n = int(self.headers.get('Content-Length', '0'))
+        try:
+            body = json.loads(self.rfile.read(n) or b'{}')
+        except Exception:
+            return self._json(400, {'error': 'bad json'})
+        path = body.get('path', '')
+        if not safe(path):
+            return self._json(400, {'error': 'invalid path: ' + path})
+        if self.path == '/api/stage':
+            r = git(['add', '--', path])
+        else:
+            r = git(['reset', '-q', 'HEAD', '--', path])
+        if r.returncode != 0:
+            return self._json(500, {'error': r.stderr.strip()})
+        return self._json(200, {'ok': True, 'path': path})
+
+class Server(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+    daemon_threads = True
+
+with Server(('127.0.0.1', PORT), Handler) as httpd:
+    url = 'http://127.0.0.1:%d/' % httpd.server_address[1]
+    print('serving %s  (Ctrl-C to stop)' % url, flush=True)
+    if OPEN:
+        webbrowser.open(url)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print('\nstopped', flush=True)
+]]
+
+local function render_card(e)
+  local badge = ({ M = "m", A = "a", D = "d" })[e.status]
+  local label = ({ M = "modified", A = "added", D = "removed" })[e.status]
+  local both = (e.base_over and e.head_over) and "1" or "0"
+  local parts = {
+    string.format(
+      '    <section class="card" data-path="%s" data-both="%s" data-key="%s"' ..
+      ' data-badge="%s" data-label="%s" data-meta="%s">\n',
+      html_escape(e.path), both, html_escape(e.key), badge, label,
+      html_escape(e.meta or "")),
+  }
+  local side = e.side_rel or e.single_rel
+  if side then
+    parts[#parts + 1] = string.format(
+      '      <img class="v v-side" src="%s" loading="lazy">\n', side)
+  end
+  if e.diff_rel then
+    parts[#parts + 1] = string.format(
+      '      <img class="v v-diff" src="%s" loading="lazy">\n', e.diff_rel)
+  end
+  if e.base_over and e.head_over then
     parts[#parts + 1] = table.concat({
-      '      <div class="overlay">\n',
-      '        <div class="stack">\n',
-      string.format('          <img class="ob" src="%s">\n', entry.base_over),
-      string.format('          <img class="oh" src="%s">\n', entry.head_over),
-      '        </div>\n',
-      '        <div class="controls">\n',
-      '          <input class="opa" type="range" min="0" max="100" value="50">\n',
-      '          <button class="flick">flicker</button>\n',
-      '        </div>\n',
+      '      <div class="v v-stack stack">\n',
+      string.format('        <img class="ob" src="%s" loading="lazy">\n', e.base_over),
+      string.format('        <img class="oh" src="%s" loading="lazy">\n', e.head_over),
       '      </div>\n',
     })
   end
@@ -321,19 +445,32 @@ local function render_card(entry)
   return table.concat(parts)
 end
 
-local function render_report(summary, cards_html)
+local function render_report(summary, cards_html, stageable)
   return table.concat({
     "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n",
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n',
     "<title>Snapshot diff</title>\n<style>\n", STYLE, "</style>\n</head>\n<body>\n",
-    '<header class="bar">\n',
+    '<div class="bar">\n',
     '  <button id="prev">&larr; prev</button>\n',
     '  <span class="pos" id="pos">0 / 0</span>\n',
     '  <button id="next">next &rarr;</button>\n',
+    '  <span class="key" id="key"></span>\n',
+    '  <span class="badge" id="badge"></span>\n',
+    '  <span class="meta" id="meta"></span>\n',
+    '  <span class="seg" id="seg">',
+    '<button data-mode="side">Side</button>',
+    '<button data-mode="onion">Onion</button>',
+    '<button data-mode="diff">Diff</button>',
+    '<button data-mode="flicker">Flicker</button></span>\n',
+    '  <input id="opa" type="range" min="0" max="100" value="50" hidden>\n',
+    '  <span class="stage-wrap" id="stagewrap"><button id="validate">validate</button>',
+    '<span class="staged-count" id="stagedcount"></span></span>\n',
     string.format('  <span class="summary">%s</span>\n', html_escape(summary)),
-    '  <span class="hint">j/k step &middot; f flicker &middot; o onion-skin</span>\n',
-    "</header>\n<main>\n", cards_html, "</main>\n<script>\n", SCRIPT, "</script>\n",
-    "</body>\n</html>\n",
+    '  <span class="hint">j/k step &middot; d/o/s/f mode &middot; v validate</span>\n',
+    '</div>\n<div class="viewer" id="viewer">\n', cards_html, '</div>\n',
+    string.format('<script>window.CFG={stageable:%s};</script>\n',
+      stageable and "true" or "false"),
+    "<script>\n", SCRIPT, "</script>\n</body>\n</html>\n",
   })
 end
 
@@ -442,8 +579,10 @@ local function main()
       e.meta = table.concat(meta, "  \194\183  ")
     elseif e.status == "A" then
       e.meta = "new snapshot"
+      e.single_rel = e.head_rel
     elseif e.status == "D" then
       e.meta = "removed snapshot"
+      e.single_rel = e.base_rel
     end
   end
 
@@ -462,20 +601,19 @@ local function main()
     "%d modified \194\183 %d added \194\183 %d removed   (%s -> %s)",
     counts.M, counts.A, counts.D, base_label, head_label)
 
+  -- Validate stages the on-disk golden, which only matches what is shown in
+  -- working-tree mode; staging a historical ref would be meaningless.
+  local stageable = opts.head == nil
   local index = out_dir .. "/index.html"
-  util.write_file(index, render_report(summary, table.concat(cards)))
+  util.write_file(index, render_report(summary, table.concat(cards), stageable))
+
+  local serve_py = out_dir .. "/serve.py"
+  util.write_file(serve_py, SERVER_PY)
 
   io.write(summary .. "\n")
-  io.write("report: " .. index .. "\n")
-
-  if opts.open then
-    local _, uname = util.popen_capture("uname")
-    if trim(uname) == "Darwin" then
-      os.execute(string.format("open %s", shell_quote(index)))
-    else
-      io.write("open it in a browser: " .. index .. "\n")
-    end
-  end
+  os.execute(string.format("python3 %s %s %s %d %d",
+    shell_quote(serve_py), shell_quote(ROOT), shell_quote(out_dir),
+    opts.port, opts.no_open and 0 or 1))
 end
 
 main()

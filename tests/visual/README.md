@@ -75,15 +75,19 @@ It runs `--update` and pushes the refreshed PNGs back to the dispatched branch.
 ## Reviewing diffs between commits
 
 `tools/snapshot/diff.lua` visualises how the committed goldens changed between two git refs, without recompiling anything (it diffs the golden PNGs straight out of git).
-It writes a self-contained interactive HTML report to `build/snapshot/diff-report/` (gitignored) with, per changed snapshot, the base and head images, a red-pixel overlay, a side-by-side composite, an onion-skin opacity slider, and a flicker toggle.
-A keyboard stepper walks only the changed snapshots and skips everything unchanged (`j`/`k` to step, `f` to flicker, `o` to cycle the onion-skin).
+It builds the composites, then serves a single-snapshot review tool on `127.0.0.1` and opens a browser; it runs in the foreground until you stop it with `Ctrl-C`.
 
 ```bash
 lua tools/snapshot/diff.lua --base main
 ```
 
-Comparing against a branch resolves the merge-base, so the report shows only the snapshots the current branch changed.
-Omitting `--head` compares the base against the on-disk goldens, so uncommitted `--update` results can be reviewed before committing.
+The review tool shows one changed snapshot at a time (no page scroll), with a `Side · Onion · Diff · Flicker` view switch over a single viewer.
+A keyboard stepper walks only the changed snapshots and skips everything unchanged: `j`/`k` (or arrows) to step, `d`/`o`/`s`/`f` to pick the view, `v` to validate.
+The **validate** button stages that golden with `git add` (click again to un-stage); a `staged X / M` counter and the buttons reflect the real index, so you can review and accept a refresh snapshot by snapshot, then commit.
+
+Comparing against a branch resolves the merge-base, so the tool shows only the snapshots the current branch changed.
+Omitting `--head` compares the base against the on-disk goldens, so uncommitted `--update` results can be reviewed before committing; validate is enabled only in this working-tree mode.
+Serving and staging use `python3` (standard library only); it is a local review tool, not part of CI or the package.
 
 | Flag            | Default                     | Purpose                                                                 |
 | --------------- | --------------------------- | ----------------------------------------------------------------------- |
@@ -93,4 +97,5 @@ Omitting `--head` compares the base against the on-disk goldens, so uncommitted 
 | `--only <key>`  | none                        | Restrict to golden keys containing the substring.                       |
 | `--fuzz <pct>`  | 2%                          | ImageMagick `-fuzz` value for the overlay.                              |
 | `--out <dir>`   | `build/snapshot/diff-report`| Report directory.                                                       |
-| `--open`        | off                         | Open the report in the browser (macOS).                                 |
+| `--port <n>`    | `0` (auto)                  | Server port; `0` lets the OS pick a free port.                          |
+| `--no-open`     | off                         | Build and serve without opening a browser.                              |
