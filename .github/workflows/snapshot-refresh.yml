@@ -115,7 +115,7 @@ jobs:
             --head "${BRANCH}" \
             --label "Type: CI/CD :robot:")
           sleep 5
-          gh pr merge --auto --squash --delete-branch "${BRANCH}"
+          gh pr merge --auto --merge --delete-branch "${BRANCH}"
 
           {
             echo "## Visual snapshots refreshed"
