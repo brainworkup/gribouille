@@ -3,7 +3,6 @@
 #import "../deps.typ": cetz
 #import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
-#import "../utils/types.typ": parse-number
 #import "../utils/radial.typ": project-point
 #import "../theme/theme.typ": resolve-geom-colour, resolve-geom-defaults
 
@@ -72,6 +71,25 @@
 /// )
 /// ```
 ///
+/// \@examples Dumbbell connectors on a discrete `y` axis: `x`, `xend`, or
+/// `yend` resolve through the trained scale, so categorical slots work.
+/// ```
+/// //| alt: "Three horizontal connectors, one per category, each spanning a start value to an end value on a discrete y axis."
+/// #let d = (
+///   (lo: 1, hi: 4, grp: "alpha"),
+///   (lo: 2, hi: 5, grp: "beta"),
+///   (lo: 3, hi: 6, grp: "gamma"),
+/// )
+/// #plot(
+///   data: d,
+///   mapping: aes(x: "lo", y: "grp", xend: "hi", yend: "grp"),
+///   layers: (geom-segment(stroke: 2pt),),
+///   scales: (scale-y-discrete(),),
+///   width: 10cm,
+///   height: 6cm,
+/// )
+/// ```
+///
 /// \@see \@geom-line, \@geom-path
 #let geom-segment(
   mapping: none,
@@ -111,10 +129,10 @@
   let theme-colour = resolve-geom-colour(resolve-geom-defaults(ctx.theme))
 
   for row in data {
-    let x0 = parse-number(row.at(x-col, default: none))
-    let y0 = parse-number(row.at(y-col, default: none))
-    let x1 = parse-number(row.at(xend-col, default: none))
-    let y1 = parse-number(row.at(yend-col, default: none))
+    let x0 = row.at(x-col, default: none)
+    let y0 = row.at(y-col, default: none)
+    let x1 = row.at(xend-col, default: none)
+    let y1 = row.at(yend-col, default: none)
     if x0 == none or y0 == none or x1 == none or y1 == none { continue }
     let p0 = project-point(ctx, x0, y0)
     let p1 = project-point(ctx, x1, y1)

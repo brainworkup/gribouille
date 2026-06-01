@@ -9,6 +9,7 @@
 #import "../layer.typ": make-layer
 #import "../utils/aes-resolve.typ": resolve-channel
 #import "../utils/types.typ": parse-number
+#import "grouped-path.typ": sort-rows-by-x
 #import "../utils/group.typ": partition-by-group
 #import "../utils/aes-pair.typ": resolve-pair-defaults
 #import "../utils/radial.typ": project-point
@@ -121,14 +122,12 @@
 
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
-    let sorted = rows
+    let sorted = sort-rows-by-x(rows, mapping, x-trained)
       .map(row => (
-        x: parse-number(row.at(mapping.x, default: none)),
+        x: row.at(mapping.x, default: none),
         y: parse-number(row.at(mapping.y, default: none)),
-        row: row,
       ))
-      .filter(p => p.x != none and p.y != none)
-      .sorted(key: p => p.x)
+      .filter(p => p.y != none)
     if sorted.len() < 2 { continue }
 
     let upper = sorted.map(p => project-point(ctx, p.x, p.y))
