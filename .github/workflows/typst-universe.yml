@@ -116,7 +116,8 @@ jobs:
           cd typst-packages
           git remote get-url upstream >/dev/null 2>&1 \
             || git remote add upstream https://github.com/typst/packages.git
-          gh repo sync "${FORK}" --branch main
+          gh repo sync "${FORK}" --branch main \
+            || echo "::warning::Fork main not synced (upstream workflow changes need the workflow permission); basing branch on the fork's current main."
           git fetch upstream main --depth 1
           git fetch origin main --depth 1
           git checkout -B "${BRANCH}" origin/main
