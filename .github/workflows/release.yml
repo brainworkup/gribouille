@@ -180,7 +180,7 @@ jobs:
           sleep 5
           merged=false
           for attempt in {1..10}; do
-            if gh pr merge --squash --delete-branch "${BRANCH}"; then
+            if gh pr merge --merge --delete-branch "${BRANCH}"; then
               merged=true
               break
             fi
@@ -196,11 +196,11 @@ jobs:
           for attempt in {1..10}; do
             COMMIT_SHA=$(gh pr view "${PR_URL}" --json mergeCommit --jq '.mergeCommit.oid // empty')
             [ -n "${COMMIT_SHA}" ] && break
-            echo "Squash commit not available yet (attempt ${attempt}/10); retrying in 3s..."
+            echo "Merge commit not available yet (attempt ${attempt}/10); retrying in 3s..."
             sleep 3
           done
           if [ -z "${COMMIT_SHA}" ]; then
-            echo "::error::Could not resolve squash merge commit for ${PR_URL}."
+            echo "::error::Could not resolve merge commit for ${PR_URL}."
             exit 1
           fi
 
