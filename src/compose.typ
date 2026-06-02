@@ -128,12 +128,7 @@
   }
 }
 
-#let _TAG-CORNERS = (
-  "top-left": top + left,
-  "top-right": top + right,
-  "bottom-left": bottom + left,
-  "bottom-right": bottom + right,
-)
+#let _TAG-CORNERS = ("top-left", "top-right", "bottom-left", "bottom-right")
 
 #let _legend-canvas-size(guides, side) = {
   let extents = legend-mod.estimate-extents(guides)
@@ -280,21 +275,28 @@
   } else { none }
 
   let tag-style = _text-style(theme, "plot-tag")
-  let tag-overlay(content, label) = if (
-    tag-style.size == 0pt or label == none
-  ) { content } else {
-    box({
-      content
-      place(
-        _TAG-CORNERS.at(eff-corner),
-        pad(0.15cm, text(
-          size: tag-style.size,
-          fill: tag-style.fill,
-          weight: tag-style.weight,
-        )[#label]),
-      )
-    })
-  }
+  // A tag claims its own horizontal band so it never overlaps the panel. The
+  // band sits at the tagged corner's vertical edge (top / bottom) and aligns the
+  // label to its horizontal edge (left / right). `0.15cm` is the inset around the
+  // label and doubles as the gap between the band and the panel.
+  let tag-active = level-code != none and tag-style.size > 0pt
+  let is-top = eff-corner == "top-left" or eff-corner == "top-right"
+  let halign = if eff-corner == "top-left" or eff-corner == "bottom-left" {
+    left
+  } else { right }
+  let tag-box(label) = pad(0.15cm, text(
+    size: tag-style.size,
+    fill: tag-style.fill,
+    weight: tag-style.weight,
+  )[#label])
+  let tag-band-cm = if tag-active {
+    measure(tag-box("Ag")).height / 1cm
+  } else { 0.0 }
+  let tag-band(label) = box(
+    width: 100%,
+    height: tag-band-cm * 1cm,
+    align(halign + (if is-top { top } else { bottom }), tag-box(label)),
+  )
 
   // Render one panel (leaf plot or nested compose) at `target` `(w, h)` cm. The
   // panel's own declared width/height are discarded so it fills its cell.
@@ -304,14 +306,26 @@
     } else { none }
     let acc = eff-prefix + (if symbol != none { symbol } else { "" })
     if _is-plot-spec(panel) {
+      // Only a panel that actually draws a tag reserves the band; an untagged
+      // plot fills the full cell height.
+      let cell-tagged = tag-active and symbol != none
+      let content-h = if cell-tagged {
+        calc.max(target.h - tag-band-cm, 0.0)
+      } else { target.h }
       let content = render-plot-deferred(
-        (..panel, width: target.w * 1cm, height: target.h * 1cm),
+        (..panel, width: target.w * 1cm, height: content-h * 1cm),
         suppress-aesthetics: hoisted,
       ).content
-      let label = if symbol == none {
-        none
-      } else { eff-tag-prefix + acc + eff-tag-suffix }
-      tag-overlay(content, label)
+      if not cell-tagged {
+        content
+      } else {
+        let band = tag-band(eff-tag-prefix + acc + eff-tag-suffix)
+        if is-top {
+          stack(dir: ttb, band, content)
+        } else {
+          stack(dir: ttb, content, band)
+        }
+      }
     } else {
       // Nested compose: descend one tag level (the slot itself is untagged).
       let child = if effective-levels.len() > 0 {
@@ -782,7 +796,7 @@
       }
     }
   }
-  if not _TAG-CORNERS.keys().contains(tag-corner) {
+  if not _TAG-CORNERS.contains(tag-corner) {
     panic(
       "compose: tag-corner must be \"top-left\", \"top-right\", "
         + "\"bottom-left\", or \"bottom-right\"; got "
