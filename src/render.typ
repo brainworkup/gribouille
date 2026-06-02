@@ -3346,7 +3346,11 @@
   _wrap(block(stack(dir: ttb, spacing: 0pt, ..items)))
 }
 
-#let render-plot-deferred(spec, suppress-aesthetics: ()) = {
+#let render-plot-deferred(
+  spec,
+  suppress-aesthetics: (),
+  margin-override: none,
+) = {
   let user-theme = if spec.theme != none { spec.theme } else {
     _theme-state.get()
   }
@@ -3734,6 +3738,13 @@
       max-right-margin,
     ),
   )
+  // `compose(align-panels: true)` forces a shared margin so panels' plot areas
+  // line up; overlay the supplied sides and re-cap right against this panel's
+  // own width so a forced right can never invert the rect.
+  if margin-override != none {
+    margin = margin + margin-override
+    margin.right = calc.min(margin.right, max-right-margin)
+  }
 
   let canvas = if facet-wrap-mode {
     _render-canvas-wrap((
@@ -3810,6 +3821,7 @@
     content: _render-decorate(canvas, deco-parts),
     guides: guides,
     trained: trained,
+    margin: margin,
   )
 }
 

@@ -176,6 +176,7 @@
   let guides = spec.guides
   let labs = spec.labs
   let alt = spec.alt
+  let align-panels = spec.at("align-panels", default: false)
   let tag-ctx = spec.at("tag-ctx", default: none)
 
   let first-theme = panels.first().theme
@@ -217,6 +218,24 @@
       hoisted-guides.push(g)
     }
   }
+
+  // `align-panels`: re-probe each plot panel with the hoisted aesthetics
+  // suppressed (mirroring the final render) to read its true margins, then
+  // force every panel to the per-side maximum so plot areas line up across
+  // rows and columns. Nested composes grid-align internally and are skipped.
+  let common-margin = if align-panels {
+    let margins = panels
+      .filter(p => _is-plot-spec(p))
+      .map(p => render-plot-deferred(p, suppress-aesthetics: hoisted).margin)
+    if margins.len() == 0 { none } else {
+      (
+        left: calc.max(..margins.map(m => m.left)),
+        right: calc.max(..margins.map(m => m.right)),
+        top: calc.max(..margins.map(m => m.top)),
+        bottom: calc.max(..margins.map(m => m.bottom)),
+      )
+    }
+  } else { none }
 
   // The collected legend's side comes from the (merged) guides; every hoisted
   // guide must agree on it.
@@ -315,6 +334,7 @@
       let content = render-plot-deferred(
         (..panel, width: target.w * 1cm, height: content-h * 1cm),
         suppress-aesthetics: hoisted,
+        margin-override: common-margin,
       ).content
       if not cell-tagged {
         content
@@ -606,6 +626,13 @@
 ///   (default), `"top-right"`, `"bottom-left"`, or `"bottom-right"`. Styled by
 ///   the theme's `plot-tag` element.
 ///
+/// \@param align-panels When `true`, force every plot panel to a shared margin
+///   (the per-side maximum across panels, all four sides) so their plot areas
+///   are identical and the axes line up across rows and columns, like
+///   `patchwork`/`cowplot` panel alignment. Defaults to `false`, where each
+///   panel sizes its own margins from its axis labels and titles. Nested
+///   `compose` panels already grid-align internally and are left untouched.
+///
 /// \@param alt Alt text for the whole composition. When set, the result is
 ///   wrapped in a `figure` (kind `"gribouille-plot"`) carrying this PDF
 ///   alternative text, exactly as\@plot does.
@@ -739,6 +766,22 @@
 /// ))
 /// ```
 ///
+/// \@examples Align the panels: `align-panels: true` forces a shared margin so
+/// the y axes line up even when the panels' label widths differ.
+/// ```
+/// //| alt: "Two stacked mpg scatter panels whose y axes are aligned to a common left margin so the plot areas start at the same horizontal position."
+/// #let p(map) = plot(
+///   data: mpg, mapping: map,
+///   layers: (geom-point(size: 2pt),),
+///   width: 7cm, height: 3cm, defer: true,
+/// )
+/// #compose(
+///   p(aes(x: "displ", y: "hwy")),
+///   p(aes(x: "displ", y: "displ")),
+///   columns: 1, align-panels: true,
+/// )
+/// ```
+///
 /// \@see\@plot,\@aes,\@guides,\@labs
 #let compose(
   ..panels-positional,
@@ -758,6 +801,7 @@
   tag-suffix: "",
   tag-sep: "",
   tag-corner: "top-left",
+  align-panels: false,
   alt: none,
   defer: false,
 ) = {
@@ -823,6 +867,7 @@
     tag-suffix: tag-suffix,
     tag-sep: tag-sep,
     tag-corner: tag-corner,
+    align-panels: align-panels,
     alt: alt,
     tag-ctx: none,
   )
