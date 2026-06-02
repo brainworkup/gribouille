@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- feat: `compose()` gains `align-panels` (default `false`); when `true`, every plot panel shares a common margin so their plot areas are identical and the axes line up across rows and columns, like `patchwork`/`cowplot` panel alignment. (#71)
+- feat: `compose()` gains `align-panels` (default `false`); when `true`, panels share margins grid-wise (left/right per column, top/bottom per row) so their plot areas line up across rows and columns, like `patchwork`/`cowplot` panel alignment. (#71)
 - fix: `compose()` panel tags (`tag-levels`) reserve their own band so they no longer overlap the panel content. (#70)
 - fix: `geom-segment`/`geom-curve`/`geom-ribbon`/`geom-area` render on discrete scales instead of silently drawing nothing. (#69)
 

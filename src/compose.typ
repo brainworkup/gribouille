@@ -219,24 +219,6 @@
     }
   }
 
-  // `align-panels`: re-probe each plot panel with the hoisted aesthetics
-  // suppressed (mirroring the final render) to read its true margins, then
-  // force every panel to the per-side maximum so plot areas line up across
-  // rows and columns. Nested composes grid-align internally and are skipped.
-  let common-margin = if align-panels {
-    let margins = panels
-      .filter(p => _is-plot-spec(p))
-      .map(p => render-plot-deferred(p, suppress-aesthetics: hoisted).margin)
-    if margins.len() == 0 { none } else {
-      (
-        left: calc.max(..margins.map(m => m.left)),
-        right: calc.max(..margins.map(m => m.right)),
-        top: calc.max(..margins.map(m => m.top)),
-        bottom: calc.max(..margins.map(m => m.bottom)),
-      )
-    }
-  } else { none }
-
   // The collected legend's side comes from the (merged) guides; every hoisted
   // guide must agree on it.
   let legend-side = none
@@ -311,15 +293,30 @@
   let tag-band-cm = if tag-active {
     measure(tag-box("Ag")).height / 1cm
   } else { 0.0 }
-  let tag-band(label) = box(
-    width: 100%,
+  // The band must match the panel's own width, not `100%`: the panel grid is
+  // built with content-sized (`auto`) columns, so a `100%`-wide band would make
+  // its column greedy and overrun the track sized for the panel content.
+  let tag-band(width, label) = box(
+    width: width,
     height: tag-band-cm * 1cm,
     align(halign + (if is-top { top } else { bottom }), tag-box(label)),
   )
 
+  // Content height of cell `i` for a `target` height `h`: a tagged cell yields
+  // the band's height to it; an untagged cell fills `h`. Shared by the real
+  // render and the `align-panels` probe so both measure the same geometry.
+  let cell-content-h(i, h) = {
+    let symbol = if level-code != none { _tag-symbol(level-code, i) } else {
+      none
+    }
+    if tag-active and symbol != none {
+      calc.max(h - tag-band-cm, 0.0)
+    } else { h }
+  }
+
   // Render one panel (leaf plot or nested compose) at `target` `(w, h)` cm. The
   // panel's own declared width/height are discarded so it fills its cell.
-  let make-cell(panel, i, target) = {
+  let make-cell(panel, i, target, margin-override) = {
     let symbol = if level-code != none {
       _tag-symbol(level-code, i)
     } else { none }
@@ -328,18 +325,19 @@
       // Only a panel that actually draws a tag reserves the band; an untagged
       // plot fills the full cell height.
       let cell-tagged = tag-active and symbol != none
-      let content-h = if cell-tagged {
-        calc.max(target.h - tag-band-cm, 0.0)
-      } else { target.h }
+      let content-h = cell-content-h(i, target.h)
       let content = render-plot-deferred(
         (..panel, width: target.w * 1cm, height: content-h * 1cm),
         suppress-aesthetics: hoisted,
-        margin-override: common-margin,
+        margin-override: margin-override,
       ).content
       if not cell-tagged {
         content
       } else {
-        let band = tag-band(eff-tag-prefix + acc + eff-tag-suffix)
+        let band = tag-band(
+          target.w * 1cm,
+          eff-tag-prefix + acc + eff-tag-suffix,
+        )
         if is-top {
           stack(dir: ttb, band, content)
         } else {
@@ -458,14 +456,57 @@
     let col-tracks = _tracks(area-w, cols, gutter-cm, col-ratios)
     let row-tracks = _tracks(area-h, rows, gutter-cm, row-ratios)
 
+    // `align-panels`: probe each plot panel at the size of the cell it will
+    // occupy, then share margins grid-wise so plot areas line up: left/right per
+    // column, top/bottom per row (patchwork/cowplot). Nested composes grid-align
+    // internally and are skipped.
+    let align-margins = if align-panels {
+      let col-left = (0.0,) * cols
+      let col-right = (0.0,) * cols
+      let row-top = (0.0,) * rows
+      let row-bottom = (0.0,) * rows
+      for (i, panel) in panels.enumerate() {
+        if not _is-plot-spec(panel) { continue }
+        let col = calc.rem(i, cols)
+        let row = calc.quo(i, cols)
+        let m = render-plot-deferred(
+          (
+            ..panel,
+            width: col-tracks.at(col) * 1cm,
+            height: cell-content-h(i, row-tracks.at(row)) * 1cm,
+          ),
+          suppress-aesthetics: hoisted,
+        ).margin
+        col-left.at(col) = calc.max(col-left.at(col), m.left)
+        col-right.at(col) = calc.max(col-right.at(col), m.right)
+        row-top.at(row) = calc.max(row-top.at(row), m.top)
+        row-bottom.at(row) = calc.max(row-bottom.at(row), m.bottom)
+      }
+      (
+        left: col-left,
+        right: col-right,
+        top: row-top,
+        bottom: row-bottom,
+      )
+    } else { none }
+
     let cells = ()
     for (i, panel) in panels.enumerate() {
       let col = calc.rem(i, cols)
       let row = calc.quo(i, cols)
+      let margin-override = if align-margins == none { none } else {
+        (
+          left: align-margins.left.at(col),
+          right: align-margins.right.at(col),
+          top: align-margins.top.at(row),
+          bottom: align-margins.bottom.at(row),
+        )
+      }
       cells.push(make-cell(
         panel,
         i,
         (w: col-tracks.at(col), h: row-tracks.at(row)),
+        margin-override,
       ))
     }
     if layout == "grid" {
@@ -626,12 +667,13 @@
 ///   (default), `"top-right"`, `"bottom-left"`, or `"bottom-right"`. Styled by
 ///   the theme's `plot-tag` element.
 ///
-/// \@param align-panels When `true`, force every plot panel to a shared margin
-///   (the per-side maximum across panels, all four sides) so their plot areas
-///   are identical and the axes line up across rows and columns, like
-///   `patchwork`/`cowplot` panel alignment. Defaults to `false`, where each
-///   panel sizes its own margins from its axis labels and titles. Nested
-///   `compose` panels already grid-align internally and are left untouched.
+/// \@param align-panels When `true`, share plot margins grid-wise so plot areas
+///   line up: panels in the same column share their left and right margins (the
+///   per-column maximum), panels in the same row share their top and bottom
+///   margins (the per-row maximum), like `patchwork`/`cowplot` panel alignment.
+///   Defaults to `false`, where each panel sizes its own margins from its axis
+///   labels and titles. Nested `compose` panels already grid-align internally
+///   and are left untouched.
 ///
 /// \@param alt Alt text for the whole composition. When set, the result is
 ///   wrapped in a `figure` (kind `"gribouille-plot"`) carrying this PDF

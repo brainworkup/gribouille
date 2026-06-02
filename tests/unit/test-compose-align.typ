@@ -57,6 +57,25 @@
       + " vs "
       + repr(fw.bottom),
   )
+
+  // A forced margin larger than the panel can hold must be clamped, never
+  // inverting the plot rect: left + right and top + bottom each leave room.
+  let huge = (left: 100.0, right: 100.0, top: 100.0, bottom: 100.0)
+  let fc = render-plot-deferred(narrow, margin-override: huge).margin
+  assert(
+    fc.left + fc.right < 6,
+    message: "clamp must keep horizontal plot area positive; got left "
+      + repr(fc.left)
+      + " + right "
+      + repr(fc.right),
+  )
+  assert(
+    fc.top + fc.bottom < 4,
+    message: "clamp must keep vertical plot area positive; got top "
+      + repr(fc.top)
+      + " + bottom "
+      + repr(fc.bottom),
+  )
 }
 
 Compose align-panels test passed.

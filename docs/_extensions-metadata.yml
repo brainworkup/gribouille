@@ -12,6 +12,7 @@ extensions:
     root: "../"
     preamble: "_typst-preamble.typ"
     style: "display: block; margin-inline: auto;"
+    align: center
     background: auto
     foreground: auto
     width: auto
