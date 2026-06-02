@@ -302,6 +302,18 @@
     align(halign + (if is-top { top } else { bottom }), tag-box(label)),
   )
 
+  // Content height of cell `i` for a `target` height `h`: a tagged cell yields
+  // the band's height to it; an untagged cell fills `h`. Shared by the real
+  // render and the `align-panels` probe so both measure the same geometry.
+  let cell-content-h(i, h) = {
+    let symbol = if level-code != none { _tag-symbol(level-code, i) } else {
+      none
+    }
+    if tag-active and symbol != none {
+      calc.max(h - tag-band-cm, 0.0)
+    } else { h }
+  }
+
   // Render one panel (leaf plot or nested compose) at `target` `(w, h)` cm. The
   // panel's own declared width/height are discarded so it fills its cell.
   let make-cell(panel, i, target, margin-override) = {
@@ -313,9 +325,7 @@
       // Only a panel that actually draws a tag reserves the band; an untagged
       // plot fills the full cell height.
       let cell-tagged = tag-active and symbol != none
-      let content-h = if cell-tagged {
-        calc.max(target.h - tag-band-cm, 0.0)
-      } else { target.h }
+      let content-h = cell-content-h(i, target.h)
       let content = render-plot-deferred(
         (..panel, width: target.w * 1cm, height: content-h * 1cm),
         suppress-aesthetics: hoisted,
@@ -445,16 +455,6 @@
     let gutter-cm = gutter / 1cm
     let col-tracks = _tracks(area-w, cols, gutter-cm, col-ratios)
     let row-tracks = _tracks(area-h, rows, gutter-cm, row-ratios)
-
-    // Content height of cell `i`: a tagged cell yields the band's height to it.
-    let cell-content-h(i, h) = {
-      let symbol = if level-code != none { _tag-symbol(level-code, i) } else {
-        none
-      }
-      if tag-active and symbol != none {
-        calc.max(h - tag-band-cm, 0.0)
-      } else { h }
-    }
 
     // `align-panels`: probe each plot panel at the size of the cell it will
     // occupy, then share margins grid-wise so plot areas line up: left/right per

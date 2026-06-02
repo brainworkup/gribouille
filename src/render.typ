@@ -3740,23 +3740,23 @@
   )
   // `compose(align-panels: true)` forces a shared margin so panels' plot areas
   // line up; overlay the supplied sides, then clamp every side against this
-  // panel's own extent so a forced margin can never invert the plot rect
-  // (keep at least 0.5cm of plot in each direction, matching `max-right-margin`).
+  // panel's own extent so a forced margin can never invert the plot rect. Each
+  // bound keeps at least 0.5cm of plot opposite it, matching `max-right-margin`.
   if margin-override != none {
     margin = margin + margin-override
     margin.right = calc.min(margin.right, max-right-margin)
-    margin.left = calc.min(
-      margin.left,
-      calc.max(0.0, width-units - margin.right - 0.5),
-    )
-    margin.bottom = calc.min(
-      margin.bottom,
-      calc.max(0.0, height-units - margin.top - 0.5),
-    )
-    margin.top = calc.min(
-      margin.top,
-      calc.max(0.0, height-units - margin.bottom - 0.5),
-    )
+    margin.left = calc.min(margin.left, calc.max(
+      0.0,
+      width-units - margin.right - 0.5,
+    ))
+    margin.top = calc.min(margin.top, calc.max(
+      0.0,
+      height-units - margin.bottom - 0.5,
+    ))
+    margin.bottom = calc.min(margin.bottom, calc.max(
+      0.0,
+      height-units - margin.top - 0.5,
+    ))
   }
 
   let canvas = if facet-wrap-mode {
