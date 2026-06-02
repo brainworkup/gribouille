@@ -12,12 +12,11 @@
 /tests/**/*.pdf
 
 # Visual snapshot build artefacts (goldens live under tests/visual/golden/)
-/build/snapshot/
+/build/
 
 # Quarto build artefacts
 /.quarto/
 /docs/_site/
 /docs/_variables.yml
 **/*.quarto_ipynb
-
 /.luarc.json

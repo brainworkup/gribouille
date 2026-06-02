@@ -33,4 +33,18 @@
   )
 }
 
+// Panel tags reserve their band from inside each cell, so a bounded composition
+// still totals exactly the requested width and height.
+#context {
+  let m = measure(box(
+    width: 12cm,
+    height: 6cm,
+    compose(panel, panel, columns: 2, tag-levels: "A"),
+  ))
+  assert(
+    m.width == 12cm and m.height == 6cm,
+    message: "tagged compose should total its requested box, got " + repr(m),
+  )
+}
+
 Compose sizing test passed.

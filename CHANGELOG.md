@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix: `compose()` panel tags (`tag-levels`) reserve their own band so they no longer overlap the panel content. (#70)
 - fix: `geom-segment`/`geom-curve`/`geom-ribbon`/`geom-area` render on discrete scales instead of silently drawing nothing. (#69)
 
 ## 0.2.0 (2026-06-01)
