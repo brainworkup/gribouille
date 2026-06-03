@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Manually submit gribouille to Typst Universe from a developer machine.
-# Mirrors .github/workflows/typst-universe.yml step for step, but authenticates
-# with the user's own `gh` session instead of a GitHub App token. Use it to
-# retry a failed CI submission or publish out of band.
+# Submit gribouille to Typst Universe from a developer machine.
+# This is the canonical submitter: opening a fork->upstream PR on typst/packages
+# needs a real user identity, so it authenticates with the user's own `gh`
+# session (a GitHub App token cannot open that PR). Run it after each release.
 #
 # Usage:
 #   .github/scripts/publish-typst-universe.sh [--dry-run] [VERSION]

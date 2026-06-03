@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Local dry-run of the Typst Universe release pipeline.
-# Stages the same payload as release.yml's typst-universe job, installs it
-# locally as @preview/gribouille:<version> via a symlink under Typst's data
-# dir, compiles a smoke file, then removes the symlink. No git tag, no
-# GitHub Release, no upstream PR.
+# Stages the same payload as `tools/package.sh stage` (the submitter in
+# .github/scripts/publish-typst-universe.sh), installs it locally as
+# @preview/gribouille:<version> via a symlink under Typst's data dir, compiles
+# a smoke file, then removes the symlink. No git tag, no GitHub Release, no
+# upstream PR.
 
 set -euo pipefail
 

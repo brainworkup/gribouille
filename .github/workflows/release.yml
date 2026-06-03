@@ -15,10 +15,6 @@ on:
         type: boolean
         description: "Bump versions, tag, and create a GitHub Release"
         default: true
-      publish_typst_universe:
-        type: boolean
-        description: "Submit PR to typst/packages (Typst Universe)"
-        default: true
       deploy_pages:
         type: boolean
         description: "Deploy documentation to GitHub Pages"
@@ -36,8 +32,7 @@ concurrency:
 jobs:
   validate:
     name: Compile Typst sources
-    if: ${{ inputs.create_release || inputs.publish_typst_universe ||
-      inputs.deploy_pages }}
+    if: ${{ inputs.create_release || inputs.deploy_pages }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -349,6 +344,11 @@ jobs:
             echo "- Tag: \`${VERSION}\`"
             echo "- Release: ${RELEASE_URL}"
             echo "- Assets: \`gribouille-${VERSION}.tar.gz\`, \`gribouille-${VERSION}.zip\`"
+            echo ""
+            echo "## Typst Universe"
+            echo ""
+            echo "- Automated submission removed: GitHub App tokens cannot open PRs on \`typst/packages\`."
+            echo "- Submit manually from a checkout: \`.github/scripts/publish-typst-universe.sh ${VERSION}\`"
           } >> "${GITHUB_STEP_SUMMARY}"
 
   pages:
@@ -359,24 +359,9 @@ jobs:
         && needs.validate.result == 'success'
         && needs.bump-version.result != 'failure' && needs.bump-version.result != 'cancelled'
         && needs.github-release.result != 'failure' && needs.github-release.result != 'cancelled'
-        && (inputs.deploy_pages || inputs.publish_typst_universe) }}
+        && inputs.deploy_pages }}
     permissions:
       contents: read
       pages: write
       id-token: write
     uses: ./.github/workflows/deploy.yml
-
-  typst-universe:
-    name: Submit to Typst Universe
-    needs: [ validate, bump-version, github-release, pages ]
-    if: >-
-      ${{ always()
-        && inputs.publish_typst_universe
-        && needs.validate.result == 'success'
-        && needs.pages.result == 'success'
-        && needs.bump-version.result != 'failure' && needs.bump-version.result != 'cancelled'
-        && needs.github-release.result != 'failure' && needs.github-release.result != 'cancelled' }}
-    uses: ./.github/workflows/typst-universe.yml
-    with:
-      version: ${{ needs.bump-version.outputs.version }}
-    secrets: inherit
