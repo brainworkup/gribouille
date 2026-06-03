@@ -62,7 +62,7 @@ jobs:
           typst-version: ${{ steps.typst-version.outputs.version }}
 
       - name: Set up Lua
-        uses: leafo/gh-actions-lua@v11
+        uses: leafo/gh-actions-lua@v13
         with:
           luaVersion: "5.4"
 
