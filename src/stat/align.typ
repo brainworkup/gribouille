@@ -125,6 +125,20 @@
   let diff = resolution(unique-loc, zero: false)
   if diff > 0 and diff / 3 < adjust { adjust = diff / 3 }
 
+  // Expand the grid with a tiny offset on either side of every breakpoint
+  // (`loc - adjust`, `loc`, `loc + adjust`). A group that starts or ends
+  // mid-range then gains a baseline vertex just before its first point and
+  // just after its last, so a neighbouring group steps cleanly down to zero
+  // instead of rising diagonally toward that group's first vertex. Mirrors
+  // ggplot2 StatAlign's `c(loc - adjust, loc, loc + adjust)` grid.
+  let expanded = ()
+  for loc in unique-loc {
+    expanded.push(loc - adjust)
+    expanded.push(loc)
+    expanded.push(loc + adjust)
+  }
+  unique-loc = expanded.dedup().sorted()
+
   let out = params
   out.insert("unique-loc", unique-loc)
   out.insert("adjust", adjust)
