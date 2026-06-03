@@ -17,12 +17,11 @@
   (x: 7, y: 2, k: "b"),
 )
 
-#let panel(stat, subtitle, guides: (:)) = plot(
+#let panel(stat, subtitle) = plot(
   data: d,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (geom-area(stat: stat, alpha: 0.7),),
   labs: labs(subtitle: subtitle),
-  guides: guides,
   theme: theme-minimal(),
   width: 12cm,
   height: 8cm,
@@ -31,10 +30,6 @@
 #grid(
   columns: 1,
   row-gutter: 1em,
-  panel(
-    "identity",
-    "stat: \"identity\" (groups overlap)",
-    guides: guides(fill: guide-none()),
-  ),
+  panel("identity", "stat: \"identity\" (groups overlap)"),
   panel("align", "stat: \"align\" (shared x-grid)"),
 )
