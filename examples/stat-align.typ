@@ -17,22 +17,24 @@
   (x: 7, y: 2, k: "b"),
 )
 
-#let panel(stat, subtitle) = plot(
+#let panel(stat, subtitle, guides: (:)) = plot(
   data: d,
   mapping: aes(x: "x", y: "y", fill: "k"),
   layers: (geom-area(stat: stat, alpha: 0.7),),
   labs: labs(subtitle: subtitle),
+  guides: guides,
   theme: theme-minimal(),
-  width: 9cm,
-  height: 7cm,
-  defer: true,
+  width: 12cm,
+  height: 8cm,
 )
 
-#compose(
-  panel("identity", "stat: \"identity\" (groups overlap)"),
+#grid(
+  columns: 1,
+  row-gutter: 1em,
+  panel(
+    "identity",
+    "stat: \"identity\" (groups overlap)",
+    guides: guides(fill: guide-none()),
+  ),
   panel("align", "stat: \"align\" (shared x-grid)"),
-  columns: 2,
-  labs: labs(title: "Stat-Align: Stacked Areas on a Shared X-Grid"),
-  width: 20cm,
-  height: 8cm,
 )
