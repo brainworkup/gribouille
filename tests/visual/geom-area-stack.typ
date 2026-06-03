@@ -17,7 +17,7 @@
 #plot(
   data: d,
   mapping: aes(x: "x", y: "y", fill: "grp"),
-  layers: (geom-area(position: "stack", alpha: 0.6),),
+  layers: (geom-area(alpha: 0.6),),
   labs: labs(title: "geom-area stacked"),
   theme: theme-minimal(),
   width: 10cm,

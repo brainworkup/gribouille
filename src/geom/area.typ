@@ -41,9 +41,12 @@
 ///
 /// \@param alpha Fill opacity in `[0, 1]`.
 ///
-/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param stat Statistical transform name. Defaults to `"align"`, which
+/// resamples all groups onto a shared x-grid before stacking so bands join
+/// cleanly even when groups carry different x values. Pass `"identity"` to
+/// skip alignment.
 ///
-/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param position Position adjustment name. Defaults to `"stack"`.
 ///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
@@ -62,8 +65,7 @@
 /// )
 /// ```
 ///
-/// \@examples Map `fill` to a discrete column to draw one polygon per group;
-/// `position: "stack"` accumulates them.
+/// \@examples Map `fill` to a discrete column; groups stack automatically.
 /// ```
 /// //| alt: "Stacked area chart over x with two groups (a, b) coloured by fill aesthetic and stacked vertically."
 /// #let d = ()
@@ -75,7 +77,7 @@
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "grp"),
-///   layers: (geom-area(position: "stack", alpha: 0.6),),
+///   layers: (geom-area(alpha: 0.6),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -89,8 +91,8 @@
   fill: auto,
   stroke: none,
   alpha: auto,
-  stat: "identity",
-  position: "identity",
+  stat: "align",
+  position: "stack",
   inherit-aes: true,
 ) = make-layer(
   "area",
