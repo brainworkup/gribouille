@@ -120,18 +120,23 @@
     resolve-geom-fill(g-defaults, role: "tint"),
   )
 
+  let ymin-col = mapping.at("ymin", default: none)
+
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
     let sorted = sort-rows-by-x(rows, mapping, x-trained)
       .map(row => (
         x: row.at(mapping.x, default: none),
         y: parse-number(row.at(mapping.y, default: none)),
+        ymin: if ymin-col != none {
+          parse-number(row.at(ymin-col, default: 0))
+        } else { 0.0 },
       ))
       .filter(p => p.y != none)
     if sorted.len() < 2 { continue }
 
     let upper = sorted.map(p => project-point(ctx, p.x, p.y))
-    let lower = sorted.rev().map(p => project-point(ctx, p.x, 0))
+    let lower = sorted.rev().map(p => project-point(ctx, p.x, p.ymin))
     let pts = upper + lower
     if pts.any(p => p == none) { continue }
 
