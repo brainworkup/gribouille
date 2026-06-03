@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- feat: `geom-area()` defaults to `stat: "align"` and `position: "stack"`, matching ggplot2 v3.4 behaviour; groups with mismatched x values are automatically resampled onto a shared grid and stacked without requiring explicit `stat: stat-align()`. (#77)
 - fix: `geom-area(position: "stack")` now stacks bands correctly; each polygon's lower edge sits at the cumulated top of the group below rather than always closing at `y = 0`. (#77)
 
 ## 0.2.1 (2026-06-03)
