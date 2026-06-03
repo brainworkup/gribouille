@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.1 (2026-06-03)
 
 - feat: `compose()` gains `align-panels` (default `false`); when `true`, panels share margins grid-wise (left/right per column, top/bottom per row) so their plot areas line up across rows and columns, like `patchwork`/`cowplot` panel alignment. (#71)
 - fix: `compose()` panel tags (`tag-levels`) reserve their own band so they no longer overlap the panel content. (#70)
