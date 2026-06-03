@@ -71,7 +71,7 @@
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 12) {
-///     d.push((x: i, y: 0.5 + calc.sin(i * 0.5) + (if grp == "b" { 1 } else { 0 }), grp: grp))
+///     d.push((x: i, y: 1.5 + calc.sin(i * 0.5) + (if grp == "b" { 1 } else { 0 }), grp: grp))
 ///   }
 /// }
 /// #plot(
