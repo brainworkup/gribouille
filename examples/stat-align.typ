@@ -1,5 +1,6 @@
 // stat-align resamples each group onto a shared x-grid so stacked areas
 // share clean vertices even when the inputs use mismatched x values.
+// Side by side: the raw `stat: "identity"` overlap versus the aligned stack.
 
 #import "../lib.typ": *
 
@@ -16,12 +17,22 @@
   (x: 7, y: 2, k: "b"),
 )
 
-#plot(
+#let panel(stat, subtitle) = plot(
   data: d,
   mapping: aes(x: "x", y: "y", fill: "k"),
-  layers: (geom-area(alpha: 0.7),),
-  labs: labs(title: "Stat-Align: Stacked Areas on a Shared X-Grid"),
+  layers: (geom-area(stat: stat, alpha: 0.7),),
+  labs: labs(subtitle: subtitle),
   theme: theme-minimal(),
-  width: 12cm,
-  height: 9cm,
+  width: 9cm,
+  height: 7cm,
+  defer: true,
+)
+
+#compose(
+  panel("identity", "stat: \"identity\" (groups overlap)"),
+  panel("align", "stat: \"align\" (shared x-grid)"),
+  columns: 2,
+  labs: labs(title: "Stat-Align: Stacked Areas on a Shared X-Grid"),
+  width: 20cm,
+  height: 8cm,
 )
