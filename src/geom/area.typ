@@ -41,9 +41,12 @@
 ///
 /// \@param alpha Fill opacity in `[0, 1]`.
 ///
-/// \@param stat Statistical transform name. Usually `"identity"`.
+/// \@param stat Statistical transform name. Defaults to `"align"`, which
+/// resamples all groups onto a shared x-grid before stacking so bands join
+/// cleanly even when groups carry different x values. Pass `"identity"` to
+/// skip alignment.
 ///
-/// \@param position Position adjustment name. Usually `"identity"`.
+/// \@param position Position adjustment name. Defaults to `"stack"`.
 ///
 /// \@param inherit-aes Whether to merge the plot-level mapping into this layer's mapping.
 ///
@@ -62,20 +65,19 @@
 /// )
 /// ```
 ///
-/// \@examples Map `fill` to a discrete column to draw one polygon per group;
-/// `position: "stack"` accumulates them.
+/// \@examples Map `fill` to a discrete column; groups stack automatically.
 /// ```
 /// //| alt: "Stacked area chart over x with two groups (a, b) coloured by fill aesthetic and stacked vertically."
 /// #let d = ()
 /// #for grp in ("a", "b") {
 ///   for i in range(0, 12) {
-///     d.push((x: i, y: 0.5 + calc.sin(i * 0.5) + (if grp == "b" { 1 } else { 0 }), grp: grp))
+///     d.push((x: i, y: 1.5 + calc.sin(i * 0.5) + (if grp == "b" { 1 } else { 0 }), grp: grp))
 ///   }
 /// }
 /// #plot(
 ///   data: d,
 ///   mapping: aes(x: "x", y: "y", fill: "grp"),
-///   layers: (geom-area(position: "stack", alpha: 0.6),),
+///   layers: (geom-area(alpha: 0.6),),
 ///   width: 10cm,
 ///   height: 6cm,
 /// )
@@ -89,8 +91,8 @@
   fill: auto,
   stroke: none,
   alpha: auto,
-  stat: "identity",
-  position: "identity",
+  stat: "align",
+  position: "stack",
   inherit-aes: true,
 ) = make-layer(
   "area",
@@ -120,18 +122,23 @@
     resolve-geom-fill(g-defaults, role: "tint"),
   )
 
+  let ymin-col = mapping.at("ymin", default: none)
+
   for g in partition-by-group(data, mapping, trained: ctx.trained) {
     let rows = g.data
     let sorted = sort-rows-by-x(rows, mapping, x-trained)
       .map(row => (
         x: row.at(mapping.x, default: none),
         y: parse-number(row.at(mapping.y, default: none)),
+        ymin: if ymin-col != none {
+          parse-number(row.at(ymin-col, default: 0))
+        } else { 0.0 },
       ))
       .filter(p => p.y != none)
     if sorted.len() < 2 { continue }
 
     let upper = sorted.map(p => project-point(ctx, p.x, p.y))
-    let lower = sorted.rev().map(p => project-point(ctx, p.x, 0))
+    let lower = sorted.rev().map(p => project-point(ctx, p.x, p.ymin))
     let pts = upper + lower
     if pts.any(p => p == none) { continue }
 
