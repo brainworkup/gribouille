@@ -9,3 +9,6 @@ contact_links:
   - name: Browse existing discussions
     url: https://github.com/mcanouil/gribouille/discussions
     about: Search existing threads before opening a new one.
+  - name: Documentation
+    url: https://m.canouil.dev/gribouille
+    about: Read the documentation before opening an issue.
