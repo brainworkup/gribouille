@@ -12,3 +12,6 @@ contact_links:
   - name: Documentation
     url: https://m.canouil.dev/gribouille
     about: Read the documentation before opening an issue.
+  - name: Documentation (development version)
+    url: https://m.canouil.dev/gribouille/dev
+    about: Read the development documentation for unreleased features.
