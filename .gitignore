@@ -20,3 +20,5 @@
 /docs/_variables.yml
 **/*.quarto_ipynb
 /.luarc.json
+plot.pdf
+plot.svg
