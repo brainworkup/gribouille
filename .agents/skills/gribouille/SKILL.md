@@ -12,7 +12,7 @@ A plot layers `geom-*` over shared data and an aesthetic mapping.
 ## Import
 
 ```typst
-#import "@preview/gribouille:0.6.0": *
+#import "@preview/gribouille:0.8.0": *
 ```
 
 Pin the version to the installed one.
@@ -93,7 +93,7 @@ Arguments, defaults, and types still come from each symbol's `.llms.md` referenc
 - **Guides**: `guide-legend`, `guide-axis`, `guide-axis-logticks`, `guide-axis-stack`, `guide-axis-theta`, `guide-custom`, `guides`, `draw-key-blank`, `draw-key-line`, `draw-key-path`, `draw-key-point`, `draw-key-rect`.
 - **Geoms**: `annotate`, `geom-point`, `geom-line`, `geom-path`, `geom-step`, `geom-area`, `geom-rect`, `geom-tile`, `geom-bin-2d`, `geom-hex`, `geom-contour`, `geom-contour-filled`, `geom-segment`, `geom-curve`, `geom-spoke`, `geom-polygon`, `geom-ellipse`, `geom-mark`, `geom-col`, `geom-bar`, `geom-histogram`, `geom-freqpoly`, `geom-density`, `geom-density-2d`, `geom-density-2d-filled`, `geom-smooth`, `geom-ribbon`, `geom-boxplot`, `geom-violin`, `geom-density-ridges`, `geom-errorbar`, `geom-errorbarh`, `geom-count`, `geom-linerange`, `geom-crossbar`, `geom-pointrange`, `geom-hline`, `geom-vline`, `geom-abline`, `geom-text`, `geom-typst`, `geom-label`, `geom-jitter`, `geom-beeswarm`, `geom-blank`, `geom-rug`, `geom-function`, `geom-dotplot`, `geom-quantile`, `geom-qq`, `geom-qq-line`.
 - **Stats**: `stat-identity`, `stat-count`, `stat-density`, `stat-density-2d`, `stat-density-2d-filled`, `stat-ydensity`, `stat-density-ridges`, `stat-sum`, `stat-function`, `stat-bin`, `stat-bin-2d`, `stat-bin-hex`, `stat-contour`, `stat-contour-filled`, `stat-bindot`, `stat-smooth`, `stat-boxplot`, `stat-summary`, `stat-summary-bin`, `stat-summary-2d`, `stat-summary-hex`, `stat-ecdf`, `stat-unique`, `stat-qq`, `stat-qq-line`, `stat-ellipse`, `stat-quantile`, `stat-manual`, `stat-connect`, `stat-align`, `stat-difference`, `stat-waffle`.
-- **Helpers**: `get-alt-text`, `arrow`, `format-comma`, `format-currency`, `format-log`, `format-lower`, `format-number`, `format-percent`, `format-scientific`, `format-title`, `format-upper`, `format-wrap`, `mean`, `mean-cl-boot`, `mean-cl-normal`, `mean-sd`, `mean-se`, `median`, `median-hilow`, `quantile`, `quantiles`, `cut-interval`, `cut-number`, `cut-width`, `resolution`, `qnorm`.
+- **Helpers**: `get-alt-text`, `arrow`, `format-comma`, `format-currency`, `format-log`, `format-lower`, `format-number`, `format-percent`, `format-scientific`, `format-title`, `format-upper`, `format-wrap`, `mean`, `mean-cl-boot`, `mean-cl-normal`, `mean-sd`, `mean-se`, `median`, `median-hilow`, `quantile`, `quantiles`, `cut-interval`, `cut-number`, `cut-width`, `resolution`, `qnorm`, `nanoplot`.
 - **Wrangle**: `count`, `summarise`, `distinct`, `drop-na`, `relocate`, `rename`, `select`, `slice-max`, `slice-min`, `pivot-longer`, `pivot-wider`, `anti-join`, `bind-cols`, `bind-rows`, `full-join`, `inner-join`, `left-join`, `semi-join`.
 - **Scales**: `scales`, `scale-area`, `scale-binned`, `scale-binned-area`, `scale-brewer`, `scale-continuous`, `scale-date`, `scale-datetime`, `scale-discrete`, `scale-distiller`, `scale-fermenter`, `scale-gradient`, `scale-gradient2`, `scale-gradientn`, `scale-grey`, `scale-hue`, `scale-identity`, `scale-log10`, `scale-manual`, `scale-okabe-ito`, `scale-radius`, `scale-reverse`, `scale-sqrt`, `scale-steps`, `scale-steps2`, `scale-stepsn`, `scale-time`, `scale-viridis-b`, `scale-viridis-c`, `scale-viridis-d`, `dup-axis`, `sec-axis`, `breaks-extended`, `breaks-log`, `breaks-pretty`, `breaks-quantile`, `breaks-width`, `brewer-palette`, `okabe-ito`, `colour-mix`, `expand-limits`.
 - **Coord**: `coord-cartesian`, `coord-fixed`, `coord-flip`, `coord-radial`, `coord-transform`.
@@ -106,7 +106,7 @@ Arguments, defaults, and types still come from each symbol's `.llms.md` referenc
 ## Worked example
 
 ```typst
-#import "@preview/gribouille:0.6.0": *
+#import "@preview/gribouille:0.8.0": *
 
 #let species-colours = (
   Adelie: rgb("#ff8c00"),
@@ -197,6 +197,74 @@ Legend swatches render the pattern:
 - Unknown `stat`, scale `transform`, `oob`, or `theme()` element names fail fast instead of silently rendering as identity.
 - CSV string-numeric columns stay discrete.
   For a continuous scale, call `as-numeric(data, "col")`.
+
+## When Gribouille misbehaves
+
+Do not work around a Gribouille bug in silence.
+A silent workaround hides the bug, and then nobody fixes it.
+
+1. Isolate the problem.
+   Reduce the plot to a minimal `#plot()` that still shows it.
+   Add a control: the same data with a simpler layer such as `geom-point`, or the same plot without the coord, facet, or theme.
+   Check each argument against its `.llms.md` page, so that a misuse is not reported as a bug.
+   Reproduce the problem on the latest release from Typst Universe.
+2. Stop and tell the user before you write a workaround.
+   Give the minimal reproduction, the expected output, and the actual output.
+3. Search `mcanouil/gribouille` for a duplicate.
+   Start with one or two distinctive words, such as the geom name or the error text, then vary them.
+   - Issues, open and closed: `gh search issues --repo mcanouil/gribouille "<keywords>"`.
+   - Open pull requests: `gh search prs --repo mcanouil/gribouille --state open "<keywords>"`.
+   - Discussions: <https://github.com/mcanouil/gribouille/discussions>.
+
+   If an open issue matches, do not file a new issue.
+   Draft a comment with only the facts that the thread does not have yet, such as a newer version or a smaller reproduction.
+   Use the prose rules of step 5, then go to step 6.
+   If there are no new facts, suggest a thumbs-up reaction, post nothing, and go to step 8.
+   If a closed issue was fixed and the bug is back, write "Regression of #N." in the new issue.
+4. Route the report.
+   Blank issues are turned off.
+   - Bug: an issue from the bug template, <https://github.com/mcanouil/gribouille/issues/new?template=bug.yml>.
+   - Missing feature: Discussions, Ideas, <https://github.com/mcanouil/gribouille/discussions/new?category=ideas>.
+   - Usage question: Discussions, Q&A, <https://github.com/mcanouil/gribouille/discussions/new?category=q-a>.
+5. Draft a bug report with the fields of the bug template, each as a `### <label>` heading followed by the answer:
+   "Before submitting", "Gribouille version", "Typst compiler version", "Installation source", "Bug description", "Minimal reproducible example", "Steps to reproduce", "Expected behaviour", "Actual behaviour", "Your environment", and the optional "Additional context".
+   - For "Installation source", copy one option exactly: "Typst Universe", "Local package directory", "Git clone / source checkout", or "Other".
+   - Put the reproduction in a `typst` code block, with the `@preview/gribouille:<version>` import.
+   - Run `typst --version` yourself.
+     Ask the user for the facts that you cannot find.
+     Never post a placeholder.
+   - Copy the "Before submitting" checkbox labels exactly from <https://github.com/mcanouil/gribouille/blob/main/.github/ISSUE_TEMPLATE/bug.yml>.
+     Write each checkbox as `- [x]` or `- [ ]`.
+     Tick a box only when it is true, and tick the search box only after step 3.
+     Under the draft, list each box that you could not verify.
+   - Claim only what you ran or what the user told you.
+   - Keep the prose short and plain.
+     Do not add headings of your own.
+     Keep code and error output unchanged.
+   - Do not mention the agent or the tools that wrote the text.
+
+   For Discussions, use the fields of that form with the same rules.
+   Ideas: "Before posting", "What problem does this solve?", "Proposed solution or desired behaviour", and the optional "Alternatives considered".
+   Q&A: "Description".
+6. Show the draft to the user.
+   Put the line `**Draft for mcanouil/gribouille, not posted.**` above it.
+   Put the title and the body in one `markdown` code block, with a fence longer than any fence in the body.
+   For a comment, put the issue number in place of the title.
+7. Post only after a clear go-ahead from the user, such as "post".
+   - If `gh auth status` succeeds, write the body to a file and run `gh issue create --repo mcanouil/gribouille --title "<title>" --body-file <file>`.
+     `gh issue create` does not apply the label of the form.
+     If `gh repo view mcanouil/gribouille --json viewerPermission` reports `TRIAGE` or higher, add `--label "Type: Bug :bug:"`.
+     If not, tell the user that the issue has no label.
+     Do not add assignees.
+     Give the user the URL of the new issue.
+   - For a comment on an open issue, run `gh issue comment <n> --repo mcanouil/gribouille --body-file <file>`.
+   - If `gh` is not available, or the report goes to Discussions, give the user the draft and the link from step 4.
+8. Write a workaround only if the user agrees.
+   Put a comment next to it that links the issue, so that the workaround can be removed when the bug is fixed:
+
+   ```typst
+   // Workaround for https://github.com/mcanouil/gribouille/issues/<n>: remove when fixed.
+   ```
 
 ## Reference protocol
 

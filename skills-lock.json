@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skills": {
+    "gribouille": {
+      "source": "mcanouil/gribouille",
+      "sourceType": "github",
+      "skillPath": "skills/gribouille/SKILL.md",
+      "computedHash": "5540f9f5a99991afbbc0a6c395d8171c67c0737a1cce4ee5556b2e817259c610"
+    }
+  }
+}
